@@ -34,14 +34,14 @@
   "recorded_guest_input_plan": "state/experiments/c72-plan.json",
   "independent_full_RVG_byte_equality": "docs/evidence/c72/independent-stage4-replay.json",
   "latest_local_admitted_boundary": {
-    "checkpoint_sha256": "73b4af6cfd45a2c14f1e5b885245c592f27f9615ff9fe52fd5e50119fb0cb83c",
-    "instructions": 78895950532,
+    "checkpoint_sha256": "b5e2b3fd6896e80113c4ddbb638a51a60d0367f532ca694e84d081f5ab428373",
+    "instructions": 80895950532,
     "source_boundary_verified": true,
     "system_server_alive_verified": true,
     "android_boot_completed_verified": false,
-    "evidence": "docs/evidence/c74/local-stage2-progress.json",
-    "read_only_threads": "docs/evidence/c74/stage2-threads-summary.json",
-    "transport_note": "Frozen default is independently reproduced C73 stage6; local C74 stage3 continues from admitted stage2, with no new UART."
+    "evidence": "docs/evidence/c74/local-stage4-progress.json",
+    "read_only_threads": "docs/evidence/c74/stage4-threads-summary.json",
+    "transport_note": "C74 stage5 continues from admitted stage4; no new UART input."
   },
   "independent_full_RVG_SHA256_equality": "docs/evidence/c73/independent-real-system-server.json",
   "original_priority_target_still_owned": false,

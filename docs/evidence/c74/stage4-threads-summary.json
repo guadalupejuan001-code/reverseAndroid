@@ -1,0 +1,360 @@
+{
+  "checkpoint_sha256": "b5e2b3fd6896e80113c4ddbb638a51a60d0367f532ca694e84d081f5ab428373",
+  "instructions": 80895950532,
+  "input_unchanged": true,
+  "observer_source_git_blob_sha1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "original_observer_file_unchanged": true,
+  "original_CPU_and_codecs_unchanged": true,
+  "schema": "reverseandroid-thread-observation-summary-v1",
+  "read_only": true,
+  "system_server_pid": 3340,
+  "thread_count": 38,
+  "thread_list_verified": true,
+  "threads": [
+    {
+      "pid": 3340,
+      "tgid": 3340,
+      "name": "system_server",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "6628322000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3525,
+      "tgid": 3340,
+      "name": "Signal Catcher",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1719000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3526,
+      "tgid": 3340,
+      "name": "perfetto_hprof_",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2511000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3527,
+      "tgid": 3340,
+      "name": "socket_writer_q",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "3774000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3529,
+      "tgid": 3340,
+      "name": "Jit thread pool",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2074000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3530,
+      "tgid": 3340,
+      "name": "HeapTaskDaemon",
+      "state": 0,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1063848000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3531,
+      "tgid": 3340,
+      "name": "ReferenceQueueD",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "7433000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3532,
+      "tgid": 3340,
+      "name": "FinalizerDaemon",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "8244000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3534,
+      "tgid": 3340,
+      "name": "FinalizerWatchd",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "3242000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3539,
+      "tgid": 3340,
+      "name": "binder:3340_1",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1898000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3540,
+      "tgid": 3340,
+      "name": "TracingMuxer",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "17619000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3551,
+      "tgid": 3340,
+      "name": "system-server-i",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1280484000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3719,
+      "tgid": 3340,
+      "name": "Thread-2",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "3164000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3726,
+      "tgid": 3340,
+      "name": "atchdog.monitor",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2742000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3727,
+      "tgid": 3340,
+      "name": "android.fg",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1889000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3728,
+      "tgid": 3340,
+      "name": "android.ui",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "5064000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3730,
+      "tgid": 3340,
+      "name": "android.io",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2200000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3731,
+      "tgid": 3340,
+      "name": "android.display",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2259000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3732,
+      "tgid": 3340,
+      "name": "android.anim",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2256000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3734,
+      "tgid": 3340,
+      "name": "android.anim.lf",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2278000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3735,
+      "tgid": 3340,
+      "name": "watchdog",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "11466000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3762,
+      "tgid": 3340,
+      "name": "PowerStatsServi",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2294000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3767,
+      "tgid": 3340,
+      "name": "android.bg",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2391000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3769,
+      "tgid": 3340,
+      "name": "ActivityManager",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "4153000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3771,
+      "tgid": 3340,
+      "name": "ActivityManager",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2156000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3772,
+      "tgid": 3340,
+      "name": "ActivityManager",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2464000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3773,
+      "tgid": 3340,
+      "name": "Thread-3",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "5093000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3774,
+      "tgid": 3340,
+      "name": "ActivityManager",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2226000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3775,
+      "tgid": 3340,
+      "name": "ActivityManager",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2357000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3776,
+      "tgid": 3340,
+      "name": "LowMemThread",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1488000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3777,
+      "tgid": 3340,
+      "name": "OomAdjuster",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2231000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3779,
+      "tgid": 3340,
+      "name": "AnrTimerService",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "601000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3781,
+      "tgid": 3340,
+      "name": "ackgroundThread",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2052000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3782,
+      "tgid": 3340,
+      "name": "batterystats-ha",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2338000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3795,
+      "tgid": 3340,
+      "name": "AppOpHistoryHel",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1921000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3796,
+      "tgid": 3340,
+      "name": "AppOpHistoryHel",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2161000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3803,
+      "tgid": 3340,
+      "name": "bgres-controlle",
+      "state": 1,
+      "exit_state": 0,
+      "cpu_runtime_ns": "1949000",
+      "uid": "1000"
+    },
+    {
+      "pid": 3805,
+      "tgid": 3340,
+      "name": "CriticalEventLo",
+      "state": 8193,
+      "exit_state": 0,
+      "cpu_runtime_ns": "2089000",
+      "uid": "1000"
+    }
+  ],
+  "complete_probe_gzip": "docs/evidence/c74/stage4-threads-readonly.json.gz",
+  "complete_probe_sha256": "1ebb8756900208f46208d27a2dd3adc7db3dafe858000f7e83608ca146f8a6d6",
+  "complete_probe_gzip_sha256": "69e6634f78d98373e6314b3fc3fc26e8bf11cd75081a57b0461e6e6df07109e2"
+}
