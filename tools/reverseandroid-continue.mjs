@@ -24,6 +24,7 @@ for await (const chunk of createReadStream(join(source, 'current.rvg'))) hash.up
 assert.equal(hash.digest('hex'), before.checkpoint_sha256, 'Migration source changed during execution');
 writeFileSync(join(output, 'c46-progress.json'), JSON.stringify(result, null, 2) + '\n');
 const receipt = {...result, schema: 'reverseandroid-continuation-v1',
+  cycle: plan.cycle,
   source_repository: plan.source.repository, source_checkpoint_sha256: before.checkpoint_sha256,
   source_instructions: plan.source.instructions, advanced_instructions: result.instructions - plan.source.instructions,
   execution_repository: 'guadalupejuan001-code/reverseAndroid', execution_commit: commit,

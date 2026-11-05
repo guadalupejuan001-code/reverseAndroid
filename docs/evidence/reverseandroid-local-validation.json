@@ -1,0 +1,48 @@
+{
+  "source_files_verified": 870,
+  "saturating_narrow": {
+    "cases": 330173,
+    "checks": 22123070,
+    "native_hardware_cases": 0,
+    "saturating_narrow_forms": 27,
+    "exact_android_opcode": "0x0e214841",
+    "android_boot": false
+  },
+  "high_narrow": {
+    "cases": 849409,
+    "checks": 56911269,
+    "native_hardware_cases": 0,
+    "high_narrow_forms": 24,
+    "exact_android_opcode": "0x2e254082",
+    "android_boot": false
+  },
+  "floating_point": {
+    "checks": 11675,
+    "fp": "ARMv8 bounded FP32/FP64 + SIMD",
+    "state": "sparse RVG3",
+    "quantum_engine": "unchanged"
+  },
+  "original_decoder": {
+    "cases": 13,
+    "checks": 731,
+    "legacy_rvg_bytes_identical": true,
+    "decoder_unchanged": true,
+    "max_output_chunk": 65536,
+    "android_boot": false
+  },
+  "admission_tests": 95,
+  "admission_tests_passed": 95,
+  "transport": {
+    "transport_multichunk_verified": true,
+    "fixture_bytes": 220200960,
+    "parts": 2,
+    "max_part_bytes": 209715200,
+    "whole_restored_hash_matches": true,
+    "tampered_transport_rejected_before_extraction": true,
+    "pinned_multi_artifact_restore_verified": true,
+    "per_artifact_repository_selection_verified": true,
+    "unsafe_zip_paths_rejected": true
+  },
+  "rebuilt_frame_compiled_from_original_source": true,
+  "bootstrap_script_syntax_passed": true
+}

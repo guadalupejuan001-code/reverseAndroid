@@ -1,0 +1,23 @@
+{
+  "schema": "reverseandroid-continuation-v1",
+  "checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+  "instructions": 64395950532,
+  "source_boundary_verified": true,
+  "system_server_alive_verified": false,
+  "android_boot_completed_verified": false,
+  "scanout_exported": true,
+  "ready_for_visual_review": false,
+  "android_display_content_verified": false,
+  "unresolved": [
+    "live_process_missing:system_server",
+    "live_sys_boot_completed_unverified"
+  ],
+  "source_repository": "guadalupejuan001-code/REVERSE-PC",
+  "source_checkpoint_sha256": "f306e9ef430186b8839a75a4e29c4f57cda106f9b958ab0c5db10670c246b18e",
+  "source_instructions": 64295950532,
+  "advanced_instructions": 100000000,
+  "execution_repository": "guadalupejuan001-code/reverseAndroid",
+  "execution_commit": "193d53c8001705b93b13f1fad7bec20a2997696f",
+  "original_source_preserved": true,
+  "original_engine_and_decoders_unchanged": true
+}

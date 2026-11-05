@@ -1,0 +1,11 @@
+# Migración C69 a reverseAndroid
+
+El emulador se trasladó desde REVERSE-PC C68, commit `37f5b4610c5c31981e359fcf8fd0b303c14f01fd`. El manifiesto conserva los hashes Git de los 870 archivos importados. Solo se trasladaron los workflows históricos y el README a rutas de documentación; el motor y sus formatos originales no se modificaron.
+
+La ejecución [42050799049](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42050799049), commit `193d53c8001705b93b13f1fad7bec20a2997696f`, pasó la compilación y las pruebas nativas, importó el disco y C68 por hash y admitió 100.000.000 instrucciones nuevas. La frontera limpia es 64.395.950.532, SHA-256 `119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4`. El proceso terminó por presupuesto de instrucciones, sin fallo, conservando el origen completo.
+
+El checkpoint C68 de respaldo, C69 y las partes del disco original se publicaron en reverseAndroid. Los estados se transportan en tres piezas de hasta 200 MiB. El siguiente ciclo C70 está preparado desde C69; todos sus pines de entrada activos pertenecen al nuevo repositorio. Las piezas y archivos ZIP tienen hashes independientes y el estado completo conserva el hash original de RVG.
+
+Las comprobaciones locales incluyeron 870 hashes de origen, 330.173 casos de estrechamiento saturado, 849.409 de estrechamiento alto, 11.675 comprobaciones FP, 13 casos/731 comprobaciones del decodificador original y 95 pruebas de admisión. El transporte recuperó exactamente un archivo opaco de 210 MiB dividido en dos piezas y rechazó alteraciones antes de extraer. También se verificaron la selección de repositorio por artefacto y el rechazo de rutas ZIP inseguras.
+
+El hito de migración acredita integridad y progreso real. `system_server`, `sys.boot_completed=1` y contenido Android visible todavía no están verificados. La imagen exportada sigue negra. XI/Ether, el fondo cero, RVG/MXIM/RFP, 2 GiB de RAM lógica, disco, semilla, 64 instrucciones por tick y comprobaciones IRQ se conservan. No se añadieron entradas UART ni cambios de prioridades del invitado.

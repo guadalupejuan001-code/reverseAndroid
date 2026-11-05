@@ -1,0 +1,14 @@
+{
+  "schema": "reverse-c27-sequence-boundary-v1",
+  "clean_completed": true,
+  "ready_for_visual_review": false,
+  "android_display_content_verified": false,
+  "continuation_error": null,
+  "native_process_status": "process_completed",
+  "native_stop_reason": "instruction_budget",
+  "failure_class": "none",
+  "journal_sha_verified": true,
+  "recovery_candidate_is_promotion_authority": false,
+  "checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+  "instructions": 64395950532
+}

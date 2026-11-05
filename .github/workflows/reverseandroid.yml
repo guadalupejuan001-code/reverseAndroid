@@ -14,6 +14,8 @@ jobs:
   original-engine-validation:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      continue_on_push: ${{ steps.plan.outputs.continue_on_push }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with: {persist-credentials: false}
@@ -25,6 +27,15 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with: {node-version: 24.22.1}
+      - name: Read the explicit next-cycle policy
+        id: plan
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFileSync,appendFileSync} from 'node:fs';
+          const p=JSON.parse(readFileSync('state/continuation.json'));
+          if(p.execute_on_push!==undefined && typeof p.execute_on_push!=='boolean')throw Error('Invalid execute_on_push');
+          appendFileSync(process.env.GITHUB_OUTPUT,'continue_on_push='+String(p.execute_on_push!==false)+'\n');
+          NODE
       - name: Verify all 870 source files and the original engine and admission tests
         run: bash scripts/build-reverseandroid.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -36,11 +47,12 @@ jobs:
             build/reverseandroid/*.txt
             build/reverseandroid/*.tap
             build/reverseandroid/native
+            build/reverseandroid/frame
           if-no-files-found: error
           retention-days: 90
   authenticated-android-continuation:
     needs: original-engine-validation
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && (github.event_name == 'workflow_dispatch' || needs.original-engine-validation.outputs.continue_on_push == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -57,22 +69,20 @@ jobs:
         with: {node-version: 24.22.1}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with: {name: reverseandroid-tested-native, path: build/native}
-      - name: Fetch and authenticate the exact C68 stage 12 and original decoder archives
+      - name: Fetch and authenticate the pinned original continuation source
         run: |
-          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c68
-          python3 scripts/fetch-reverseandroid-artifact.py decoder build/original-decoder
-          chmod +x build/native/native build/original-decoder/frame
-          test "$(sha256sum build/original-decoder/frame | cut -d ' ' -f 1)" = '4eff5aeb8f30c9e8b36aed3dbc6d9b22c6ffab9f33b1d0735f79395133284a19'
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-state
+          chmod +x build/native/native build/native/frame
           mkdir -p evidence/migration
-          node --max-old-space-size=5000 tools/reverseandroid-seed.mjs build/source-c68 evidence/migration/seed-admission.json
+          node --max-old-space-size=5000 tools/reverseandroid-seed.mjs build/source-state evidence/migration/seed-admission.json
       - name: Preserve the source checkpoint in recoverable pieces
-        run: python3 scripts/pack-reverseandroid-checkpoint.py build/source-c68 build/seed-transport > evidence/migration/seed-transport.json
+        run: python3 scripts/pack-reverseandroid-checkpoint.py build/source-state build/seed-transport > evidence/migration/seed-transport.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with: {name: reverseandroid-c68-seed-000, path: build/seed-transport/checkpoint.part-000, compression-level: 0, retention-days: 90, if-no-files-found: error}
+        with: {name: reverseandroid-source-checkpoint-000, path: build/seed-transport/checkpoint.part-000, compression-level: 0, retention-days: 90, if-no-files-found: error}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with: {name: reverseandroid-c68-seed-001, path: build/seed-transport/checkpoint.part-001, compression-level: 0, retention-days: 90, if-no-files-found: warn}
+        with: {name: reverseandroid-source-checkpoint-001, path: build/seed-transport/checkpoint.part-001, compression-level: 0, retention-days: 90, if-no-files-found: warn}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with: {name: reverseandroid-c68-seed-002, path: build/seed-transport/checkpoint.part-002, compression-level: 0, retention-days: 90, if-no-files-found: warn}
+        with: {name: reverseandroid-source-checkpoint-002, path: build/seed-transport/checkpoint.part-002, compression-level: 0, retention-days: 90, if-no-files-found: warn}
       - name: Fetch every authenticated original disk part
         run: |
           python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input
@@ -89,27 +99,31 @@ jobs:
         with: {name: reverseandroid-original-media-ac, path: build/media-input/disk.part-ac, compression-level: 0, retention-days: 90}
       - name: Restore exactly the original sparse disk
         run: python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw > evidence/migration/media-restored.json
-      - name: Execute and admit C69 from the original C68 boundary
+      - name: Compare the rebuilt original decoder against the authenticated source pixels
         run: |
-          node --max-old-space-size=5000 tools/reverseandroid-continue.mjs build/source-c68 evidence/c69 build/native/native build/media/android-c27.raw build/original-decoder/frame "$(git rev-parse HEAD)" > evidence/migration/continuation.json
+          build/native/frame build/source-state/current.rvg build/media/android-c27.raw "$(python3 -c 'import json;print(json.load(open("state/continuation.json"))["source"]["checkpoint_sha256"])')" 4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e 10888413184 build/seed-frame.ppm > evidence/migration/seed-frame.json
+          node tools/reverseandroid-verify-frame.mjs build/source-state/checkpoint-frame.json evidence/migration/seed-frame.json evidence/migration/rebuilt-decoder-verification.json
+      - name: Execute and admit the next bounded Android cycle
+        run: |
+          node --max-old-space-size=5000 tools/reverseandroid-continue.mjs build/source-state evidence/cycle build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" > evidence/migration/continuation.json
       - name: Preserve the new verified checkpoint in recoverable pieces
-        run: python3 scripts/pack-reverseandroid-checkpoint.py evidence/c69 build/c69-transport > evidence/migration/c69-transport.json
+        run: python3 scripts/pack-reverseandroid-checkpoint.py evidence/cycle build/current-transport > evidence/migration/current-transport.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with: {name: reverseandroid-c69-checkpoint-000, path: build/c69-transport/checkpoint.part-000, compression-level: 0, retention-days: 90, if-no-files-found: error}
+        with: {name: reverseandroid-current-checkpoint-000, path: build/current-transport/checkpoint.part-000, compression-level: 0, retention-days: 90, if-no-files-found: error}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with: {name: reverseandroid-c69-checkpoint-001, path: build/c69-transport/checkpoint.part-001, compression-level: 0, retention-days: 90, if-no-files-found: warn}
+        with: {name: reverseandroid-current-checkpoint-001, path: build/current-transport/checkpoint.part-001, compression-level: 0, retention-days: 90, if-no-files-found: warn}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with: {name: reverseandroid-c69-checkpoint-002, path: build/c69-transport/checkpoint.part-002, compression-level: 0, retention-days: 90, if-no-files-found: warn}
+        with: {name: reverseandroid-current-checkpoint-002, path: build/current-transport/checkpoint.part-002, compression-level: 0, retention-days: 90, if-no-files-found: warn}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: reverseandroid-migration-and-progress
           path: |
             evidence/migration/
-            evidence/c69/*.json
-            evidence/c69/*.txt
-            evidence/c69/*.log
-            evidence/c69/native/*.json
-            evidence/c69/native/*.log
+            evidence/cycle/*.json
+            evidence/cycle/*.txt
+            evidence/cycle/*.log
+            evidence/cycle/native/*.json
+            evidence/cycle/native/*.log
           retention-days: 90
           if-no-files-found: warn

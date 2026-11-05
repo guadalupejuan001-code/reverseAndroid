@@ -1,12 +1,46 @@
 {
   "schema": "reverseandroid-bootstrap-artifacts-v1",
-  "repository": "guadalupejuan001-code/REVERSE-PC",
+  "repository": "guadalupejuan001-code/reverseAndroid",
   "artifacts": {
-    "seed": {"id": 13423050281, "sha256": "e8c9879e1ecb72757f4eb1a2fdb1853cd65a2309ab968ea050d8006e8ff5bdae"},
-    "decoder": {"id": 13374692775, "sha256": "464978466708302a06c909320abf60543861fd06e461e5b1dfdfb733e9c0ec31"},
-    "media-manifest": {"id": 13365399669, "sha256": "fc95a8ffd7b68348fe991d6b60c2910b67fdd60f0a2f4f201f7442a5e2d34d46"},
-    "media-aa": {"id": 13365424477, "sha256": "650b778f3377bf1321f6703c21a9d16cac4852e6a068a0ffa657b6d6c72f0b14"},
-    "media-ab": {"id": 13365294879, "sha256": "3e734348decabf92aea4bf97cb7508d244331318879fe916985a6947da20f6b2"},
-    "media-ac": {"id": 13365364716, "sha256": "d4050653e35fe0ee834c31c262f02ecbef0531ea67684c1eaaf1e6c3e3120402"}
+    "seed": {
+      "transport_manifest": "state/source-checkpoint-transport.json",
+      "pieces": [
+        {
+          "id": 13426374524,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "0d5c7cdf89be50aaf54fa5a4fecba752f46cd3e8a57e75411a6145b7bfea04d6"
+        },
+        {
+          "id": 13427108140,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "6b25315adf90bca27b987bc565dd7376ffe3a53bd47ea11208462916ad4f2e94"
+        },
+        {
+          "id": 13427337850,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "6c5bf094a7057abd5817b3a5c95b80acebdb496ee4417d3485d32d475e433677"
+        }
+      ]
+    },
+    "media-manifest": {
+      "id": 13427116817,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d9cb8cb0448199a76840f02676ccde8cceb02934b4e340a9a218103757689c91"
+    },
+    "media-aa": {
+      "id": 13427701335,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "df9735902d27bad91cec9d93a1ac13980113bbd6fcaa33303366bf420bb79ac0"
+    },
+    "media-ab": {
+      "id": 13427181837,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7aa01e7a17ed14bf23c83425bfc26da7848f253641079427f1a4b6f44ecefff8"
+    },
+    "media-ac": {
+      "id": 13426962020,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ecf54e700e4a1c10a3c101a8fcd8e20aa7a63df7f5cd2456cb662c7117dee789"
+    }
   }
 }

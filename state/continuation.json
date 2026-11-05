@@ -1,15 +1,18 @@
 {
   "schema": "reverseandroid-continuation-plan-v1",
-  "cycle": "C69-migration",
+  "cycle": "C70",
   "source": {
-    "repository": "guadalupejuan001-code/REVERSE-PC",
-    "source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
-    "run_id": 42022683885,
-    "artifact_id": 13423050281,
-    "artifact_name": "reverse-c68-stage-12-verified-checkpoint",
-    "artifact_zip_sha256": "e8c9879e1ecb72757f4eb1a2fdb1853cd65a2309ab968ea050d8006e8ff5bdae",
-    "checkpoint_sha256": "f306e9ef430186b8839a75a4e29c4f57cda106f9b958ab0c5db10670c246b18e",
-    "instructions": 64295950532
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "source_commit": "193d53c8001705b93b13f1fad7bec20a2997696f",
+    "run_id": 42050799049,
+    "artifact_names": [
+      "reverseandroid-c69-checkpoint-000",
+      "reverseandroid-c69-checkpoint-001",
+      "reverseandroid-c69-checkpoint-002"
+    ],
+    "checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+    "instructions": 64395950532,
+    "transport_manifest": "state/source-checkpoint-transport.json"
   },
   "instruction_budget": 100000000,
   "logical_ram_bytes": 2147483648,
@@ -17,5 +20,6 @@
   "host_snapshot_transport_bytes": 2147483648,
   "uart_input": null,
   "guest_priority_changes": false,
-  "retain_original_source": true
+  "retain_original_source": true,
+  "execute_on_push": false
 }

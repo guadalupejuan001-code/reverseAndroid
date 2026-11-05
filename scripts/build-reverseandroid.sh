@@ -13,6 +13,9 @@ g++ "${flags[@]}" -O3 -DREVERSE_PC_COMPACT_RESTORE_VIEW=1 -DREVERSE_PC_OPENSSL_D
   -o build/reverseandroid/native
 build/reverseandroid/native --pins > build/reverseandroid/native-pins.json
 sha256sum build/reverseandroid/native > build/reverseandroid/binary-sha256.txt
+g++ "${flags[@]}" -O2 -DREVERSE_PC_COMPACT_RESTORE_VIEW=1 -DREVERSE_PC_OPENSSL_DISK_SHA=1 \
+  tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -lcrypto \
+  -o build/reverseandroid/frame
 for test in saturating_narrow high_narrow fp; do
   g++ "${flags[@]}" -O2 "tests/minimal_guest_${test}_test.cpp" \
     build/softfloat/libreverse_softfloat.a -o "build/reverseandroid/test-${test}"
