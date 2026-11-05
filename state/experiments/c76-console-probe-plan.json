@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "9697a327e4afa5b1a4b7e74d20044ac2228421770eb106a25d751f84ad0bbd58",
+  "source_instructions": 12000000000,
+  "input_file": "../../tools/inputs/c76-console-probe.bin",
+  "input_bytes": 27,
+  "input_sha256": "27be0f78a10c95e03d3c35af7ae50e48613027d26de1f0c391266f3e0bd34e21",
+  "isolated_control_branch": true,
+  "production_continuation_authority": false,
+  "expected_generated_reply": "RX_VERIFIED",
+  "reply_not_contiguous_in_input_bytes": true
+}

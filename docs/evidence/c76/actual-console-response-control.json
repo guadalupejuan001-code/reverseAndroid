@@ -1,0 +1,49 @@
+{
+  "schema": "reverseandroid-real-guest-console-control-v1",
+  "purpose": "diagnostic_console_on_isolated_control_branch",
+  "parent_checkpoint_sha256": "9697a327e4afa5b1a4b7e74d20044ac2228421770eb106a25d751f84ad0bbd58",
+  "parent_instructions": 12000000000,
+  "parent_full_snapshot_SHA256_unchanged_after_test": true,
+  "control_checkpoint_sha256": "23955195bb0f780f173d8c32f986b78af79efb90cb32fb730b414b453bf354ce",
+  "control_instructions": 12100000000,
+  "actual_guest_CPU_instructions": 100000000,
+  "explicit_input": {
+    "schema": "reverse-modeled-uart-input-v1",
+    "instructions": 12000000000,
+    "counter_subtick": 14,
+    "bytes": 27,
+    "sha256": "27be0f78a10c95e03d3c35af7ae50e48613027d26de1f0c391266f3e0bd34e21"
+  },
+  "input_bytes_not_containing_expected_reply_contiguously": true,
+  "exact_guest_generated_reply": "RX_VERIFIED",
+  "actual_guest_console_response_verified": true,
+  "full_original_C46_source_boundary_verified": true,
+  "android_boot_completed_verified": false,
+  "Android_UI_response_verified": false,
+  "control_state_is_primary_continuation_authority": false,
+  "source_primary_preserved": true,
+  "new_native_binary_sha256": "2c9f9cb70125125d0c2ce806b2b83c5eb9c49d06c76d97353b12652d17f97767",
+  "provenance": {
+    "experiment": "c76-lights-port-epoch",
+    "epoch_root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
+    "input_checkpoint_sha256": "9697a327e4afa5b1a4b7e74d20044ac2228421770eb106a25d751f84ad0bbd58",
+    "input_report_sha256": "82d72a99d2ca5be34a1d72db78384d844fe5f97392ab1f11e53a82a614981cae",
+    "snapshot_round_trip_verified": true,
+    "source_epoch_init_verified": true,
+    "host_snapshot_transport_bytes": 2147483648,
+    "host_transport_policy_serialized": false,
+    "source_cpu_modified_before_resume": false,
+    "new_uart_input_bytes": 27,
+    "live_android_properties_written": false,
+    "timing_seed_origin": "checkpoint",
+    "timing_seed_sha256": "699e17ffab1ef3618567ee928b25cdc0b6c7feed3d520147e9111c76a751a6cb",
+    "disk_sha256": "4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e",
+    "external_uart_input": {
+      "schema": "reverse-modeled-uart-input-v1",
+      "instructions": 12000000000,
+      "counter_subtick": 14,
+      "bytes": 27,
+      "sha256": "27be0f78a10c95e03d3c35af7ae50e48613027d26de1f0c391266f3e0bd34e21"
+    }
+  }
+}

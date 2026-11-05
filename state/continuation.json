@@ -38,10 +38,10 @@
   "source_transport": "state/experiments/c76-stage-6-transport.json",
   "expected_first_full_checkpoint_sha256": "84f24abfe8a49585ab28a7a3d543c318d7b6890cf028ba2c7379455d4d675ba3",
   "expected_first_instructions": 8000000000,
-  "source_local_directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage8",
+  "source_local_directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage11",
   "active_local_cycle": "C76",
-  "active_local_stage": 9,
-  "latest_local_source_instructions": 9000000000,
-  "latest_local_source_checkpoint_sha256": "92a1eb653c0568e7c7c935ac7f3d98fe0255dbd76d96dcd8ee04665e5ee1ee0b",
+  "active_local_stage": 12,
+  "latest_local_source_instructions": 12000000000,
+  "latest_local_source_checkpoint_sha256": "9697a327e4afa5b1a4b7e74d20044ac2228421770eb106a25d751f84ad0bbd58",
   "source_native": "tools/reverseandroid-epoch.mjs"
 }

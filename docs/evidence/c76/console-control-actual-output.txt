@@ -1,0 +1,6 @@
+
+
+console:/ $ printf 'RX_%s\n' VERIFIED
+
+RX_VERIFIED
+console:/ $ 

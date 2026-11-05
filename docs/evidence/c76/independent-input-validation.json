@@ -1,0 +1,19 @@
+{
+  "schema": "reverseandroid-independent-input-build-validation-v1",
+  "run_id": 42126068417,
+  "commit": "3009d554ed3b614ed74136fb9734aa09b73b29dd",
+  "artifact_id": 13460552951,
+  "archive_sha256": "c6ba175d2ab26e0062459f672041f1d7041eece7576eb4952e63171d0f9fe13d",
+  "epoch_binary_sha256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "original_870_integrity_and_original_engine_checks_passed": true,
+  "explicit_input_tests_passed": true,
+  "native_receive_queue_checks": {
+    "absent_input_byte_identical": true,
+    "explicit_receive_queue_only": true,
+    "RAM_properties_and_quantum_state_unchanged": true,
+    "CPU_execution_not_fabricated": true,
+    "original_snapshot_roundtrip": true
+  },
+  "actual_Android_UI_response_proved": false,
+  "production_guest_input_sent": false
+}
