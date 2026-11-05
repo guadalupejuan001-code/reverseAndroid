@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-c73-initial-ci-reference-correction-v1",
+  "failed_run_id": 42076684391,
+  "failure_phase": "recover pinned native binary before guest execution",
+  "error": "native-cache key missing from derived artifact lock",
+  "corrected_native_cache": {
+    "id": 13427524232,
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "sha256": "b9a1220fda051dca26930ac72b1812b1bb98c52ff8d96609297b0739ae2b54b1"
+  },
+  "original_CPU_and_codecs_unchanged": true,
+  "local_admitted_instructions": 72895950532,
+  "local_checkpoint_sha256": "c688c10f6a391b0f40e78d3dd3561a359db0b232bc9b64e1b82d011cc3d5cc81",
+  "local_continuation_interrupted": false
+}
