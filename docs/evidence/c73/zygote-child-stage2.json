@@ -1,0 +1,25 @@
+{
+  "schema": "reverseandroid-live-zygote-child-stage2-v1",
+  "checkpoint_sha256": "c688c10f6a391b0f40e78d3dd3561a359db0b232bc9b64e1b82d011cc3d5cc81",
+  "instructions": 72895950532,
+  "read_only": true,
+  "input_unchanged": true,
+  "child": {
+    "read_only": true,
+    "pid": 3340,
+    "comm": "main",
+    "exe_path": "/system/bin/app_process64",
+    "parent_pid": 567,
+    "argv": [
+      "zygote64"
+    ],
+    "argv_verified": true,
+    "launch_signature_verified": false,
+    "state": 0,
+    "exit_state": 0,
+    "has_user_mm": true
+  },
+  "system_server_identity_verified": false,
+  "android_boot_completed_verified": false,
+  "additional_UART_inputs": 0
+}

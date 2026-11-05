@@ -19,5 +19,11 @@
   ],
   "original_model_modified": false,
   "source_availability": "Authenticated complete C72 stage6 own-repository transport, independently matching the full admitted local snapshot SHA256.",
-  "first_clean_boundary_sha256": "e184be38fb1710b43a8bc43ec9764812c6a2854c711d7509ef209dc5319c3abb"
+  "first_clean_boundary_sha256": "e184be38fb1710b43a8bc43ec9764812c6a2854c711d7509ef209dc5319c3abb",
+  "independent_stage_checks": {
+    "2": {
+      "instructions": 72895950532,
+      "checkpoint_sha256": "c688c10f6a391b0f40e78d3dd3561a359db0b232bc9b64e1b82d011cc3d5cc81"
+    }
+  }
 }
