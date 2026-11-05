@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "9697a327e4afa5b1a4b7e74d20044ac2228421770eb106a25d751f84ad0bbd58",
-  "instructions": 12000000000,
+  "checkpoint_sha256": "98848a9e4d7be797691f1d224a6879fa915f89eedc571dc74b134e10c947c44c",
+  "instructions": 14000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -16,7 +16,7 @@
   ],
   "cycle": "C76",
   "epoch": "C76-lights-port",
-  "stage": 11,
+  "stage": 13,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "3009d554ed3b614ed74136fb9734aa09b73b29dd",
   "execution_location": "local",
@@ -30,10 +30,10 @@
   "live_vsock_lights_port": "6900",
   "actual_port_evidence": "docs/evidence/c76/local-stage1-lights-readonly.json",
   "original_870_files_unchanged": true,
-  "canonical_local_source": "/workspace/scratch/bf4ce496066e/evidence/c76-stage11",
+  "canonical_local_source": "/workspace/scratch/bf4ce496066e/evidence/c76-stage13",
   "independent_reproduction_run_id": 42115913067,
-  "independent_reproduction_status": "C76root+sixboundaries2B..7B and C77firstfiveboundaries8B..12B completeoriginalsnapshots match local SHA256.",
-  "active_continuation": "Primary stage12 from12B withoutinput; init hasstarted Zygote562 in the active tail; mustverifyatnextcompleteboundary",
+  "independent_reproduction_status": "C76root+sixboundaries2B..7B and C77firstsevenboundaries8B..14B completeoriginalsnapshots matchlocal.",
+  "active_continuation": "Primary14B to15B noinput; original Zygote562 launchverified.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false
 }

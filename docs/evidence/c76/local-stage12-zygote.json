@@ -1,0 +1,179 @@
+{
+  "schema": "reverseandroid-real-zygote-epoch-observation-v1",
+  "epoch": "C76-lights-port",
+  "checkpoint_sha256": "2a2f66df3b0d13cc5081337dbf4a9c4b5850131d36e1d10996e0a642adb4445b",
+  "instructions": 13000000000,
+  "source_boundary_verified": true,
+  "zygote_launch": {
+    "schema": "reverse-c40-zygote-argv-v1",
+    "read_only": true,
+    "source_checkpoint_sha256": "2a2f66df3b0d13cc5081337dbf4a9c4b5850131d36e1d10996e0a642adb4445b",
+    "processes": [
+      {
+        "read_only": true,
+        "pid": 562,
+        "comm": "app_process64",
+        "exe_path": "/system/bin/app_process64",
+        "parent_pid": 1,
+        "argv": [
+          "/system/bin/app_process64",
+          "-Xzygote",
+          "/system/bin",
+          "--zygote",
+          "--start-system-server",
+          "--socket-name=zygote"
+        ],
+        "argv_verified": true,
+        "launch_signature_verified": true,
+        "state": 0,
+        "exit_state": 0,
+        "has_user_mm": true
+      }
+    ],
+    "live_process_count": 207
+  },
+  "live_kernel_security": {
+    "read_only": true,
+    "btf_layout_verified": true,
+    "selinux_initialized": true,
+    "selinux_enforcing": true,
+    "policy_present": true,
+    "address": "0xffffffc082877898"
+  },
+  "live_boot_property": {
+    "schema": "reverse-live-pid1-property-v1",
+    "read_only": true,
+    "live_property_mapping_verified": false,
+    "boot_completed_property_live": false,
+    "observations": [],
+    "boot_chain_property_observations": [
+      {
+        "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+        "vma": "0x7cfdb60000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "odsign.key.done",
+        "value": "1",
+        "serial": 16777218,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+        "vma": "0x7cfdb60000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "odsign.verification.done",
+        "value": "1",
+        "serial": 16777216,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+        "vma": "0x7cfe0e0000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc_debug_pid.zygote",
+        "value": "562",
+        "serial": 50331648,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_prop:s0",
+        "vma": "0x7cfe120000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.zygote",
+        "value": "running",
+        "serial": 117440512,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+        "vma": "0x7cfe140000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.odsign",
+        "value": "stopped",
+        "serial": 117440516,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+        "vma": "0x7cfe140000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.keystore2",
+        "value": "running",
+        "serial": 117440512,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:apexd_prop:s0",
+        "vma": "0x7f91525000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "apexd.status",
+        "value": "ready",
+        "serial": 83886086,
+        "boot_completed_property_in_ram": false
+      }
+    ],
+    "boot_chain_property_status_counts": {
+      "odsign.key.done": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "odsign.verification.done": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.odsign": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.keystore2": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.android.hardware.security.keymint-service": {
+        "property_not_found": 393
+      },
+      "init.svc.zygote": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc_debug_pid.zygote": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.zygote_secondary": {
+        "property_not_found": 393
+      },
+      "apexd.status": {
+        "property_not_found": 392,
+        "property_observed": 1
+      }
+    },
+    "android_framework_verified": false,
+    "android_display_verified": false,
+    "pid": 1,
+    "task": "0xffffff8002d19440",
+    "mm": "0xffffff80042b5900",
+    "vma_count": 1100,
+    "property_mappings": 393,
+    "status_counts": {
+      "property_not_found": 393
+    },
+    "ambiguous_property_values": false
+  },
+  "android_boot_completed_verified": false,
+  "visible_UI_verified": false,
+  "primary_new_input_events": 0
+}
