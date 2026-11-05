@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "f91e5cc63ec60791863d7726909b0c8a433665f910ca16aa7941f0426208092a",
-  "instructions": 5000000000,
+  "checkpoint_sha256": "92a1eb653c0568e7c7c935ac7f3d98fe0255dbd76d96dcd8ee04665e5ee1ee0b",
+  "instructions": 9000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -16,7 +16,7 @@
   ],
   "cycle": "C76",
   "epoch": "C76-lights-port",
-  "stage": 4,
+  "stage": 8,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "32f9d441fc7b486da0b4d3f1c553fc25599cbe2a",
   "execution_location": "local",
@@ -30,8 +30,8 @@
   "live_vsock_lights_port": "6900",
   "actual_port_evidence": "docs/evidence/c76/local-stage1-lights-readonly.json",
   "original_870_files_unchanged": true,
-  "canonical_local_source": "/workspace/scratch/bf4ce496066e/evidence/c76-stage4",
+  "canonical_local_source": "/workspace/scratch/bf4ce496066e/evidence/c76-stage8",
   "independent_reproduction_run_id": 42115913067,
-  "independent_reproduction_status": "Initialized root and first2B complete original snapshot match local SHA256; original CI stage2 executing.",
-  "active_continuation": "C76 stages5 and6 execute sequentially from admitted5B; APEX completed, now vendor BoringSSL self-test"
+  "independent_reproduction_status": "All six C76 complete snapshots (2B through7B), plus initialized root, match local SHA256. Every transport piece preserved.",
+  "active_continuation": "Local stage9 continues toward10B without new guest input; C77 independent continuation prepared from preserved7B"
 }

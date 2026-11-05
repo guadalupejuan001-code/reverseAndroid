@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-epoch-source-v1",
+  "checkpoint_sha256": "92a1eb653c0568e7c7c935ac7f3d98fe0255dbd76d96dcd8ee04665e5ee1ee0b",
+  "report_file": "current.json",
+  "report_sha256": "f522acead8ea21a031a08cb2953bf106280da4b1024562a12a460be16919e609",
+  "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+  "instructions": 9000000000,
+  "epoch_original_init_verified": true,
+  "initialized_hardware_root": false,
+  "result_sha256": "018034c7c5a1f84a03d77b248e0fe48ddf3f56300a2d4499ed9af0b83e54856b",
+  "process_sha256": "c25e8459075049d437ec2bed0cf9a59c9bc8774d9c5989d54fab2fd2d66d988c",
+  "source_commit": "32f9d441fc7b486da0b4d3f1c553fc25599cbe2a"
+}

@@ -6,6 +6,8 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
+La época corregida C76 ha admitido localmente **9.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. El estado inicial y los seis snapshots completos de las primeras etapas también coinciden por SHA-256 con la ejecución independiente. El puerto de luces `6900` se verificó en la memoria viva de PID 1. Android sigue iniciando sus servicios; el arranque completo, la interfaz y la respuesta a una entrada continúan pendientes. [C77 continúa la misma época](.github/workflows/android-c77-continued-epoch.yml) desde su checkpoint conservado, sin reiniciar la CPU.
+
 [C75, etapa 6](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42098763084) conserva **`system_server` vivo, PID 3340**, a **88.895.950.532 instrucciones**, con checkpoint `7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec`. Pasó la [recuperación y admisión originales](docs/evidence/c75/independent-final-recovery.json). Android todavía no ha completado el arranque.
 
 [C76](docs/c76-lights-boot-profile.md) investiga un fallo concreto del servicio de luces: falta su puerto VSOCK y el proceso aborta con permiso denegado. La corrección añade el puerto de arranque `6900`. Declara una nueva época de CPU y conserva **todo el disco efectivo de C75**, comprobado independientemente; mantiene kernel, CPIO, RAM, semilla, reloj y los 870 archivos originales. La nueva época debe volver a verificar init, arranque real, interfaz y respuesta a una entrada. No escribe propiedades Android en vivo.
@@ -44,12 +46,15 @@ Se requiere Linux, GCC, Python 3.11+, Node 24 y OpenSSL. La dependencia Mundo X 
 git clone https://github.com/guadalupejuan001-code/mundo-X.git deps/mundo-x
 git -C deps/mundo-x checkout --detach e2778d962af22f6f1a0794058dd4685fc2573966
 bash scripts/build-reverseandroid.sh
+bash scripts/build-reverseandroid-epoch.sh
 ```
 
-`state/latest.json` registra el último resultado verificado. `state/continuation.json` fija ese checkpoint como origen del siguiente ciclo y su presupuesto. El flujo `reverseandroid.yml` autentica el estado completo, recupera el disco original y ejecuta el mismo motor. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza, para permitir su recuperación con las herramientas actuales.
+`state/latest.json` registra el último resultado verificado. `state/continuation.json` identifica la época, el origen y el presupuesto. `reverseandroid.yml` conserva la validación del motor importado; el flujo de continuación de la época actual es `android-c77-continued-epoch.yml`. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza.
 
-Con `execute_on_push: false`, guardar documentación o el nuevo checkpoint de referencia solo ejecuta la validación. El siguiente ciclo se solicita con `workflow_dispatch` o fijando `execute_on_push: true` en el plan. Siempre parte de los artefactos fijados por hash en `state/bootstrap-artifacts.json`; no vuelve automáticamente al checkpoint inicial.
+Con `execute_on_push: false`, el flujo genérico no continúa el antiguo perfil C27. La continuación actual se ejecuta en su flujo específico, que recupera los artefactos fijados por hash y usa `build/reverseandroid/epoch`. El ejecutable histórico `native` conserva sus comprobaciones del perfil anterior. Los cambios de documentación no reinician el invitado.
 
 Para recuperar un checkpoint fuera de Actions, reunir las piezas y su `manifest.json` en un directorio y ejecutar `python3 scripts/unpack-reverseandroid-checkpoint.py piezas destino-nuevo`. El proceso verifica las piezas, restaura los bytes originales y comprueba el hash completo. La admisión original del emulador sigue siendo obligatoria antes de ejecutar el estado.
+
+Para un checkpoint de C76/C77, ejecutar `node --expose-gc tools/reverseandroid-epoch.mjs preflight destino-nuevo`. La continuación usa `tools/reverseandroid-epoch.mjs run`; conserva los decodificadores, las observaciones del kernel y las condiciones originales de arranque. El ejemplo completo está en [la documentación de la época](docs/c76-lights-boot-profile.md).
 
 Se preservan XI/Ether, fondo cero, RVG/MXIM/RFP, la RAM lógica, el disco, la semilla temporal, 64 instrucciones por tick, comprobación de IRQ y las condiciones originales de aceptación. La migración C69 no introdujo entradas UART ni cambios de prioridades. El experimento C72 registra explícitamente un único comando real de consola que cambia nice +19 a 0 para el hilo JIT identificado; su entrada exacta y la prioridad leída en el kernel están en `state/experiments/c72-plan.json` y `docs/evidence/c72/effective-priority-first-stage.json`. Las etapas posteriores continúan sin repetir esa entrada.
