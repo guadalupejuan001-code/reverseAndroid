@@ -113,6 +113,8 @@ jobs:
 
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-1/current.rvg "$SHA" evidence/c71-1/threads-readonly.json
 
+        cp evidence/c71-1/threads-readonly.json evidence/c71-reports/threads-1.json
+
         '
     - name: 'C71 stage 2: execute and fully admit the original Android state'
       id: s2
@@ -156,6 +158,8 @@ jobs:
       run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-2/output-contract.json"))["checkpoint_sha256"])'')
 
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-2/current.rvg "$SHA" evidence/c71-2/threads-readonly.json
+
+        cp evidence/c71-2/threads-readonly.json evidence/c71-reports/threads-2.json
 
         '
     - name: Release only previously uploaded temporary host copies
@@ -206,6 +210,8 @@ jobs:
 
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-3/current.rvg "$SHA" evidence/c71-3/threads-readonly.json
 
+        cp evidence/c71-3/threads-readonly.json evidence/c71-reports/threads-3.json
+
         '
     - name: Release only previously uploaded temporary host copies
       if: success() && steps.s3.outcome == 'success'
@@ -254,6 +260,8 @@ jobs:
       run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-4/output-contract.json"))["checkpoint_sha256"])'')
 
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-4/current.rvg "$SHA" evidence/c71-4/threads-readonly.json
+
+        cp evidence/c71-4/threads-readonly.json evidence/c71-reports/threads-4.json
 
         '
     - name: Release only previously uploaded temporary host copies
@@ -304,6 +312,8 @@ jobs:
 
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-5/current.rvg "$SHA" evidence/c71-5/threads-readonly.json
 
+        cp evidence/c71-5/threads-readonly.json evidence/c71-reports/threads-5.json
+
         '
     - name: Release only previously uploaded temporary host copies
       if: success() && steps.s5.outcome == 'success'
@@ -352,6 +362,8 @@ jobs:
       run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-6/output-contract.json"))["checkpoint_sha256"])'')
 
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-6/current.rvg "$SHA" evidence/c71-6/threads-readonly.json
+
+        cp evidence/c71-6/threads-readonly.json evidence/c71-reports/threads-6.json
 
         '
     - name: Release only previously uploaded temporary host copies
