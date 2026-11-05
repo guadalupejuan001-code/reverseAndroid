@@ -1,0 +1,196 @@
+name: Preserve a complete admitted Android checkpoint
+description: Keep all bounded checkpoint pieces and their original admission evidence before the next cycle.
+inputs:
+  checkpoint_path:
+    required: true
+    description: Fully admitted original checkpoint directory
+  transport_path:
+    required: true
+    description: New directory for bounded transport pieces
+  artifact_prefix:
+    required: true
+    description: Unique artifact prefix for this checkpoint
+outputs:
+  part_count:
+    description: Number of complete checkpoint transport pieces
+    value: ${{ steps.pack.outputs.part_count }}
+  metadata_artifact_id:
+    description: Artifact containing the manifest and original admission evidence
+    value: ${{ steps.metadata.outputs.artifact-id }}
+runs:
+  using: composite
+  steps:
+  - id: pack
+    name: Pack and authenticate every complete checkpoint piece
+    shell: bash
+    env:
+      TASK_CHECKPOINT_SOURCE: ${{ inputs.checkpoint_path }}
+      TASK_TRANSPORT_DEST: ${{ inputs.transport_path }}
+    run: |
+      python3 scripts/pack-reverseandroid-checkpoint.py "$TASK_CHECKPOINT_SOURCE" "$TASK_TRANSPORT_DEST" > "$TASK_TRANSPORT_DEST.log"
+      python3 - <<'PYCOUNT'
+      import json,os,pathlib
+      manifest=json.load(open(pathlib.Path(os.environ['TASK_TRANSPORT_DEST'])/'manifest.json'))
+      count=len(manifest['parts'])
+      assert 1<=count<=16,'Checkpoint needs more than the supported bounded transport pieces'
+      with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write(f'part_count={count}\n')
+      PYCOUNT
+  - name: Preserve complete checkpoint piece 000
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 0 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-000
+      path: ${{ inputs.transport_path }}/checkpoint.part-000
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 001
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 1 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-001
+      path: ${{ inputs.transport_path }}/checkpoint.part-001
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 002
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 2 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-002
+      path: ${{ inputs.transport_path }}/checkpoint.part-002
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 003
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 3 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-003
+      path: ${{ inputs.transport_path }}/checkpoint.part-003
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 004
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 4 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-004
+      path: ${{ inputs.transport_path }}/checkpoint.part-004
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 005
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 5 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-005
+      path: ${{ inputs.transport_path }}/checkpoint.part-005
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 006
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 6 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-006
+      path: ${{ inputs.transport_path }}/checkpoint.part-006
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 007
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 7 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-007
+      path: ${{ inputs.transport_path }}/checkpoint.part-007
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 008
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 8 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-008
+      path: ${{ inputs.transport_path }}/checkpoint.part-008
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 009
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 9 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-009
+      path: ${{ inputs.transport_path }}/checkpoint.part-009
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 010
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 10 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-010
+      path: ${{ inputs.transport_path }}/checkpoint.part-010
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 011
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 11 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-011
+      path: ${{ inputs.transport_path }}/checkpoint.part-011
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 012
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 12 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-012
+      path: ${{ inputs.transport_path }}/checkpoint.part-012
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 013
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 13 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-013
+      path: ${{ inputs.transport_path }}/checkpoint.part-013
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 014
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 14 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-014
+      path: ${{ inputs.transport_path }}/checkpoint.part-014
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - name: Preserve complete checkpoint piece 015
+    if: ${{ success() && fromJSON(steps.pack.outputs.part_count) > 15 }}
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-015
+      path: ${{ inputs.transport_path }}/checkpoint.part-015
+      compression-level: 0
+      retention-days: 90
+      if-no-files-found: error
+  - id: metadata
+    name: Preserve the manifest and original admission evidence
+    uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+    with:
+      name: ${{ inputs.artifact_prefix }}-metadata
+      path: |-
+        ${{ inputs.transport_path }}/manifest.json
+        ${{ inputs.checkpoint_path }}/*.json
+        ${{ inputs.checkpoint_path }}/*.txt
+        ${{ inputs.checkpoint_path }}/*.log
+        ${{ inputs.checkpoint_path }}/*.ppm
+        ${{ inputs.checkpoint_path }}/native/*.json
+        ${{ inputs.checkpoint_path }}/native/*.log
+      retention-days: 90
+      if-no-files-found: error
