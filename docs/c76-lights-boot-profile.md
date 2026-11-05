@@ -24,3 +24,9 @@ node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run ev
 ```
 
 Primary references: [Cuttlefish lights implementation](https://android.googlesource.com/device/google/cuttlefish/+/93683578083eea380d2daca79f6015371dd6ac99/guest/hals/light/lights.rs), [Linux VSOCK bind implementation](https://android.googlesource.com/kernel/common/+/4da3a54f5a025846f9930354cfb80f075b9952e0/net/vmw_vsock/af_vsock.c). Actual guest evidence is in `docs/evidence/c76/`.
+
+## First admitted execution boundary
+
+The local new epoch completed exactly 2,000,000,000 instructions at checkpoint `8a898e4c42a35099e0b35b41417a98b970451f2853fcefbc080965f6c5bf7d01`. Original init executed and was verified again; the original decoder roundtripped the complete snapshot, the original kernel observer verified enforcing SELinux, and the unchanged C46 milestone accepted the source boundary. There is no scanout or completed framework at this early boundary. A supplemental read-only probe queried Bionic's structured property trie in PID1's verified live shared property mapping and observed `ro.boot.vsock_lights_port=6900`, serial 67108864. The lights service has not started at this boundary. Stage 2 continues the same new epoch; it does not reset the CPU again.
+
+Independent run [42115913067](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42115913067) has passed the original engine build and new helper tests and is recovering the exact parent and media. Its initialized root and complete boundaries must be compared before claiming independent execution equality.

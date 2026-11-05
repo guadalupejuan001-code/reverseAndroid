@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-epoch-result-v1",
+  "checkpoint_sha256": "8a898e4c42a35099e0b35b41417a98b970451f2853fcefbc080965f6c5bf7d01",
+  "input_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
+  "instructions": 2000000000,
+  "advanced_instructions": 2000000000,
+  "epoch_original_init_verified": true,
+  "execution_progress_accepted": true,
+  "guest_kernel_panic": false,
+  "guest_boot_failure": false,
+  "guest_terminal_failure": false,
+  "guest_reboot_requested": false,
+  "guest_failure_signals": [],
+  "android_boot_verified": false
+}

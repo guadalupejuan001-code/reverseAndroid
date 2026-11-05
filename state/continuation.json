@@ -17,7 +17,14 @@
   "counter_seed_preserved": true,
   "live_property_injection": false,
   "uart_input": null,
-  "instruction_budget": 2000000000,
+  "instruction_budget": 1000000000,
   "execute_on_push": false,
-  "android_boot_verified": false
+  "android_boot_verified": false,
+  "source_checkpoint_sha256": "8a898e4c42a35099e0b35b41417a98b970451f2853fcefbc080965f6c5bf7d01",
+  "source_instructions": 2000000000,
+  "source_local_directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage1",
+  "source_native": "tools/reverseandroid-epoch.mjs",
+  "latest_epoch_boundary": "state/latest.json",
+  "parent_transport_is_derivation_source_only": true,
+  "active_stage": 2
 }

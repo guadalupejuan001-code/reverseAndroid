@@ -1,0 +1,26 @@
+{
+  "schema": "reverseandroid-lights-live-profile-v1",
+  "read_only": true,
+  "live_pid1_property_observations": [
+    {
+      "status": "property_observed",
+      "name": "ro.boot.vsock_lights_port",
+      "value": "6900",
+      "serial": 67108864,
+      "boot_completed_property_in_ram": false,
+      "file": "/dev/__properties__/u:object_r:bootloader_prop:s0",
+      "pid": 1,
+      "task": "0xffffff8002d19440",
+      "vma": "0x7f8f48f000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true
+    }
+  ],
+  "configured_port_verified": true,
+  "init_reports_service_running": false,
+  "service_process": null,
+  "android_boot_completion_proved_by_this_probe": false,
+  "checkpoint_sha256": "8a898e4c42a35099e0b35b41417a98b970451f2853fcefbc080965f6c5bf7d01",
+  "instructions": 2000000000,
+  "input_unchanged": true
+}

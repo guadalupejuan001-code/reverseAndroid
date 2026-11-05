@@ -1,0 +1,40 @@
+{
+  "schema": "reverse-android-runtime-evidence-v1",
+  "checkpoint_sha256": "8a898e4c42a35099e0b35b41417a98b970451f2853fcefbc080965f6c5bf7d01",
+  "instructions": 2000000000,
+  "framework_runtime_verified": false,
+  "sys_boot_completed_live": false,
+  "selinux_enforcing_live": true,
+  "processes": [
+    {
+      "name": "init",
+      "verified": true,
+      "pid": 1
+    },
+    {
+      "name": "zygote64",
+      "verified": false,
+      "pid": null
+    },
+    {
+      "name": "system_server",
+      "verified": false,
+      "pid": null
+    },
+    {
+      "name": "surfaceflinger",
+      "verified": false,
+      "pid": null
+    }
+  ],
+  "reasons": [
+    "live_process_missing:zygote64",
+    "live_process_missing:system_server",
+    "live_process_missing:surfaceflinger",
+    "live_sys_boot_completed_unverified"
+  ],
+  "scanout_exported": false,
+  "ready_for_visual_review": false,
+  "android_display_content_verified": false,
+  "original_snapshot_unchanged": true
+}

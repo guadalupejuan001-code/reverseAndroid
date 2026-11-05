@@ -1,0 +1,22 @@
+{
+  "schema": "reverse-c46-android-continuation-v1",
+  "checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
+  "instructions": 88895950532,
+  "source_boundary_verified": true,
+  "system_server_alive_verified": true,
+  "android_boot_completed_verified": false,
+  "scanout_exported": true,
+  "ready_for_visual_review": false,
+  "android_display_content_verified": false,
+  "unresolved": [
+    "live_sys_boot_completed_unverified"
+  ],
+  "cycle": "C75",
+  "stage": 6,
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "run_id": 42098763084,
+  "execution_commit": "03176e72f7a73e24c8b080a3825bc88b1eb93ec1",
+  "transport_manifest": "state/experiments/c75-stage-6-transport.json",
+  "original_engine_and_codecs_unchanged": true,
+  "active_investigation": "C76 explicit hardware power cycle retains the latest effective disk and adds the missing lights VSOCK port; new CPU/init proof and actual boot must be independently verified."
+}

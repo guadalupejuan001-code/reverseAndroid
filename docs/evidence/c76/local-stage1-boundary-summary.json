@@ -1,0 +1,7 @@
+{
+  "clean_completed": true,
+  "checkpoint_sha256": "8a898e4c42a35099e0b35b41417a98b970451f2853fcefbc080965f6c5bf7d01",
+  "instructions": 2000000000,
+  "original_rvg_roundtrip_verified": true,
+  "epoch_profile_verified": true
+}
