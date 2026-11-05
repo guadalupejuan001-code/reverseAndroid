@@ -1,0 +1,337 @@
+{
+  "instructions_before_gpu": 28495166421,
+  "original_before_gpu_sha256": "088cc00e3972e811459c4380013e79a35567bd8addfcf9e558d92108f0fd2716",
+  "resource": 2,
+  "format": 2,
+  "width": 800,
+  "height": 600,
+  "original_entries": [
+    {
+      "address": 1641480192,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641385984,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641504768,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641500672,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643343872,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1580965888,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1642643456,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608712192,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641472000,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1607864320,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643282432,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608564736,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608552448,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641099264,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608105984,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608540160,
+      "length": 8192,
+      "padding": 0
+    },
+    {
+      "address": 1641885696,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641357312,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608556544,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1642745856,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608785920,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1691365376,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641615360,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641508864,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641771008,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1578950656,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1608101888,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1640448000,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643470848,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1578205184,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1529044992,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1529171968,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1579667456,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643298816,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1495425024,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1642917888,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1578508288,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1606500352,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643134976,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1606578176,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1579671552,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643462656,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641029632,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643429888,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1578287104,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1580560384,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1606574080,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1606529024,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643192320,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1641074688,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1606561792,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1606533120,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1607376896,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1428414464,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1530892288,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1577746432,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1691373568,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1609453568,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1640243200,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1610231808,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1643335680,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1607897088,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1607856128,
+      "length": 4096,
+      "padding": 0
+    },
+    {
+      "address": 1692479488,
+      "length": 1179648,
+      "padding": 0
+    },
+    {
+      "address": 1693663232,
+      "length": 479232,
+      "padding": 0
+    }
+  ],
+  "normalized_entry_count": 66,
+  "total_backing_bytes": 1921024
+}

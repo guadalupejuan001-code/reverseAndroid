@@ -1,0 +1,166 @@
+name: Android C24 widening add-sub and exact C23 continuation
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c24-continuation.yml'
+      - 'tools/android_partition_disk.mjs'
+      - 'tools/android_profile_state.mjs'
+      - 'src/minimal_guest_simd.inc'
+      - 'tests/minimal_guest_widen_add_test.cpp'
+      - 'tests/widen_add_encoding_test.mjs'
+      - 'tests/android_c24_result.test.mjs'
+      - 'tests/guest_snapshot_transport_test.cpp'
+      - 'tools/android_guest_outcome.mjs'
+      - 'tests/android_guest_outcome.test.mjs'
+      - 'tests/android_c21_profile.test.mjs'
+      - 'tests/android_sparse_copy.test.mjs'
+      - 'tests/android_boot_property.test.mjs'
+      - 'tools/android_boot_property.mjs'
+      - 'tools/guest_c24_resume.cpp'
+      - 'tools/android_c24_result.mjs'
+      - 'tests/android_userdata_disk.test.mjs'
+      - 'tools/audit_gki_rvg.mjs'
+      - 'tests/audit_gki_rvg.test.mjs'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  continue-verified-c23:
+    if: github.event.pull_request.head.ref == 'fix/android-c24-widen-add-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - name: Verify scoped ISA change and disk regression tests
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c24-media evidence/c24-boot build
+          git diff --exit-code 3dcee66b5b34b05fbc41bdb2b51433e067c3bf7f HEAD -- src third_party scripts patches ':(exclude)src/minimal_guest_simd.inc'
+          git diff 3dcee66b5b34b05fbc41bdb2b51433e067c3bf7f HEAD -- src/minimal_guest_simd.inc > evidence/c24-media/isa-widen-add.diff
+          node --test tests/android_partition_disk.test.mjs tests/android_partition_readiness.test.mjs tests/android_userdata_disk.test.mjs tests/audit_gki_rvg.test.mjs tests/android_c21_profile.test.mjs tests/android_guest_outcome.test.mjs tests/android_c15_result.test.mjs tests/android_sparse_copy.test.mjs tests/android_boot_property.test.mjs tests/android_c24_result.test.mjs > evidence/c24-media/host-tests.tap
+          node --check tools/android_c24_result.mjs
+          git rev-parse HEAD > evidence/c24-media/source-commit.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c20-userdata-media
+          run-id: 41099915731
+          github-token: ${{ github.token }}
+          path: input-media
+      - name: Recover the exact official userdata and measured new media identity
+        run: |
+          set -euo pipefail
+          mkdir new-userdata
+          gzip -dc input-media/userdata.img.gz > new-userdata/userdata.img
+          echo '860a526936e3c6ddf414ee8fbc84d20d718a363c2b8a5257aeb21527bdf0fba2  new-userdata/userdata.img' | sha256sum --check
+          cp input-media/userdata-acquisition.json new-userdata/
+          cp input-media/userdata-acquisition.json input-media/userdata.img.gz evidence/c24-media/
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Add writable partitions and prove all original partition bytes remain identical
+        run: |
+          set -euo pipefail
+          export ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';import {extendAndroidUserdataDisk} from './tools/android_partition_disk.mjs';
+          const input=JSON.parse(readFileSync('new-userdata/userdata-acquisition.json'));
+          const r=await extendAndroidUserdataDisk(process.env.ORIGINAL,'new-userdata/userdata.img','android-c20.raw',{expectedUserdataSha256:input.partitions[0].sha256});
+          if(r.disk_sha256!=='0e829fad2cd1cfef8ea707044270d97559127c6cd48bdf268e7eb5cf1b573ce6'||r.disk_bytes!==17330864128)throw Error('New media differs from measured C20 identity');writeFileSync('evidence/c24-media/media.json',JSON.stringify(r,null,2)+'\n');console.log(JSON.stringify(r));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c24-continuation-media
+          path: evidence/c24-media/
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c23-c22-continuation
+          run-id: 41124210990
+          github-token: ${{ github.token }}
+          path: input-c23
+      - name: Verify exact C23 origin and compile its continuation
+        run: |
+          set -euo pipefail
+          tar -xzf input-c23/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          node tools/android_c24_result.mjs preflight input-c23 > evidence/c24-boot/input-preflight.json
+          cp input-c23/profile.json evidence/c24-boot/
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tests/guest_budget_cycles_test.cpp build/softfloat/libreverse_softfloat.a -o build/c24-budget-test
+          build/c24-budget-test > evidence/c24-boot/budget-cycles.json
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/guest_snapshot_transport_test.cpp build/softfloat/libreverse_softfloat.a -o build/c24-transport-test
+          build/c24-transport-test > evidence/c24-boot/transport-policy.json
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_test.cpp build/softfloat/libreverse_softfloat.a -o build/c24-base-test
+          build/c24-base-test > evidence/c24-boot/base-regression.json
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_widen_add_test.cpp build/softfloat/libreverse_softfloat.a -o build/c24-widen-test
+          build/c24-widen-test > evidence/c24-boot/widen-add.json
+          node tests/widen_add_encoding_test.mjs > evidence/c24-boot/widen-encoding.json
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_multiply_long_test.cpp build/softfloat/libreverse_softfloat.a -o build/c24-multiply-test
+          build/c24-multiply-test > evidence/c24-boot/multiply-regression.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c24_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c24-native
+          build/c24-native --pins > evidence/c24-boot/native-pins.json
+          node tools/android_c24_result.mjs native-pins evidence/c24-boot/native-pins.json > evidence/c24-boot/native-pins-verification.json
+          tar -czf evidence/c24-boot/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          git rev-parse HEAD > evidence/c24-boot/source-commit.txt
+          sha256sum build/c24-native evidence/c24-boot/tested-source.tar.gz > evidence/c24-boot/build-sha256.txt
+      - name: Continue the exact C23 CPU through three 15-minute budgets without resetting state
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const media=JSON.parse(readFileSync('evidence/c24-media/media.json'));if(media.disk_sha256!=='0e829fad2cd1cfef8ea707044270d97559127c6cd48bdf268e7eb5cf1b573ce6')throw Error('Wrong disk');
+          const r=await superviseNativeCycle({command:'build/c24-native',args:['input-c23/current.rvg','input-c23/current.json','android-c20.raw','evidence/c24-boot/journal','900000','2000000000'],outputDirectory:'evidence/c24-boot',initialInstructions:4558188045,startupMs:600000,noProgressMs:90000,wallMs:3600000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C24_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(r));if(r.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Bind actual continuation evidence to the authenticated C23 instruction stop
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f evidence/c24-boot/journal/latest.json; then
+            node tools/android_c24_result.mjs audit input-c23 evidence/c24-boot > evidence/c24-boot/audit-stdout.json
+          fi
+      - name: Preserve the last valid prefix if the independent audit cannot publish a canonical output
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json,re,os,shutil
+          from pathlib import Path
+          root=Path('evidence/c24-boot');pointer=root/'journal/latest.json'
+          if not (root/'current.rvg').exists() and pointer.exists():
+              p=json.loads(pointer.read_text());assert re.fullmatch('generation-[1-9][0-9]*',p['generation'])
+              source=root/'journal'/p['generation'];os.link(source/'checkpoint.rvg',root/'recovery-prefix.rvg');shutil.copyfile(source/'report.json',root/'recovery-prefix.json')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c24-c23-continuation
+          path: |
+            evidence/c24-boot/
+            !evidence/c24-boot/journal/**
+            !evidence/c24-boot/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+      - name: Require genuine continuation and preserve distinct framework/display evidence
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c24-boot/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('result.json').source_c21_original_init_verified,true);assert.equal(read('result.json').source_c22_apex_bootstrap_verified,true);assert.equal(read('result.json').authenticated_instruction_probe_verified,true);assert.equal(read('result.json').host_snapshot_transport_bytes,1073741824);assert.equal(read('result.json').guest_state_modified_before_resume,false);assert.equal(read('result.json').execution_progress_accepted,true);
+          console.log('Genuine C23 continuation accepted; complete framework/display boot requires actual evidence.');
+          NODE

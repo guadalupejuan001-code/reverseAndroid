@@ -1,0 +1,746 @@
+{
+  "checks": 258,
+  "independent_dense_oracle_cases": 60,
+  "max_observable_error": 8.881784197001252e-16,
+  "independent_qubits_verified": 4096,
+  "T_instructions_verified": 4096,
+  "profile": {
+    "active_qubits": 4096,
+    "components": 4096,
+    "largest_component": 1,
+    "tableau_bytes": 491520,
+    "ether_rules": 0,
+    "core_revision": 8192,
+    "memory_revision": 0,
+    "memory_overrides": 0,
+    "quantum_bindings": 0,
+    "state_format": "RVPC2",
+    "max_active_qubits": 4096,
+    "max_component_qubits": 1024,
+    "max_state_bytes": 67108864,
+    "max_address_digits": 4096
+  },
+  "scope": "Actual XI runtime; independent analytic two-qubit product-formula oracle. Not a claim of arbitrary 4096-qubit entangled simulation.",
+  "cases": [
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": -2,
+        "steps": 1
+      },
+      "observables": [
+        1.1102230246251573e-16,
+        -0.7071067811865474,
+        -0.7071067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": -2,
+        "steps": 2
+      },
+      "observables": [
+        -2.2204460492503155e-16,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": -2,
+        "steps": 4
+      },
+      "observables": [
+        -3.330669073875478e-16,
+        0.9999999999999999,
+        0.9999999999999999
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 0,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        -0.7071067811865474,
+        -0.7071067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 0,
+        "steps": 2
+      },
+      "observables": [
+        -2.2204460492503126e-16,
+        -5.495323605393211e-16,
+        -5.495323605393211e-16
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 0,
+        "steps": 4
+      },
+      "observables": [
+        -2.2204460492503126e-16,
+        -1,
+        -1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 1,
+        "steps": 1
+      },
+      "observables": [
+        -0.7071067811865478,
+        -0.7071067811865471,
+        -0.7071067811865471
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 1,
+        "steps": 2
+      },
+      "observables": [
+        0.4999999999999998,
+        0.49999999999999956,
+        0.49999999999999956
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 1,
+        "steps": 4
+      },
+      "observables": [
+        0.2499999999999992,
+        -0.4571067811865481,
+        -0.4571067811865481
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 3,
+        "steps": 1
+      },
+      "observables": [
+        0.7071067811865477,
+        -0.7071067811865474,
+        -0.7071067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 3,
+        "steps": 2
+      },
+      "observables": [
+        -0.5000000000000004,
+        0.5000000000000001,
+        0.5000000000000001
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -3,
+        "field": 3,
+        "steps": 4
+      },
+      "observables": [
+        -0.2500000000000001,
+        -0.45710678118654735,
+        -0.45710678118654735
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": -2,
+        "steps": 1
+      },
+      "observables": [
+        2.775557561562893e-16,
+        0.7071067811865476,
+        0.7071067811865476
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": -2,
+        "steps": 2
+      },
+      "observables": [
+        -2.220446049250316e-16,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": -2,
+        "steps": 4
+      },
+      "observables": [
+        -3.330669073875478e-16,
+        0.9999999999999999,
+        0.9999999999999999
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 0,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        0.7071067811865476,
+        0.7071067811865476
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 0,
+        "steps": 2
+      },
+      "observables": [
+        0,
+        1.570092458683775e-16,
+        1.570092458683775e-16
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 0,
+        "steps": 4
+      },
+      "observables": [
+        -2.2204460492503126e-16,
+        -1,
+        -1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 1,
+        "steps": 1
+      },
+      "observables": [
+        -0.7071067811865477,
+        0.7071067811865477,
+        0.7071067811865477
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 1,
+        "steps": 2
+      },
+      "observables": [
+        -0.5000000000000002,
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 1,
+        "steps": 4
+      },
+      "observables": [
+        -0.25000000000000006,
+        0.9571067811865476,
+        0.9571067811865476
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 3,
+        "steps": 1
+      },
+      "observables": [
+        0.7071067811865474,
+        0.7071067811865477,
+        0.7071067811865477
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 3,
+        "steps": 2
+      },
+      "observables": [
+        0.4999999999999995,
+        0.5000000000000004,
+        0.5000000000000004
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": -1,
+        "field": 3,
+        "steps": 4
+      },
+      "observables": [
+        0.2500000000000006,
+        0.9571067811865474,
+        0.9571067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": -2,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": -2,
+        "steps": 2
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": -2,
+        "steps": 4
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 0,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 0,
+        "steps": 2
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 0,
+        "steps": 4
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 1,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 1,
+        "steps": 2
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 1,
+        "steps": 4
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 3,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 3,
+        "steps": 2
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 0,
+        "field": 3,
+        "steps": 4
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": -2,
+        "steps": 1
+      },
+      "observables": [
+        -1.1102230246251573e-16,
+        0.7071067811865477,
+        0.7071067811865477
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": -2,
+        "steps": 2
+      },
+      "observables": [
+        2.2204460492503155e-16,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": -2,
+        "steps": 4
+      },
+      "observables": [
+        3.330669073875478e-16,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 0,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        0.7071067811865476,
+        0.7071067811865476
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 0,
+        "steps": 2
+      },
+      "observables": [
+        0,
+        1.570092458683775e-16,
+        1.570092458683775e-16
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 0,
+        "steps": 4
+      },
+      "observables": [
+        -2.2204460492503126e-16,
+        -1,
+        -1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 1,
+        "steps": 1
+      },
+      "observables": [
+        0.7071067811865476,
+        0.7071067811865474,
+        0.7071067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 1,
+        "steps": 2
+      },
+      "observables": [
+        0.5000000000000001,
+        0.49999999999999994,
+        0.49999999999999994
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 1,
+        "steps": 4
+      },
+      "observables": [
+        0.24999999999999953,
+        0.9571067811865477,
+        0.9571067811865477
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 3,
+        "steps": 1
+      },
+      "observables": [
+        -0.7071067811865474,
+        0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 3,
+        "steps": 2
+      },
+      "observables": [
+        -0.49999999999999933,
+        0.5000000000000006,
+        0.5000000000000006
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 1,
+        "field": 3,
+        "steps": 4
+      },
+      "observables": [
+        -0.25000000000000067,
+        0.9571067811865474,
+        0.9571067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": -2,
+        "steps": 1
+      },
+      "observables": [
+        -1.1102230246251575e-16,
+        -0.7071067811865472,
+        -0.7071067811865472
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": -2,
+        "steps": 2
+      },
+      "observables": [
+        5.551115123125794e-17,
+        1.0000000000000002,
+        1.0000000000000002
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": -2,
+        "steps": 4
+      },
+      "observables": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 0,
+        "steps": 1
+      },
+      "observables": [
+        0,
+        -0.7071067811865474,
+        -0.7071067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 0,
+        "steps": 2
+      },
+      "observables": [
+        -2.2204460492503126e-16,
+        -5.495323605393211e-16,
+        -5.495323605393211e-16
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 0,
+        "steps": 4
+      },
+      "observables": [
+        -2.2204460492503126e-16,
+        -1,
+        -1
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 1,
+        "steps": 1
+      },
+      "observables": [
+        0.7071067811865476,
+        -0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 1,
+        "steps": 2
+      },
+      "observables": [
+        -0.4999999999999999,
+        0.49999999999999983,
+        0.49999999999999983
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 1,
+        "steps": 4
+      },
+      "observables": [
+        -0.24999999999999947,
+        -0.45710678118654824,
+        -0.45710678118654824
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 3,
+        "steps": 1
+      },
+      "observables": [
+        -0.7071067811865477,
+        -0.7071067811865474,
+        -0.7071067811865474
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 3,
+        "steps": 2
+      },
+      "observables": [
+        0.49999999999999994,
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "parameters": {
+        "coupling": 3,
+        "field": 3,
+        "steps": 4
+      },
+      "observables": [
+        0.2499999999999999,
+        -0.45710678118654713,
+        -0.45710678118654713
+      ]
+    }
+  ]
+}

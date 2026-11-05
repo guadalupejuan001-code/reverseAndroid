@@ -1,0 +1,63 @@
+{
+  "process": {
+    "schema": "reverse-c08-host-supervision-v1",
+    "status": "process_completed",
+    "trigger": null,
+    "exit_code": 0,
+    "exit_signal": null,
+    "forced_kill": false,
+    "elapsed_ms": 297256,
+    "startup_marker_seen": true,
+    "last_reported_instructions": 55294950531,
+    "reported_instruction_delta": 518890793,
+    "error": null,
+    "logs": {
+      "stdout": {
+        "bytes_seen": 31423,
+        "bytes_stored": 31423,
+        "truncated": false
+      },
+      "stderr": {
+        "bytes_seen": 38911,
+        "bytes_stored": 38911,
+        "truncated": false
+      }
+    },
+    "checkpoint_bytes_modified_by_supervisor": false,
+    "android_boot_verified": false,
+    "android_display_verified": false,
+    "native_android_games_verified": false
+  },
+  "result": {
+    "schema": "reverse-c27-profile-budget-result-v1",
+    "checkpoint_sha256": "d88e00bd70baa7c9061ac1ca551a26284b0120927f5b46494eb42591503f5cc3",
+    "root_checkpoint_sha256": "9db40b80214344583f855ccc777eb74963ece41ca5a1afab8de0737507f0e939",
+    "input_checkpoint_sha256": "b431b752d5f5729215597f6bfb85d8388ed8a679dd4f15c3908522b6123db3b1",
+    "input_report_sha256": "cbfcb3d6207a5f63b86e7fe6be78bb2bd3911cc91b55fd82d705944b198ad820",
+    "source_commit": "34eb37e06f8a484bd739aad74fe713cbe42696ac",
+    "instructions": 55294950531,
+    "advanced_instructions": 518890793,
+    "pc": "0x7bb1c6a428",
+    "stop_reason": "instruction_budget",
+    "error": "",
+    "source_c27_original_init_verified": true,
+    "source_c27_second_stage_verified": true,
+    "source_c27_selinux_enforcing_verified": true,
+    "clean_source_boundary_verified": true,
+    "host_snapshot_transport_bytes": 2147483648,
+    "host_transport_policy_serialized": false,
+    "execution_progress_accepted": true,
+    "guest_kernel_panic": false,
+    "guest_boot_failure": false,
+    "guest_terminal_failure": false,
+    "guest_reboot_requested": false,
+    "guest_failure_signals": [],
+    "android_boot_verified": false,
+    "new_disk_sha256": "4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e",
+    "ram_bytes": 2147483648,
+    "guest_state_modified_before_resume": false,
+    "android_framework_verified": false,
+    "android_display_verified": false,
+    "native_android_games_verified": false
+  }
+}

@@ -1,0 +1,88 @@
+name: REVERSE exact Cuttlefish ARM64 Google Storage range proof
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-cuttlefish-gcs-range.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-zip-transport:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - name: Resolve public Artifact Viewer to short-lived official GCS URL and read bounded ZIP slices
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          node --input-type=module <<'NODE'
+          import {spawnSync} from 'node:child_process';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const original='https://ci.android.com/builds/submitted/16644040/aosp_cf_arm64_only_phone-userdebug/latest/aosp_cf_arm64_only_phone-img-16644040.zip';
+          const page=spawnSync('curl',['--silent','--show-error','--fail','--location',
+            '--max-time','35',original],{encoding:'utf8',timeout:40000,maxBuffer:1024*1024});
+          if(page.status!==0)throw Error('Could not read official public Artifact Viewer');
+          const match=/var JSVariables = (\{[^\n]+?\});/.exec(page.stdout);
+          if(!match)throw Error('No public CI artifactUrl in the official viewer');
+          const metadata=JSON.parse(match[1]);
+          if(metadata.buildId!=='16644040'||
+            metadata.target!=='aosp_cf_arm64_only_phone-userdebug'||
+            metadata.artifact!=='aosp_cf_arm64_only_phone-img-16644040.zip')
+            throw Error('Artifact Viewer returned an unexpected build, target, or file');
+          const signed=new URL(metadata.artifactUrl);
+          if(signed.protocol!=='https:'||signed.hostname!=='storage.googleapis.com'||
+            !signed.pathname.startsWith('/android-build/builds/aosp-android-latest-release-linux-aosp_cf_arm64_only_phone-userdebug/16644040/')||
+            !signed.pathname.endsWith('/aosp_cf_arm64_only_phone-img-16644040.zip'))
+            throw Error('Untrusted object-storage link');
+          const getRange=(range,name,max)=>{
+            const headers='evidence/'+name+'.headers';
+            const dest='evidence/'+name+'.bin';
+            const proc=spawnSync('curl',['--silent','--show-error','--fail',
+              '--location','--max-time','75','--max-filesize',String(max),
+              '--range',range,'--dump-header',headers,'--output',dest,
+              signed.href],{encoding:'utf8',timeout:80000,maxBuffer:1024*1024});
+            if(proc.status!==0)throw Error(name+' range download failed: '+String(proc.stderr).slice(0,180));
+            const data=readFileSync(dest);
+            const head=readFileSync(headers,'utf8').trim().split(/\r?\n\r?\n/).at(-1)||'';
+            const http=Number(/^HTTP\/[\d.]+\s+(\d+)/m.exec(head)?.[1]||0);
+            const contentRange=/^content-range:\s*(.*)$/im.exec(head)?.[1]||null;
+            if(http!==206||!contentRange||data.length>max)
+              throw Error(name+' not a bounded HTTP 206 Content-Range');
+            return {data,contentRange};
+          };
+          const first=getRange('0-127','first',512);
+          const tail=getRange('-131072','tail',131072);
+          const b=tail.data;
+          let eocd=-1;
+          for(let i=b.length-22;i>=0;i--){
+            if(b.readUInt32LE(i)===0x06054b50&&i+22+b.readUInt16LE(i+20)===b.length){
+              eocd=i;break;
+            }
+          }
+          const result={
+            source:'official Android Common public artifact via temporary GCS reference',
+            branch:'aosp-android-latest-release',
+            target:metadata.target,build:metadata.buildId,artifact:metadata.artifact,
+            origin_domain:signed.hostname,
+            first_range:first.contentRange,
+            last_range:tail.contentRange,
+            first_magic:first.data.subarray(0,4).toString('hex'),
+            end_of_central_directory_present:eocd>=0,
+            central_directory_size:eocd>=0?b.readUInt32LE(eocd+12):null,
+            central_directory_offset:eocd>=0?b.readUInt32LE(eocd+16):null,
+            zip64_marker:eocd>=0?(b.readUInt32LE(eocd+12)===0xffffffff):null,
+            android_guest_boot:false,adb:false
+          };
+          writeFileSync('evidence/gcs-zip-ranges.json',JSON.stringify(result,null,2)+'\n');
+          console.log(JSON.stringify(result,null,2));
+          if(result.first_magic!=='504b0304'||eocd<0)
+            throw Error('Signed URL did not deliver real ZIP bytes');
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aosp-cuttlefish-gcs-zip-range-evidence
+          path: evidence/gcs-zip-ranges.json
+          retention-days: 7

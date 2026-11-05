@@ -1,0 +1,105 @@
+{
+  "schema": "reverse-android-continuity-v2",
+  "cycle": "C12",
+  "repository": "guadalupejuan001-code/REVERSE-PC",
+  "pull_request": 88,
+  "branch": "fix/android-c12-addp-20261030",
+  "base_commit": "905e98e4ac58ce76bbba1da8b7d03e91024cf14b",
+  "executed_source_commit": "ce5299b009fbc8b07c1bee4a6899b05cb131f8ce",
+  "post_run_auditor_fix_commit": "a80d572e570e4008793512c3134fbb452d9b59c9",
+  "workflow_run": 41005175540,
+  "workflow_job": 123898333041,
+  "result_artifact": {
+    "id": 12955253598,
+    "name": "reverse-c12-addp-continuation",
+    "zip_sha256": "b62cd01fe8091adddf1197591c0e979bd82ce881fb16b2ee2ea813069d417c6c"
+  },
+  "actual_execution": {
+    "input_cycle": "C11",
+    "input_instructions": 6484672081,
+    "input_pc": "0x4cb8e4",
+    "fixed_opcode": "0x5ef1b800",
+    "fixed_instruction": "addp d0, v0.2d",
+    "original_addp_stop_overcome": true,
+    "advanced_instructions": 300000000,
+    "instructions": 6784672081,
+    "pc": "0xffffffc0803f71a4",
+    "exception_level": 1,
+    "counter_subtick": 49,
+    "counter_instructions_per_tick": 64,
+    "host_elapsed_ms": 105400,
+    "host_stop_reason": "instruction_budget",
+    "host_instruction_error": "",
+    "new_uart_bytes": 1716,
+    "guest_outcome": "fatal_avb_and_required_system_mount_failure",
+    "note": "300000000 CPU instructions include execution after fatal guest failure. This is not 300000000 instructions of useful boot progress."
+  },
+  "guest_console_evidence": [
+    "Invalid hash size:",
+    "Failed to verify vbmeta digest",
+    "Failed to mount /system: No such file or directory",
+    "Failed to mount required partitions early ...",
+    "InitFatalReboot: signal 6",
+    "Reboot failed -- System halted"
+  ],
+  "classification_correction": {
+    "original_remote_execution_progress_accepted": true,
+    "corrected_execution_progress_accepted": false,
+    "guest_boot_failure": true,
+    "guest_kernel_panic": false,
+    "checkpoint_and_raw_report_modified": false,
+    "post_run_tests_passed": 39,
+    "post_run_tests_failed": 0,
+    "scope": "18 console tests + 14 existing audit regressions + 7 terminal-result tests. Executed locally after the guest run; not a second Android run."
+  },
+  "checkpoint": {
+    "role": "terminal_failure_evidence_not_viable_boot_resume",
+    "state_file": "current.rvg",
+    "state_sha256": "88f890e0237a3723cadf308ee5fcd23778d1f101e36c87e40e6ca13eb8aa0117",
+    "report_file": "current.json",
+    "report_sha256": "cdeef300fb8ef464e6c5842b6c980b8488e07536945e36d893592d44687ce242",
+    "ancestors": [
+      "parent-c11.json",
+      "parent-c10.json",
+      "parent-c09.json",
+      "parent-c08.json",
+      "parent-c07.json",
+      "entry-proof.json"
+    ]
+  },
+  "pre_failure_checkpoint": {
+    "cycle": "C11",
+    "artifact_id": 12954342866,
+    "run_id": 41003034259,
+    "state_sha256": "f93a5f85f892916c61772cd33d3361c6c961acb43fc43e7df1a92b38889c65f4",
+    "report_sha256": "af7c8c022f790307f2ccc4d5a6b9ca7672f7602364719218a12fa1e27b5dbd61"
+  },
+  "next_task": {
+    "issue": "AVB bootloader-to-init handoff",
+    "evidence": "The original boot profile and embedded command-line candidate omit androidboot.vbmeta.size/hash_alg/digest. AOSP libfs_avb emits Invalid hash size when vbmeta.size is absent or unparseable. Missing handoff metadata is the leading diagnosis, not yet a validated fix.",
+    "required_work": "Derive and verify the vbmeta chain metadata from the exact original disk; provide a consistent bootloader handoff and test the required /system mount. Do not disable verification or invent a digest.",
+    "terminal_checkpoint_must_not_be_called_boot_progress": true,
+    "checkpoint_note": "Changing boot-time handoff requires an explicitly documented fresh-boot/profile experiment or a valid earlier boundary. Do not mutate the terminal C12 snapshot or relabel C11 with a new hash to bypass its proof gate. All implemented ISA corrections must remain."
+  },
+  "original_disk": {
+    "artifact_run": 40910284394,
+    "artifact_id": 12912064693,
+    "artifact_name": "reverse-android-c03-genuine-partition-disk",
+    "filename": "android-slot-a.raw",
+    "bytes": 8738832384,
+    "sha256": "28303ac7b2832cbde4e1c56551bf81816b55bc946cc75a444f2605316ed97e1c",
+    "included_in_package": false
+  },
+  "validation_before_guest_run": {
+    "host_tests_passed": 143,
+    "host_tests_failed": 0,
+    "native_suites_passed": 9,
+    "addp_instruction_cases": 1979,
+    "addp_checks": 75051,
+    "llvm_addp_encodings": 1024
+  },
+  "android_framework_verified": false,
+  "android_display_verified": false,
+  "native_android_games_verified": false,
+  "merged_to_main": false
+}

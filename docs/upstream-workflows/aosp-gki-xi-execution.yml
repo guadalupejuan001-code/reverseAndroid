@@ -1,0 +1,114 @@
+name: REVERSE real AOSP GKI on original XI Ether guest (no Android init)
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest.hpp'
+      - 'tests/minimal_guest_system_test.cpp'
+      - 'tools/aosp_boot_preflight.mjs'
+      - 'tests/aosp_boot_preflight.test.mjs'
+      - '.github/workflows/aosp-gki-xi-execution.yml'
+      - 'docs/AOSP_BOOT_PREFLIGHT.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-gki-xi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - name: Verify pinned XI Ether dependency and bounded Linux versus ELF budgets
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = "e2778d962af22f6f1a0794058dd4685fc2573966"
+          grep -q 'max_image=16\*1024\*1024' src/minimal_guest.hpp
+          grep -q 'max_linux_kernel=64\*1024\*1024' src/minimal_guest.hpp
+          grep -q 'max_linux_container=128\*1024\*1024' src/minimal_guest.hpp
+          mkdir -p build evidence input
+          node --test tests/aosp_boot_preflight.test.mjs | tee evidence/boot-preflight-tap.txt
+      - name: Build the existing original XI Ether interpreter and exercise full system regressions
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/native-system
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+          timeout 180 build/native-system | tee evidence/native-system.json
+          jq -e '.system=="own-EL1-MMU-IRQ-EL0-SVC" and .existing_quantum_qubits==4096' evidence/native-system.json > /dev/null
+      - name: Verify actual official GKI bytes and extract only the raw Linux Image
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --retry 2 --max-time 180 \
+            'https://ci.android.com/builds/submitted/16707926/kernel_aarch64/latest/raw/boot.img' \
+            -o input/boot.img
+          echo '58827ec86eb7621e4ac0c16640622119645cc20c65261fb74d82fc68a735ef63  input/boot.img' | sha256sum -c -
+          node tools/aosp_boot_preflight.mjs --boot input/boot.img \
+            --gki-kernel-only --extract-dir input/extracted > evidence/gki-manifest.json
+          echo '8d8cf5254f0823655e06ffee100d9c19abbf4ce33adb107b66da3fdb3742e0be  input/extracted/kernel.bin' | sha256sum -c -
+          jq -e '.status=="gki_kernel_only" and .kernel.size==35777024 and
+            .guest_linux_kernel_budget_bytes==67108864 and
+            .existing_guest_image_budget_bytes==134217728 and
+            .guest_loader_certain_size_block==false and
+            .linux_image_header.image_size=="36503552" and
+            .android_boot==false and .adb==false' evidence/gki-manifest.json >/dev/null
+      - name: Execute real GKI on original XI Ether, save exact stop and verify sliced replay
+        run: |
+          set -euo pipefail
+          timeout 150 build/linux-probe input/extracted/kernel.bin 4096 evidence/gki-direct.rvg > evidence/gki-direct.json
+          timeout 150 build/linux-probe input/extracted/kernel.bin 1 evidence/gki-first.rvg > evidence/gki-first.json
+          timeout 150 build/linux-probe evidence/gki-first.rvg 4095 evidence/gki-split.rvg > evidence/gki-split.json
+          cmp evidence/gki-direct.rvg evidence/gki-split.rvg
+          jq -e '.initial_instructions==0 and
+            .guest.immutable_image_bytes>35777024 and
+            .guest.max_delta_overrides==0 and
+            .adaptive_classical_storage and
+            .android_boot==false and .linux_boot_complete==false and
+            .linux_userspace_init_observed==false' evidence/gki-direct.json >/dev/null
+          jq -e '.guest.immutable_image_bytes>35777024 and
+            .guest.max_delta_overrides==0 and
+            .android_boot==false' evidence/gki-split.json >/dev/null
+          first_instructions="$(jq -r '.guest.instructions' evidence/gki-first.json)"
+          jq --argjson n "$first_instructions" -e '.initial_instructions==$n' evidence/gki-split.json >/dev/null
+          sha256sum evidence/gki-direct.rvg > evidence/checkpoint.sha256
+          jq '{initial_instructions,guest:{pc:.guest.pc,instructions:.guest.instructions,
+            exception_level:.guest.exception_level,exceptions:.guest.exceptions,
+            immutable_image_bytes:.guest.immutable_image_bytes,
+            max_delta_overrides:.guest.max_delta_overrides},
+            stop_reason,next_instruction,console,android_boot,linux_boot_complete,
+            linux_userspace_init_observed}' evidence/gki-direct.json > evidence/actual-stop.json
+          cat evidence/actual-stop.json
+          {
+            echo '## Original XI/Ether with authentic pinned Android Common GKI'
+            echo ''
+            echo 'No vendor_boot/init_boot partitions were supplied; this is NOT Android /init.'
+            echo ''
+            echo 'Raw container and extracted kernel SHA-256 were verified.'
+            echo ''
+            echo 'Direct 4096-budget and 1+4095 resumed checkpoints are byte-identical.'
+            echo ''
+            cat evidence/actual-stop.json
+            cat evidence/checkpoint.sha256
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-real-gki-xi-checkpoint
+          path: |
+            evidence/*.json
+            evidence/*.sha256
+            evidence/*-tap.txt
+            evidence/gki-direct.rvg
+          retention-days: 7

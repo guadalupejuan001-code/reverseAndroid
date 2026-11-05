@@ -1,0 +1,42 @@
+name: REVERSE XI inverse-memory density audit
+on:
+  pull_request:
+    paths:
+      - 'scripts/profile-guest-memory.mjs'
+      - '.github/workflows/linux-memory-profile.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/download-artifact@v4
+        with:
+          name: xi-linux-boot-phase3
+          run-id: 40773912490
+          github-token: ${{ github.token }}
+          path: input
+      - name: Audit the exact Linux memory checkpoint without executing the guest
+        run: |
+          set -euo pipefail
+          mkdir -p memory-evidence
+          node --check scripts/profile-guest-memory.mjs
+          node scripts/profile-guest-memory.mjs input/current.rvg > memory-evidence/density.json
+          jq -e '.checkpoint.checksum_verified and
+                  .checkpoint.guest_instructions == 29059889 and
+                  .checkpoint.max_overrides == 1048576 and
+                  .memory.overrides == 1048576 and
+                  .memory.full_pages >= 10 and
+                  .memory.dense_pages_90pct >= 20' memory-evidence/density.json >/dev/null
+          jq '{checkpoint,memory,candidate_page_representation,densest_pages:.densest_pages[:5]}' memory-evidence/density.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xi-inverse-memory-density-report
+          path: memory-evidence/
+          retention-days: 14

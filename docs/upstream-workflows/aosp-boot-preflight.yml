@@ -1,0 +1,26 @@
+name: REVERSE AOSP boot image preflight (layout only)
+on:
+  pull_request:
+    paths:
+      - 'tools/aosp_boot_preflight.mjs'
+      - 'tests/aosp_boot_preflight.test.mjs'
+      - 'docs/AOSP_BOOT_PREFLIGHT.md'
+      - '.github/workflows/aosp-boot-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  aosp-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Run synthetic container parsing regression suite
+        run: node --test tests/aosp_boot_preflight.test.mjs
+      - name: Explicit status
+        run: |
+          grep -q 'android_boot:false' tools/aosp_boot_preflight.mjs
+          echo 'Only AOSP boot image layout examined; no Android or Wild Rift execution claimed.' >> "$GITHUB_STEP_SUMMARY"

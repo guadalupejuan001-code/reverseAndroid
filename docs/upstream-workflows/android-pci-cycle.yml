@@ -1,0 +1,143 @@
+name: Android PCI checkpoint continuation cycle
+on:
+  pull_request:
+    paths: ['src/guest_boot_cycle.hpp', 'src/minimal_guest*', 'tools/guest_pci_cycle.cpp', 'tools/android_partition_readiness.mjs', 'tests/android_partition_readiness.test.mjs', 'tests/guest_boot_cycle_test.cpp', 'tests/minimal_guest_counter_test.cpp', '.github/workflows/android-pci-cycle.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  cycle-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - name: Verify exact CPU continuation, pixels, rejected transitions and journal recovery
+        run: |
+          mkdir -p build evidence/c04
+          node --test tests/android_partition_readiness.test.mjs > evidence/c04/partition-readiness-tests.txt
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/guest_boot_cycle_test.cpp build/softfloat/libreverse_softfloat.a -o build/boot-cycle-test
+          build/boot-cycle-test > evidence/c04/cycle-tests.json
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_counter_test.cpp build/softfloat/libreverse_softfloat.a -o build/counter-test
+          build/counter-test > evidence/c04/counter-tests.json
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';
+          import {createHmac} from 'node:crypto';
+          const proof=JSON.parse(readFileSync('evidence/c04/counter-tests.json'));
+          const seed=Buffer.from(Array.from({length:32},(_,i)=>i)),expected=[];
+          for(let i=0;i<2;i++){const n=Buffer.alloc(8);n.writeBigUInt64LE(BigInt(i));expected.push(...createHmac('sha256',seed).update(Buffer.concat([Buffer.from('REVERSE-CNT-v1'),n])).digest().map(x=>x&15));}
+          if(JSON.stringify(expected)!==JSON.stringify(proof.latencies))throw Error('Independent HMAC oracle mismatch');
+          console.log('REVERSE_COUNTER_NODE_ORACLE_OK');
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: reverse-c04-cycle-checks, path: 'evidence/c04/', retention-days: 14}
+  continue-genuine-android:
+    needs: cycle-checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-android-c03-genuine-partition-disk, run-id: 40910284394, github-token: '${{ github.token }}', path: disk-input}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-c04-android-pci-continuation, run-id: 40924584145, github-token: '${{ github.token }}', path: boot-input}
+      - name: Build the continuation tool and independently audit the exact source
+        run: |
+          mkdir -p build evidence/c04
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_pci_cycle.cpp build/softfloat/libreverse_softfloat.a -o build/guest-pci-cycle
+          node tools/audit_gki_rvg.mjs boot-input/current.rvg f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 10fc574e0b6fc582a1bc120c53d1f5bb50a95b35bd0f325034554da5a95409c7 > evidence/c04/input-audit.json
+          cp boot-input/acquisition.json boot-input/partitions.json boot-input/ramdisk-provenance.json evidence/c04/
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {parseNewcCpio} from './tools/aosp_ramdisk_preflight.mjs';
+          import {androidPartitionReadiness} from './tools/android_partition_readiness.mjs';
+          const b=readFileSync('boot-input/current.rvg'),p=JSON.parse(readFileSync('evidence/c04/input-audit.json'));
+          const provenance=JSON.parse(readFileSync('boot-input/ramdisk-provenance.json'));
+          const start=8+(p.rvg_version==='RVG3'?44:43)*8+48+p.kernel_bytes+p.dtb_bytes;
+          const rd=b.subarray(start,start+p.initrd_bytes);
+          if(createHash('sha256').update(rd).digest('hex')!=='c9daaaf44bfc5ea2701a355a455a136fe4a98b91ad1e2a4965641a0c47fbc1da')throw Error('Different normal ramdisk');
+          const file=parseNewcCpio(rd.subarray(0,provenance.output_vendor_cpio_bytes)).find(m=>m.path==='first_stage_ramdisk/system/etc/fstab.cf.ext4.cts');
+          if(!file)throw Error('Selected fstab absent');
+          const report=androidPartitionReadiness(JSON.parse(readFileSync('boot-input/acquisition.json')),file.contents,{expectedFstabSha256:'cccf64103fec3404de3773362fddfa1bddf0d937fc4585ca3690848d52498e21',expectedDiskSha256:'28303ac7b2832cbde4e1c56551bf81816b55bc946cc75a444f2605316ed97e1c'});
+          writeFileSync('evidence/c04/selected-fstab.txt',file.contents);
+          writeFileSync('evidence/c04/partition-readiness.json',JSON.stringify(report,null,2));
+          JS
+      - name: Compare fifty million instructions with the original counter and host-seeded latency
+        run: |
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          build/guest-pci-cycle boot-input/current.rvg "$DISK" evidence/c04/control-journal 120000 10fc574e0b6fc582a1bc120c53d1f5bb50a95b35bd0f325034554da5a95409c7 --chunk=1000000 --instructions=50000000 > evidence/c04/control-result.json
+          build/guest-pci-cycle boot-input/current.rvg "$DISK" evidence/c04/timing-journal 120000 10fc574e0b6fc582a1bc120c53d1f5bb50a95b35bd0f325034554da5a95409c7 --chunk=1000000 --instructions=50000000 --counter-latency=host-entropy > evidence/c04/timing-result.json
+      - name: Publish the bounded comparison before the longer continuation
+        uses: actions/upload-artifact@v4
+        with:
+          name: reverse-c04-counter-ab-reports
+          path: evidence/c04/*-result.json
+          retention-days: 14
+      - name: Verify two hundred million continued instructions with a five-minute host limit
+        run: |
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          timeout --signal=TERM --kill-after=30s 550s build/guest-pci-cycle boot-input/current.rvg "$DISK" evidence/c04/journal 300000 10fc574e0b6fc582a1bc120c53d1f5bb50a95b35bd0f325034554da5a95409c7 --chunk=1000000 --instructions=200000000 --counter-latency=host-entropy > evidence/c04/result.json
+      - name: Recover and validate the newest complete generation, including after a rejected transition
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync,copyFileSync,existsSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const root='evidence/c04',comparisons=[];
+          for(const [folder,name,timing] of [['control-journal','control',false],['timing-journal','timing',true],['journal','current',true]]){
+          const journal=root+'/'+folder;
+          if(!existsSync(journal+'/latest.json'))continue;
+          const pointer=JSON.parse(readFileSync(journal+'/latest.json'));
+          if(!/^generation-[1-9][0-9]*$/.test(pointer.generation))throw Error('Invalid generation');
+          const dir=journal+'/'+pointer.generation,b=readFileSync(dir+'/checkpoint.rvg'),proof=JSON.parse(readFileSync(dir+'/report.json'));
+          const sha=createHash('sha256').update(b).digest('hex');
+          if(sha!==pointer.checkpoint_sha256||sha!==proof.checkpoint_sha256)throw Error('Checkpoint/proof mismatch');
+          if(proof.initial_instructions!==3171300000||proof.guest.instructions<proof.initial_instructions||proof.advanced_instructions!==proof.guest.instructions-proof.initial_instructions)throw Error('Cycle restarted or miscounted');
+          if(proof.provenance.input_checkpoint_sha256!=='10fc574e0b6fc582a1bc120c53d1f5bb50a95b35bd0f325034554da5a95409c7')throw Error('Different source');
+          if(proof.provenance.counter_latency!==timing||proof.provenance.run_chunk!==1000000)throw Error('Different counter or chunk model');
+          if(Boolean(proof.guest.counter_latency)!==timing)throw Error('Checkpoint counter mode differs from provenance');
+          if(timing&&(proof.provenance.timing_seed_origin!=='host_os_getrandom'||!Number.isSafeInteger(proof.guest.counter_samples)||proof.guest.counter_samples<0))throw Error('Missing real host entropy or valid counter cursor');
+          copyFileSync(dir+'/checkpoint.rvg',root+'/'+name+'.rvg');copyFileSync(dir+'/report.json',root+'/'+name+'.json');
+          writeFileSync(root+'/'+name+'-console.txt',proof.console);
+          if(name!=='current')comparisons.push({name,completed:proof.advanced_instructions===50000000&&proof.stop_reason==='instruction_budget'});
+          console.log(JSON.stringify({name,instructions:proof.guest.instructions,advanced:proof.advanced_instructions,reason:proof.stop_reason,verified_init:proof.first_user_instruction_verified,sha256:sha}));
+          }
+          writeFileSync(root+'/comparison-validation.json',JSON.stringify({comparisons,complete:comparisons.length===2&&comparisons.every(x=>x.completed)}));
+          JS
+          for MODEL in control timing current; do
+            if test -s "evidence/c04/$MODEL.rvg"; then
+              SHA=$(sha256sum "evidence/c04/$MODEL.rvg" | cut -d ' ' -f 1)
+              if ! node tools/android_kernel_observer.mjs "evidence/c04/$MODEL.rvg" "$SHA" > "evidence/c04/$MODEL-observer.json" 2> "evidence/c04/$MODEL-observer-error.txt"; then
+                printf '%s\n' '{"status":"observation_unavailable","android_boot_inferred":false}' > "evidence/c04/$MODEL-observer.json"
+              fi
+            fi
+          done
+          # Preserve partial native checkpoints and observations before rejecting
+          # an incomplete comparison. The CPU's original failure remains red.
+          node -e 'if(!JSON.parse(require("fs").readFileSync("evidence/c04/comparison-validation.json")).complete)throw Error("A/B budget incomplete; partial checkpoints preserved")'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-c04-android-pci-continuation
+          path: |
+            evidence/c04/
+            !evidence/c04/journal/**
+            !evidence/c04/control-journal/**
+            !evidence/c04/timing-journal/**
+          retention-days: 14

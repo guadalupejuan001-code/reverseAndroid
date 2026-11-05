@@ -1,0 +1,45 @@
+{
+  "version": "2.5.1",
+  "reverse_source_commit": "630e510e8d1397430351a9f1f7a5a45bf461e3a8",
+  "bbyq_source_commit": "ed32ab6b73a31e96080b62269ad1eb9f3e15709d",
+  "bbyq_version": "E025-Chain-1",
+  "w4u_version": "0.1",
+  "ci_run_id": 40720513121,
+  "ci_url": "https://github.com/guadalupejuan001-code/REVERSE-PC/actions/runs/40720513121",
+  "apk_embedded_build": {
+    "source_commit": "8b0fe3bc8cabc07cbaa29422817f2ccf5d04cb41",
+    "bbyq_commit": "ed32ab6b73a31e96080b62269ad1eb9f3e15709d",
+    "bbyq_version": "E025-Chain-1",
+    "w4u_version": "0.1",
+    "mundo_x_commit": "e2778d962af22f6f1a0794058dd4685fc2573966"
+  },
+  "package": "com.reversepc.control.workbench",
+  "version_code": 251,
+  "min_sdk": 29,
+  "certificate_sha256": "cd76d2fef0c238b19b7ad679606f3dbecf44affd93fd585cc1a5bcf057d05a7d",
+  "validated_on": "Android 15 emulator; actual JNI, migration, keyboard and desktop; physical phone not tested",
+  "sha256": {
+    "BBY-Q-E025.rxe": "34fb9f5b96c2d218bff43970c54c89c2f629e7668ee78f52619afa765961d730",
+    "REVERSE-v2.5.1.apk": "62c35d9020b2ad497983544775546c399bdcff46affe89a1c615e62add692aa2",
+    "W4u-v0.1.rxe": "b09284b4bbd7586d6bc61752566db040e8383481dbfe12e7dddf9d37d673e37a"
+  },
+  "git_blobs": {
+    "REVERSE-v2.5.1.apk": "66b6b424becaf9487b905f04aa1dcbb988da7e33",
+    "BBY-Q-E025.rxe": "a436913319827d523ec7f9afc7be8674ed75b448",
+    "W4u-v0.1.rxe": "8c72644dac1760731332d7be68967832c232e440"
+  },
+  "validation": {
+    "android_migration_checks": 13,
+    "desktop_checks": 99,
+    "keyboard_checks": 43,
+    "e025_checks": 31,
+    "w4u_checks": 21,
+    "quantum_checks": 258,
+    "android_execution_abi": "x86_64",
+    "compiled_abis": [
+      "arm64-v8a",
+      "x86_64"
+    ],
+    "application_bytes_unchanged_after_signing": true
+  }
+}

@@ -1,0 +1,15 @@
+# C59: vector floating integral rounding, original compact decoder
+
+C58 executed indexed FMUL and verified the complete original state at count 28,563,139,499, SHA-256 `6959d51fe5a55527d0d73ed6fd3d1da92ca51398e90e7532922c67040208eb0e`. A further 36 genuine instructions reached unsupported `0x0e219821` at PC `0x725e86cf4c`: FRINTM V1.2S,V1.2S. Both source lanes are positive zero, so both results and FPSR=16 must remain unchanged.
+
+The failed tail remains diagnostic. A separate clean replay of exactly 36 instructions reproduced every original byte, SHA-256 `5c7edc0bb20c15148b128b364e5203785fc91dc5396981f66ab88f7cbab853d9`, completed its budget and passed all source/security gates. This clean execution supplies the continuation source.
+
+Implement FRINTN/P/M/Z/A/I/X in vector 2S/4S/2D forms, reusing the original scalar arithmetic helper. N rounds ties to even; A rounds ties away; P/M/Z select the directed modes; I/X use FPCR, with X reporting inexact. Inputs are captured before alias writes; 64-bit vectors clear the inactive high half. Preserve source NaN payloads/signaling, DN/FZ, signed zero, cumulative FPSR and original FP access gating. Vector 1D encodings reject atomically. Ordinary scalar instruction paths and the arithmetic helper retain their code.
+
+Release and UBSan each passed 32,257 cases / 2,163,600 checks. An independent bit-classification and exact long-double mathematical reference covers every source/destination register pair, aliases, signed half ties, all FPCR rounding/FZ/DN settings, NaNs, infinities, subnormals and large integral values. Tests also cover inactive signaling-NaN lanes, original snapshot replay, untouched GPR/core/RAM, access traps and rollback. CI executes actual encodings on AArch64 for all register pairs and further edge/random inputs. Focused regressions cover neighboring indexed multiply, floating comparison and ordinary scalar FP paths.
+
+CI authenticates C58 stage 2 and its pinned original native reference, independently compares reference/candidate prefix bytes, executes one actual FRINTM and checks PC/count/subtick plus every other byte. A million-instruction probe and bounded longer verified stages follow, with uploaded checkpoints before continuation. The unchanged C53 decoder/frame executable is reused.
+
+The original compact RVG/MXIM encoding/decoder, XI/Ether authority, logical 2-GiB RAM, disk/authentication, seeded 64-instruction cadence, per-instruction IRQ checks and enforcing SELinux remain unchanged. No instruction is skipped. Outer ZIP compression retains C57's transport-only setting. Completed boot still requires live system_server with Zygote lineage, framework evidence and live PID1 sys.boot_completed=1. Real 800x600 scanout is currently black; completed framework display content remains pending.
+
+Architectural references: [Arm Instruction Set Reference Guide](https://documentation-service.arm.com/static/6245c734b059dc5ff9a8bdab) and [Arm Neon Intrinsics Reference](https://arm-software.github.io/acle/neon_intrinsics/).

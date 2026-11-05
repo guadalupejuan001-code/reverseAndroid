@@ -1,0 +1,39 @@
+plugins { id 'com.android.application' }
+android {
+ namespace 'com.reversepc.os'
+ compileSdk 35
+ defaultConfig {
+  applicationId 'com.reversepc.os'
+  minSdk 29
+  targetSdk 35
+  testInstrumentationRunner 'com.reversepc.os.WorkbenchTestRunner'
+  versionCode 120
+  versionName '1.2.0'
+  ndk { abiFilters 'arm64-v8a', 'x86_64' }
+  externalNativeBuild { cmake { cppFlags '-std=c++17' } }
+ }
+ flavorDimensions 'edition'
+ signingConfigs {
+  debug {
+   storeFile file(System.getenv('REVERSE_SIGNING_KEYSTORE') ?: System.getProperty('user.home')+'/.android/reverse-desktop.jks')
+   storePassword 'android'
+   keyAlias 'reverse-desktop'
+   keyPassword 'android'
+  }
+ }
+ productFlavors {
+  classic { dimension 'edition'; applicationId 'com.reversepc.os'; manifestPlaceholders = [appLabel:'REVERSE OS'] }
+  desktop { dimension 'edition'; applicationId 'com.reversepc.desktop'; manifestPlaceholders = [appLabel:'REVERSE Desktop'] }
+  workbench { dimension 'edition'; versionCode 251; versionName '2.5.1'; applicationId 'com.reversepc.workbench'; manifestPlaceholders = [appLabel:'REVERSE Workbench'] }
+  control { dimension 'edition'; versionCode 253; versionName '2.5.3-control'; applicationId 'com.reversepc.control.workbench'; manifestPlaceholders = [appLabel:'REVERSE'] }
+  rxe { dimension 'edition'; applicationId 'com.reversepc.desktop.rxe'; manifestPlaceholders = [appLabel:'REVERSE Desktop RXE'] }
+ }
+ externalNativeBuild {
+  cmake {
+    path 'src/main/cpp/CMakeLists.txt'
+    version '3.22.1'
+  }
+ }
+ compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+ buildTypes { release { minifyEnabled false } }
+}

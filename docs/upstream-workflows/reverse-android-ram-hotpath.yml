@@ -1,0 +1,140 @@
+name: REVERSE original XI Ether RAM bounds hot-path optimization oracle
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest.hpp'
+      - 'tests/minimal_guest_system_test.cpp'
+      - '.github/workflows/reverse-android-ram-hotpath.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  exact-ram-hotpath:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-rvi2-boot-continuation
+          run-id: 40804061395
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify real input and exact one-site original header change
+        run: |
+          set -euo pipefail
+          mkdir -p build/baseline evidence
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          echo '174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733  prior/current.rvg' | sha256sum -c -
+          git show b8733350402fb6c9be088d6b923294e5c9a0a43e:src/minimal_guest.hpp \
+            > build/baseline/minimal_guest.hpp
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const base=readFileSync('build/baseline/minimal_guest.hpp','utf8');
+          const current=readFileSync('src/minimal_guest.hpp','utf8');
+          const old='    require(address>=base && address-base<=ram_ && size<=ram_-(address-base), "Guest address outside logical RAM: "+hex(address));';
+          const start='    // Error formatting was previously eager even for *valid* accesses.';
+          const end='      throw std::runtime_error("Guest address outside logical RAM: "+hex(address));';
+          const i=current.indexOf(start),j=current.indexOf(end,i);
+          if(i<0||j<0||!base.includes(old))
+            throw Error('Source not at the expected one-site RAM hot-path patch');
+          const candidate=current.slice(0,i)+old+current.slice(j+end.length);
+          // Compare only the bounds-formatting optimization. Subsequent CPU
+          // instructions must be present in BOTH benchmark variants.
+          writeFileSync('build/baseline/minimal_guest.hpp',candidate);
+          if(candidate.replace(old,current.slice(i,j+end.length))!==current)
+            throw Error('RAM hot-path oracle changed more than the bounds-formatting site');
+          console.log('Exact source difference: only lazy bounds error formatting in ram_range()');
+          NODE
+          sha256sum build/baseline/minimal_guest.hpp src/minimal_guest.hpp \
+            > evidence/header-source-shas.txt
+      - name: Build original and optimized XI Ether on identical pinned Mundo-X, O2
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/native-system
+          timeout 180 build/native-system | tee evidence/native-system.json
+          jq -e '.checks>1808 and .system=="own-EL1-MMU-IRQ-EL0-SVC" and
+            .existing_quantum_qubits==4096' evidence/native-system.json >/dev/null
+          for version in old optimized; do
+            extra=-Isrc
+            if test "$version" = old; then extra="-Ibuild/baseline -Isrc"; fi
+            g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+              -Ibuild/ether-compat -Ideps/mundo-x/native/include $extra \
+              tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+              -o "build/probe-$version"
+          done
+      - name: ABBA benchmark on authentic original RVI2 without changing a single guest byte
+        run: |
+          set -euo pipefail
+          for label in old-1 optimized-1 optimized-2 old-2; do
+            case "$label" in old*) binary=build/probe-old;; *) binary=build/probe-optimized;; esac
+            timeout 160 "$binary" prior/current.rvg 1000000 \
+              "build/$label.rvg" --chunk=10000 \
+              > "evidence/$label.json"
+            jq -e '.initial_instructions==12020000 and
+              .guest.instructions==13020000 and
+              .stop_reason=="instruction_budget" and
+              .android_boot==false and .linux_userspace_init_observed==false' \
+              "evidence/$label.json" >/dev/null
+          done
+          cmp build/old-1.rvg build/optimized-1.rvg
+          cmp build/old-1.rvg build/optimized-2.rvg
+          cmp build/old-1.rvg build/old-2.rvg
+          sha256sum build/old-1.rvg build/optimized-1.rvg \
+            > evidence/checkpoint-parity-shas.txt
+          node --input-type=module <<'NODE' > evidence/ram-performance.json
+          import {readFileSync} from 'node:fs';
+          const names=['old-1','optimized-1','optimized-2','old-2'];
+          const runs=names.map(name=>{
+            const j=JSON.parse(readFileSync('evidence/'+name+'.json','utf8'));
+            return {variant:name,host_elapsed_ns:j.host_elapsed_ns,
+              instructions:j.guest.instructions,
+              guest_ips:Math.round(1000000e9/j.host_elapsed_ns),
+              stop:j.stop_reason};
+          });
+          const old=(runs[0].host_elapsed_ns+runs[3].host_elapsed_ns)/2;
+          const optimized=(runs[1].host_elapsed_ns+runs[2].host_elapsed_ns)/2;
+          console.log(JSON.stringify({
+            status:'true_original_xi_guest_byte_exact_optimization_oracle',
+            guest_source_sha256:'174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733',
+            original_guest_bytes_identical:true,
+            native_system_regression_passed:true,runs,
+            old_avg_wall_ms:Math.round(old/1e6),
+            optimized_avg_wall_ms:Math.round(optimized/1e6),
+            measured_wall_speedup_ratio:Math.round(old/optimized*1000)/1000,
+            guest_boot_complete:false,
+            android_init_executed:false,adb:false,
+            caveat:'single-host ABBA measurements include cold I/O and RVG serialization; general device speedups require more samples'
+          },null,2));
+          NODE
+          jq -e '.original_guest_bytes_identical and .native_system_regression_passed and
+            .guest_boot_complete==false' evidence/ram-performance.json >/dev/null
+          {
+            echo '## Original XI/Ether memory bounds optimized without changing guest behavior'
+            jq '{old_avg_wall_ms,optimized_avg_wall_ms,measured_wall_speedup_ratio,
+              original_guest_bytes_identical,runs}' evidence/ram-performance.json
+            echo 'No Android /init, graphics, ADB or Wild Rift boot claims.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-genuine-xi-ram-hotpath
+          path: |
+            evidence/*.json
+            evidence/*.txt
+          retention-days: 7

@@ -1,0 +1,12 @@
+// Independent read-only audit for the exact 2 GiB C21 board and its continuations.
+import assert from 'node:assert/strict';import {auditGkiRvg} from './audit_gki_rvg.mjs';import {sha} from './android_c13_avb.mjs';
+export const DISK_SHA='0e829fad2cd1cfef8ea707044270d97559127c6cd48bdf268e7eb5cf1b573ce6',DISK_BYTES=17330864128,INITRD_SHA='5278d736d20865d82be9783593690350496d1bcccb157769795316c5e527eefb',SEED_SHA='b99624c9f07e34fc22d620537d5c6bb846fcd4a9766af549f485c7aa0a908556';
+export function verifyProfileState(state,r,digest,options){
+ const a=auditGkiRvg(state,'f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8',digest,options),g=r.guest;
+ assert.equal(a.logical_ram_bytes,2147483648);assert.equal(a.rvi_version,'RVI3');assert.equal(a.external_disk_sha256,DISK_SHA);assert.equal(a.external_disk_bytes,DISK_BYTES);assert.equal(a.instructions,g.instructions);assert.equal(a.native_pc,g.pc);assert.equal(a.native_sp,g.sp);assert.equal(a.native_halted,g.halted?1:0);assert.equal(a.native_exit_code,g.exit_code);
+ assert.equal(g.logical_ram_bytes,2147483648);assert.equal(g.block_image_bytes,DISK_BYTES);assert.equal(g.system_mode,true);assert.equal(g.pci_bus,true);assert.equal(digest,r.checkpoint_sha256);assert.equal(r.advanced_instructions,g.instructions-r.initial_instructions);
+ const field=i=>Number(state.readBigUInt64LE(8+i*8)),head=8+(state[3]===51?44:43)*8,kn=Number(state.readBigUInt64LE(head+8)),dt=Number(state.readBigUInt64LE(head+16)),rd=Number(state.readBigUInt64LE(head+24));assert.equal(sha(state.subarray(head+48+kn+dt,head+48+kn+dt+rd)),INITRD_SHA);
+ const machine=head+field(39)+field(40)+field(41),clock=machine+field(42)-64;assert.equal(state.readBigUInt64LE(machine),7n);assert.equal(state.readBigUInt64LE(machine+8),1n);assert.equal(Number(state.readBigUInt64LE(machine+16)),g.waiting?1:0);assert.equal(Number(state.readBigUInt64LE(machine+32)),g.exception_level);assert.equal(state.readBigUInt64LE(machine+7*8),2n);assert.equal(Boolean(state.readBigUInt64LE(machine+10*8)&1n),g.mmu_enabled);
+ assert.equal(state.readBigUInt64LE(clock),2n);assert.equal(sha(state.subarray(clock+8,clock+40)),SEED_SHA);for(const [offset,key] of [[40,'counter_samples'],[48,'counter_instructions_per_tick'],[56,'counter_subtick']])assert.equal(Number(state.readBigUInt64LE(clock+offset)),g[key]);assert.equal(g.counter_instructions_per_tick,64);assert.ok(Number.isInteger(g.counter_subtick)&&g.counter_subtick>=0&&g.counter_subtick<64);
+ assert.equal(typeof r.console,'string');assert.ok(Buffer.byteLength(r.console)<=4*1024*1024);return a;
+}

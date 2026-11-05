@@ -1,0 +1,199 @@
+name: Space Glitch V2 — Android APK and GPU verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'space-glitch-android/**'
+      - '.github/workflows/space-glitch-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'space-glitch-android/**'
+      - '.github/workflows/space-glitch-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-glitch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Install Android SDK / Emulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            'platforms;android-35' 'build-tools;35.0.0' 'platform-tools' \
+            'emulator' 'system-images;android-35;default;x86_64'
+
+      - name: Build a real offline Android APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p glitch-evidence glitch-dist
+          gradle -p space-glitch-android --no-daemon --stacktrace \
+            :app:assembleDebug > glitch-evidence/gradle.log 2>&1 || {
+              tail -120 glitch-evidence/gradle.log
+              exit 1
+            }
+          tail -35 glitch-evidence/gradle.log
+          cp space-glitch-android/app/build/outputs/apk/debug/app-debug.apk \
+             glitch-dist/SPACE-GLITCH-V2.apk
+
+      - name: Verify APK package, shaders, signature and permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=glitch-dist/SPACE-GLITCH-V2.apk
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" \
+             > glitch-evidence/signature.txt
+          python3 - <<'PY'
+          import hashlib,json,os,re,subprocess,zipfile
+          from pathlib import Path
+          apk=Path("glitch-dist/SPACE-GLITCH-V2.apk")
+          build=os.environ["ANDROID_HOME"]+"/build-tools/35.0.0/"
+          badging=subprocess.check_output([build+"aapt","dump","badging",str(apk)],text=True)
+          permissions=subprocess.check_output([build+"aapt","dump","permissions",str(apk)],text=True)
+          found=re.search(r"package: name='([^']+)' versionCode='([^']+)' versionName='([^']+)'",badging)
+          assert found and found.groups()==('com.reversepc.spaceglitch','2','2.0.0')
+          assert "uses-permission:" not in permissions,permissions
+          with zipfile.ZipFile(apk) as archive:
+            assert archive.testzip() is None
+            paths=set(archive.namelist())
+            for name in ['assets/space.frag','assets/blit.frag','assets/space.vert','classes.dex']:
+              assert name in paths, (name, sorted(paths))
+            shader=archive.read('assets/space.frag').decode()
+            assert '#version 300 es' in shader and 'void main()' in shader
+          data={'package':found.group(1),'version':found.group(3),
+                'sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),
+                'bytes':apk.stat().st_size,'offline':True,'gles':'3.0',
+                'modes':4,'native_gpu':True,'min_sdk':29}
+          Path('glitch-evidence/apk.json').write_text(json.dumps(data,indent=2)+'\n')
+          print(json.dumps(data))
+          PY
+
+      - name: Launch emulator and validate GPU rendering and mode switch
+        shell: bash
+        timeout-minutes: 12
+        run: |
+          set -euo pipefail
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          sudo chmod a+rw /dev/kvm
+          export ANDROID_AVD_HOME="$(mktemp -d /tmp/space-glitch-avd.XXXXXX)"
+          printf 'no\n' | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd \
+            --force -n space-glitch-v2 -p "$ANDROID_AVD_HOME/space-glitch-v2.avd" \
+            -k 'system-images;android-35;default;x86_64'
+          "$ANDROID_HOME/emulator/emulator" -avd space-glitch-v2 \
+            -no-window -no-audio -no-boot-anim -no-snapshot \
+            -gpu swiftshader_indirect -memory 2048 > glitch-evidence/emulator.log 2>&1 &
+          EMU_PID=$!
+          trap 'kill "$EMU_PID" 2>/dev/null || true' EXIT
+          adb start-server
+          ready=false
+          for i in $(seq 1 120); do
+            if [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; then
+              ready=true; break
+            fi
+            sleep 2
+          done
+          if [[ "$ready" != true ]]; then
+            tail -100 glitch-evidence/emulator.log
+            exit 1
+          fi
+          adb shell input keyevent 82
+          adb install -r glitch-dist/SPACE-GLITCH-V2.apk
+          adb logcat -c
+          adb shell am start -W -n com.reversepc.spaceglitch/.MainActivity \
+            | tee glitch-evidence/launch.txt
+          sleep 8
+          # The emulator shows Android's one-time immersive fullscreen prompt.
+          # Dismiss it only if the actual platform confirmation is present.
+          adb shell uiautomator dump /sdcard/space-glitch-immersive.xml >/dev/null
+          adb exec-out cat /sdcard/space-glitch-immersive.xml > glitch-evidence/immersive.xml
+          python3 - <<'PY'
+          import subprocess,re,xml.etree.ElementTree as ET
+          root=ET.parse('glitch-evidence/immersive.xml').getroot()
+          for node in root.iter('node'):
+            if node.attrib.get('text')!='Got it':
+              continue
+            bounds=list(map(int,re.findall(r'\d+',node.attrib.get('bounds',''))))
+            assert len(bounds)==4
+            x=(bounds[0]+bounds[2])//2
+            y=(bounds[1]+bounds[3])//2
+            subprocess.run(['adb','shell','input','tap',str(x),str(y)],check=True)
+            print('Android immersive notice dismissed',x,y)
+            break
+          PY
+          sleep 3
+          adb shell screencap -p /sdcard/space-glitch-portal.png
+          adb exec-out cat /sdcard/space-glitch-portal.png \
+            > glitch-evidence/portal.png
+          adb shell uiautomator dump /sdcard/space-glitch-ui.xml >/dev/null
+          adb exec-out cat /sdcard/space-glitch-ui.xml > glitch-evidence/portal-ui.xml
+          python3 - <<'PY'
+          import subprocess,re,xml.etree.ElementTree as ET
+          root=ET.parse('glitch-evidence/portal-ui.xml').getroot()
+          text=' '.join(n.attrib.get('text','') for n in root.iter('node'))
+          assert 'SPACE GLITCH' in text,text[:700]
+          assert 'PORTAL' in text and 'FRACTURA' in text, text[:700]
+          chosen=[n for n in root.iter('node') if n.attrib.get('text')=='FRACTURA']
+          assert chosen,'FRACTURA mode button not visible'
+          coords=list(map(int,re.findall(r'\d+',chosen[0].attrib['bounds'])))
+          x=(coords[0]+coords[2])//2; y=(coords[1]+coords[3])//2
+          subprocess.run(['adb','shell','input','tap',str(x),str(y)],check=True)
+          PY
+          sleep 4
+          adb shell screencap -p /sdcard/space-glitch-fracture.png
+          adb exec-out cat /sdcard/space-glitch-fracture.png \
+            > glitch-evidence/fracture.png
+          adb shell uiautomator dump /sdcard/space-glitch-after.xml >/dev/null
+          adb exec-out cat /sdcard/space-glitch-after.xml > glitch-evidence/fracture-ui.xml
+          python3 -m pip install --quiet pillow
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          from PIL import Image,ImageChops
+          a=Image.open('glitch-evidence/portal.png').convert('RGB')
+          b=Image.open('glitch-evidence/fracture.png').convert('RGB')
+          assert a.size==b.size and a.width>=320 and a.height>=480
+          diff=ImageChops.difference(a,b)
+          assert diff.getbbox() is not None,'modes gave identical screenshots'
+          color_count=len(set(a.resize((64,64)).getdata()))
+          assert color_count>100,('image unrendered / nearly solid',color_count)
+          root=ET.parse('glitch-evidence/fracture-ui.xml').getroot()
+          labels=' '.join(n.attrib.get('text','') for n in root.iter('node'))
+          assert 'FRACTURA DIGITAL' in labels,labels[:1000]
+          print('GLITCH_V2_GPU_ANDROID_PASS size='+str(a.size)+
+                ' colors='+str(color_count)+' different_modes=true')
+          PY
+          adb logcat -d > glitch-evidence/logcat.txt
+          if grep -E 'FATAL EXCEPTION|GL shader compile failure|GL framebuffer error' \
+             glitch-evidence/logcat.txt | grep -E 'com.reversepc.spaceglitch|GL shader compile failure|GL framebuffer error'; then
+            echo 'A fatal renderer error was seen in logcat'
+            exit 1
+          fi
+
+      - name: Upload installable APK, screenshots and verification
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: SPACE-GLITCH-V2-ANDROID-APK
+          path: |
+            glitch-dist/**
+            glitch-evidence/**
+          if-no-files-found: warn
+          retention-days: 30

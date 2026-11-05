@@ -1,0 +1,94 @@
+name: REVERSE real GKI XI Ether extended boot progress
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-gki-xi-continuation.yml'
+      - 'src/minimal_guest.hpp'
+      - 'tools/guest_linux_probe.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-gki-next-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-real-gki-next-gate
+          run-id: 40786229858
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify exact original XI Ether GKI checkpoint
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          echo '0bc15d43fdebad6de408044dbc2e5293068d9e78002b78c6c13e9ee95aba8042  prior/current.rvg' | sha256sum -c -
+          jq -e '.guest.instructions==504096 and
+            .guest.immutable_image_bytes==35778512 and
+            .stop_reason=="instruction_budget" and
+            .android_boot==false and .linux_userspace_init_observed==false' prior/actual-stop.json >/dev/null
+          cp prior/current.rvg evidence/current.rvg
+      - name: Compile original XI Ether against unchanged pinned runtime
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = "e2778d962af22f6f1a0794058dd4685fc2573966"
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+      - name: Continue actual GKI until first unsupported ISA or virtual device or bounded budget
+        run: |
+          set -euo pipefail
+          echo '| Batch | Total instructions | Exception count | Stop cause | Android /init? |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| --- | ---: | ---: | --- | --- |' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 10); do
+            timeout 170 build/linux-probe evidence/current.rvg 500000 evidence/next.rvg > "evidence/batch-$i.json"
+            jq -e '.initial_instructions>=504096 and .guest.instructions>=.initial_instructions and
+              .guest.immutable_image_bytes==35778512 and
+              .guest.max_delta_overrides==0 and .adaptive_classical_storage and
+              .android_boot==false' "evidence/batch-$i.json" >/dev/null
+            reason=$(jq -r '.stop_reason' "evidence/batch-$i.json")
+            instructions=$(jq -r '.guest.instructions' "evidence/batch-$i.json")
+            exceptions=$(jq -r '.guest.exceptions' "evidence/batch-$i.json")
+            console=$(jq -r '.linux_userspace_init_observed' "evidence/batch-$i.json")
+            printf '| %s | %s | %s | %s | %s |\n' "$i" "$instructions" "$exceptions" "$reason" "$console" >> "$GITHUB_STEP_SUMMARY"
+            mv evidence/next.rvg evidence/current.rvg
+            if [[ "$reason" != instruction_budget || "$console" == true ]]; then
+              break
+            fi
+          done
+          last=$(ls evidence/batch-*.json | sort -V | tail -1)
+          jq '{initial_instructions,guest:{pc:.guest.pc,instructions:.guest.instructions,
+            exception_level:.guest.exception_level,exceptions:.guest.exceptions,
+            immutable_image_bytes:.guest.immutable_image_bytes},
+            stop_reason,next_instruction,console,android_boot,linux_userspace_init_observed}' \
+            "$last" > evidence/actual-stop.json
+          sha256sum evidence/current.rvg > evidence/current.sha256
+          cat evidence/actual-stop.json
+          cat evidence/current.sha256
+          {
+            echo ''
+            echo 'Source: authentic GKI kernel 8d8cf5254f0823655e06ffee100d9c19abbf4ce33adb107b66da3fdb3742e0be, NOT assembled Android.'
+            echo ''
+            echo 'Direct continuation of 504,096-transition XI/Ether real GKI guest checkpoint.'
+            echo ''
+            echo 'No Android image set or Wild Rift APK/splits was included.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-real-gki-extended-progress
+          path: evidence/
+          retention-days: 7

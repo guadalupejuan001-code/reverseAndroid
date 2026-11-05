@@ -1,0 +1,194 @@
+name: Android C41 scalar conversion repair and genuine R2 continuation
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c41-fcvtzs.yml
+      - src/minimal_guest_simd.inc
+      - tests/minimal_guest_fcvtzs_scalar_test.cpp
+      - docs/ANDROID_C41_FCVTZS.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  c41-fcvtzs-and-resume:
+    if: github.event.pull_request.head.ref == 'fix/android-c41-fcvtzs-scalar-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Restrict the repair to scalar FP decoding and verify host gates
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence/c41-proof
+          git diff --exit-code 0a1ec90b9855ce3ab00f231a1b161d86fa517c37 HEAD -- src third_party tools patches scripts ':(exclude)src/minimal_guest_simd.inc'
+          git diff 0a1ec90b9855ce3ab00f231a1b161d86fa517c37 HEAD -- src/minimal_guest_simd.inc > evidence/c41-proof/scalar-conversion.diff
+          node --test tests/android_c40_recovery_evidence.test.mjs tests/android_c40_zygote_stage.test.mjs tests/android_framework_evidence.test.mjs tests/android_odsign_property_probe.test.mjs tests/android_c27_profile_resume.test.mjs tests/android_supervised_cycle.test.mjs > evidence/c41-proof/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Compile the repaired native CPU and test exact failing instruction
+        run: |
+          set -euo pipefail
+          tar --no-same-owner -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          FLAGS="-std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools"
+          g++ $FLAGS tests/minimal_guest_fcvtzs_scalar_test.cpp build/softfloat/libreverse_softfloat.a -o build/c41-conversion-test
+          g++ $FLAGS tests/minimal_guest_fp_test.cpp build/softfloat/libreverse_softfloat.a -o build/c41-fp-test
+          g++ $FLAGS tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/c41-system-test
+          g++ $FLAGS tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c41-native
+          g++ $FLAGS tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/c41-frame
+          build/c41-conversion-test > evidence/c41-proof/scalar-tests.json
+          build/c41-fp-test > evidence/c41-proof/fp-regression.json
+          build/c41-system-test > evidence/c41-proof/system-regression.json
+          build/c41-native --pins > evidence/c41-proof/native-pins.json
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';
+          verifyNativePins(JSON.parse(readFileSync('evidence/c41-proof/native-pins.json','utf8')));
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c40r2-verified-android-checkpoint
+          run-id: 41375758933
+          github-token: ${{ github.token }}
+          path: source-r2
+      - name: Authenticate the last clean R2 and reject the incomplete R3 as source
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-r2/output-contract.json source-r2 > evidence/c41-proof/source-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8')),c=read('source-r2/output-contract.json'),r=read('source-r2/current.json');
+          assert.equal(c.source_commit,'d8e5c796a6a40e716ef22f24f90185252f55558b');
+          assert.equal(c.checkpoint_sha256,'56821dfcec37af1031221247d8dd42f894e176c67fbf8ea3e87b3e14894d36a8');
+          assert.equal(r.guest.instructions,18893448839);assert.equal(r.error,'');
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Restore the original Android disk and preserve the guest clock and security
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c41-proof/media.json
+          rm -rf disk-input
+      - name: Execute through both observed conversion stops from authenticated R2
+        id: continuation
+        run: |
+          set -euo pipefail
+          SHA=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs source-r2/output-contract.json source-r2 build/c41-native new-media/android-c27.raw build/c41-frame evidence/c41 "$SHA" 540000 172893892 1 > evidence/c41-proof/sequence.json
+      - name: Independently verify that Android passed the original FCVTZS stop
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight evidence/c41/output-contract.json evidence/c41 > evidence/c41-proof/output-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8')),c=read('evidence/c41/output-contract.json'),r=read('evidence/c41/current.json');
+          const b=read('evidence/c41/boundary-summary.json'),recovery=read('evidence/c41/recovery-evidence.json');
+          assert.equal(r.initial_instructions,18893448839);assert.equal(r.guest.instructions,19066342731,'Both observed conversion stops must be crossed exactly');
+          assert.equal(r.provenance.input_checkpoint_sha256,'56821dfcec37af1031221247d8dd42f894e176c67fbf8ea3e87b3e14894d36a8');
+          assert.equal(b.clean_completed,true);assert.equal(recovery.clean_native_budget,true);assert.equal(recovery.failure_class,'none');
+          writeFileSync('evidence/c41-proof/verified-crossing.json',JSON.stringify({source_instructions:18893448839,original_stop_instructions:19066342718,second_stop_instructions:19066342730,instructions:r.guest.instructions,checkpoint_sha256:c.checkpoint_sha256,both_stops_crossed:true},null,2)+'\n');
+          NODE
+          SHA=$(node -p "require('./evidence/c41/output-contract.json').checkpoint_sha256")
+          node --max-old-space-size=5000 tools/android_kernel_observer.mjs evidence/c41/current.rvg "$SHA" 1073741824 --live-properties --zygote-probe --scheduler-probe > evidence/c41-proof/kernel.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';import {classifyZygoteStage} from './tools/android_c40_zygote_stage.mjs';
+          const k=JSON.parse(readFileSync('evidence/c41-proof/kernel.json','utf8')),p=classifyZygoteStage(k);
+          for(const name of ['odsign.key.done','odsign.verification.done'])assert.ok(k.live_boot_property.boot_chain_property_observations.some(x=>x.name===name&&x.status==='property_observed'&&x.value==='1'));
+          assert.equal(k.live_kernel_security.selinux_enforcing,true);
+          writeFileSync('evidence/c41-proof/zygote.json',JSON.stringify(p,null,2)+'\n');console.log(JSON.stringify(p,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: reverse-c41-fcvtzs-verified-android-checkpoint
+          path: |-
+            evidence/c41/
+            !evidence/c41/native/journal/**
+            !evidence/c41/native/current.rvg
+            !evidence/c41/native/frame.ppm
+            !evidence/c41/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Continue 250 million instructions only after publishing the repaired clean checkpoint
+        run: |
+          set -euo pipefail
+          SHA=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs evidence/c41/output-contract.json evidence/c41 build/c41-native new-media/android-c27.raw build/c41-frame evidence/c41-next "$SHA" 540000 250000000 1 > evidence/c41-proof/next-sequence.json
+      - name: Authenticate the next continuation and observe Zygote from guest memory
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight evidence/c41-next/output-contract.json evidence/c41-next > evidence/c41-proof/next-preflight.json
+          SHA=$(node -p "require('./evidence/c41-next/output-contract.json').checkpoint_sha256")
+          node --max-old-space-size=5000 tools/android_kernel_observer.mjs evidence/c41-next/current.rvg "$SHA" 1073741824 --live-properties --zygote-probe --scheduler-probe > evidence/c41-proof/next-kernel.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';import {classifyZygoteStage} from './tools/android_c40_zygote_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8')),source=read('evidence/c41/output-contract.json'),r=read('evidence/c41-next/current.json'),k=read('evidence/c41-proof/next-kernel.json');
+          assert.equal(r.initial_instructions,19066342731);assert.equal(r.provenance.input_checkpoint_sha256,source.checkpoint_sha256);
+          assert.ok(r.guest.instructions>r.initial_instructions);assert.equal(read('evidence/c41-next/boundary-summary.json').clean_completed,true);
+          for(const name of ['odsign.key.done','odsign.verification.done'])assert.ok(k.live_boot_property.boot_chain_property_observations.some(x=>x.name===name&&x.status==='property_observed'&&x.value==='1'));
+          assert.equal(k.live_kernel_security.selinux_enforcing,true);
+          writeFileSync('evidence/c41-proof/next-zygote.json',JSON.stringify(classifyZygoteStage(k),null,2)+'\n');
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: reverse-c41-next-verified-android-checkpoint
+          path: |-
+            evidence/c41-next/
+            !evidence/c41-next/native/journal/**
+            !evidence/c41-next/native/current.rvg
+            !evidence/c41-next/native/frame.ppm
+            !evidence/c41-next/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c41-fcvtzs-diagnostics
+          path: |-
+            evidence/c41-proof/
+            evidence/c41/*.json
+            evidence/c41/*.txt
+            evidence/c41/native/*.json
+            evidence/c41/native/*.log
+            evidence/c41/native/journal/latest.json
+            evidence/c41-next/*.json
+            evidence/c41-next/*.txt
+            evidence/c41-next/native/*.json
+            evidence/c41-next/native/*.log
+            evidence/c41-next/native/journal/latest.json
+          if-no-files-found: warn
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: failure()
+        with:
+          name: reverse-c41-fault-observation-NOT-A-RESUME-SOURCE
+          path: |-
+            evidence/c41/current.rvg
+            evidence/c41/current.json
+            evidence/c41/recovery-evidence.json
+            evidence/c41/recovery-prefix.rvg
+            evidence/c41/recovery-prefix.json
+            evidence/c41-next/current.rvg
+            evidence/c41-next/current.json
+            evidence/c41-next/recovery-evidence.json
+            evidence/c41-next/recovery-prefix.rvg
+            evidence/c41-next/recovery-prefix.json
+          if-no-files-found: ignore
+          retention-days: 90

@@ -1,0 +1,12 @@
+{
+  "schema": "reverseandroid-bootstrap-artifacts-v1",
+  "repository": "guadalupejuan001-code/REVERSE-PC",
+  "artifacts": {
+    "seed": {"id": 13423050281, "sha256": "e8c9879e1ecb72757f4eb1a2fdb1853cd65a2309ab968ea050d8006e8ff5bdae"},
+    "decoder": {"id": 13374692775, "sha256": "464978466708302a06c909320abf60543861fd06e461e5b1dfdfb733e9c0ec31"},
+    "media-manifest": {"id": 13365399669, "sha256": "fc95a8ffd7b68348fe991d6b60c2910b67fdd60f0a2f4f201f7442a5e2d34d46"},
+    "media-aa": {"id": 13365424477, "sha256": "650b778f3377bf1321f6703c21a9d16cac4852e6a068a0ffa657b6d6c72f0b14"},
+    "media-ab": {"id": 13365294879, "sha256": "3e734348decabf92aea4bf97cb7508d244331318879fe916985a6947da20f6b2"},
+    "media-ac": {"id": 13365364716, "sha256": "d4050653e35fe0ee834c31c262f02ecbef0531ea67684c1eaaf1e6c3e3120402"}
+  }
+}

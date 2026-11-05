@@ -1,0 +1,98 @@
+name: Android odsign live property and Binder wait probe from C34
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-odsign-live-probe.yml
+      - tools/android_boot_property.mjs
+      - tools/android_live_property.mjs
+      - tools/android_kernel_observer.mjs
+      - tools/android_binder_snapshot_probe.mjs
+      - tests/android_odsign_property_probe.test.mjs
+      - tests/android_binder_snapshot_probe.test.mjs
+      - docs/ANDROID_ODSIGN_LIVE_DIAGNOSIS.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect-real-odsign:
+    if: github.event.pull_request.head.ref == 'diagnostic/android-odsign-live-properties-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify pure read-only probe and unchanged ARM64 guest machinery
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/odsign-probe
+          changes=$(git diff --name-only a2e1b145ff573ffd69ffc6a32c646de69cbe1e18 HEAD -- src third_party scripts patches tools/guest_c27_profile_resume.cpp tools/guest_budget_cycles.hpp tools/guest_checkpoint_frame.cpp)
+          test -z "$changes"
+          node --check tools/android_boot_property.mjs
+          node --check tools/android_live_property.mjs
+          node --check tools/android_kernel_observer.mjs
+          node --check tools/android_binder_snapshot_probe.mjs
+          node --test tests/android_binder_snapshot_probe.test.mjs tests/android_odsign_property_probe.test.mjs tests/android_boot_property.test.mjs tests/android_live_property.test.mjs tests/android_framework_evidence.test.mjs > evidence/odsign-probe/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c34-authenticated-continuation
+          run-id: 41345457550
+          github-token: ${{ github.token }}
+          path: source-c34
+      - name: Authenticate C34 checkpoint, producer, and precise instruction boundary
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c34/output-contract.json source-c34 > evidence/odsign-probe/preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const contract=read('source-c34/output-contract.json'),report=read('source-c34/current.json');
+          assert.equal(contract.source_commit,'75f92559d488ca13f81e51acc8157aa650ff86e0');
+          assert.equal(contract.checkpoint_sha256,'5e7a85b5e6b6ecd78140c95ad4be763c6a9b80bbd88c9ab41ce2b3124fc01b53');
+          assert.equal(report.guest.instructions,14807298839);
+          NODE
+      - name: Read actual PID1 properties and sleeping service kernel stacks without running CPU
+        run: |
+          set -euo pipefail
+          node tools/android_kernel_observer.mjs source-c34/current.rvg 5e7a85b5e6b6ecd78140c95ad4be763c6a9b80bbd88c9ab41ce2b3124fc01b53 1073741824 --live-properties --binder-probe > evidence/odsign-probe/kernel-observation.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const k=JSON.parse(readFileSync('evidence/odsign-probe/kernel-observation.json','utf8'));
+          assert.equal(k.checkpoint_sha256,'5e7a85b5e6b6ecd78140c95ad4be763c6a9b80bbd88c9ab41ce2b3124fc01b53');
+          assert.equal(k.instructions,14807298839);
+          assert.equal(k.input_unchanged,true);
+          const p=k.live_boot_property??{};
+          const names=['init','odsign','keystore2','apexd','android.hardwar','servicemanager','zygote64','system_server','surfaceflinger'];
+          const tasks=k.tasks.filter(t=>names.some(n=>t.name===n||t.name.startsWith(n))).map(t=>({
+            pid:t.pid,name:t.name,state:t.state,exit_state:t.exit_state,
+            has_user_mm:t.has_user_mm,running_on_cpu:t.running_on_cpu,
+            context_pc:t.context_pc,accounting:t.accounting,guest_syscall:t.guest_syscall??null,
+            stack:t.stack.map(s=>s.symbol).filter(Boolean)
+          }));
+          const result={schema:'reverse-odsign-live-probe-v1',
+            source_checkpoint_sha256:k.checkpoint_sha256,instructions:k.instructions,
+            pid1_mapping_verified:p.read_only===true&&p.pid===1&&!p.read_error&&p.property_mappings>0,
+            property_mapping_count:p.property_mappings,
+            observed:p.boot_chain_property_observations??[],
+            statuses:p.boot_chain_property_status_counts??{},
+            process_count:k.task_count,tasks,
+            property_read_error:p.read_error??null,binder_layout_debug:k.binder_layout_debug??null,binder_live_queues:k.binder_live_queues??null,original_snapshot_unchanged:true};
+          writeFileSync('evidence/odsign-probe/summary.json',JSON.stringify(result,null,2)+'\n');
+          console.log(JSON.stringify(result,null,2));
+          assert.equal(result.pid1_mapping_verified,true);
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-odsign-live-probe-c34
+          path: evidence/odsign-probe/
+          if-no-files-found: warn
+          retention-days: 90

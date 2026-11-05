@@ -1,0 +1,189 @@
+name: REVERSE native Android guest bootargs RVI2 and authentic AOSP replay
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest_machine.hpp'
+      - 'src/minimal_guest.hpp'
+      - 'src/reverse_guest.cpp'
+      - 'tests/minimal_guest_system_test.cpp'
+      - 'tools/guest_linux_probe.cpp'
+      - 'tools/audit_gki_rvg.mjs'
+      - 'tests/audit_gki_rvg.test.mjs'
+      - '.github/workflows/aosp-reverse-guest-bootargs.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android-original-xi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-aosp-vendor-real-next-checkpoint
+          run-id: 40801612129
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify original previous guest checkpoint and host parser safety
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          echo '07a69f42c6b2a983196abd745614349956d2b8b02b6b9d5bae3e573c6933d9fb  prior/current.rvg' | sha256sum -c -
+          node --test tests/audit_gki_rvg.test.mjs | tee evidence/audit-tests.tap
+          node --test tests/aosp_cuttlefish_stage.test.mjs | tee evidence/staging-tests.tap
+          node tools/audit_gki_rvg.mjs prior/current.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            07a69f42c6b2a983196abd745614349956d2b8b02b6b9d5bae3e573c6933d9fb \
+            > evidence/legacy-checkpoint.json
+          jq -e '.rvi_version=="RVI1" and .instructions==10235000 and
+            .bootargs==null and .initrd_bytes==21808620 and
+            .classical_override_limit=="0"' evidence/legacy-checkpoint.json >/dev/null
+      - name: Compile the unchanged single XI Ether core and new named Android entrypoint
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/native-system
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            src/reverse_guest.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/reverse_guest
+          timeout 180 build/native-system | tee evidence/native-system.json
+          jq -e '.system=="own-EL1-MMU-IRQ-EL0-SVC" and
+            .existing_quantum_qubits==4096 and
+            .android_boot=="not_implemented"' evidence/native-system.json >/dev/null
+          build/reverse_guest inspect prior/current.rvg > evidence/legacy-inspect.json
+          jq -e '.machine=="reverse-aarch64-system-v1" and
+            .immutable_image_bytes>63800000 and .max_delta_overrides==0' \
+            evidence/legacy-inspect.json >/dev/null
+          echo 'Old 10,235,000-instruction RVG1-style RVI1 guest remains readable byte-identically.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Source exact public Android ARM64 Cuttlefish boot components
+        run: |
+          set -euo pipefail
+          node tools/aosp_cuttlefish_zip_probe.mjs extract --out-dir build/cf-source \
+            > evidence/boot-archive.json
+          echo 'b6f1c12a695e99c761f6a23713f4601dba06e690e77acfb5d1906b0d32f5c967  build/cf-source/boot.img' | sha256sum -c -
+          echo 'c4f820039ef9c2d1957461f33916f4d24b94d7b866e03ff91dbd7e9f72793d29  build/cf-source/init_boot.img' | sha256sum -c -
+          echo '6f88b6c7164814bef200100763f9880733fe99aed17ee8e937f46b185b24fa8c  build/cf-source/vendor_boot.img' | sha256sum -c -
+          node tools/aosp_cuttlefish_stage.mjs \
+            --boot build/cf-source/boot.img \
+            --init-boot build/cf-source/init_boot.img \
+            --vendor-boot build/cf-source/vendor_boot.img \
+            --out-dir build/android > evidence/staging.json
+          echo 'f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8  build/android/kernel.bin' | sha256sum -c -
+          echo '21f6a9e2498f6ea30c4a4edffcd3efbaea3feec79524004492041650a1d4fb64  build/android/combined_initrd.bin' | sha256sum -c -
+          jq -e '.image_build=="16644040" and .combined_initrd.bytes==21808620 and
+            .bootconfig.raw_bytes==117 and .android_init_executed==false and
+            .reverse_bootconfig_option_present==false' evidence/staging.json >/dev/null
+      - name: Prove exact Android /chosen bootargs and FDT physical bytes with independent fdtget
+        run: |
+          set -euo pipefail
+          build/reverse_guest android-cuttlefish-init \
+            build/android/kernel.bin build/android/combined_initrd.bin \
+            evidence/android-initial.rvg > evidence/initial-statistics.json
+          jq -e '.machine=="reverse-aarch64-system-v1" and
+            .max_delta_overrides==0 and
+            .immutable_image_bytes>63841800' evidence/initial-statistics.json >/dev/null
+          build/reverse_guest android-cuttlefish-dtb evidence/android-profile.dtb 21808620
+          if ! command -v fdtget >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y device-tree-compiler
+          fi
+          fdtget -t s evidence/android-profile.dtb /chosen bootargs > evidence/guest-bootargs.txt
+          grep -Fq 'init=/init' evidence/guest-bootargs.txt
+          grep -Fq ' bootconfig' evidence/guest-bootargs.txt
+          grep -Fq 'binder.impl=rust' evidence/guest-bootargs.txt
+          grep -Fq 'console=ttyAMA0' evidence/guest-bootargs.txt
+          fdtget -t x evidence/android-profile.dtb /chosen linux,initrd-start > evidence/initrd-start.txt
+          fdtget -t x evidence/android-profile.dtb /chosen linux,initrd-end > evidence/initrd-end.txt
+          node --input-type=module <<'NODE' > evidence/rvi2-embedded-fdt.json
+          import {readFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const b=readFileSync('evidence/android-initial.rvg');
+          const start=8+43*8;
+          const header=b.subarray(start,start+40);
+          if(b.toString('ascii',0,4)!=='RVG2'||header.toString('ascii',0,4)!=='RVI2')
+            throw Error('Android CLI did not produce RVG2 with new RVI2 immutable image');
+          const k=Number(b.readBigUInt64LE(start+8)),dt=Number(b.readBigUInt64LE(start+16)),
+            rd=Number(b.readBigUInt64LE(start+24)),arglen=Number(b.readBigUInt64LE(start+32));
+          const fdt=b.subarray(start+40+k,start+40+k+dt);
+          const expected=readFileSync('evidence/android-profile.dtb');
+          if(!fdt.equals(expected)||rd!==21808620||arglen>1024||arglen<50)
+            throw Error('Real RVI2 guest embedded FDT differs from exported source DTB');
+          const args=b.subarray(start+40+k+dt+rd,start+40+k+dt+rd+arglen).toString('ascii');
+          if(!args.includes('init=/init')||!args.includes('bootconfig'))
+            throw Error('Persisted RVI2 bootargs are missing required Android parameters');
+          const result={status:'exact_rvi2_bootargs_and_fdt_proven',
+            container:'RVI2',kernel_bytes:k,dtb_bytes:dt,initrd_bytes:rd,bootargs_bytes:arglen,
+            exported_dtb_equal:true,
+            dtb_sha256:createHash('sha256').update(fdt).digest('hex'),
+            bootargs:args,android_init_observed:false,adb:false};
+          console.log(JSON.stringify(result,null,2));
+          NODE
+          sha256sum evidence/android-initial.rvg > evidence/initial-checkpoint.sha256
+          first_sha="$(cut -d' ' -f1 evidence/initial-checkpoint.sha256)"
+          node tools/audit_gki_rvg.mjs evidence/android-initial.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            "$first_sha" > evidence/rvi2-provenance.json
+          jq -e '.rvi_version=="RVI2" and .bootargs_bytes>50 and
+            (.bootargs | contains("init=/init"))' evidence/rvi2-provenance.json >/dev/null
+      - name: Execute named Android guest profile on original XI/Ether and checkpoint exact first stop
+        run: |
+          set -euo pipefail
+          timeout 150 build/linux-probe \
+            build/android/kernel.bin 1 evidence/one.rvg \
+            build/android/combined_initrd.bin android-cuttlefish > evidence/one.json
+          timeout 150 build/linux-probe \
+            build/android/kernel.bin 10000 evidence/direct.rvg \
+            build/android/combined_initrd.bin android-cuttlefish > evidence/direct.json
+          timeout 150 build/linux-probe evidence/one.rvg 9999 evidence/resumed.rvg \
+            > evidence/resumed.json
+          cmp evidence/direct.rvg evidence/resumed.rvg
+          jq -e '.initial_instructions==0 and .guest.instructions==10000 and
+            .guest.immutable_image_bytes>63841800 and
+            .guest.max_delta_overrides==0 and .adaptive_classical_storage and
+            .android_boot==false and .linux_userspace_init_observed==false' evidence/direct.json >/dev/null
+          jq '{initial_instructions,guest:{pc:.guest.pc,instructions:.guest.instructions,
+            exception_level:.guest.exception_level,exceptions:.guest.exceptions},
+            stop_reason,next_instruction,console,android_boot,
+            linux_userspace_init_observed}' evidence/direct.json > evidence/actual-stop.json
+          sha256sum evidence/direct.rvg > evidence/direct-checkpoint.sha256
+          cp evidence/direct.rvg evidence/next.rvg
+          {
+            echo '## REVERSE Android emulator startup profile (not full Android boot)'
+            jq '{status,container,kernel_bytes,initrd_bytes,dtb_bytes,bootargs}' \
+              evidence/rvi2-embedded-fdt.json
+            cat evidence/actual-stop.json
+            cat evidence/direct-checkpoint.sha256
+            echo 'No Android /init EL0 witness, ADB, Binder, partition mounting or graphics observed.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-rvi2-profile-evidence
+          path: |
+            evidence/*.json
+            evidence/*.sha256
+            evidence/*.tap
+            evidence/*.txt
+            evidence/next.rvg
+          retention-days: 7

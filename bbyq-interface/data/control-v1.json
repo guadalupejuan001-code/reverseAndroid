@@ -1,0 +1,38 @@
+{
+  "format":1,
+  "grammar":"Designed finite XI command grammar; no new general language training is claimed",
+  "targets":[
+    {"id":1,"app":"files","kind":1,"aliases":["archivos","files","mis archivos"]},
+    {"id":2,"app":"calculator","kind":1,"aliases":["calculadora","calculator","la calculadora"]},
+    {"id":3,"app":"settings","kind":1,"aliases":["ajustes","configuración","settings"]},
+    {"id":4,"app":"programs","kind":1,"aliases":["aplicaciones","apps","programas"]},
+    {"id":5,"app":"xi","kind":1,"aliases":["xi","xi studio","studio xi"]},
+    {"id":6,"app":"help","kind":1,"aliases":["ayuda","guía rápida","help"]},
+    {"id":7,"app":"control","kind":1,"aliases":["control","centro de control","sistema"]},
+    {"id":8,"app":"bbyq","kind":1,"aliases":["bbyq","bby q","bby"]},
+    {"id":9,"app":"notes","kind":1,"aliases":["notas","notes"]},
+    {"id":10,"app":"wallpaper","kind":1,"aliases":["fondo","editor de fondo","wallpaper"]},
+    {"id":13,"app":"space0","kind":3,"aliases":["principal","main"]},
+    {"id":14,"app":"space1","kind":3,"aliases":["enfoque","focus"]},
+    {"id":15,"app":"current","kind":2,"aliases":["esta ventana","la ventana actual","this window","current window"]}
+  ],
+  "patterns":[
+    {"op":1,"kind":1,"forms":["abre {T}","abrir {T}","open {T}","launch {T}","puedes abrir {T}","por favor abre {T}","abre {T} por favor","please open {T}","open {T} please"]},
+    {"op":2,"kind":2,"forms":["enfoca {T}","muestra {T}","focus {T}","show {T}"]},
+    {"op":3,"kind":2,"forms":["minimiza {T}","minimizar {T}","minimize {T}"]},
+    {"op":4,"kind":2,"forms":["maximiza {T}","maximizar {T}","maximize {T}"]},
+    {"op":5,"kind":2,"forms":["restaura {T}","restaurar {T}","restore {T}"]},
+    {"op":6,"kind":2,"forms":["cierra {T}","cerrar {T}","close {T}"]},
+    {"op":7,"kind":0,"forms":["ordena las ventanas","organiza las ventanas","arrange windows"]},
+    {"op":8,"kind":0,"forms":["muestra el escritorio","mostrar escritorio","show desktop"]},
+    {"op":9,"kind":3,"forms":["cambia a {T}","switch to {T}"]}
+  ],
+  "replies":[
+    ["Voy a intentarlo.","I will try that."],
+    ["Acción completada.","Action completed."],
+    ["No se completó la acción.","The action was not completed."],
+    ["Necesito estar conectado a tu escritorio.","I need to be connected to your desktop."],
+    ["Ahora no encuentro esa ventana.","I cannot find that window right now."],
+    ["Necesito una ventana u orden más precisa.","I need a more precise window or command."]
+  ]
+}

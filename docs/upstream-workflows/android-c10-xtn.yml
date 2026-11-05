@@ -1,0 +1,144 @@
+name: Android C10 XTN from verified C09
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/android-c10-xtn.yml'
+      - 'experiments/c10-reviewed.patch.gz.b64.*'
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: android-c10-xtn-reviewed
+  cancel-in-progress: false
+jobs:
+  resume-c09:
+    if: github.event.pull_request.head.ref == 'fix/android-c10-xtn-r2-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Apply the hash-pinned C10 and R2 source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c10 build
+          BASE=e62ac0d043bd5d88e122942e10d4128672458ee1
+          git merge-base --is-ancestor "$BASE" HEAD
+          git diff --exit-code "$BASE" HEAD -- src tools tests experiments/android-c08-reviewed-c07.json docs/ANDROID_C10_XTN.md
+          cat experiments/c10-reviewed.patch.gz.b64.* | base64 --decode > build/c10.patch.gz
+          echo '074b340c9c91cd0b343623f70ea866b38bb536dd0fba88591a57eeca1fe1281b  build/c10.patch.gz' | sha256sum --check
+          gzip -dc build/c10.patch.gz > build/c10.patch
+          echo 'f73497aac4556316d7628c4dc5dbc70c5638f9c1acb65007c4101452367befb8  build/c10.patch' | sha256sum --check
+          git apply --check build/c10.patch
+          git apply --index build/c10.patch
+          cp build/c10.patch evidence/c10/executed-source.patch
+          git rev-parse HEAD > evidence/c10/runner-commit.txt
+          git diff --cached --name-only -z | xargs -0 sha256sum > evidence/c10/source-sha256.txt
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c09-widen-continuation
+          run-id: 40997177448
+          github-token: ${{ github.token }}
+          path: input-c09
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c07-proven-post-init
+          run-id: 40975381521
+          github-token: ${{ github.token }}
+          path: input-c07
+      - name: Verify C09, preserve R2 gates and compile the actual engine
+        env:
+          C07_STATE: input-c07/current.rvg
+          C07_REPORT: input-c07/current.json
+          C09_INPUT: input-c09
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/android_c10_audit.mjs input-c09 > evidence/c10/source-audit.json
+          node --test --test-concurrency=1 tests/android_verified_c07_source.test.mjs tests/android_c08_result.test.mjs tests/android_c08_integrity.test.mjs tests/rvg_checksum.test.mjs tests/android_supervised_cycle.test.mjs tests/android_c10_audit.test.mjs > evidence/c10/host-tests.tap
+          node tests/xtn_encoding_test.mjs > evidence/c10/llvm-encodings.json
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          for suite in minimal_guest_xtn minimal_guest_widen_shift minimal_guest_fp minimal_guest_el0_cache minimal_guest_crc guest_boot_cycle guest_boot_resume_proof; do
+            g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc "tests/${suite}_test.cpp" build/softfloat/libreverse_softfloat.a -o "build/c10-$suite"
+            "build/c10-$suite" > "evidence/c10/$suite.json"
+          done
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c09_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c10-native
+          cp input-c09/current.json build/changed-report.json
+          printf '\n' >> build/changed-report.json
+          if build/c10-native input-c09/current.rvg build/changed-report.json input-c09/entry-proof.json /nonexistent-disk build/negative 1000 1000 > evidence/c10/negative.stdout 2> evidence/c10/negative.stderr; then exit 1; fi
+          grep -F 'C09 report hash mismatch' evidence/c10/negative.stderr
+          sha256sum build/c10-native > evidence/c10/native-sha256.txt
+      - name: Publish the tested source only to this experimental branch
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=fix/android-c10-xtn-r2-20261030
+          REMOTE=$(git ls-remote origin "refs/heads/$BRANCH" | cut -f1)
+          test "$REMOTE" = "$EXPECTED_HEAD"
+          sha256sum --check evidence/c10/source-sha256.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Implement tested XTN/XTN2 and retain R2 continuity protections'
+          git push origin "HEAD:refs/heads/$BRANCH"
+          git rev-parse HEAD > evidence/c10/published-source-commit.txt
+      - name: Preserve source and binary before the Android run
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp build/c10-native evidence/c10/native-continuation
+          tar -czf evidence/c10/reproducer-source.tar.gz src tools tests scripts experiments third_party CMakeLists.txt build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reverse-c10-tested-source-and-runner
+          path: evidence/c10/
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Resume the real C09 state with the unchanged Android disk
+        shell: bash
+        run: |
+          set -euo pipefail
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          test "$(stat -c '%s' "$DISK")" = 8738832384
+          node tools/android_c10_supervised.mjs evidence/c10 -- build/c10-native input-c09/current.rvg input-c09/current.json input-c09/entry-proof.json "$DISK" evidence/c10/journal 300000 300000000 > evidence/c10/supervision-result.json
+      - name: Audit and preserve the exact outcome, including failure
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c10
+          if test -f evidence/c10/journal/latest.json; then
+            node tools/android_c10_audit.mjs input-c09 evidence/c10 300000000 > evidence/c10/audit-result.json
+          else
+            printf '%s\n' '{"status":"no_native_checkpoint_committed","android_display_verified":false,"native_android_games_verified":false}' > evidence/c10/milestone.json
+            exit 1
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c10-xtn-continuation
+          path: evidence/c10/
+          if-no-files-found: error
+          retention-days: 14

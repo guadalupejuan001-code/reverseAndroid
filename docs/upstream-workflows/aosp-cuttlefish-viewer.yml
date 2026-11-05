@@ -1,0 +1,37 @@
+name: REVERSE Android CI artifact viewer transport investigation
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-cuttlefish-viewer.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - name: Inspect official public Artifact Viewer metadata, without full ZIP
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          curl --fail --location --silent --show-error --max-time 50 \
+            'https://ci.android.com/builds/submitted/16644040/aosp_cf_arm64_only_phone-userdebug/latest/aosp_cf_arm64_only_phone-img-16644040.zip' \
+            -o evidence/viewer.html
+          test "$(stat -c%s evidence/viewer.html)" -lt 100000
+          grep -q '<title>Artifact Viewer</title>' evidence/viewer.html
+          sha256sum evidence/viewer.html > evidence/viewer.sha256
+          echo '--- Public page HTML (limited to 8 KB) ---'
+          head -c 8000 evidence/viewer.html
+          echo
+          echo '--- End public page ---'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cuttlefish-official-artifact-viewer-html
+          path: |
+            evidence/viewer.html
+            evidence/viewer.sha256
+          retention-days: 7

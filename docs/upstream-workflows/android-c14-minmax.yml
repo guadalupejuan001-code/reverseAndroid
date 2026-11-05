@@ -1,0 +1,118 @@
+name: Android C14 exact minmax continuation
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c14-minmax.yml'
+      - 'patches/android-c14-minmax.patch'
+      - 'tools/guest_c14_resume.cpp'
+      - 'tools/android_c14_result.mjs'
+      - 'tests/minimal_guest_minmax_across_test.cpp'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: android-c14-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  continue-original-state:
+    if: github.event.pull_request.head.ref == 'fix/android-c14-minmax-continuation-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c13-avb-fresh-boot
+          run-id: 41009073891
+          github-token: ${{ github.token }}
+          path: input-c13
+      - name: Verify original state and apply only reviewed minmax patch
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c14 build
+          git merge-base --is-ancestor 06aad4234906c0180f75bd1f2df962b6ccfd1bb1 HEAD
+          git diff --exit-code 06aad4234906c0180f75bd1f2df962b6ccfd1bb1 HEAD -- src third_party
+          cat <<'SHA' | sha256sum --check
+          2a67dd8683dc179fb98effee1c1ff7d10b251e9626d9f6a37698fabe3d335caf  input-c13/current.rvg
+          acbddc19e78c97f03817cd2f031435b8624be70ed81ed280ca810f229f4e5d37  input-c13/current.json
+          f06a3c23fc96b6f8f5b2c061408f042c619dacef7eb64fcd71d3639c14b3193b  input-c13/tested-source.tar.gz
+          324d44dbacbb9b8a67de7d1a4e2903f7a8476572134c82f28dd40181dcff2965  patches/android-c14-minmax.patch
+          f57660b1b1a78c2cba57669d6567e39a137ce53876c1aba1643499a35eb2dcfc  tools/guest_c14_resume.cpp
+          057a5aa324b765f0cfaa843984ab7336c811f3df6d9f0ba5770c7a24eda0a0e4  tools/android_c14_result.mjs
+          e4b6f84b30c8e2e165a2df896fd6cef308a577ff3ad718c09a1e5013fc77a436  tests/minimal_guest_minmax_across_test.cpp
+          SHA
+          git apply --check patches/android-c14-minmax.patch
+          git apply patches/android-c14-minmax.patch
+          echo '8f1a5f8615dea3b9e3986332d693a20b5d42c2bf54b177f2771a09e780e8b702  src/minimal_guest_simd.inc' | sha256sum --check
+          tar -xzf input-c13/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          node tools/android_c14_result.mjs preflight input-c13 | tee evidence/c14/input-preflight.json
+          git rev-parse HEAD > evidence/c14/source-commit.txt
+          git diff -- src > evidence/c14/applied-source.patch
+          sha256sum tools/*c14* patches/android-c14-minmax.patch tests/minimal_guest_minmax_across_test.cpp src/minimal_guest_simd.inc > evidence/c14/source-sha256.txt
+      - name: Compile and test minmax plus previous instruction and journal regressions
+        run: |
+          set -euo pipefail
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc'
+          for suite in minimal_guest_minmax_across minimal_guest_addp_scalar minimal_guest_xtn guest_boot_cycle guest_c13_wfi_phase; do
+            g++ $FLAGS "tests/${suite}_test.cpp" build/softfloat/libreverse_softfloat.a -o "build/c14-$suite"
+            "build/c14-$suite" | tee "evidence/c14/$suite.json"
+          done
+          node --test tests/android_guest_outcome.test.mjs tests/android_partition_readiness.test.mjs > evidence/c14/control-tests.tap
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c14_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c14-native
+          tar -czf evidence/c14/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          sha256sum build/c14-native evidence/c14/tested-source.tar.gz > evidence/c14/build-sha256.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Continue exact C13 machine with original disk and bounded supervision
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          export DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          node --input-type=module <<'NODE'
+          import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const r=await superviseNativeCycle({command:'build/c14-native',args:['input-c13/current.rvg','input-c13/current.json',process.env.DISK,'evidence/c14/journal','120000','150000000'],outputDirectory:'evidence/c14',initialInstructions:910037398,startupMs:180000,noProgressMs:90000,wallMs:390000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C14_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(r));if(r.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Audit actual guest outcome and retain architectural stops
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f evidence/c14/journal/latest.json; then
+            node tools/android_c14_result.mjs audit input-c13 evidence/c14 | tee evidence/c14/audit-stdout.json
+          fi
+      - name: Record unchanged input evidence
+        if: always()
+        run: |
+          mkdir -p evidence/c14
+          if test -f input-c13/current.rvg; then sha256sum input-c13/current.rvg input-c13/current.json > evidence/c14/original-input-sha256.txt; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c14-minmax-continuation
+          path: evidence/c14/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+      - name: Reject failed or unverified guest execution
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c14/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('result.json').execution_progress_accepted,true);
+          console.log('C14 bounded CPU continuation verified; Android display remains unverified.');
+          NODE

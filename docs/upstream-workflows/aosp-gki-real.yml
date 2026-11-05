@@ -1,0 +1,77 @@
+name: REVERSE authentic Android GKI kernel source and independent extractor oracle
+on:
+  pull_request:
+    paths:
+      - 'tools/aosp_boot_preflight.mjs'
+      - 'tests/aosp_boot_preflight.test.mjs'
+      - '.github/workflows/aosp-gki-real.yml'
+      - 'docs/AOSP_BOOT_PREFLIGHT.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  aosp-gki:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Validate original regression tests first
+        run: node --test tests/aosp_boot_preflight.test.mjs
+      - name: Acquire official public Android14-6.1 GKI from source-pinned CI build
+        run: |
+          set -euo pipefail
+          mkdir -p input oracle evidence
+          # Android Common tag android14-6.1-2026-09_r5:
+          # source commit 6d8630162a371a04152cf5778f8a5b90e49f30a6
+          # public official artifact build 16707926, target kernel_aarch64.
+          url='https://ci.android.com/builds/submitted/16707926/kernel_aarch64/latest/raw/boot.img'
+          curl --fail --location --silent --show-error --retry 2 --max-time 180 "$url" -o input/boot.img
+          test "$(stat -c '%s' input/boot.img)" -le 268435456
+          sha256sum input/boot.img | tee evidence/gki-container.sha256
+          node tools/aosp_boot_preflight.mjs \
+            --boot input/boot.img --gki-kernel-only \
+            --extract-dir extracted > evidence/gki-manifest.json
+          jq -e '.status=="gki_kernel_only" and .arm64_image_magic==true and
+            .android_boot==false and .android_init_observed==false and
+            .container_header_version==4 and .kernel.size>0' evidence/gki-manifest.json
+          sha256sum extracted/kernel.bin | tee evidence/gki-kernel.sha256
+      - name: Compare exact extracted Image with independently implemented AOSP unpack_bootimg
+        run: |
+          set -euo pipefail
+          # An exact open-source AOSP commit, not a second copy of our parser.
+          curl --fail --location --silent --show-error --retry 2 --max-time 45 \
+            'https://android.googlesource.com/platform/system/tools/mkbootimg/+/b78811e89d774685e9262339a8fedcbe2fc89efe/unpack_bootimg.py?format=TEXT' \
+            | base64 --decode > evidence/aosp-unpack_bootimg.py
+          python3 evidence/aosp-unpack_bootimg.py --boot_img input/boot.img --out oracle \
+            > evidence/aosp-unpack-info.txt
+          cmp -s extracted/kernel.bin oracle/kernel
+          printf 'Independent AOSP unpack_bootimg kernel parity: byte-identical.\n' \
+            | tee evidence/oracle-parity.txt
+          sha256sum evidence/aosp-unpack_bootimg.py > evidence/aosp-unpack-source.sha256
+          {
+            echo '## Authentic AOSP GKI preflight (not Android boot)'
+            echo ''
+            echo 'Source: android14-6.1-2026-09_r5, commit 6d8630162a371a04152cf5778f8a5b90e49f30a6, build 16707926.'
+            echo ''
+            echo 'Extracted kernel is byte-identical to independently pinned AOSP unpack_bootimg.'
+            echo ''
+            echo 'Guest /init NOT observed; vendor_boot/init_boot/system/vendor not provided.'
+            echo ''
+            echo 'Kernel exceeds original guest 16 MiB combined budget:'
+            jq -r '.guest_loader_certain_size_block' evidence/gki-manifest.json
+            echo ''
+            cat evidence/gki-container.sha256 evidence/gki-kernel.sha256
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aosp-real-gki-kernel-preflight-evidence
+          path: |
+            evidence/gki-manifest.json
+            evidence/*.sha256
+            evidence/oracle-parity.txt
+            evidence/aosp-unpack-info.txt
+          retention-days: 14

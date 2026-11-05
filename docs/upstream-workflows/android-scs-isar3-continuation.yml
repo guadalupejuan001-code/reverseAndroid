@@ -1,0 +1,139 @@
+name: Android SCS exit, real bootconfig and ISAR3 continuation
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest_system.inc'
+      - 'tests/minimal_guest_system_test.cpp'
+      - '.github/workflows/android-scs-isar3-continuation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  authentic-android-isar3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-rvi2-boot-continuation
+          run-id: 40810724189
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify original state and independently assemble the rejected instruction
+        run: |
+          set -euo pipefail
+          mkdir -p build/base evidence
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          echo '174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733  prior/current.rvg' | sha256sum -c -
+          node tools/audit_gki_rvg.mjs prior/current.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733 \
+            > evidence/input-provenance.json
+          printf '.text\nmrs x8, S3_0_C0_C6_3\n' > build/isar3.S
+          clang --target=aarch64-none-elf -c build/isar3.S -o build/isar3.o
+          node --input-type=module <<'NODE' > evidence/assembler.json
+          import {readFileSync} from 'node:fs';
+          const b=readFileSync('build/isar3.o');
+          if(b.subarray(0,6).toString('hex')!=='7f454c460201'||b.readUInt16LE(18)!==183)
+            throw Error('Oracle is not a little-endian AArch64 ELF64 object');
+          const at=Number(b.readBigUInt64LE(40)),size=b.readUInt16LE(58);
+          const count=b.readUInt16LE(60),strings=b.readUInt16LE(62);
+          const sh=at+strings*size;
+          const names=b.subarray(Number(b.readBigUInt64LE(sh+24)),
+            Number(b.readBigUInt64LE(sh+24)+b.readBigUInt64LE(sh+32)));
+          let opcode;
+          for(let i=0;i<count;i++){
+            const h=at+i*size,n=b.readUInt32LE(h),end=names.indexOf(0,n);
+            if(names.toString('ascii',n,end)==='.text'){
+              if(b.readBigUInt64LE(h+32)!==4n)throw Error('Unexpected oracle instruction extent');
+              opcode=b.readUInt32LE(Number(b.readBigUInt64LE(h+24)));
+            }
+          }
+          if(opcode!==0xd5380668)throw Error('Independent ISAR3 opcode mismatch');
+          console.log(JSON.stringify({assembler:'Clang AArch64',instruction:'MRS X8, S3_0_C0_C6_3',
+            opcode:'0x'+opcode.toString(16),expected_baseline_value:0}));
+          NODE
+      - name: Build the original and repaired CPU with the same XI Ether memory
+        run: |
+          set -euo pipefail
+          cp src/minimal_guest*.hpp src/minimal_guest*.inc build/base/
+          git show de6243c4b8f87b88f1afcf97cf6b06b0736906ff:src/minimal_guest_system.inc \
+            > build/base/minimal_guest_system.inc
+          git show de6243c4b8f87b88f1afcf97cf6b06b0736906ff:tools/guest_linux_probe.cpp \
+            > build/base/guest_linux_probe.cpp
+          # The pinned historical implementation has a const MRS accessor.
+          # Match both generated declaration and call to that old const body.
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('build/base/minimal_guest.hpp');s=p.read_text()
+          old='std::uint64_t system_read(unsigned id,unsigned rt=31);'
+          call='system_read((instruction>>5)&65535,rd)'
+          assert s.count(old)==1
+          assert s.count(call)==1
+          p.write_text(s.replace(old,'std::uint64_t system_read(unsigned id) const;').replace(call,'system_read((instruction>>5)&65535)'))
+          PY
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          common="-std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1"
+          g++ $common -Ibuild/ether-compat -Ideps/mundo-x/native/include -Ibuild/base -Isrc \
+            build/base/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe-old
+          g++ $common -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe-new
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/native-system
+          timeout 180 build/native-system > evidence/native-system.json
+          jq -e '.checks>=1828 and .existing_quantum_qubits==4096' evidence/native-system.json
+      - name: Reproduce the exact old failure after genuine SCS and bootconfig processing
+        run: |
+          set -euo pipefail
+          timeout 540 build/probe-old prior/current.rvg 100000000 evidence/before-isar3.rvg \
+            --chunk=10000 --wall-ms=480000 > evidence/before-isar3.json \
+            2> evidence/before-isar3.heartbeat
+          jq -e '.initial_instructions==12020000 and .guest.instructions==65788352 and
+            .guest.exceptions==0 and .guest.exception_level==1 and .guest.mmu_enabled and
+            .stop_reason=="Unsupported AArch64 system register read 0xc033" and
+            .next_instruction.opcode=="0xd5380668" and
+            (.console|contains("Load bootconfig: 118 bytes 7 nodes")) and
+            (.console|contains("Booting Linux on physical CPU")) and
+            .android_boot==false and .linux_userspace_init_observed==false' evidence/before-isar3.json
+          echo '4cefac0e7d8271999c759010d35ac9911d3ad029ab20723d4376b04607b2b49f  evidence/before-isar3.rvg' | sha256sum -c -
+      - name: Accept the real MRS and prove exact direct versus resumed transitions
+        run: |
+          set -euo pipefail
+          build/probe-new evidence/before-isar3.rvg 1 build/one.rvg > evidence/one.json
+          jq -e '.initial_instructions==65788352 and .guest.instructions==65788353 and
+            .guest.pc=="0xffffffc0804007ac" and .next_instruction.registers.x8=="0x0" and
+            .guest.exceptions==0 and .stop_reason=="instruction_budget"' evidence/one.json
+          # A completed milestone must not require later ID registers to
+          # remain unsupported forever. Stop immediately before MMFR4.
+          build/probe-new build/one.rvg 9 evidence/current.rvg > evidence/after-isar3.json
+          build/probe-new evidence/before-isar3.rvg 10 build/direct.rvg > evidence/direct.json
+          cmp build/direct.rvg evidence/current.rvg
+          jq -e '.guest.instructions==65788362 and .guest.exceptions==0 and
+            .stop_reason=="instruction_budget" and
+            .next_instruction.opcode=="0xd5380788" and .guest.exception_level==1 and
+            .android_boot==false and .linux_userspace_init_observed==false' evidence/after-isar3.json
+          sha256sum evidence/before-isar3.rvg evidence/current.rvg > evidence/checkpoints.sha256
+          {
+            echo '## Authentic Android kernel: SCS exit, UART, bootconfig and one ID-register repair'
+            jq '{checks,existing_quantum_qubits}' evidence/native-system.json
+            jq '{instructions:.guest.instructions,stop:.stop_reason,uart_chars:(.console|length)}' evidence/before-isar3.json
+            jq '{instructions:.guest.instructions,stop:.stop_reason,next:.next_instruction.opcode}' evidence/after-isar3.json
+            echo 'ISAR3 milestone ends before MMFR4; later feature support may extend this point.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-scs-isar3-verified-continuation
+          path: evidence/
+          retention-days: 14

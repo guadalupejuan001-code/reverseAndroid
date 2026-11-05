@@ -1,0 +1,86 @@
+{
+  "schema": "reverse-android-continuity-v1",
+  "cycle": "C11",
+  "repository": "guadalupejuan001-code/REVERSE-PC",
+  "pull_request": 85,
+  "branch": "fix/android-c11-structures-20261030",
+  "tested_source_commit": "03dcde708f96742d541040e6c3511cda4f914696",
+  "workflow_input_commit": "6c0b5b9a025dcf246dc8f8a6b967c333155acbe4",
+  "workflow_run": 41003034259,
+  "workflow_job": 123891576180,
+  "result_artifact": {
+    "id": 12954342866,
+    "name": "reverse-c11-structures-continuation",
+    "zip_sha256": "8e3bf61d2ca7023678f35f4105209cea24b414354389dcac724f1e9b9ffd2b02",
+    "expires_at": "2026-11-13T04:33:53Z"
+  },
+  "tested_source_artifact": {
+    "id": 12953804938,
+    "name": "reverse-c11-tested-source-and-runner",
+    "zip_sha256": "6ce38d6a619ea099ee934c9ec762767fdee9a86a70ac4a5a836cd4133762eb1b"
+  },
+  "implemented": ["ST2 full structures", "ST3 full structures", "ST4 full structures", "LD2 full structures", "LD3 full structures", "LD4 full structures"],
+  "preserved": ["LD1/ST1", "XTN/XTN2", "SSHLL/USHLL", "R2 source integrity and process supervision", "original XI/Ether authority", "original kernel and disk", "C06 entry-root proof"],
+  "tests": {
+    "new_structure_cases": 10369,
+    "structure_checks": 1217360,
+    "llvm_structure_encoding_cases": 10176,
+    "host_tests_passed": 143,
+    "host_tests_failed": 0,
+    "native_suites_passed": ["minimal_guest_structures", "minimal_guest_xtn", "minimal_guest_widen_shift", "minimal_guest_fp", "minimal_guest_el0_cache", "minimal_guest_crc", "guest_boot_cycle", "guest_boot_resume_proof"],
+    "old_interpreter_negative_control_rejected": true,
+    "changed_report_native_negative_control_rejected": true,
+    "published_sources_equal_locally_tested_sources": true,
+    "final_checkpoint_reaudited_locally": true,
+    "scope": "Instruction, integrity, supervisor and regression tests; not a claim that every repository workflow passes or Android has booted fully."
+  },
+  "actual_guest_execution": {
+    "input_cycle": "C10",
+    "input_instructions": 6456253347,
+    "input_pc": "0x4ce568",
+    "input_opcode": "0x4c9f0192",
+    "input_state_sha256": "dc1683ae2cf0f469852785f83d12d18e99cb9631a3b1d4ba4600c60993353307",
+    "advanced_instructions": 28418734,
+    "instructions": 6484672081,
+    "pc": "0x4cb8e4",
+    "exception_level": 0,
+    "counter_subtick": 49,
+    "counter_instructions_per_tick": 64,
+    "host_elapsed_ms": 19811,
+    "new_uart_bytes": 0,
+    "stop_reason": "architectural_stop",
+    "error": "Unsupported AArch64 instruction 0x5ef1b800 at 0x4cb8e4",
+    "guest_kernel_panic": false,
+    "supervisor_forced_kill": false,
+    "execution_progress_accepted": false,
+    "explanation": "El bloqueo ST4 fue superado y se ejecutaron 28.418.734 instrucciones adicionales. El ciclo termina con fallo arquitectonico por ADDP pendiente, no como un arranque completado ni como una parada del supervisor. No hubo mensajes nuevos de consola: no se afirma otro hito de servicios o interfaz."
+  },
+  "latest_checkpoint": {
+    "state_file": "current.rvg",
+    "state_sha256": "f93a5f85f892916c61772cd33d3361c6c961acb43fc43e7df1a92b38889c65f4",
+    "report_file": "current.json",
+    "report_sha256": "af7c8c022f790307f2ccc4d5a6b9ca7672f7602364719218a12fa1e27b5dbd61",
+    "root_entry_checkpoint_sha256": "4c20cd09e353f82b032c17636ae2d72cec6988df5a5b00afbd756464c4dcd575",
+    "ancestors": ["parent-c10.json", "parent-c09.json", "parent-c08.json", "parent-c07.json", "entry-proof.json"]
+  },
+  "original_disk": {
+    "artifact_run": 40910284394,
+    "artifact_id": 12912064693,
+    "artifact_name": "reverse-android-c03-genuine-partition-disk",
+    "filename": "android-slot-a.raw",
+    "bytes": 8738832384,
+    "sha256": "28303ac7b2832cbde4e1c56551bf81816b55bc946cc75a444f2605316ed97e1c"
+  },
+  "next_task": {
+    "opcode": "0x5ef1b800",
+    "disassembly_verified_with": "LLVM llvm-objdump",
+    "instruction": "addp d0, v0.2d",
+    "description": "Implementar y probar ADDP escalar, luego continuar desde el checkpoint C11 exacto. No reejecutar C06 ni saltar la instruccion.",
+    "resume_runner_update_required": true,
+    "runner_note": "El ejecutable C11 existente esta fijado al checkpoint de entrada C10; el siguiente ciclo debe fijar explicitamente la salida C11 indicada aqui, conservando los controles de integridad."
+  },
+  "android_framework_verified": false,
+  "android_display_verified": false,
+  "native_android_games_verified": false,
+  "merged_to_main": false
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "reverse-c47-verified-original-media-transport-v1",
+  "disk_bytes": 10888413184,
+  "disk_sha256": "4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e",
+  "compression": "gzip",
+  "parts": [
+    {
+      "file": "disk.part-aa",
+      "bytes": 419430400,
+      "sha256": "4b648742bd85b0169e9c3bb235a1000b402f2fba69af2ed21e6c9802fa86342b"
+    },
+    {
+      "file": "disk.part-ab",
+      "bytes": 419430400,
+      "sha256": "df6c5aeb5d645369ff67923cee211f555baf73429c062163cf4d12e19c6391aa"
+    },
+    {
+      "file": "disk.part-ac",
+      "bytes": 322133578,
+      "sha256": "8a28cb4ae656a9d8b09507d47a4f27c4e20f648c6f125e47768e63faea85ebba"
+    }
+  ],
+  "guest_state_modified": false,
+  "guest_instructions_executed": 0
+}

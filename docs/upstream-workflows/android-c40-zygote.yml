@@ -1,0 +1,190 @@
+name: Android C40 authenticated Zygote launcher to framework
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c40-zygote.yml
+      - tools/android_kernel_observer.mjs
+      - tools/android_live_property.mjs
+      - tools/android_c40_zygote_stage.mjs
+      - tests/android_c40_zygote_stage.test.mjs
+      - docs/ANDROID_C40_ZYGOTE_LAUNCH.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  c40-continue-real-android:
+    if: github.event.pull_request.head.ref == 'experiment/android-c40-zygote-launch-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 58
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Confirm C40 changes only observations and never modifies XI Ether or Android security
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c40-diagnostics build
+          changes=$(git diff --name-only e1fa10cf0594d7d17f4f28521603a83f73a28f4e HEAD -- src third_party patches scripts tools)
+          for file in $changes; do
+            case "$file" in
+              tools/android_kernel_observer.mjs|tools/android_live_property.mjs|tools/android_c40_zygote_stage.mjs) ;;
+              *) echo "Unexpected guest/runtime change: $file"; exit 1 ;;
+            esac
+          done
+          node --check tools/android_kernel_observer.mjs
+          node --check tools/android_c40_zygote_stage.mjs
+          node --test tests/android_c40_zygote_stage.test.mjs tests/android_odsign_property_probe.test.mjs tests/android_framework_evidence.test.mjs tests/android_c35_stage.test.mjs > evidence/c40-diagnostics/tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c39-verified-android-checkpoint
+          run-id: 41360328706
+          github-token: ${{ github.token }}
+          path: source-c39
+      - name: Authenticate exact C39 binary snapshot and producer
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c39/output-contract.json source-c39 > evidence/c40-diagnostics/source-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const c=read('source-c39/output-contract.json'),r=read('source-c39/current.json');
+          assert.equal(c.schema,'reverse-c27-profile-resume-contract-v1');
+          assert.equal(c.source_commit,'e1fa10cf0594d7d17f4f28521603a83f73a28f4e');
+          assert.equal(c.checkpoint_sha256,'094d5c9b9532fbb21ea029031b952f46c4df0e589c2f0d75a4dd64677bc49438');
+          assert.equal(r.guest.instructions,18393448839);
+          assert.equal(r.error,'');assert.equal(r.stop_reason,'instruction_budget');
+          NODE
+      - name: Independently prove the Zygote app_process64 launch command in original guest memory
+        run: |
+          set -euo pipefail
+          node --max-old-space-size=5000 tools/android_kernel_observer.mjs source-c39/current.rvg 094d5c9b9532fbb21ea029031b952f46c4df0e589c2f0d75a4dd64677bc49438 1073741824 --live-properties --zygote-probe > evidence/c40-diagnostics/source-kernel.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {classifyZygoteStage} from './tools/android_c40_zygote_stage.mjs';
+          const k=JSON.parse(readFileSync('evidence/c40-diagnostics/source-kernel.json','utf8'));
+          const p=classifyZygoteStage(k);
+          assert.equal(p.checkpoint_sha256,'094d5c9b9532fbb21ea029031b952f46c4df0e589c2f0d75a4dd64677bc49438');
+          assert.equal(p.launcher_pid,567);
+          assert.equal(p.stage,'zygote_launcher_executing');
+          assert.equal(p.zygote_exec_confirmed,true);
+          assert.equal(p.zygote_socket_responsive_verified,false);
+          assert.deepEqual(p.launcher_argv,['/system/bin/app_process64','-Xzygote','/system/bin','--zygote','--start-system-server','--socket-name=zygote']);
+          writeFileSync('evidence/c40-diagnostics/source-zygote-stage.json',JSON.stringify(p,null,2)+'\n');
+          console.log(JSON.stringify(p,null,2));
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Compile identical native XI Ether ARM64 interpreter and frame witness
+        run: |
+          set -euo pipefail
+          tar -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          FLAGS="-std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools"
+          g++ $FLAGS tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c40-native
+          g++ $FLAGS tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/c40-frame
+          build/c40-native --pins > evidence/c40-diagnostics/native-pins.json
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';
+          verifyNativePins(JSON.parse(readFileSync('evidence/c40-diagnostics/native-pins.json','utf8')));
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Restore authentic original partition disk without modifying Android image
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c40-diagnostics/media.json
+          rm -rf disk-input
+      - name: Resume native Android from live Zygote launcher with three bounded CPU cycles
+        run: |
+          set -euo pipefail
+          SOURCE_COMMIT=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs source-c39/output-contract.json source-c39 build/c40-native new-media/android-c27.raw build/c40-frame evidence/c40 "$SOURCE_COMMIT" 540000 500000000 3 > evidence/c40-diagnostics/native-sequence.json
+      - name: Inspect resulting Zygote launch and system_server from authentic machine bytes
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          import {preflight} from './tools/android_c27_profile_resume.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const source=read('source-c39/output-contract.json'),dest=read('evidence/c40/output-contract.json');
+          preflight(source,'source-c39');preflight(dest,'evidence/c40');
+          const start=read('source-c39/current.json'),report=read('evidence/c40/current.json');
+          const result=read('evidence/c40/result.json'),host=read('evidence/c40/process-outcome.json');
+          const boundary=read('evidence/c40/boundary-summary.json');
+          assert.equal(report.initial_instructions,18393448839);
+          assert.ok(report.guest.instructions>18393448839);
+          assert.equal(report.provenance.input_checkpoint_sha256,source.checkpoint_sha256);
+          assert.equal(report.error,'');
+          assert.ok(['instruction_budget','host_wall_budget'].includes(report.stop_reason));
+          assert.equal(host.status,'process_completed');assert.equal(host.exit_code,0);
+          assert.equal(result.execution_progress_accepted,true);
+          assert.equal(boundary.clean_completed,true);
+          assert.equal(boundary.checkpoint_sha256,dest.checkpoint_sha256);
+          for(const key of ['guest_boot_failure','guest_reboot_requested','guest_kernel_panic','guest_terminal_failure'])assert.equal(result[key],false);
+          NODE
+          node --max-old-space-size=5000 tools/android_kernel_observer.mjs evidence/c40/current.rvg "$(node -p "require('./evidence/c40/output-contract.json').checkpoint_sha256")" 1073741824 --live-properties --zygote-probe > evidence/c40-diagnostics/result-kernel.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {classifyZygoteStage} from './tools/android_c40_zygote_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const k=read('evidence/c40-diagnostics/result-kernel.json');
+          const report=read('evidence/c40/current.json');
+          const p=classifyZygoteStage(k);
+          assert.equal(k.input_unchanged,true);
+          assert.equal(k.checkpoint_sha256,report.checkpoint_sha256);
+          assert.equal(k.instructions,report.guest.instructions);
+          const fw=read('evidence/c40/runtime-evidence.json');
+          assert.equal(fw.checkpoint_sha256,k.checkpoint_sha256);
+          const v=k.live_boot_property?.boot_chain_property_observations??[];
+          for(const name of ['odsign.key.done','odsign.verification.done']){
+            assert.ok(v.some(x=>x.name===name&&x.status==='property_observed'&&x.value==='1'),'Missing original odsign security property '+name);
+          }
+          const summary={...p,source_sha256:'094d5c9b9532fbb21ea029031b952f46c4df0e589c2f0d75a4dd64677bc49438',
+            added_instructions:report.advanced_instructions,framework_runtime_verified:fw.framework_runtime_verified===true,
+            scanout_exported:fw.scanout_exported===true,
+            guest_kernel_security:k.live_kernel_security,actual_uart_tail:report.console.split(/\r?\n/).filter(Boolean).slice(-24)};
+          writeFileSync('evidence/c40-diagnostics/actual-zygote-stage.json',JSON.stringify(summary,null,2)+'\n');
+          console.log(JSON.stringify(summary,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c40-zygote-diagnostics
+          path: |-
+            evidence/c40-diagnostics/
+            evidence/c40/boundary-summary.json
+            evidence/c40/continuation-error.txt
+          if-no-files-found: warn
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: reverse-c40-authenticated-android-checkpoint
+          path: |-
+            evidence/c40/
+            !evidence/c40/native/journal/**
+            !evidence/c40/native/current.rvg
+            !evidence/c40/native/frame.ppm
+            !evidence/c40/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90

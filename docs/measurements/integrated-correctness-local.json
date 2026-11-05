@@ -1,0 +1,9 @@
+{
+  "suite": "integrated_quantum_correctness",
+  "random_circuits": 200,
+  "Ether_window_cases": 32,
+  "seed": 20261025,
+  "max_observable_error": 3.663735981263017e-15,
+  "memory_revision_RNG_rollback": true,
+  "budget_rejection_atomic": true
+}

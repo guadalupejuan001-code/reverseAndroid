@@ -1,0 +1,13 @@
+# C60: SHLL/SHLL2 with the original compact decoder
+
+C59 genuinely executed the Android FRINTM stop and verified count 28,563,139,536, SHA-256 `cdc431600c2f1fd7aebdee657aedbc6131d829bacce54bc64a507e44f3dd472e`. A subsequent real execution stopped after 47 more instructions at `0x2ea13821`, PC `0x5cb4183460`: SHLL V1.2D,V1.2S,#32. Source V1 has 32-bit elements `[0,600]`. The result must be 64-bit elements `[0,0x25800000000]`, with FPSR=16 unchanged. The failed tail is diagnostic. A separate clean 47-instruction replay must reproduce SHA-256 `daa7094781d6ce93afa3b90b36637c3cd228967dd0664f4fb772c972667a4070` and pass every admission/security gate before continuation.
+
+Add all six allocated SHLL/SHLL2 forms: 8B to 8H by 8, 4H to 4S by 16, and 2S to 2D by 32, each selecting the low or high source half. The destination is always 128 bits. Capture the source before writing aliases; use unsigned shifts to avoid signed overflow. Reject reserved size 3 before state mutation. Keep the original FP/SIMD access trap, flags and all other architectural state.
+
+Release and UBSan each passed 56,129 cases and 3,761,618 checks. The independent local oracle copies source bytes into the upper half of each widened element. Cases cover all register pairs, both halves, all 8/16-bit input values, 32-bit random inputs, every source bit, aliases, all FPCR rounding/DN/FZ modes, cumulative FPSR/QC preservation, original snapshot replay, GPR/core/RAM invariance, access traps and rollback. Physical ARM CI executes all register pairs and further random encodings. Neighboring SSHLL/USHLL and original FP/FRINT paths are regression checked.
+
+CI authenticates the uploaded C59 source and its tested native executable. It independently replays the reference CPU and compares every candidate prefix byte, then crosses the actual SHLL instruction and verifies every original byte except V1, PC, instruction count, counter phase and final checksum. Genuine bounded Android stages follow, with verified checkpoints uploaded before continuation.
+
+No changes to compact RVG/MXIM encoding or decoding, XI/Ether authority, the 2-GiB logical RAM, the original disk or authentication, the original HMAC counter seed and 64-instruction cadence, per-instruction IRQ checks, or enforcing SELinux. The unchanged original C53 decoder/frame executable is reused. Outer ZIP level 1 remains only a transport setting. Full boot requires live system_server with Zygote lineage, framework evidence and live PID1 sys.boot_completed=1. An 800x600 black scanout alone does not satisfy it.
+
+Architectural reference: [Arm Instruction Set Reference Guide, SHLL and SHLL2](https://documentation-service.arm.com/static/6245c734b059dc5ff9a8bdab).

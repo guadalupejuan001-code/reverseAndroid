@@ -1,0 +1,155 @@
+name: REVERSE authentic Cuttlefish Android kernel plus first-stage initrd in XI Ether
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-cuttlefish-first-init-guest.yml'
+      - 'tools/aosp_cuttlefish_zip_probe.mjs'
+      - 'tools/aosp_ramdisk_preflight.mjs'
+      - 'src/minimal_guest.hpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  authentic-android-guest-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Extract and hash-pin exact official Cuttlefish ARM64 images, no super.img
+        run: |
+          set -euo pipefail
+          mkdir -p build input evidence
+          node --test tests/aosp_cuttlefish_zip_probe.test.mjs > evidence/zip-tests.tap
+          node --test tests/aosp_ramdisk_preflight.test.mjs > evidence/ramdisk-tests.tap
+          node tools/aosp_cuttlefish_zip_probe.mjs extract --out-dir input/boot \
+            > evidence/archive.json
+          node tools/aosp_boot_preflight.mjs \
+            --boot input/boot/boot.img \
+            --vendor-boot input/boot/vendor_boot.img \
+            --init-boot input/boot/init_boot.img \
+            --extract-dir input/segments > evidence/boot-layout.json
+          echo 'b6f1c12a695e99c761f6a23713f4601dba06e690e77acfb5d1906b0d32f5c967  input/boot/boot.img' | sha256sum -c -
+          echo 'c4f820039ef9c2d1957461f33916f4d24b94d7b866e03ff91dbd7e9f72793d29  input/boot/init_boot.img' | sha256sum -c -
+          echo '6f88b6c7164814bef200100763f9880733fe99aed17ee8e937f46b185b24fa8c  input/boot/vendor_boot.img' | sha256sum -c -
+          echo 'f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8  input/segments/kernel.bin' | sha256sum -c -
+          echo '17bee5a35891bc9ff2e2d7a3a9ce26e9e7f42220aad7438e07aaf8b136d6c132  input/segments/generic_ramdisk.bin' | sha256sum -c -
+          node tools/aosp_ramdisk_preflight.mjs input/segments/generic_ramdisk.bin \
+            --out-cpio input/generic.cpio > evidence/authentic-init.json
+          echo 'a042b6e0015930030eae14ab39fd85c805d0a893d17b2e74c410b9689dc08dcc  input/generic.cpio' | sha256sum -c -
+          jq -e '.init_elf_machine==183 and .init_size==3550080 and
+            .init_sha256=="d5c901a96c6e0bad8e3ee8110dc638c9336067fdafd4378860eaead51e4299ba" and
+            .android_init_executed==false' evidence/authentic-init.json >/dev/null
+          jq -e '.boot.version==4 and .vendor_boot.version==4 and
+            .generic_ramdisk_from=="init_boot" and .android_boot==false' evidence/boot-layout.json >/dev/null
+          node --input-type=module <<'NODE' > evidence/linux-image-geometry.json
+          import {readFileSync} from 'node:fs';
+          const k=readFileSync('input/segments/kernel.bin');
+          const flags=k.readBigUInt64LE(24),offset=k.readBigUInt64LE(8),effective=k.readBigUInt64LE(16);
+          const info={kernel_bytes:k.length,initramfs_cpio_bytes:5680128,
+            image_text_offset:String(offset),image_declared_size:String(effective),
+            image_flags:'0x'+flags.toString(16),
+            original_guest_ram_bytes:134217728,
+            one_runtime:'XI/Ether QuantumRuntime+InverseMemory',
+            original_boot_loader_limit:67108864,
+            android_init_executed:false};
+          console.log(JSON.stringify(info,null,2));
+          if(effective>67108864n||offset>67108864n||k.length>67108864)
+            throw Error('AOSP Image cannot fit the existing 128 MiB guest boot geometry');
+          NODE
+      - name: Independently unpack same verified AOSP boot/init_boot with upstream reference
+        run: |
+          set -euo pipefail
+          # Official Gitiles mirrors of the exact upstream source commit.
+          # The SHA-256 was verified in earlier independent CI, so a mirror
+          # cannot silently substitute a different oracle.
+          for host in android.googlesource.com android.git.googlesource.com android.googleid.googlesource.com; do
+            url="https://$host/platform/system/tools/mkbootimg/+/b78811e89d774685e9262339a8fedcbe2fc89efe/unpack_bootimg.py?format=TEXT"
+            if curl --fail --silent --show-error --location --retry 3 --retry-all-errors --retry-delay 2 --max-time 60 \
+              "$url" -o build/oracle-base64.txt && base64 -d build/oracle-base64.txt > build/aosp-unpack.py; then
+              if echo 'a9d260978a63bd06a24b6347e7dee8a28ff96639793caea15dff6aa491316308  build/aosp-unpack.py' | sha256sum -c -; then break; fi
+            fi
+          done
+          echo 'a9d260978a63bd06a24b6347e7dee8a28ff96639793caea15dff6aa491316308  build/aosp-unpack.py' | sha256sum -c -
+          mkdir -p build/oracle-boot build/oracle-init
+          python3 build/aosp-unpack.py --boot_img input/boot/boot.img --out build/oracle-boot > evidence/oracle-boot.txt
+          python3 build/aosp-unpack.py --boot_img input/boot/init_boot.img --out build/oracle-init > evidence/oracle-init.txt
+          cmp input/segments/kernel.bin build/oracle-boot/kernel
+          cmp input/segments/generic_ramdisk.bin build/oracle-init/ramdisk
+          sha256sum build/aosp-unpack.py > evidence/oracle-source.sha256
+          echo 'Independent AOSP unpack_bootimg exact kernel+generic ramdisk parity' > evidence/oracle-boot-parity.txt
+      - name: Compile the ORIGINAL XI/Ether ARM64 interpreter and verify pinned dependency
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = "e2778d962af22f6f1a0794058dd4685fc2573966"
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+      - name: Load genuine Android kernel+generic ramdisk in XI Ether; prove RVG replay identity
+        run: |
+          set -euo pipefail
+          timeout 150 build/linux-probe input/segments/kernel.bin 1 evidence/first.rvg input/generic.cpio \
+            > evidence/first.json
+          timeout 150 build/linux-probe input/segments/kernel.bin 50000 evidence/direct.rvg input/generic.cpio \
+            > evidence/direct.json
+          timeout 150 build/linux-probe evidence/first.rvg 49999 evidence/resumed.rvg \
+            > evidence/resumed.json
+          cmp evidence/direct.rvg evidence/resumed.rvg
+          jq -e '.guest.instructions==50000 and
+            .guest.immutable_image_bytes>47000000 and
+            .guest.max_delta_overrides==0 and .adaptive_classical_storage and
+            .android_boot==false and .linux_userspace_init_observed==false' evidence/direct.json >/dev/null
+          sha256sum evidence/direct.rvg > evidence/checkpoint-50k.sha256
+          cp evidence/direct.rvg evidence/current.rvg
+      - name: Run bounded original ARM64 guest, stop at real first unsupported ISA or board device
+        run: |
+          set -euo pipefail
+          echo '| Batch | Guest instructions | EL | Exceptions | Stop | UART characters |' >> "$GITHUB_STEP_SUMMARY"
+          echo '| --- | ---: | ---: | ---: | --- | ---: |' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 10); do
+            timeout 180 build/linux-probe evidence/current.rvg 250000 evidence/next.rvg > "evidence/step-$i.json"
+            jq -e '.initial_instructions>=50000 and .guest.instructions>=.initial_instructions and
+              .adaptive_classical_storage and .guest.max_delta_overrides==0 and
+              .android_boot==false and .linux_boot_complete==false' "evidence/step-$i.json" >/dev/null
+            stop=$(jq -r '.stop_reason' "evidence/step-$i.json")
+            total=$(jq -r '.guest.instructions' "evidence/step-$i.json")
+            exceptions=$(jq -r '.guest.exceptions' "evidence/step-$i.json")
+            el=$(jq -r '.guest.exception_level' "evidence/step-$i.json")
+            console_chars=$(jq -r '.console|length' "evidence/step-$i.json")
+            printf '| %s | %s | %s | %s | %s | %s |\n' "$i" "$total" "$el" "$exceptions" "$stop" "$console_chars" >> "$GITHUB_STEP_SUMMARY"
+            mv evidence/next.rvg evidence/current.rvg
+            if [[ "$stop" != instruction_budget ]]; then break; fi
+          done
+          last=$(ls evidence/step-*.json | sort -V | tail -1)
+          jq '{initial_instructions,guest:{pc:.guest.pc,instructions:.guest.instructions,
+            exception_level:.guest.exception_level,exceptions:.guest.exceptions,
+            immutable_image_bytes:.guest.immutable_image_bytes},
+            stop_reason,next_instruction,console,
+            android_boot,linux_userspace_init_observed}' "$last" > evidence/actual-stop.json
+          sha256sum evidence/current.rvg > evidence/checkpoint.sha256
+          cat evidence/actual-stop.json
+          cat evidence/checkpoint.sha256
+          {
+            echo '## Authentic AOSP kernel and generic first-stage ramdisk loaded into XI/Ether'
+            echo 'The ramdisk contains the real AArch64 /init but an ELF file in the image is not proof of executing it.'
+            echo 'Only the actual guest UART/stop and original RVG are evidence of guest execution.'
+            echo 'Vendor ramdisk was verified but not yet staged; super.img/device drivers not mounted.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-aosp-first-initrd-xi-checkpoint
+          path: |
+            evidence/
+          retention-days: 7

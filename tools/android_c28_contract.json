@@ -1,0 +1,17 @@
+{
+  "schema": "reverse-c28-source-contract-v1",
+  "checkpoint_sha256": "9db40b80214344583f855ccc777eb74963ece41ca5a1afab8de0737507f0e939",
+  "report_sha256": "7ff064cd92bb1fffa7de798e971abc456dd8032b7cebc0bb7c6cc44aee34e903",
+  "result_sha256": "dc1f9d47ed847c5f298ec93e8bc70c963740720408b3886b2b36996e471c7e61",
+  "process_sha256": "4670e6d2de854298419f66e5658b241a9ea5e3ccc2ab8eadce4e9c4055c949c9",
+  "source_commit": "6a944cc2f9b244b224a409ccc1938ad603524e2e",
+  "source_run": 41140864071,
+  "source_artifact": 13021720249,
+  "source_zip_sha256": "342ac9652adfb5e89f0ce56a41f190378438199cfe9f012721c24fd3132f19b4",
+  "instructions": 2833048839,
+  "pc": "0x5568b464ec",
+  "phase": 23,
+  "seed_sha256": "699e17ffab1ef3618567ee928b25cdc0b6c7feed3d520147e9111c76a751a6cb",
+  "fresh_c27_original_init_observed": true,
+  "clean_completed_source": true
+}

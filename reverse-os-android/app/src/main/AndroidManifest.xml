@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Internet belongs solely to the explicitly opened Android WebView host browser.
+       The XI/Ether execution engine stays local and makes no network requests. -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <queries>
+    <package android:name="com.android.chrome"/>
+    <intent>
+      <action android:name="android.intent.action.MAIN"/>
+      <category android:name="android.intent.category.LAUNCHER"/>
+    </intent>
+  </queries>
+  <application
+      android:label="${appLabel}"
+      android:theme="@style/Theme.ReverseOS"
+      android:allowBackup="false"
+      android:usesCleartextTraffic="false"
+      android:supportsRtl="true"
+      android:icon="@drawable/ic_reverse">
+    <activity android:name=".BootActivity"
+        android:exported="true"
+        android:screenOrientation="sensorLandscape"
+        android:configChanges="orientation|screenSize|keyboardHidden">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+    <activity android:name=".WorkbenchActivity" android:exported="false" android:launchMode="singleTask" android:screenOrientation="sensorLandscape" android:configChanges="orientation|screenSize|keyboardHidden" android:windowSoftInputMode="adjustResize"/>
+    <activity android:name=".DesktopActivity"
+        android:exported="false"
+        android:launchMode="singleTask"
+        android:screenOrientation="sensorLandscape"
+        android:windowSoftInputMode="adjustResize"/>
+    <activity android:name=".HomeActivity"
+        android:exported="true"
+        android:theme="@android:style/Theme.NoDisplay">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.HOME"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity android:name=".MainActivity"
+        android:exported="false"
+        android:screenOrientation="sensorLandscape"
+        android:windowSoftInputMode="adjustResize"/>
+  </application>
+</manifest>

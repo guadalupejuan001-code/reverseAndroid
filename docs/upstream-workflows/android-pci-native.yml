@@ -1,0 +1,87 @@
+name: Original XI Ether PCI block and graphics
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest*'
+      - 'tests/minimal_guest_pci_test.cpp'
+      - 'tools/guest_pci_boot.cpp'
+      - '.github/workflows/android-pci-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  own-devices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - name: Exercise real CPU MMIO, GPT payloads, quantum aliases and exact display restoration
+        run: |
+          mkdir -p evidence/c03 build
+          sudo apt-get update -qq
+          sudo apt-get install -y device-tree-compiler
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          node --test tests/android_partition_disk.test.mjs > evidence/c03/partition-tests.txt
+          node --input-type=module - <<'JS'
+          import {writeFileSync} from 'node:fs';
+          import {buildAndroidPartitionDisk} from './tools/android_partition_disk.mjs';
+          writeFileSync('build/input.bin',Buffer.alloc(4096,0x37));
+          const report=await buildAndroidPartitionDisk({purpose:'protocol-fixture',partitions:[{name:'metadata',path:'build/input.bin'},{name:'super',path:'build/input.bin'}]},'evidence/c03/fixture-gpt.raw');
+          writeFileSync('evidence/c03/fixture-gpt.json',JSON.stringify(report,null,2));
+          JS
+          sfdisk --verify evidence/c03/fixture-gpt.raw > evidence/c03/gpt-independent.txt
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_pci_test.cpp build/softfloat/libreverse_softfloat.a -o build/pci-devices
+          build/pci-devices evidence/c03/fixture-gpt.raw > evidence/c03/pci-native.json
+          dtc -I dtb -O dts evidence/c03/pci-machine.dtb > evidence/c03/pci-machine.dts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: reverse-c03-pci-device-evidence, path: 'evidence/c03/', retention-days: 14}
+  genuine-kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-android-c03-genuine-partition-disk, run-id: 40910284394, github-token: '${{ github.token }}', path: disk-input}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-android-kernel-pairs-continuation, run-id: 40817697618, github-token: '${{ github.token }}', path: boot-input}
+      - name: Prepare pinned GKI and genuine normal ramdisk without changing kernel bytes
+        run: |
+          mkdir -p build evidence/c03
+          find disk-input -name acquisition.json -exec cp '{}' evidence/c03/acquisition.json \;
+          find disk-input -name partitions.json -exec cp '{}' evidence/c03/partitions.json \;
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {auditGkiRvg} from './tools/audit_gki_rvg.mjs';
+          const b=readFileSync('boot-input/current.rvg');const p=auditGkiRvg(b,'f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8','4f139751053c39bc1d33c7012fe1d61a8135f002c67be6f0466b3e8f97e2eda3');
+          const at=8+43*8+40;writeFileSync('build/kernel.bin',b.subarray(at,at+p.kernel_bytes));writeFileSync('build/stock-initrd.bin',b.subarray(at+p.kernel_bytes+p.dtb_bytes,at+p.kernel_bytes+p.dtb_bytes+p.initrd_bytes));
+          JS
+          node tools/android_normal_ramdisk.mjs build/stock-initrd.bin build/normal-initrd.bin > evidence/c03/ramdisk-provenance.json
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_pci_boot.cpp build/softfloat/libreverse_softfloat.a -o build/guest-pci-boot
+      - name: Execute the genuine GKI on the own PCI machine for a bounded interval
+        run: |
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          INIT_CODE=$(node -p 'JSON.parse(require("fs").readFileSync("evidence/c03/ramdisk-provenance.json")).init_entry_bytes_hex')
+          build/guest-pci-boot build/kernel.bin build/normal-initrd.bin "$DISK" evidence/c03/current.rvg 900000 "$INIT_CODE" > evidence/c03/current.json
+          python3 - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('evidence/c03');d=json.loads((p/'current.json').read_text());(p/'console.txt').write_text(d['console']);assert d['stop_reason']!='architectural_stop',d['error']
+          print(json.dumps({k:d[k] for k in ['stop_reason','checkpoint_sha256','disk_sha256','disk_bytes','original_android_init_first_instruction_verified']},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: reverse-c03-own-pci-kernel-evidence, path: 'evidence/c03/', retention-days: 14}

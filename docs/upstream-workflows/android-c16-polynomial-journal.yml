@@ -1,0 +1,116 @@
+name: Android C16 polynomial and journal continuation
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c16-polynomial-journal.yml'
+      - 'src/guest_boot_cycle.hpp'
+      - 'src/minimal_guest_simd.inc'
+      - 'tools/guest_c16_resume.cpp'
+      - 'tools/android_c16_result.mjs'
+      - 'tools/android_c16_source.sha256'
+      - 'tests/minimal_guest_polynomial_test.cpp'
+      - 'tests/polynomial_encoding_test.mjs'
+      - 'tests/guest_journal_retention_test.cpp'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: android-c16-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  continue-original-state:
+    if: github.event.pull_request.head.ref == 'fix/android-c16-polynomial-journal-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c15-multiply-long-continuation
+          run-id: 41079499139
+          github-token: ${{ github.token }}
+          path: input-c15
+      - name: Verify authentic input and integrated runtime source
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c16 build
+          git merge-base --is-ancestor 0fc55a306909b8c67ffe3d649b7da4cfb81e50ec HEAD
+          git diff --exit-code 8767b050e226e777cd6e558b9e97ef3e94e58a1d HEAD -- src third_party ':!src/minimal_guest_simd.inc' ':!src/guest_boot_cycle.hpp'
+          sha256sum --check tools/android_c16_source.sha256
+          echo '851ad6cfaad290f0cf130d8730bf500c3993b14dcb46b61d7ccb2b3abb600c9f  input-c15/current.rvg' | sha256sum --check
+          echo '5ed44a445b5f4d1b7180b7520a75acdafca9adf46c73d9f4f1e8d568a8756679  input-c15/current.json' | sha256sum --check
+          echo '4d19cf6f34f5983f336c531e96b3f0f6350dc6d374fc96a41e1228021094ed7d  src/minimal_guest_simd.inc' | sha256sum --check
+          tar -xzf input-c15/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          node tools/android_c16_result.mjs preflight input-c15 > evidence/c16/input-preflight.json
+          git rev-parse HEAD > evidence/c16/source-commit.txt
+          git diff -- src > evidence/c16/applied-source.patch
+      - name: Compile and test the instruction family and previous regressions
+        run: |
+          set -euo pipefail
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc'
+          for suite in minimal_guest_polynomial guest_journal_retention guest_boot_cycle minimal_guest_mla minimal_guest_fp; do
+            g++ $FLAGS "tests/${suite}_test.cpp" build/softfloat/libreverse_softfloat.a -o "build/c16-$suite"
+            "build/c16-$suite" > "evidence/c16/$suite.json"
+          done
+          node --test tests/android_c15_result.test.mjs tests/android_guest_outcome.test.mjs tests/android_partition_readiness.test.mjs > evidence/c16/control-tests.tap
+          for family in polynomial; do
+            node "tests/${family}_encoding_test.mjs" > "evidence/c16/${family}_encoding.json"
+          done
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c16_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c16-native
+          tar -czf evidence/c16/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          sha256sum build/c16-native evidence/c16/tested-source.tar.gz > evidence/c16/build-sha256.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Continue the original C15 machine with its full original disk
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          export DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          node --input-type=module <<'NODE'
+          import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const r=await superviseNativeCycle({command:'build/c16-native',args:['input-c15/current.rvg','input-c15/current.json',process.env.DISK,'evidence/c16/journal','480000','2000000000'],outputDirectory:'evidence/c16',initialInstructions:1127754118,startupMs:300000,noProgressMs:90000,wallMs:960000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C16_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(r));if(r.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Bind and classify the actual output
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f evidence/c16/journal/latest.json; then
+            node tools/android_c16_result.mjs audit input-c15 evidence/c16 > evidence/c16/audit-stdout.json
+          fi
+      - name: Preserve input identity
+        if: always()
+        run: |
+          mkdir -p evidence/c16
+          if test -f input-c15/current.rvg; then sha256sum input-c15/current.rvg input-c15/current.json > evidence/c16/original-input-sha256.txt; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c16-polynomial-journal-continuation
+          path: evidence/c16/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+      - name: Require verified CPU continuation
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c16/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('result.json').execution_progress_accepted,true);
+          console.log('C16 CPU continuation verified. Android framework and display still require their own evidence.');
+          NODE

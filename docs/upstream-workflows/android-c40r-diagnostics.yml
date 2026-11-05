@@ -1,0 +1,31 @@
+name: Android C40R specific stop diagnosis
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c40r-diagnostics.yml
+      - tools/android_c40_recovery_evidence.mjs
+      - tests/android_c40_recovery_evidence.test.mjs
+permissions:
+  contents: read
+jobs:
+  c40r-specific-stop-diagnostics:
+    if: github.event.pull_request.head.ref == 'fix/android-c40r-specific-stop-diagnostics-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Preserve the exact C40R native runner and guest CPU
+        run: |
+          git diff --exit-code d8e5c796a6a40e716ef22f24f90185252f55558b HEAD -- src third_party patches scripts tools/android_c27_profile_resume.mjs tools/android_c27_sequence.mjs tools/guest_c27_profile_resume.cpp
+      - name: Verify host failures keep the structured guest stop cause
+        run: |
+          node --check tools/android_c40_recovery_evidence.mjs
+          node --test tests/android_c40_recovery_evidence.test.mjs tests/android_c40_zygote_stage.test.mjs tests/android_framework_evidence.test.mjs tests/android_odsign_property_probe.test.mjs tests/android_c27_profile_resume.test.mjs tests/android_supervised_cycle.test.mjs

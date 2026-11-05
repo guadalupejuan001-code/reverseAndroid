@@ -1,0 +1,91 @@
+name: Android C07 proven post-init continuation
+on:
+  pull_request:
+    paths: ['.github/workflows/android-post-init-cycle.yml', 'experiments/android-post-init-cycle.json', 'src/guest*', 'src/minimal_guest*', 'tools/guest_pci_cycle.cpp', 'tools/android_verified_init_source.mjs', 'tests/guest_boot_cycle_test.cpp', 'tests/minimal_guest*_test.cpp', 'CMakeLists.txt']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  proven-post-init:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-c05-original-init-continuation, run-id: 40948887628, github-token: '${{ github.token }}', path: input}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-android-c03-genuine-partition-disk, run-id: 40910284394, github-token: '${{ github.token }}', path: disk-input}
+      - name: Build and verify native continuation and its exact original source
+        run: |
+          mkdir -p build evidence/c07
+          cmake -S . -B build/cmake-c07 -DETHER_SOURCE_DIR="$PWD/deps/mundo-x" -DCMAKE_BUILD_TYPE=Release > evidence/c07/cmake-configure.txt
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/guest_boot_cycle_test.cpp build/softfloat/libreverse_softfloat.a -o build/cycle-test
+          build/cycle-test > evidence/c07/cycle-tests.json
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_el0_cache_test.cpp build/softfloat/libreverse_softfloat.a -o build/el0-cache-test
+          build/el0-cache-test > evidence/c07/el0-cache-tests.json
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_fp_test.cpp build/softfloat/libreverse_softfloat.a -o build/fp-test
+          build/fp-test > evidence/c07/fp-tests.json
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_crc_test.cpp build/softfloat/libreverse_softfloat.a -o build/crc-test
+          build/crc-test > evidence/c07/crc-tests.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_pci_cycle.cpp build/softfloat/libreverse_softfloat.a -o build/cycle
+          node tools/android_verified_init_source.mjs input/current.rvg input/current.json > evidence/c07/input-audit.json
+          cp input/current.json evidence/c07/entry-proof.json
+          cp experiments/android-post-init-cycle.json evidence/c07/continuation-pin.json
+          cp input/acquisition.json input/partitions.json input/ramdisk-provenance.json evidence/c07/
+      - name: Continue the actual C06 state without reexecuting the proved entry
+        run: |
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          SHA=$(node -p 'require("./experiments/android-post-init-cycle.json").checkpoint_sha256')
+          WALL=$(node -p 'require("./experiments/android-post-init-cycle.json").wall_ms')
+          STEPS=$(node -p 'require("./experiments/android-post-init-cycle.json").instructions_budget')
+          timeout --signal=TERM --kill-after=30s 360s build/cycle input/current.rvg "$DISK" evidence/c07/journal "$WALL" "$SHA" --chunk=1000000 --instructions="$STEPS" --continue-verified-init=input/current.json > evidence/c07/result.json
+      - name: Preserve the exact successful prefix even after an architectural stop
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync,copyFileSync,existsSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const root='evidence/c07',c=JSON.parse(readFileSync('experiments/android-post-init-cycle.json'));
+          if(!existsSync(root+'/journal/latest.json'))process.exit(0);
+          const ptr=JSON.parse(readFileSync(root+'/journal/latest.json'));
+          if(!/^generation-[1-9][0-9]*$/.test(ptr.generation))throw Error('Invalid journal generation');
+          const dir=root+'/journal/'+ptr.generation,b=readFileSync(dir+'/checkpoint.rvg'),p=JSON.parse(readFileSync(dir+'/report.json'));
+          const sha=createHash('sha256').update(b).digest('hex');
+          if(sha!==ptr.checkpoint_sha256||sha!==p.checkpoint_sha256)throw Error('Saved state/report mismatch');
+          if(p.initial_instructions!==c.instructions||p.advanced_instructions!==p.guest.instructions-c.instructions||p.advanced_instructions<0||p.advanced_instructions>c.instructions_budget)throw Error('Continuation was restarted or exceeded its budget');
+          if(p.provenance.input_checkpoint_sha256!==c.checkpoint_sha256||!p.prior_user_instruction_verified||p.verified_entry_checkpoint_sha256!==c.checkpoint_sha256||p.first_user_instruction_verified||p.provenance.stop_after_init)throw Error('Original entry proof was lost or reexecuted');
+          if(p.provenance.timing_seed_origin!=='checkpoint'||p.provenance.timing_seed_sha256!==c.counter_seed_sha256||p.guest.counter_instructions_per_tick!==c.counter_instructions_per_tick||p.guest.counter_samples<c.counter_samples)throw Error('Original counter stream changed');
+          if(Number(b.readBigUInt64LE(8+4*8))!==p.guest.instructions||'0x'+b.readBigUInt64LE(8+2*8).toString(16)!==p.guest.pc)throw Error('Native PC/count differs from report');
+          copyFileSync(dir+'/checkpoint.rvg',root+'/current.rvg');copyFileSync(dir+'/report.json',root+'/current.json');writeFileSync(root+'/console.txt',p.console);
+          const firstStage=p.console.includes('init: init first stage started!');
+          const modules=[...new Set([...p.console.matchAll(/init: Loaded kernel module (\/lib\/modules\/[A-Za-z0-9_.-]+)/g)].map(m=>m[1]))];
+          writeFileSync(root+'/milestone.json',JSON.stringify({source_entry_verified:true,source_checkpoint_sha256:c.checkpoint_sha256,checkpoint_sha256:sha,instructions:p.guest.instructions,advanced_instructions:p.advanced_instructions,pc:p.guest.pc,exception_level:p.guest.exception_level,stop_reason:p.stop_reason,error:p.error,android_first_stage_started:firstStage,loaded_kernel_modules:modules,android_framework_verified:false,android_display_verified:false,native_android_games_verified:false},null,2));
+          console.log(JSON.stringify({instructions:p.guest.instructions,advanced:p.advanced_instructions,pc:p.guest.pc,reason:p.stop_reason,error:p.error}));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-c07-proven-post-init
+          path: |
+            evidence/c07/
+            !evidence/c07/journal/**
+          retention-days: 14
+      - name: Require real progress beyond C06
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';
+          const p=JSON.parse(readFileSync('evidence/c07/milestone.json'));
+          if(!p.source_entry_verified||p.advanced_instructions<=0||!p.android_first_stage_started)throw Error('Original Android first stage did not start');
+          if(p.stop_reason==='architectural_stop'||p.stop_reason==='no_instruction_progress'||p.stop_reason==='unverified_userspace_entry'||p.stop_reason==='guest_kernel_panic')throw Error('Native blocker preserved: '+p.error);
+          if(/Kernel panic - not syncing|Attempted to kill init!/.test(readFileSync('evidence/c07/console.txt','utf8')))throw Error('Kernel panic cannot establish Android progress');
+          console.log('REVERSE_PROVEN_POST_INIT_PROGRESS');
+          JS

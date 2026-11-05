@@ -1,0 +1,117 @@
+name: Android original init milestone from the existing PCI checkpoint
+on:
+  pull_request:
+    paths: ['.github/workflows/android-init-cycle.yml', 'experiments/android-init-cycle.json', 'src/guest_boot_cycle.hpp', 'tools/guest_pci_cycle.cpp', 'tests/guest_boot_cycle_test.cpp']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  continue-to-original-init:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - id: source
+        name: Read the concrete continuation pin
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync,appendFileSync} from 'node:fs';
+          const c=JSON.parse(readFileSync('experiments/android-init-cycle.json'));
+          for(const n of ['checkpoint_sha256','report_sha256','counter_seed_sha256'])if(!/^[a-f0-9]{64}$/.test(c[n]))throw Error('Invalid source hash');
+          for(const n of ['input_run','disk_run','instructions','counter_samples','wall_ms','instructions_budget','input_counter_instructions_per_tick','counter_instructions_per_tick'])if(!Number.isSafeInteger(c[n])||c[n]<1)throw Error('Invalid numeric pin');
+          if(c.counter_instructions_per_tick<2||c.counter_instructions_per_tick>4096)throw Error('Invalid requested counter cadence');
+          if(![0,1].includes(c.input_exception_level)||!/^0x[0-9a-f]+$/.test(c.input_pc)||c.input_exception_level===0&&c.input_pc!=='0x2a4000')throw Error('Invalid pinned source entry');
+          for(const n of ['input_artifact','disk_artifact'])if(!/^[a-z0-9-]+$/.test(c[n]))throw Error('Invalid artifact name');
+          for(const n of ['input_run','input_artifact','disk_run','disk_artifact'])appendFileSync(process.env.GITHUB_OUTPUT,`${n}=${c[n]}\n`);
+          JS
+      - uses: actions/download-artifact@v4
+        with: {name: '${{ steps.source.outputs.input_artifact }}', run-id: '${{ steps.source.outputs.input_run }}', github-token: '${{ github.token }}', path: input}
+      - uses: actions/download-artifact@v4
+        with: {name: '${{ steps.source.outputs.disk_artifact }}', run-id: '${{ steps.source.outputs.disk_run }}', github-token: '${{ github.token }}', path: disk-input}
+      - name: Build and check the first-instruction stop and exact source
+        run: |
+          mkdir -p build evidence/c05
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/guest_boot_cycle_test.cpp build/softfloat/libreverse_softfloat.a -o build/cycle-test
+          build/cycle-test > evidence/c05/cycle-tests.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_pci_cycle.cpp build/softfloat/libreverse_softfloat.a -o build/cycle
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync,copyFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {auditGkiRvg} from './tools/audit_gki_rvg.mjs';
+          const c=JSON.parse(readFileSync('experiments/android-init-cycle.json')),r=readFileSync('input/current.json');
+          if(createHash('sha256').update(r).digest('hex')!==c.report_sha256)throw Error('Source report mismatch');
+          const p=JSON.parse(r),audit=auditGkiRvg(readFileSync('input/current.rvg'),'f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8',c.checkpoint_sha256);
+          if(audit.instructions!==c.instructions||p.guest.instructions!==c.instructions||p.checkpoint_sha256!==c.checkpoint_sha256||p.first_user_instruction_verified||p.guest.exception_level!==c.input_exception_level||p.guest.pc!==c.input_pc)throw Error('Unexpected source milestone');
+          if(p.guest.counter_samples!==c.counter_samples||p.provenance.timing_seed_sha256!==c.counter_seed_sha256)throw Error('Different persisted counter stream');
+          if((p.guest.counter_instructions_per_tick??1)!==c.input_counter_instructions_per_tick)throw Error('Different source counter cadence');
+          writeFileSync('evidence/c05/input-audit.json',JSON.stringify(audit,null,2));
+          copyFileSync('input/current.json','evidence/c05/previous.json');copyFileSync('experiments/android-init-cycle.json','evidence/c05/continuation-pin.json');
+          for(const name of ['acquisition.json','partitions.json','ramdisk-provenance.json'])copyFileSync('input/'+name,'evidence/c05/'+name);
+          JS
+      - name: Resume the saved counter stream and stop after the original init instruction
+        run: |
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          SHA=$(node -p 'require("./experiments/android-init-cycle.json").checkpoint_sha256')
+          WALL=$(node -p 'require("./experiments/android-init-cycle.json").wall_ms')
+          STEPS=$(node -p 'require("./experiments/android-init-cycle.json").instructions_budget')
+          RATE=$(node -p 'require("./experiments/android-init-cycle.json").counter_instructions_per_tick')
+          timeout --signal=TERM --kill-after=30s 1000s build/cycle input/current.rvg "$DISK" evidence/c05/journal "$WALL" "$SHA" --chunk=1000000 --instructions="$STEPS" --stop-after-init --counter-instructions-per-tick="$RATE" > evidence/c05/result.json
+      - name: Preserve the exact boundary and independently observe the resulting kernel
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync,copyFileSync,existsSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const root='evidence/c05',c=JSON.parse(readFileSync('experiments/android-init-cycle.json'));
+          if(!existsSync(root+'/journal/latest.json'))process.exit(0);
+          const ptr=JSON.parse(readFileSync(root+'/journal/latest.json'));
+          if(!/^generation-[1-9][0-9]*$/.test(ptr.generation))throw Error('Invalid generation');
+          const folder=root+'/journal/'+ptr.generation,b=readFileSync(folder+'/checkpoint.rvg'),r=JSON.parse(readFileSync(folder+'/report.json'));
+          const sha=createHash('sha256').update(b).digest('hex'),v=b.toString('ascii',0,4),fields=v==='RVG3'?44:43;
+          if(!['RVG2','RVG3'].includes(v)||sha!==ptr.checkpoint_sha256||sha!==r.checkpoint_sha256)throw Error('Saved state integrity mismatch');
+          copyFileSync(folder+'/checkpoint.rvg',root+'/current.rvg');copyFileSync(folder+'/report.json',root+'/current.json');writeFileSync(root+'/console.txt',r.console);
+          if(r.initial_instructions!==c.instructions||r.guest.instructions!==Number(b.readBigUInt64LE(8+4*8))||r.guest.pc!=='0x'+b.readBigUInt64LE(8+2*8).toString(16)||r.advanced_instructions!==r.guest.instructions-c.instructions||r.advanced_instructions<0||r.advanced_instructions>c.instructions_budget)throw Error('Different continuation or count');
+          if(r.provenance.input_checkpoint_sha256!==c.checkpoint_sha256||r.provenance.timing_seed_origin!=='checkpoint'||r.provenance.timing_seed_sha256!==c.counter_seed_sha256||r.guest.counter_samples<c.counter_samples||!r.provenance.stop_after_init)throw Error('Counter source or milestone policy changed');
+          if(r.provenance.counter_instructions_per_tick!==c.counter_instructions_per_tick||r.guest.counter_instructions_per_tick!==c.counter_instructions_per_tick)throw Error('Counter cadence differs from the explicit policy');
+          if(r.provenance.counter_rate_origin!==(c.input_counter_instructions_per_tick===1?'configured':'checkpoint'))throw Error('Counter cadence was reset unexpectedly');
+          if(r.first_user_instruction_verified&&(r.stop_reason!=='first_user_instruction_verified'||r.guest.exception_level!==0||r.guest.pc!=='0x2a4004'))throw Error('False init milestone');
+          const machine=8+fields*8+[39,40,41].reduce((s,n)=>s+Number(b.readBigUInt64LE(8+n*8)),0);
+          if(b.readBigUInt64LE(machine)!==7n||Number(b.readBigUInt64LE(machine+4*8))!==r.guest.exception_level)throw Error('Native machine mode differs');
+          const clock=machine+Number(b.readBigUInt64LE(8+42*8))-64;
+          if(b.readBigUInt64LE(clock)!==2n||createHash('sha256').update(b.subarray(clock+8,clock+40)).digest('hex')!==c.counter_seed_sha256||Number(b.readBigUInt64LE(clock+40))!==r.guest.counter_samples)throw Error('Serialized counter state differs from proof');
+          if(Number(b.readBigUInt64LE(clock+48))!==c.counter_instructions_per_tick||Number(b.readBigUInt64LE(clock+56))!==r.guest.counter_subtick||r.guest.counter_subtick>=c.counter_instructions_per_tick)throw Error('Serialized counter phase differs from proof');
+          if((r.stop_reason==='first_user_instruction_verified')!==r.first_user_instruction_verified)throw Error('Inconsistent milestone flag');
+          writeFileSync(root+'/milestone.json',JSON.stringify({instructions:r.guest.instructions,checkpoint_sha256:sha,original_init_first_instruction_verified:r.first_user_instruction_verified,entry_instruction_faults:r.entry_instruction_faults,entry_interrupts:r.entry_interrupts,android_framework_verified:false,android_display_verified:false,native_android_games_verified:false},null,2));
+          console.log(JSON.stringify({instructions:r.guest.instructions,advanced:r.advanced_instructions,reason:r.stop_reason,verified_init:r.first_user_instruction_verified,sha256:sha}));
+          JS
+          if test -s evidence/c05/current.rvg; then
+            SHA=$(sha256sum evidence/c05/current.rvg | cut -d ' ' -f 1)
+            if ! node tools/android_kernel_observer.mjs evidence/c05/current.rvg "$SHA" > evidence/c05/kernel-observer.json 2> evidence/c05/observer-error.txt; then
+              printf '%s\n' '{"status":"observation_unavailable","execution_inferred":false}' > evidence/c05/kernel-observer.json
+            fi
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-c05-original-init-continuation
+          path: |
+            evidence/c05/
+            !evidence/c05/journal/**
+          retention-days: 14
+      - name: Require the verified original Android init instruction
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';
+          const p=JSON.parse(readFileSync('evidence/c05/milestone.json'));
+          if(p.original_init_first_instruction_verified!==true)throw Error('Original Android init instruction is not verified; the saved prefix remains diagnostic evidence');
+          console.log('REVERSE_ORIGINAL_ANDROID_INIT_INSTRUCTION_VERIFIED');
+          JS

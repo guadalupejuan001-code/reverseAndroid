@@ -1,0 +1,89 @@
+name: REVERSE Ether adaptive memory and resumed Linux
+on:
+  pull_request:
+    paths:
+      - 'src/integration/adaptive_override_map.hpp'
+      - 'src/integration/inverse_memory_adaptive.inc'
+      - 'scripts/prepare-ether-compat.py'
+      - 'src/minimal_guest.hpp'
+      - 'tools/guest_linux_probe.cpp'
+      - 'tests/adaptive_inverse_memory_test.cpp'
+      - '.github/workflows/linux-adaptive-memory.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  adaptive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: xi-linux-boot-phase3
+          run-id: 40773912490
+          github-token: ${{ github.token }}
+          path: guest-input
+      - name: Compile pinned XI/Ether with adaptive page extension
+        run: |
+          set -euo pipefail
+          mkdir -p build adaptive-evidence
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/adaptive_inverse_memory_test.cpp -o build/adaptive-memory-test
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/guest-linux-probe
+      - name: Test unbounded pages, old XI, exact snapshots, quantum bindings and rollback
+        run: |
+          set -euo pipefail
+          timeout 240 build/adaptive-memory-test | tee adaptive-evidence/adaptive-memory-native.json
+          jq -e '.adaptive==true and .exact_overrides>1048576 and
+                  .legacy_snapshot_identical and .quantum_bindings_preserved and
+                  .rollback and .arbitrary_precision_addresses' adaptive-evidence/adaptive-memory-native.json
+      - name: Re-run exact old Linux memory ceiling without restarting from zero
+        run: |
+          set -euo pipefail
+          printf '%s  %s\n' '0c3558a3e08f4e09f5d8bdc4ded573dc3c04d43a8d8215900d418f9244a77b92' 'guest-input/current.rvg' | sha256sum -c -
+          timeout 150 build/guest-linux-probe guest-input/current.rvg 1 adaptive-evidence/first.rvg > adaptive-evidence/first.json
+          jq -e '.initial_instructions==29059889 and .guest.instructions==29059890 and
+                  .adaptive_classical_storage and .guest.max_delta_overrides==0 and
+                  .guest.delta_overrides>=1048576 and
+                  .stop_reason=="instruction_budget" and .checkpoint_bytes<20445714' adaptive-evidence/first.json
+          cp adaptive-evidence/first.rvg adaptive-evidence/current.rvg
+      - name: Continue pinned Linux and preserve next exact stopping cause
+        run: |
+          set -euo pipefail
+          echo '## Actual XI/Ether Linux with adaptive memory' >> "$GITHUB_STEP_SUMMARY"
+          echo '| Batch | Instructions | Overrides | Snapshot bytes | Stop reason | /init output |' >> "$GITHUB_STEP_SUMMARY"
+          echo '|---|---:|---:|---:|---|---|' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 6); do
+            timeout 210 build/guest-linux-probe adaptive-evidence/current.rvg 250000 adaptive-evidence/next.rvg > "adaptive-evidence/step-$i.json"
+            jq -e '.adaptive_classical_storage and .guest.max_delta_overrides==0' "adaptive-evidence/step-$i.json"
+            total=$(jq -r '.guest.instructions' "adaptive-evidence/step-$i.json")
+            over=$(jq -r '.guest.delta_overrides' "adaptive-evidence/step-$i.json")
+            sz=$(jq -r '.checkpoint_bytes' "adaptive-evidence/step-$i.json")
+            reason=$(jq -r '.stop_reason' "adaptive-evidence/step-$i.json")
+            witness=$(jq -r '.linux_userspace_init_observed' "adaptive-evidence/step-$i.json")
+            printf '| %s | %s | %s | %s | %s | %s |\n' "$i" "$total" "$over" "$sz" "$reason" "$witness" >> "$GITHUB_STEP_SUMMARY"
+            mv adaptive-evidence/next.rvg adaptive-evidence/current.rvg
+            if [[ "$witness" == true || "$reason" != instruction_budget ]]; then
+              jq '{stop_reason,next_instruction,guest:{pc:.guest.pc,instructions:.guest.instructions,exceptions:.guest.exceptions,delta_overrides:.guest.delta_overrides}}' "adaptive-evidence/step-$i.json" > adaptive-evidence/next-blocker.json
+              break
+            fi
+          done
+          sha256sum adaptive-evidence/current.rvg > adaptive-evidence/current.sha256
+          echo 'Full Linux/Android boot is NOT claimed unless the actual /init marker appears.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xi-adaptive-ether-linux-evidence
+          path: adaptive-evidence/
+          retention-days: 14

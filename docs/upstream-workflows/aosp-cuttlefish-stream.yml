@@ -1,0 +1,57 @@
+name: REVERSE exact AOSP ZIP stream versus range diagnostic
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-cuttlefish-stream.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  transport:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - name: Probe byte streams with hard time/rate limits
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          url="https://ci.android.com/builds/submitted/16644040/aosp_cf_arm64_only_phone-userdebug/latest/aosp_cf_arm64_only_phone-img-16644040.zip"
+          # With a normal GET, read at most ~512KiB over eight seconds:
+          # never pull the 1.1GB archive into an untrusted environment by default.
+          set +e
+          timeout 9 curl --silent --show-error --location --max-time 8 \
+            --limit-rate 65536 --max-filesize 1250000000 \
+            -D evidence/direct-headers.txt "$url" -o evidence/direct-prefix.bin
+          echo "$?" > evidence/direct-curl-exit.txt
+          set -e
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync,existsSync,statSync} from 'node:fs';
+          const b=existsSync('evidence/direct-prefix.bin')
+            ?readFileSync('evidence/direct-prefix.bin'):Buffer.alloc(0);
+          const headers=readFileSync('evidence/direct-headers.txt','utf8');
+          const last=headers.trim().split(/\r?\n\r?\n/).at(-1)||'';
+          const m=/^HTTP\/[\d.]+\s+(\d+)/m.exec(last);
+          const type=/^content-type:\s*(.+)$/im.exec(last)?.[1]??null;
+          const length=/^content-length:\s*(.+)$/im.exec(last)?.[1]??null;
+          const visible=b.toString('utf8',0,Math.min(b.length,2000));
+          const title=/<title[^>]*>([\s\S]*?)<\/title>/i.exec(visible)?.[1]?.replace(/\s+/g,' ').slice(0,120)||null;
+          const result={
+            official_build:'16644040',
+            http_status:Number(m?.[1]||0),content_type:type,content_length:length,
+            file_prefix_bytes:b.length,first_8_bytes_hex:b.subarray(0,8).toString('hex'),
+            html_title_if_any:title,
+            curl_exit:readFileSync('evidence/direct-curl-exit.txt','utf8').trim(),
+            zip_prefix_proven:b.subarray(0,4).equals(Buffer.from('504b0304','hex')),
+            full_archive_downloaded:false,android_init_observed:false
+          };
+          writeFileSync('evidence/transport-diagnosis.json',JSON.stringify(result,null,2)+'\n');
+          console.log(JSON.stringify(result,null,2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aosp-cuttlefish-direct-get-diagnosis
+          path: evidence/transport-diagnosis.json
+          retention-days: 7

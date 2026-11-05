@@ -1,0 +1,115 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const {chromium}=require('playwright');
+const root=path.resolve(__dirname,'../..'),[runtime,buildArg,probeArg,outArg]=process.argv.slice(2),build=path.resolve(buildArg),probe=path.resolve(probeArg),out=path.resolve(outArg);
+const nativeHost=require('./native-host-fixture.cjs');fs.mkdirSync(out,{recursive:true});
+const executablePath=process.env.REVERSE_BROWSER;if(executablePath)fs.chmodSync(executablePath,0o755);
+let checks=0;const layouts=[],errors=[],browsers=new Set();
+function check(value,message){assert.ok(value,message);checks++;}
+async function open(width,height,label){
+  const host=nativeHost({root,build,runtime,probe,directory:path.join(out,label)});
+  const browser=await chromium.launch({headless:true,executablePath,args:['--no-sandbox','--no-zygote','--single-process','--disable-gpu','--disable-software-rasterizer']});browsers.add(browser);
+  const page=await browser.newPage({viewport:{width,height},locale:'es-ES',timezoneId:'America/New_York'});page.setDefaultTimeout(20000);
+  page.on('pageerror',error=>errors.push({label,error:error.message}));
+  await page.exposeFunction('__reverseNative',async(operation,payload)=>{try{return await host.request(operation,payload);}catch(error){return {ok:false,error:error.message};}});
+  await page.addInitScript(()=>{window.ReverseNative={loadProfile:()=>JSON.stringify({ok:true,profile:null}),request(id,operation,payload){window.__reverseNative(operation,payload).then(result=>window.ReverseAndroid.complete(id,result));},exportText(){},exportBase64(){}};});
+  await page.goto('file://'+path.join(root,'reverse-os-android/app/src/main/assets/workbench/index.html'));
+  await page.waitForFunction(()=>window.ReverseShell?.mode==='desktop'&&!!androidSnapshot);
+  return {browser,page,host};
+}
+async function repaint(page){await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
+async function pinned(page,app){await page.locator('#pinned-apps [data-task-app="'+app+'"]').click();}
+async function showAll(page){await page.evaluate(()=>{for(const w of state.windows.filter(w=>w.space===state.space)){w.min=false;geometry(w,document.getElementById(w.id));}renderDock();});}
+(async()=>{
+ for(const [width,height] of [[640,360],[740,360],[844,390],[915,412],[1024,600],[1440,900]]){
+  const {browser,page}=await open(width,height,'layout-'+width);
+  check(await page.locator('#shell-home,#mobile-navigation,#recent-panel').count()===0,'No dashboard or alternate mobile shell');
+  check(!(await page.locator('.topbar').isVisible()),'Desktop has no promotional header');
+  check(await page.locator('.taskbar').isVisible(),'PC taskbar is visible');
+  check(await page.locator('.window').count()===0,'Fresh desktop is quiet');
+  check(!/qubits|ETHER|W4u|Hamiltoniano|Herramientas|EN ESTE DISPOSITIVO/.test(await page.locator('body').innerText()),'Capabilities stay inside programs');
+  check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal viewport overflow');
+  check(await page.evaluate(()=>[...document.querySelectorAll('.taskbar button')].filter(e=>getComputedStyle(e).display!=='none'&&e.getBoundingClientRect().width).every(e=>{const r=e.getBoundingClientRect();return r.x>=0&&r.right<=innerWidth;})),'Taskbar controls fit the landscape viewport');
+  await page.screenshot({path:path.join(out,'desktop-'+width+'.png')});
+  await pinned(page,'files');const files=await page.locator('.window.focused').boundingBox();
+  await pinned(page,'programs');await page.waitForSelector('.program-card');const program=await page.locator('.window.focused').boundingBox();
+  check(files.width<width&&program.width<width,'Apps open as PC windows');
+  check(await page.evaluate(()=>state.windows.filter(w=>!w.min&&w.space===state.space).length===2),'Focus preserves peer windows');
+  check(await page.locator('.window.focused [data-window-action="max"]').isVisible(),'PC controls remain available');
+  await page.locator('.window.focused [data-window-action="max"]').click();
+  const maximized=await page.locator('.window.focused').boundingBox(),area=await page.locator('#desktop').boundingBox(),taskbar=await page.locator('.taskbar').boundingBox();
+  check(maximized.width===area.width&&maximized.height===area.height&&maximized.y+maximized.height<=taskbar.y,'Maximize fills the desktop above the taskbar');
+  await page.locator('.window.focused [data-window-action="max"]').click();
+  const restored=await page.locator('.window.focused').boundingBox();check(restored.width===program.width&&restored.height===program.height,'Restore returns to the saved frame');
+  await page.screenshot({path:path.join(out,'windows-'+width+'.png')});
+  layouts.push({width,height,windows:2,horizontal_overflow:false});await browser.close();
+ }
+ const {browser,page,host}=await open(844,390,'interactive-landscape');
+ const legacyProfile=JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/workbench-2.3-profile.json'),'utf8'));
+ const cleanProfiles=await page.evaluate(profile=>{
+   const plain=validateState(structuredClone(profile));
+   const renamed=structuredClone(profile);renamed.files.find(f=>f.id==='welcome').name='Mi documento.txt';
+   const moved=structuredClone(profile);moved.files.find(f=>f.id==='ideas').parent='personal';
+   const trashed=structuredClone(profile);trashed.files.find(f=>f.id==='quick').trashRoot='quick';
+   return {stock:plain.files.length,renamed:validateState(renamed).files.some(f=>f.id==='welcome'),moved:validateState(moved).files.some(f=>f.id==='ideas'),trashed:validateState(trashed).files.some(f=>f.id==='quick')};
+ },legacyProfile);
+ check(cleanProfiles.stock===3,'Only untouched template documents retire');
+ check(cleanProfiles.renamed&&cleanProfiles.moved&&cleanProfiles.trashed,'Personalized documents are retained');
+ await pinned(page,'files');const first=await page.locator('.window.focused').boundingBox();
+ await page.mouse.move(first.x+100,first.y+18);await page.mouse.down();await page.mouse.move(first.x+140,first.y+22,{steps:4});await page.mouse.up();
+ const moved=await page.locator('.window.focused').boundingBox();check(moved.x>first.x+25,'Window dragging works on a phone-sized desktop');
+ await page.mouse.move(moved.x+moved.width-4,moved.y+moved.height-4);await page.mouse.down();await page.mouse.move(moved.x+moved.width+16,moved.y+moved.height-4,{steps:4});await page.mouse.up();
+ const resized=await page.locator('.window.focused').boundingBox();check(resized.width>moved.width+10,'Window resizing works on a phone-sized desktop');
+ await pinned(page,'programs');await page.waitForSelector('.program-card');
+ const beforeShow=await page.evaluate(()=>state.windows.filter(w=>!w.min).map(w=>w.id).sort());
+ await page.locator('#show-desktop').click();check(await page.locator('.window:visible').count()===0,'Show desktop minimizes the visible windows');
+ await page.locator('#show-desktop').click();check(JSON.stringify(beforeShow)===await page.evaluate(()=>JSON.stringify(state.windows.filter(w=>!w.min).map(w=>w.id).sort())),'Show desktop restores the same windows');
+ await pinned(page,'bbyq');await page.waitForSelector('[data-program-input]');
+ await page.locator('[data-program-input]').fill('ejecuta programa 1');await page.locator('[data-program-form] [type="submit"]').click();
+ await page.waitForFunction(()=>state.windows.some(w=>w.rxePath==='Aplicaciones/Prueba.rxe')&&[...programSessions.values()].some(p=>p.snapshot?.history?.at(-1)?.text==='Acción completada.'));
+ check(host.stats().runs===1,'W4u executed the actual internal RXE once');
+ await pinned(page,'bbyq');await page.waitForSelector('[data-program-input]');
+ check(await page.locator('[aria-label="Respuesta BBY Q"]').innerText()==='Acción completada.','BBY Q acknowledged the native result');
+ const normalFrame=await page.locator('.window.focused').boundingBox();
+ await page.evaluate(()=>{window.ReverseShell.setInsets({imeVisible:true,imeHeight:160});});await page.setViewportSize({width:844,height:230});await repaint(page);
+ const composer=await page.locator('.rxe-composer').boundingBox();
+ await page.screenshot({path:path.join(out,'keyboard-landscape.png')});
+ check(composer.y+composer.height<=230,'Composer fits above the keyboard');
+ check(!(await page.locator('.taskbar').isVisible()),'Taskbar temporarily frees typing space');
+ await page.evaluate(()=>{window.ReverseShell.setInsets({imeVisible:false,imeHeight:0});});await page.setViewportSize({width:844,height:390});await repaint(page);
+ const afterKeyboard=await page.locator('.window.focused').boundingBox();
+ check(afterKeyboard.width===normalFrame.width&&afterKeyboard.height===normalFrame.height,'Keyboard preserves the saved PC window size');
+ await page.screenshot({path:path.join(out,'bbyq-landscape.png')});
+ await page.evaluate(()=>{const root=document.documentElement;root.style.setProperty('--native-safe-left','28px');root.style.setProperty('--native-safe-right','12px');});
+ const insetArea=await page.locator('#desktop').boundingBox();check(insetArea.x===28&&insetArea.width===804,'Horizontal cutouts reserve desktop space');
+ await page.evaluate(()=>{document.documentElement.style.setProperty('--native-safe-left','0px');document.documentElement.style.setProperty('--native-safe-right','0px');});
+ await page.waitForTimeout(350);await page.reload();await page.waitForFunction(()=>window.ReverseShell?.mode==='desktop'&&!!androidSnapshot);await page.waitForTimeout(200);
+ check(host.stats().runs===1,'Reload does not replay W4u commands');
+ check(await page.locator('#shell-home,#mobile-navigation').count()===0,'Restoration keeps the PC desktop');
+ await pinned(page,'xi');await page.locator('[data-quantum-tab="hamiltonian"]').click();
+ const before=host.sessionHash();await page.locator('[data-quantum-run="ising"]').click();await page.waitForSelector('.energy-reading strong');
+ check(await page.locator('.quantum-result-meta').innerText().then(s=>s.includes('2 qubits activos')),'Hamiltonian is available inside XI');
+ check(host.sessionHash()===before,'Hamiltonian preserves the work state');
+ await page.screenshot({path:path.join(out,'hamiltonian-landscape.png')});
+ await page.locator('[data-quantum-tab="quantum"]').click();await page.locator('[data-quantum-run="register"]').click();
+ await page.waitForFunction(()=>getWindow(activeId)?.quantumResult?.core?.active_qubits===4096);
+ check(host.sessionHash()===before,'Quantum experiment preserves the work state');
+ check(await page.locator('.quantum-result-meta').innerText().then(s=>s.includes('4096 qubits activos')),'Actual quantum capacity remains in XI');
+ await page.evaluate(()=>{const w=getWindow(activeId);w.w=670;w.h=280;w.x=30;w.y=12;geometry(w,document.getElementById(w.id));});
+ await showAll(page);const wide=await page.locator('.window.focused').boundingBox();
+ await page.setViewportSize({width:640,height:360});await repaint(page);
+ check(await page.evaluate(()=>state.windows.filter(w=>w.space===state.space&&!w.min).length>=2),'Narrow landscape keeps peer windows');
+ check(await page.locator('.window.focused').boundingBox().then(b=>b.width<640),'Narrow landscape still uses windows');
+ await page.setViewportSize({width:844,height:390});await repaint(page);const wideAgain=await page.locator('.window.focused').boundingBox();
+ check(wideAgain.width===wide.width&&wideAgain.height===wide.height,'Viewport changes preserve saved window sizes');
+ await page.evaluate(()=>{createWindow('control',{tab:'system'});});
+ check(await page.locator('.diagnostic-table').innerText().then(s=>s.includes('Límite de qubits activos')&&s.includes('4096')),'Specifications remain in System');
+ await page.locator('#launcher-toggle').click();check(await page.locator('#launcher').isVisible(),'Applications menu is accessible');
+ await page.evaluate(()=>window.ReverseShell.back());check(!(await page.locator('#launcher').isVisible()),'Android Back closes a desktop menu');
+ const visibleBefore=await page.locator('.window:visible').count();
+ check(await page.evaluate(()=>window.ReverseShell.back())===false,'Android Back does not replace windows with a mobile home');
+ check(await page.locator('.window:visible').count()===visibleBefore,'Back preserves the desktop windows');
+ await browser.close();
+ check(errors.length===0,JSON.stringify(errors));
+ const report={checks,layouts,actual_internal_program_runs:host.stats().runs,actual_isolated_experiments:host.stats().experiments,page_errors:errors,scope:'PC desktop in six landscape Chromium viewports; transport fixtures call the real XI/RXE runtime. APK orientation checked separately. No Android device/emulator was launched.'};
+ fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(report,null,2)+'\n');console.log('DESKTOP_SHELL_UI_PASS',checks);
+})().catch(async e=>{console.error(e.stack);console.error('PAGE_ERRORS',JSON.stringify(errors));await Promise.allSettled([...browsers].map(b=>b.close()));process.exitCode=1;});

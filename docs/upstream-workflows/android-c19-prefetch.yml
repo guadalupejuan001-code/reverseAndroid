@@ -1,0 +1,134 @@
+name: Android C19 prefetch continuation
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c19-prefetch.yml'
+      - 'src/minimal_guest.hpp'
+      - 'tools/guest_c19_resume.cpp'
+      - 'tools/android_c19_result.mjs'
+      - 'tests/minimal_guest_prefetch_test.cpp'
+      - 'tests/prefetch_encoding_test.mjs'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-continuous-state:
+    if: github.event.pull_request.head.ref == 'fix/android-c19-prefetch-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c16-polynomial-journal-continuation
+          run-id: 41083214500
+          github-token: ${{ github.token }}
+          path: input-c16
+      - name: Check unmodified runtime and compile continuation controls
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence/c19
+          git diff --exit-code 5d7e29864d8d1388049f10d2db6364f7c7414551 HEAD -- src third_party ':!src/minimal_guest.hpp'
+          sha256sum --check tools/android_c19_source.sha256
+          tar -xzf input-c16/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools'
+          g++ $FLAGS tests/minimal_guest_prefetch_test.cpp build/softfloat/libreverse_softfloat.a -o build/c19-prefetch-test
+          build/c19-prefetch-test > evidence/c19/prefetch-execution.json
+          node --test tests/android_c15_result.test.mjs tests/android_guest_outcome.test.mjs tests/android_partition_readiness.test.mjs > evidence/c19/control-tests.tap
+          node tests/prefetch_encoding_test.mjs > evidence/c19/prefetch-llvm.json
+          g++ $FLAGS tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/c19-system-test
+          build/c19-system-test > evidence/c19/system-regression.txt
+          node --check tools/android_c19_result.mjs
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c19_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c19-native
+          sha256sum build/c19-native > evidence/c19/build-sha256.txt
+          echo 'Unit controls only. Full original-disk C19 execution is separately bound to the exact C18 PRFM checkpoint; this job does not claim Android boot.' > evidence/c19/scope.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c19-prefetch-controls
+          path: evidence/c19/
+          if-no-files-found: error
+          retention-days: 14
+
+  continue-original-android:
+    needs: verify-continuous-state
+    if: github.event.pull_request.head.ref == 'fix/android-c19-prefetch-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c18-original-android-continuation
+          run-id: 41094706102
+          github-token: ${{ github.token }}
+          path: input-c18
+      - name: Verify exact C18 PRFM origin and build unchanged runtime
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence/c19-boot
+          git diff --exit-code 5d7e29864d8d1388049f10d2db6364f7c7414551 HEAD -- src third_party ':!src/minimal_guest.hpp'
+          sha256sum --check tools/android_c19_source.sha256
+          tar -xzf input-c18/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          node tools/android_c19_result.mjs preflight input-c18 > evidence/c19-boot/input-preflight.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c19_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c19-native
+          tar -czf evidence/c19-boot/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          git rev-parse HEAD > evidence/c19-boot/source-commit.txt
+          sha256sum build/c19-native evidence/c19-boot/tested-source.tar.gz > evidence/c19-boot/build-sha256.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Continue the same original guest across three bounded cycles
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          export DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          node --input-type=module <<'NODE'
+          import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const r=await superviseNativeCycle({command:'build/c19-native',args:['input-c18/current.rvg','input-c18/current.json',process.env.DISK,'evidence/c19-boot/journal','480000','2000000000'],outputDirectory:'evidence/c19-boot',initialInstructions:2016891033,startupMs:300000,noProgressMs:90000,wallMs:1860000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C19_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(r));if(r.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Audit the actual final state
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f evidence/c19-boot/journal/latest.json; then
+            node tools/android_c19_result.mjs audit input-c18 evidence/c19-boot > evidence/c19-boot/audit-stdout.json
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c19-original-android-continuation
+          path: evidence/c19-boot/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+      - name: Require clean continuation without claiming a framework boot
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c19-boot/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('result.json').execution_progress_accepted,true);
+          console.log('C19 continuation accepted; framework and graphical boot still require actual guest evidence.');
+          NODE

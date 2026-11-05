@@ -1,0 +1,147 @@
+name: REVERSE authentic Android MMFR3 register resume in original XI Ether
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest_system.inc'
+      - 'tests/minimal_guest_system_test.cpp'
+      - '.github/workflows/aosp-cuttlefish-mmfr3-resume.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-android-mmfr3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-aosp-first-initrd-xi-checkpoint
+          run-id: 40798443066
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify exact actual Android guest blocked instruction and embedded genuine AOSP kernel
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          echo '09f7b4b88006997dbd0c60fb30d9901cb79c9a63dfe9323cf9076d1a507f70e0  prior/direct.rvg' | sha256sum -c -
+          jq -e '.guest.instructions==30950 and
+            .guest.pc=="0x421207cc" and .guest.exception_level==1 and
+            .guest.exceptions==0 and
+            .stop_reason=="Unsupported AArch64 system register read 0xc03b" and
+            .next_instruction.opcode=="0xd5380761" and
+            .android_boot==false and .linux_userspace_init_observed==false' prior/direct.json >/dev/null
+          node tools/audit_gki_rvg.mjs prior/direct.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            09f7b4b88006997dbd0c60fb30d9901cb79c9a63dfe9323cf9076d1a507f70e0 \
+            > evidence/original-android-rvg-provenance.json
+          jq -e '.status=="read_only_provenance_verified" and
+            .instructions==30950 and .kernel_bytes==42031616 and
+            .initrd_bytes==5680128 and
+            .classical_override_limit=="0" and .android_init_observed==false' \
+            evidence/original-android-rvg-provenance.json >/dev/null
+      - name: Verify exact ARM64 opcode with independently assembled Clang
+        run: |
+          set -euo pipefail
+          cat > build/oracle.S <<'ASM'
+          .text
+          .global oracle_mmfr3
+          oracle_mmfr3:
+            mrs x1, ID_AA64MMFR3_EL1
+            ret
+          ASM
+          clang --target=aarch64-none-elf -c build/oracle.S -o build/oracle.o
+          readelf -x .text build/oracle.o > evidence/independent-opcode.txt
+          grep -qi '610738d5' evidence/independent-opcode.txt
+          echo 'Real blocked opcode 0xd5380761 matches Clang MRS X1, ID_AA64MMFR3_EL1' >> "$GITHUB_STEP_SUMMARY"
+      - name: Build original XI/Ether CPU with only one absent feature-register read fixed
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = 'e2778d962af22f6f1a0794058dd4685fc2573966'
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/native-system
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+          timeout 180 build/native-system | tee evidence/native.json
+          jq -e '.system=="own-EL1-MMU-IRQ-EL0-SVC" and
+            .existing_quantum_qubits==4096 and .android_boot=="not_implemented"' \
+            evidence/native.json >/dev/null
+      - name: Replay exact previously rejected Android MMFR3 instruction
+        run: |
+          set -euo pipefail
+          timeout 100 build/linux-probe prior/direct.rvg 1 evidence/after-mmfr3.rvg \
+            > evidence/first.json
+          jq -e '.initial_instructions==30950 and
+            .guest.instructions==30951 and
+            .guest.pc=="0x421207d0" and
+            .guest.exception_level==1 and .guest.exceptions==0 and
+            .next_instruction.registers.x1=="0x0" and
+            .stop_reason=="instruction_budget" and
+            .android_boot==false and .linux_userspace_init_observed==false' \
+            evidence/first.json >/dev/null
+          sha256sum evidence/after-mmfr3.rvg > evidence/after-mmfr3.sha256
+      - name: Demand byte-for-byte continuous versus 1+49999 restored Android RVG
+        run: |
+          set -euo pipefail
+          timeout 120 build/linux-probe prior/direct.rvg 50000 evidence/continuous.rvg \
+            > evidence/continuous.json
+          timeout 120 build/linux-probe evidence/after-mmfr3.rvg 49999 evidence/sliced.rvg \
+            > evidence/sliced.json
+          cmp evidence/continuous.rvg evidence/sliced.rvg
+          jq -e '.initial_instructions==30950 and .guest.instructions>=30951 and
+            .guest.exception_level==1 and .android_boot==false' evidence/continuous.json >/dev/null
+          sha256sum evidence/continuous.rvg > evidence/replay.sha256
+          cp evidence/continuous.rvg evidence/current.rvg
+      - name: Continue original Android guest until exact next ISA/device blocker
+        run: |
+          set -euo pipefail
+          printf '## Cuttlefish ARM64 authentic kernel + real generic initrd in XI/Ether\n' >> "$GITHUB_STEP_SUMMARY"
+          printf '| Batch | Instructions | Exceptions | Stop | UART bytes |\n|---|---:|---:|---|---:|\n' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 8); do
+            timeout 160 build/linux-probe evidence/current.rvg 100000 evidence/next.rvg > "evidence/batch-$i.json"
+            jq -e '.guest.instructions>=.initial_instructions and
+              .adaptive_classical_storage==true and
+              .guest.max_delta_overrides==0 and .android_boot==false and
+              .linux_boot_complete==false' "evidence/batch-$i.json" >/dev/null
+            reason=$(jq -r '.stop_reason' "evidence/batch-$i.json")
+            total=$(jq -r '.guest.instructions' "evidence/batch-$i.json")
+            exceptions=$(jq -r '.guest.exceptions' "evidence/batch-$i.json")
+            uart=$(jq -r '.console|length' "evidence/batch-$i.json")
+            printf '| %s | %s | %s | %s | %s |\n' "$i" "$total" "$exceptions" "$reason" "$uart" >> "$GITHUB_STEP_SUMMARY"
+            mv evidence/next.rvg evidence/current.rvg
+            if [[ "$reason" != instruction_budget ]]; then break; fi
+          done
+          last=$(ls evidence/batch-*.json | sort -V | tail -1)
+          jq '{initial_instructions,guest:{pc:.guest.pc,instructions:.guest.instructions,
+            exception_level:.guest.exception_level,exceptions:.guest.exceptions,
+            immutable_image_bytes:.guest.immutable_image_bytes,
+            delta_overrides:.guest.delta_overrides},
+            stop_reason,next_instruction,console,android_boot,linux_userspace_init_observed}' \
+            "$last" > evidence/actual-stop.json
+          sha256sum evidence/current.rvg > evidence/current.sha256
+          cat evidence/actual-stop.json
+          cat evidence/current.sha256
+          {
+            echo 'A real /init ELF in the ramdisk has NOT yet been shown executing in the guest.'
+            echo 'No vendor ramdisk, super.img, Binder, ADB or Wild Rift was executed.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-aosp-mmfr3-next-checkpoint
+          path: evidence/
+          retention-days: 7

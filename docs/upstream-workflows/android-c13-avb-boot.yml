@@ -1,0 +1,140 @@
+name: Android C13 verified AVB fresh boot
+# A fresh boot is explicit: open/reopen the experimental PR to repeat it.
+# Documentation and audit commits must not silently launch duplicate boots.
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c13-avb-boot.yml'
+      - 'tools/android_c13_avb.mjs'
+      - 'tools/android_c13_result.mjs'
+      - 'tools/guest_c13_boot.cpp'
+      - 'tests/android_c13_avb.test.mjs'
+      - 'tests/guest_c13_boot_setup_test.cpp'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: android-c13-avb-fresh
+  cancel-in-progress: false
+jobs:
+  boot-original-media:
+    if: github.event.pull_request.head.ref == 'fix/android-c13-avb-handoff-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify preserved C12 core and reviewed C13 sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c13 build
+          git merge-base --is-ancestor b5ec21508efdcd1bb9f85b7698264c81d95e48e8 HEAD
+          git diff --exit-code b5ec21508efdcd1bb9f85b7698264c81d95e48e8 HEAD -- src third_party
+          cat <<'SHA' | sha256sum --check
+          3a842599bbe5734ebbfe696663d73f8cd241341694692fab62db4e17f26f7778  tools/android_c13_avb.mjs
+          9804db279793c2b1a017b1681dba339122662b2da1bc863eab4bd1c78a78663f  tools/guest_c13_boot.cpp
+          00445a4472235e13d73892e7c8ea6d2d65e61f236ddfb61374cc66f415e2091c  tests/android_c13_avb.test.mjs
+          2e14664bcf3f813e30550b846bd5557b9b57e2267d1a4e7a0a5d1001df1b0e42  tests/guest_c13_boot_setup_test.cpp
+          cc79011e80f21e211a98d1462d9cecfaed91960827b11fff74ce106b3baf7281  tools/android_c13_result.mjs
+          SHA
+          git rev-parse HEAD > evidence/c13/source-commit.txt
+          sha256sum tools/*c13* tests/*c13* src/minimal_guest* > evidence/c13/source-sha256.txt
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c12-addp-continuation
+          run-id: 41005175540
+          github-token: ${{ github.token }}
+          path: input-c12
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Derive signed AVB handoff from the exact original disk and test it
+        shell: bash
+        run: |
+          set -euo pipefail
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          echo "DISK=$DISK" >> "$GITHUB_ENV"
+          node tools/android_c13_avb.mjs --disk "$DISK" evidence/c13/metadata > evidence/c13/avb-derivation.json
+          C13_METADATA=evidence/c13/metadata node --test tests/android_c13_avb.test.mjs > evidence/c13/avb-tests.tap
+          node --test --test-concurrency=1 tests/android_guest_outcome.test.mjs tests/android_supervised_cycle.test.mjs > evidence/c13/control-tests.tap
+          echo '88f890e0237a3723cadf308ee5fcd23778d1f101e36c87e40e6ca13eb8aa0117  input-c12/current.rvg' | sha256sum --check
+      - name: Compile original core, validate fresh setup and ISA regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc'
+          for suite in guest_c13_boot_setup minimal_guest_addp_scalar guest_boot_cycle; do
+            g++ $FLAGS "tests/${suite}_test.cpp" build/softfloat/libreverse_softfloat.a -o "build/c13-$suite"
+            if [ "$suite" = guest_c13_boot_setup ]; then
+              "build/c13-$suite" input-c12/current.rvg | tee "evidence/c13/$suite.json"
+            else
+              "build/c13-$suite" | tee "evidence/c13/$suite.json"
+            fi
+          done
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c13_boot.cpp build/softfloat/libreverse_softfloat.a -o build/c13-native
+          cp build/c13-native evidence/c13/
+          tar -czf evidence/c13/tested-source.tar.gz src tools tests scripts third_party build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          sha256sum build/c13-native evidence/c13/tested-source.tar.gz > evidence/c13/build-sha256.txt
+      - name: Fresh original Android execution with AVB handoff and bounded supervision
+        id: execution
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const result=await superviseNativeCycle({command:'build/c13-native',args:['input-c12/current.rvg',process.env.DISK,'evidence/c13/journal','600000','evidence/c13/metadata/avb-bootargs.txt'],outputDirectory:'evidence/c13',initialInstructions:0,startupMs:180000,noProgressMs:90000,wallMs:780000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C13_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(result));if(result.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Independently audit fresh state and classify actual guest outcome
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f evidence/c13/journal/latest.json
+          node tools/android_c13_result.mjs evidence/c13 evidence/c13/metadata | tee evidence/c13/audit-stdout.json
+      - name: Record original input preservation
+        if: always()
+        shell: bash
+        run: |
+          if test -f input-c12/current.rvg; then
+            sha256sum input-c12/current.rvg > evidence/c13/original-c12-preserved.sha256
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c13-avb-fresh-boot
+          path: evidence/c13/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Reject failed or unverified execution
+        if: always()
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c13/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('milestone.json').execution_progress_accepted,true);
+          console.log('Original CPU progress verified; Android UI and full boot remain separate milestones.');
+          NODE

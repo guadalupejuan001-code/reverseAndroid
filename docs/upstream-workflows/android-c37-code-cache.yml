@@ -1,0 +1,133 @@
+name: Android C37 coherent ARM64 code cache differential
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c37-code-cache.yml
+      - src/minimal_guest.hpp
+      - src/minimal_guest_system.inc
+      - src/minimal_guest_pci.inc
+      - docs/ANDROID_C37_CODE_CACHE.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  validate-and-compare:
+    if: github.event.pull_request.head.ref == 'perf/android-c37-keymint-instruction-cache-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Ensure only isolated instruction fetch and invalidation code changes
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c37-code-cache build
+          changes=$(git diff --name-only e4b62afcf3cdf9588a7ccb56b2b2228734d1c811 HEAD -- src third_party scripts patches tools)
+          for file in $changes; do
+            case "$file" in
+              src/minimal_guest.hpp|src/minimal_guest_pci.inc|src/minimal_guest_system.inc) ;;
+              *) echo "Unexpected runtime change: $file"; exit 1 ;;
+            esac
+          done
+          test "$(printf '%s\n' "$changes" | grep -c '^src/minimal_guest' || true)" -eq 3
+          node --test tests/android_c35_stage.test.mjs tests/android_c34_stage.test.mjs tests/android_c33_stage.test.mjs tests/android_framework_evidence.test.mjs > evidence/c37-code-cache/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Compile original XI Ether interpreter reference and cache-optimized versions
+        run: |
+          set -euo pipefail
+          tar -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          FLAGS="-std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools"
+          g++ $FLAGS -DREVERSE_PC_INSTR_CACHE_REFERENCE tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c37-reference
+          g++ $FLAGS tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c37-accelerated
+          g++ $FLAGS tests/minimal_guest_shift_accumulate_test.cpp build/softfloat/libreverse_softfloat.a -o build/c37-simd-regression
+          build/c37-simd-regression > evidence/c37-code-cache/native-simd-regression.json
+          build/c37-reference --pins > evidence/c37-code-cache/reference-pins.json
+          build/c37-accelerated --pins > evidence/c37-code-cache/accelerated-pins.json
+          cmp evidence/c37-code-cache/reference-pins.json evidence/c37-code-cache/accelerated-pins.json
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c35-authenticated-continuation
+          run-id: 41347214737
+          github-token: ${{ github.token }}
+          path: source-c35
+      - name: Validate original C35 source before differential execution
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c35/output-contract.json source-c35 > evidence/c37-code-cache/preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const c=JSON.parse(readFileSync('source-c35/output-contract.json','utf8'));
+          assert.equal(c.checkpoint_sha256,'c4bd2ff6b33a3ec79ff7ced57e6e248c848e4b31374cc4a04dc46de8f36b6c8e');
+          assert.equal(c.source_commit,'a2e1b145ff573ffd69ffc6a32c646de69cbe1e18');
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Restore original immutable Android disk without any guest changes
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c37-code-cache/media.json
+          rm -rf disk-input
+      - name: Run 5 million genuine KeyMint instructions with reference CPU
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs run source-c35/output-contract.json source-c35 build/c37-reference new-media/android-c27.raw evidence/c37-ref-native 180000 5000000 1 > evidence/c37-code-cache/reference-run.json
+      - name: Run same 5 million instructions with accelerated cached CPU
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs run source-c35/output-contract.json source-c35 build/c37-accelerated new-media/android-c27.raw evidence/c37-fast-native 180000 5000000 1 > evidence/c37-code-cache/accelerated-run.json
+      - name: Prove byte-identical full guest snapshots from two independent CPU executions
+        run: |
+          set -euo pipefail
+          cmp evidence/c37-ref-native/current.rvg evidence/c37-fast-native/current.rvg
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const a=read('evidence/c37-ref-native/current.json'),b=read('evidence/c37-fast-native/current.json');
+          const ah=read('evidence/c37-ref-native/process-outcome.json'),bh=read('evidence/c37-fast-native/process-outcome.json');
+          assert.equal(a.guest.instructions,15322348839);
+          assert.equal(b.guest.instructions,a.guest.instructions);
+          assert.equal(a.advanced_instructions,5000000);
+          assert.equal(b.advanced_instructions,a.advanced_instructions);
+          assert.equal(a.checkpoint_sha256,b.checkpoint_sha256);
+          assert.equal(a.guest.memory_revision,b.guest.memory_revision);
+          assert.equal(a.guest.virtual_ticks,b.guest.virtual_ticks);
+          assert.equal(a.guest.pc,b.guest.pc);
+          assert.equal(a.stop_reason,'instruction_budget');
+          assert.equal(b.stop_reason,a.stop_reason);
+          assert.equal(ah.status,'process_completed');assert.equal(bh.status,'process_completed');
+          const speedup=ah.elapsed_ms/bh.elapsed_ms;
+          const proof={schema:'reverse-android-c37-code-cache-differential-v1',source_sha256:'c4bd2ff6b33a3ec79ff7ced57e6e248c848e4b31374cc4a04dc46de8f36b6c8e',
+            instructions:5000000,guest_checkpoint_sha256:a.checkpoint_sha256,
+            bytes_identical:true,original_image_unchanged:true,
+            reference_host_elapsed_ms:ah.elapsed_ms,accelerated_host_elapsed_ms:bh.elapsed_ms,
+            host_speedup_ratio:speedup,
+            zygote_claimed:false,android_boot_claimed:false};
+          writeFileSync('evidence/c37-code-cache/differential.json',JSON.stringify(proof,null,2)+'\n');
+          console.log(JSON.stringify(proof,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c37-code-cache-differential
+          path: evidence/c37-code-cache/
+          if-no-files-found: warn
+          retention-days: 90

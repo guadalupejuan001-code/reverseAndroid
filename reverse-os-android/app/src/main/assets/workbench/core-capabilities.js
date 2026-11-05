@@ -1,0 +1,2 @@
+'use strict';
+window.REVERSE_CAPABILITIES=Object.freeze({"max_active_qubits":4096,"max_component_qubits":1024,"max_state_bytes":67108864,"max_address_digits":4096,"kind":"verified-build-profile","verified_independent_qubits":4096,"T_gates_verified":4096,"gates":["H","S","X","Y","Z","CX","CZ","T","T†"],"hamiltonians":"two-qubit Ising via gate decomposition; first-order product with transverse field","mundo_x_commit":"e2778d962af22f6f1a0794058dd4685fc2573966"});

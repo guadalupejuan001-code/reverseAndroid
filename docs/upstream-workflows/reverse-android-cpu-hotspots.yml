@@ -1,0 +1,88 @@
+name: REVERSE Android original XI Ether CPU hotspot oracle
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/reverse-android-cpu-hotspots.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-cpu-hotspots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-rvi2-boot-continuation
+          run-id: 40804061395
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Confirm exact original Cuttlefish ARM64 guest state (not host Android emulator)
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          echo '174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733  prior/current.rvg' | sha256sum -c -
+          command -v gprof
+          node tools/audit_gki_rvg.mjs prior/current.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733 \
+            > evidence/guest-provenance.json
+          jq -e '.rvi_version=="RVI2" and .instructions==12020000 and
+            .initrd_bytes==21808620 and .classical_override_limit=="0"' \
+            evidence/guest-provenance.json >/dev/null
+      - name: Build profiled and normal original XI Ether binaries from identical source
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          for opt in ordinary instrumented; do
+            flags='-O2'
+            if test "$opt" = instrumented; then flags='-O2 -pg -fno-omit-frame-pointer'; fi
+            g++ -std=c++17 $flags -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+              -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+              tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+              -o "build/guest-$opt"
+          done
+      - name: Profile real guest execution hot path against exact normal-state oracle
+        run: |
+          set -euo pipefail
+          timeout 130 build/guest-ordinary prior/current.rvg 1000000 \
+            build/normal.rvg --chunk=10000 > evidence/normal.json
+          timeout 130 build/guest-instrumented prior/current.rvg 1000000 \
+            build/instrumented.rvg --chunk=10000 > evidence/instrumented.json
+          cmp build/normal.rvg build/instrumented.rvg
+          jq -e '.guest.instructions==13020000 and
+            .stop_reason=="instruction_budget" and .android_boot==false' \
+            evidence/instrumented.json >/dev/null
+          test -s gmon.out
+          gprof -b build/guest-instrumented gmon.out > evidence/original-xi-cpu-hotspots.txt
+          test -s evidence/original-xi-cpu-hotspots.txt
+          head -n 65 evidence/original-xi-cpu-hotspots.txt
+          sha256sum build/normal.rvg build/instrumented.rvg > evidence/oracle-guest-sha256.txt
+          {
+            echo '## Original XI/Ether guest hotspot profile (gprof, -O2)'
+            echo ''
+            echo 'One million authentic guest ARM64 transitions, pinned unchanged RVI2.'
+            echo 'Normal and gprof-instrumented original guest state byte-identical.'
+            echo 'Report distinguishes actual CPU host cost from Android boot progress.'
+            echo ''
+            echo 'No Android /init, ADB, Binder, graphics or Wild Rift boot claimed.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-real-cpu-hotspots
+          path: |
+            evidence/*.txt
+            evidence/*.json
+          retention-days: 7

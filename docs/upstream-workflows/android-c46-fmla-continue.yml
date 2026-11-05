@@ -1,0 +1,453 @@
+name: Android C46 indexed FMLA and authentic boot continuation
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c46-fmla-continue.yml
+      - src/minimal_guest_simd.inc
+      - tests/minimal_guest_fmla_element_test.cpp
+      - tools/android_c46_continue.mjs
+      - tests/android_c46_continue.test.mjs
+      - docs/ANDROID_C46_FMLA_CONTINUATION.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native:
+    if: github.event.pull_request.head.ref == 'fix/android-c46-fmla-continue' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Verify original model, CPU scope and complete host gates
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c46-native build
+          git diff --exit-code c0cdcadec83aa94d4abd98e1e53a82accfb4faac HEAD -- src third_party patches scripts tools ':(exclude)src/minimal_guest_simd.inc' ':(exclude)tools/android_c46_continue.mjs'
+          git diff c0cdcadec83aa94d4abd98e1e53a82accfb4faac HEAD -- src/minimal_guest_simd.inc > evidence/c46-native/fmla.diff
+          node --test tests/android_c46_continue.test.mjs tests/android_c42_zygote_progress.test.mjs tests/android_c40_recovery_evidence.test.mjs tests/android_c40_zygote_stage.test.mjs tests/android_framework_evidence.test.mjs tests/android_odsign_property_probe.test.mjs tests/android_c27_profile_resume.test.mjs tests/android_supervised_cycle.test.mjs > evidence/c46-native/host-tests.tap
+          test "$(sha256sum pinned-build/tested-source.tar.gz | cut -d ' ' -f 1)" = 'c872d1d778d6931dbac5c81fbbb630fd2552ca9ff45577b148fc29e1bd84f201'
+          tar --no-same-owner -xzf pinned-build/tested-source.tar.gz build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          rm -rf pinned-build
+      - name: Test indexed FMA, existing floating point, scalar conversions and UBSan
+        run: |
+          set -euo pipefail
+          FLAGS='-std=c++17 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools'
+          g++ $FLAGS -O2 tests/minimal_guest_fmla_element_test.cpp build/softfloat/libreverse_softfloat.a -o build/c46-fmla-test
+          g++ $FLAGS -O1 -fsanitize=undefined -fno-sanitize-recover=all tests/minimal_guest_fmla_element_test.cpp build/softfloat/libreverse_softfloat.a -o build/c46-fmla-ubsan
+          g++ $FLAGS -O3 tests/minimal_guest_fp_test.cpp build/softfloat/libreverse_softfloat.a -o build/c46-fp-test
+          g++ $FLAGS -O3 tests/minimal_guest_fcvtzs_scalar_test.cpp build/softfloat/libreverse_softfloat.a -o build/c46-conversion-test
+          build/c46-fmla-test > evidence/c46-native/fmla.json
+          build/c46-fmla-ubsan > evidence/c46-native/ubsan.json
+          build/c46-fp-test > evidence/c46-native/fp.json
+          build/c46-conversion-test > evidence/c46-native/conversions.json
+          g++ $FLAGS -O3 tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o evidence/c46-native/native
+          g++ $FLAGS -O2 tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o evidence/c46-native/frame
+          mkdir -p build/reference
+          git archive c0cdcadec83aa94d4abd98e1e53a82accfb4faac src | tar -x -C build/reference
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/reference/src -Ibuild/ether-compat -Ideps/mundo-x/native/include -Itools tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o evidence/c46-native/reference-native
+          evidence/c46-native/native --pins > evidence/c46-native/native-pins.json
+          evidence/c46-native/reference-native --pins > evidence/c46-native/reference-pins.json
+          cmp evidence/c46-native/native-pins.json evidence/c46-native/reference-pins.json
+          g++ --version > evidence/c46-native/compiler.txt
+          sha256sum evidence/c46-native/native evidence/c46-native/reference-native evidence/c46-native/frame > evidence/c46-native/binary-sha256.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c46-tested-native
+          path: evidence/c46-native
+          retention-days: 90
+  arm-hardware:
+    if: github.event.pull_request.head.ref == 'fix/android-c46-fmla-continue' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - name: Compare actual AArch64 encodings, IEEE results and cumulative flags
+        run: |
+          set -euo pipefail
+          test "$(uname -m)" = aarch64
+          mkdir -p evidence/c46-arm
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_fmla_element_test.cpp build/softfloat/libreverse_softfloat.a -o build/c46-arm
+          build/c46-arm > evidence/c46-arm/hardware.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('evidence/c46-arm/hardware.json'))
+          assert r['native_hardware_cases']>10000
+          PY
+          uname -a > evidence/c46-arm/machine.txt
+          g++ --version > evidence/c46-arm/compiler.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c46-arm-hardware
+          path: evidence/c46-arm
+          retention-days: 90
+  android-continuation:
+    needs: [native, arm-hardware]
+    runs-on: ubuntu-latest
+    timeout-minutes: 175
+    env:
+      REVERSE_PC_C39_CHUNK: '200000'
+      REVERSE_PC_C39_CHECKPOINT_MS: '120000'
+      REVERSE_PC_C39_CHECKPOINT_INSTRUCTIONS: '200000000'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c46-tested-native
+          path: native-build
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c42-stage-10-verified-checkpoint
+          run-id: 41394506021
+          github-token: ${{ github.token }}
+          path: source-c42
+      - name: Authenticate the original last clean C42 boundary
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c46-source
+          chmod +x native-build/native native-build/reference-native native-build/frame
+          node tools/android_c27_profile_resume.mjs preflight source-c42/output-contract.json source-c42 > evidence/c46-source/preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const c=JSON.parse(readFileSync('source-c42/output-contract.json')),r=JSON.parse(readFileSync('source-c42/current.json'));
+          assert.equal(c.source_commit,'ee8e7460201ab03ecf96c3a1219b06cd301efd35');
+          assert.equal(c.checkpoint_sha256,'96c73b59100d80030c53ef9b84324e3dde7fa26c8cb062ebfd5d171b96022706');
+          assert.equal(r.guest.instructions,25200742731);
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Restore the unchanged original Android disk
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c46-source/media.json
+          rm -rf disk-input
+      - name: Compare old and repaired CPU before the observed stop
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs run source-c42/output-contract.json source-c42 native-build/reference-native new-media/android-c27.raw evidence/c46-reference 180000 1000000 1 > evidence/c46-source/reference.json
+          node tools/android_c27_profile_resume.mjs run source-c42/output-contract.json source-c42 native-build/native new-media/android-c27.raw evidence/c46-differential 180000 1000000 1 > evidence/c46-source/repaired.json
+          cmp evidence/c46-reference/current.rvg evidence/c46-differential/current.rvg
+          test "$(sha256sum evidence/c46-differential/current.rvg | cut -d ' ' -f 1)" = 'dd508cf9981efa18f069dbae28ebc7d4a297e5f2f6e938de486beb8cd5142dd1'
+          rm -rf evidence/c46-reference evidence/c46-differential
+          for item in c42-kernel.json c42-kernel.json.log c42-progress.json; do
+            if [ -f "source-c42/$item" ]; then mv "source-c42/$item" "source-c42/previous-$item"; fi
+          done
+          node tools/android_c42_zygote_progress.mjs inspect source-c42 > evidence/c46-source/live-source.json
+      - name: C46 stage 1 execute and verify the authentic Android machine
+        id: s1
+        if: success()
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs source-c42 evidence/c46-1 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" source-c42/c42-progress.json 497042441 > evidence/c46-source/stage-1.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';
+          const r=JSON.parse(readFileSync('evidence/c46-1/current.json'));
+          assert.equal(r.guest.instructions,25697785172);assert.equal(r.error,'');
+          writeFileSync('evidence/c46-source/fmla-crossing.json',JSON.stringify({original_stop_instructions:25697785171,instructions:r.guest.instructions,observed_fmla_executed:true,checkpoint_sha256:r.checkpoint_sha256},null,2)+'\n');
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s1.outcome == 'success'
+        with:
+          name: reverse-c46-stage-1-verified-checkpoint
+          path: |-
+            evidence/c46-1/
+            !evidence/c46-1/native/journal/**
+            !evidence/c46-1/native/current.rvg
+            !evidence/c46-1/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s1.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-1-diagnostics
+          path: |-
+            evidence/c46-1/*.json
+            evidence/c46-1/*.txt
+            evidence/c46-1/*.log
+            evidence/c46-1/native/*.json
+            evidence/c46-1/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - name: C46 stage 2 execute and verify the authentic Android machine
+        id: s2
+        if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.boot != 'true'
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs evidence/c46-1 evidence/c46-2 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c46-1/c42-progress.json 50000000 > evidence/c46-source/stage-2.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s2.outcome == 'success'
+        with:
+          name: reverse-c46-stage-2-verified-checkpoint
+          path: |-
+            evidence/c46-2/
+            !evidence/c46-2/native/journal/**
+            !evidence/c46-2/native/current.rvg
+            !evidence/c46-2/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Release the previously uploaded temporary stage
+        if: steps.s2.outcome == 'success'
+        run: rm -rf evidence/c46-1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s2.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-2-diagnostics
+          path: |-
+            evidence/c46-2/*.json
+            evidence/c46-2/*.txt
+            evidence/c46-2/*.log
+            evidence/c46-2/native/*.json
+            evidence/c46-2/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - name: C46 stage 3 execute and verify the authentic Android machine
+        id: s3
+        if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.boot != 'true'
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs evidence/c46-2 evidence/c46-3 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c46-2/c42-progress.json 500000000 > evidence/c46-source/stage-3.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s3.outcome == 'success'
+        with:
+          name: reverse-c46-stage-3-verified-checkpoint
+          path: |-
+            evidence/c46-3/
+            !evidence/c46-3/native/journal/**
+            !evidence/c46-3/native/current.rvg
+            !evidence/c46-3/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Release the previously uploaded temporary stage
+        if: steps.s3.outcome == 'success'
+        run: rm -rf evidence/c46-2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s3.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-3-diagnostics
+          path: |-
+            evidence/c46-3/*.json
+            evidence/c46-3/*.txt
+            evidence/c46-3/*.log
+            evidence/c46-3/native/*.json
+            evidence/c46-3/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - name: C46 stage 4 execute and verify the authentic Android machine
+        id: s4
+        if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.boot != 'true'
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs evidence/c46-3 evidence/c46-4 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c46-3/c42-progress.json 1000000000 > evidence/c46-source/stage-4.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s4.outcome == 'success'
+        with:
+          name: reverse-c46-stage-4-verified-checkpoint
+          path: |-
+            evidence/c46-4/
+            !evidence/c46-4/native/journal/**
+            !evidence/c46-4/native/current.rvg
+            !evidence/c46-4/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Release the previously uploaded temporary stage
+        if: steps.s4.outcome == 'success'
+        run: rm -rf evidence/c46-3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s4.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-4-diagnostics
+          path: |-
+            evidence/c46-4/*.json
+            evidence/c46-4/*.txt
+            evidence/c46-4/*.log
+            evidence/c46-4/native/*.json
+            evidence/c46-4/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - name: C46 stage 5 execute and verify the authentic Android machine
+        id: s5
+        if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.boot != 'true'
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs evidence/c46-4 evidence/c46-5 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c46-4/c42-progress.json 1000000000 > evidence/c46-source/stage-5.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s5.outcome == 'success'
+        with:
+          name: reverse-c46-stage-5-verified-checkpoint
+          path: |-
+            evidence/c46-5/
+            !evidence/c46-5/native/journal/**
+            !evidence/c46-5/native/current.rvg
+            !evidence/c46-5/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Release the previously uploaded temporary stage
+        if: steps.s5.outcome == 'success'
+        run: rm -rf evidence/c46-4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s5.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-5-diagnostics
+          path: |-
+            evidence/c46-5/*.json
+            evidence/c46-5/*.txt
+            evidence/c46-5/*.log
+            evidence/c46-5/native/*.json
+            evidence/c46-5/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - name: C46 stage 6 execute and verify the authentic Android machine
+        id: s6
+        if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.boot != 'true'
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs evidence/c46-5 evidence/c46-6 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c46-5/c42-progress.json 1000000000 > evidence/c46-source/stage-6.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s6.outcome == 'success'
+        with:
+          name: reverse-c46-stage-6-verified-checkpoint
+          path: |-
+            evidence/c46-6/
+            !evidence/c46-6/native/journal/**
+            !evidence/c46-6/native/current.rvg
+            !evidence/c46-6/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Release the previously uploaded temporary stage
+        if: steps.s6.outcome == 'success'
+        run: rm -rf evidence/c46-5
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s6.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-6-diagnostics
+          path: |-
+            evidence/c46-6/*.json
+            evidence/c46-6/*.txt
+            evidence/c46-6/*.log
+            evidence/c46-6/native/*.json
+            evidence/c46-6/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - name: C46 stage 7 execute and verify the authentic Android machine
+        id: s7
+        if: success() && steps.s6.outcome == 'success' && steps.s6.outputs.boot != 'true'
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs evidence/c46-6 evidence/c46-7 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c46-6/c42-progress.json 1000000000 > evidence/c46-source/stage-7.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s7.outcome == 'success'
+        with:
+          name: reverse-c46-stage-7-verified-checkpoint
+          path: |-
+            evidence/c46-7/
+            !evidence/c46-7/native/journal/**
+            !evidence/c46-7/native/current.rvg
+            !evidence/c46-7/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Release the previously uploaded temporary stage
+        if: steps.s7.outcome == 'success'
+        run: rm -rf evidence/c46-6
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s7.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-7-diagnostics
+          path: |-
+            evidence/c46-7/*.json
+            evidence/c46-7/*.txt
+            evidence/c46-7/*.log
+            evidence/c46-7/native/*.json
+            evidence/c46-7/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - name: C46 stage 8 execute and verify the authentic Android machine
+        id: s8
+        if: success() && steps.s7.outcome == 'success' && steps.s7.outputs.boot != 'true'
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          node tools/android_c46_continue.mjs evidence/c46-7 evidence/c46-8 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c46-7/c42-progress.json 1000000000 > evidence/c46-source/stage-8.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: steps.s8.outcome == 'success'
+        with:
+          name: reverse-c46-stage-8-verified-checkpoint
+          path: |-
+            evidence/c46-8/
+            !evidence/c46-8/native/journal/**
+            !evidence/c46-8/native/current.rvg
+            !evidence/c46-8/native/frame.ppm
+          if-no-files-found: error
+          retention-days: 90
+      - name: Release the previously uploaded temporary stage
+        if: steps.s8.outcome == 'success'
+        run: rm -rf evidence/c46-7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && steps.s8.outcome == 'failure'
+        with:
+          name: reverse-c46-stage-8-diagnostics
+          path: |-
+            evidence/c46-8/*.json
+            evidence/c46-8/*.txt
+            evidence/c46-8/*.log
+            evidence/c46-8/native/*.json
+            evidence/c46-8/native/*.log
+          if-no-files-found: warn
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c46-source-and-progress-evidence
+          path: evidence/c46-source
+          retention-days: 90
+      - name: Report verified completion or the exact next pending boundary
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {existsSync,readFileSync} from 'node:fs';
+          const reports=Array.from({length:8},(_,i)=>'evidence/c46-source/stage-'+(i+1)+'.json').filter(existsSync).map(p=>JSON.parse(readFileSync(p)));
+          const last=reports.at(-1);assert.ok(last,'No authenticated continuation completed');
+          console.log(JSON.stringify(last,null,2));assert.equal(last.android_boot_completed_verified,true,'Stages ended at a verified boundary; completed Android boot is still pending');
+          NODE
+

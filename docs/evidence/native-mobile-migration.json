@@ -1,0 +1,17 @@
+{
+  "checks": 7,
+  "w4u_2_3_image_byte_identical": true,
+  "recognized_control_2_2_variants": [
+    {
+      "previous_edition": "control-apk",
+      "old_image_sha256": "d9a32f841f02c6de6330a9c5993b24d448fe3f1043b279b62cb0544b43d9de31",
+      "retained_answer": "Ana tiene cinco manzanas."
+    },
+    {
+      "previous_edition": "control-apk-final",
+      "old_image_sha256": "f10a24753e57218406e85bbc5f2cb64b3f60410420e5b62eefca7274dc117475",
+      "retained_answer": "Ana tiene cinco manzanas."
+    }
+  ],
+  "scope": "Native XI migration on disposable learned accounts. Installed Android private storage not accessed."
+}

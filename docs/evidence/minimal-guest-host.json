@@ -1,0 +1,60 @@
+{
+  "scope": "Linux development host; not an Android device or Wild Rift result",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "mundo_x_commit": "e2778d962af22f6f1a0794058dd4685fc2573966",
+  "native": {
+    "checks": 8234,
+    "memory_oracle": "dense-independent",
+    "execution": "own-aarch64",
+    "languages": [
+      "XI",
+      "RXE"
+    ],
+    "android_boot": "not_implemented"
+  },
+  "undefined_behavior_sanitizer": {
+    "checks": 8234,
+    "memory_oracle": "dense-independent",
+    "execution": "own-aarch64",
+    "languages": [
+      "XI",
+      "RXE"
+    ],
+    "android_boot": "not_implemented"
+  },
+  "cli": {
+    "checks": 14,
+    "oracle": "self-authored-ELF (independent clang/QEMU oracle runs in CI)",
+    "checkpoint_equivalence": true,
+    "android_boot": "not_implemented"
+  },
+  "demo_single_run": {
+    "guest": {
+      "machine": "reverse-aarch64-el0-v1",
+      "state_model": "immutable-image-xor-inverse-ether",
+      "logical_ram_bytes": 1073741824,
+      "immutable_image_bytes": 332,
+      "delta_background_byte": 0,
+      "delta_overrides": 1,
+      "max_delta_overrides": 65536,
+      "quantum_bindings": 0,
+      "memory_revision": 1,
+      "pc": "0x1034",
+      "sp": "0x40000000",
+      "instructions": 13,
+      "halted": true,
+      "exit_code": 0,
+      "android_boot": "not_implemented",
+      "wild_rift": "not_supported",
+      "hardware_acceleration": false
+    },
+    "executed_this_run": 13,
+    "status": "exited",
+    "stdout": "REVERSE ARM64: 6*7 = 42\n",
+    "stderr": "",
+    "snapshot_bytes": 5758,
+    "host_elapsed_ns": 166465,
+    "host_peak_rss_kib": 9472
+  },
+  "interpretation": "Logical RAM, immutable bytes, exception count, snapshot size and process peak RSS are different metrics."
+}

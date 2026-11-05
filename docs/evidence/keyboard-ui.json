@@ -1,0 +1,34 @@
+{
+  "checks": 43,
+  "inset_cases": [
+    {
+      "width": 844,
+      "available_height": 260,
+      "input_accessible": true,
+      "send_accessible": true
+    },
+    {
+      "width": 844,
+      "available_height": 200,
+      "input_accessible": true,
+      "send_accessible": true
+    },
+    {
+      "width": 844,
+      "available_height": 160,
+      "input_accessible": true,
+      "send_accessible": true
+    },
+    {
+      "width": 844,
+      "available_height": 132,
+      "input_accessible": true,
+      "send_accessible": true
+    }
+  ],
+  "native_conversation_turns": 1,
+  "draft_and_selection_retained": true,
+  "window_frame_retained": true,
+  "errors": [],
+  "scope": "Chromium with simulated native IME insets and a real XI/RXE conversation. This does not execute an Android IME or prove device-specific keyboard behavior."
+}

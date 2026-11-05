@@ -1,0 +1,73 @@
+{
+  "suite": "integrated_large_XI_persistence",
+  "cases": [
+    {
+      "qubits": 128,
+      "far_operands": [
+        0,
+        127
+      ],
+      "snapshot_bytes": 8367,
+      "core_revision": 136,
+      "memory_revision": 3,
+      "coefficients": 3,
+      "continued_RNG_identical": true,
+      "failed_run_preserved_files": true
+    },
+    {
+      "qubits": 256,
+      "far_operands": [
+        0,
+        127,
+        255
+      ],
+      "snapshot_bytes": 22287,
+      "core_revision": 265,
+      "memory_revision": 3,
+      "coefficients": 3,
+      "continued_RNG_identical": true,
+      "failed_run_preserved_files": true
+    },
+    {
+      "qubits": 512,
+      "far_operands": [
+        0,
+        127,
+        255,
+        511
+      ],
+      "snapshot_bytes": 74847,
+      "core_revision": 522,
+      "memory_revision": 3,
+      "coefficients": 4,
+      "continued_RNG_identical": true,
+      "failed_run_preserved_files": true
+    },
+    {
+      "qubits": 1000,
+      "far_operands": [
+        0,
+        127,
+        255,
+        511,
+        999
+      ],
+      "snapshot_bytes": 271679,
+      "core_revision": 1011,
+      "memory_revision": 3,
+      "coefficients": 4,
+      "continued_RNG_identical": true,
+      "failed_run_preserved_files": true
+    },
+    {
+      "qubits": 1000,
+      "family": "distributed_graph_16_T",
+      "coefficients": 65536,
+      "snapshot_bytes": 18096375,
+      "persistent_state_sha256": "47f95579140f31ff8be2e9fac0a030ed450d2f616fa6d05e2bb865811ad9c37e",
+      "17th_T_rejected_without_overwriting_files": true
+    }
+  ],
+  "legacy_migration_checked": true,
+  "hard_graph_checked": true
+}

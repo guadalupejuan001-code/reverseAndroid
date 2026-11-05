@@ -1,0 +1,13 @@
+The next instruction after C66's verified URSHR is 0x2e254082 at PC 0x7b9af6a89c: RADDHN V2.8B,V4.8H,V5.8H in BootAnimation thread 1962, inside /system/lib64/libhwui.so. The source is the existing clean C66 crossing at 51,775,059,737 instructions, SHA-256 d516911ec8bb44cff9987e57909a9e5e0a454ad23f77a2f023dfdb2f0895c391. The failed zero-progress million-instruction probe is diagnostic only.
+
+Before the repair, an authenticated 4 KiB code page was decoded using the Go ARM64 encoding table. Direct-branch traversal identified 57 reachable instructions and 55 distinct words in that page. Separate single-instruction synthetic fixtures found exactly three unsupported words, all RADDHN. This static analysis includes possible unexecuted branches and does not follow targets outside the page; it does not attest the rest of the library or Android boot.
+
+Implement all 24 ADDHN/RADDHN/SUBHN/RSUBHN variants, including upper-half forms. Addition or subtraction plus the optional rounding bias reduces modulo the full source width before selecting its high half. Sources are captured before aliased writes; lower forms clear the upper half and upper forms preserve the old lower half. Unallocated element sizes reject before FP access. FPCR, FPSR, NZCV and the original memory authority are unchanged.
+
+Tests compare a separate signed 128-bit mathematical reference over every legal source/destination register triple, overflow and rounding boundaries, aliases, retained lower halves and randomized FP modes/status. Physical ARM executes the real encodings. The original sparse FPU encoding and decoder are used unchanged.
+
+The observed V2, V4 and V5 are zero. The one-instruction proof requires every original checkpoint byte to remain identical except PC, instruction count, counter phase and checksum; it includes all RAM, devices and all sparse FPU bytes. No zero register or RAM page may be materialized as an alternate representation.
+
+Independent CI replays the previously tested C66 CPU for 591,279,704 instructions from the authenticated C65 stage 5 source, reproduces the exact clean pre-RADDHN checkpoint, compares candidate and reference RVGs, and verifies the crossing before a million-instruction probe and bounded long cycles. XI/Ether, RVG/MXIM, disk, RAM, seed, 64 instructions per tick, IRQ handling and the original Android boot/display acceptance checks remain intact.
+
+Measured local release and UBSan each passed 849,409 cases and 56,911,269 checks. The candidate admitted all 55 distinct words in the audited page without operand faults. Physical ARM CI must pass at least 814,465 real instruction comparisons before long continuation.

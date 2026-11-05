@@ -1,0 +1,265 @@
+name: Android C29 authenticated sequential clean C27-board budgets
+'on':
+  pull_request:
+    types:
+    - opened
+    - reopened
+    paths:
+    - .github/workflows/android-c29-continuation.yml
+    - tools/android_c29_contract.json
+    - tools/guest_c27_profile_resume.cpp
+    - tools/android_c27_profile_resume.mjs
+    - tools/android_c27_sequence.mjs
+    - tools/android_c27_wait_*.mjs
+    - tools/android_framework_evidence.mjs
+    - tools/android_kernel_observer.mjs
+    - tests/android_framework_evidence.test.mjs
+    - tests/android_c27_profile_resume.test.mjs
+permissions:
+  contents: read
+  actions: read
+jobs:
+  continue-only-completed-clean-boundaries:
+    if: github.event.pull_request.head.ref == 'fix/android-c29-budget-chain-20261031' && github.event.pull_request.head.repo.full_name
+      == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Verify unchanged original runtime and continuation policies
+      run: |
+        set -euo pipefail
+        mkdir -p evidence/c29-media evidence/c29-build build
+        git diff --exit-code 8dcb7159d22497b46b736227f4447df36c40bb23 HEAD -- src third_party scripts patches
+        node --test tests/android_c27_result.test.mjs tests/android_c28_result.test.mjs tests/rvg_memory_lines.test.mjs tests/android_c27_profile_resume.test.mjs tests/android_framework_evidence.test.mjs tests/android_live_property.test.mjs tests/android_boot_property.test.mjs tests/android_guest_outcome.test.mjs tests/android_userdata_disk.test.mjs tests/android_profile_resume_budget.test.mjs tests/android_supervised_cycle.test.mjs > evidence/c29-build/host-tests.tap
+        git rev-parse HEAD > evidence/c29-build/source-commit.txt
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-android-c03-genuine-partition-disk
+        run-id: 40910284394
+        github-token: ${{ github.token }}
+        path: disk-input
+    - name: Rebuild the same measured C27 blank-data disk
+      run: |
+        set -euo pipefail
+        export ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+        test -n "$ORIGINAL"
+        node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c29-media/media-stdout.json
+        cp new-media/media.json evidence/c29-media/
+        rm -rf disk-input
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverse-c29-identical-c27-media
+        path: evidence/c29-media/
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 6
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c28-c27-continuation
+        run-id: 41146812713
+        github-token: ${{ github.token }}
+        path: input-profile
+    - name: Authenticate completed C28 and compile the same-board budget resumer
+      run: |
+        set -euo pipefail
+        node tools/android_c27_profile_resume.mjs preflight tools/android_c29_contract.json input-profile > evidence/c29-build/input-preflight.json
+        tar -xzf input-profile/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+        g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c27-profile-native
+        g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/checkpoint-frame-native
+        g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/checkpoint_frame_fixture.cpp build/softfloat/libreverse_softfloat.a -o build/checkpoint-frame-fixture
+        REVERSE_CHECKPOINT_FRAME="$PWD/build/checkpoint-frame-native" REVERSE_FRAME_FIXTURE="$PWD/build/checkpoint-frame-fixture" node --test tests/checkpoint_frame_cli.mjs > evidence/c29-build/checkpoint-frame-tests.tap
+        build/c27-profile-native --pins > evidence/c29-build/compiled-native-pins.json
+        node --input-type=module <<'NODE'
+        import {readFileSync} from 'node:fs';import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';console.log(JSON.stringify(verifyNativePins(JSON.parse(readFileSync('evidence/c29-build/compiled-native-pins.json')))));
+        NODE
+        tar -czf evidence/c29-build/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+        sha256sum build/c27-profile-native build/checkpoint-frame-native evidence/c29-build/tested-source.tar.gz > evidence/c29-build/build-sha256.txt
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverse-c29-tested-build
+        path: evidence/c29-build/
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 6
+    - name: Continue exact CPU through bounded round 1
+      id: launch1
+      if: success()
+      run: |
+        set -euo pipefail
+        test ! -e evidence/c29-budget-1
+        date +%s > build/c29-budget-1.started
+        export SOURCE_COMMIT=$(cat evidence/c29-build/source-commit.txt)
+        nohup bash -c 'set +e; env -u GITHUB_OUTPUT node tools/android_c27_sequence.mjs tools/android_c29_contract.json input-profile build/c27-profile-native new-media/android-c27.raw build/checkpoint-frame-native evidence/c29-budget-1 "$SOURCE_COMMIT" > build/c29-budget-1.stdout 2> build/c29-budget-1.stderr; cycle_exit=$?; printf "%s\n" "$cycle_exit" > build/c29-budget-1.exit.pending; mv build/c29-budget-1.exit.pending build/c29-budget-1.exit' </dev/null >/dev/null 2>&1 &
+        echo "$!" > build/c29-budget-1.pid
+    - name: Freeze actual fifteen-minute observation in round 1
+      if: steps.launch1.outcome == 'success'
+      continue-on-error: true
+      run: node tools/android_c27_wait_observation.mjs evidence/c29-budget-1/native/journal evidence/c29-budget-1-observed-15m
+        tools/android_c29_contract.json "$(cat evidence/c29-build/source-commit.txt)" 900000 build/c29-budget-1.exit
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch1.outcome == 'success'
+      with:
+        name: reverse-c29-budget-1-observed-15m
+        path: evidence/c29-budget-1-observed-15m/
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 6
+    - name: Validate completed round 1 and its exact runtime evidence
+      id: budget1
+      if: always() && steps.launch1.outcome == 'success'
+      run: node tools/android_c27_wait_complete.mjs build/c29-budget-1.exit evidence/c29-budget-1 build/c29-budget-1.started
+        build/c29-budget-1.stdout build/c29-budget-1.stderr evidence/c29-build
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch1.outcome == 'success'
+      with:
+        name: reverse-c29-budget-1
+        path: |-
+          evidence/c29-budget-1/
+          !evidence/c29-budget-1/native/journal/**
+          !evidence/c29-budget-1/native/current.rvg
+          !evidence/c29-budget-1/native/frame.ppm
+          !evidence/c29-budget-1/native/frame.pending.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 6
+    - name: Continue exact CPU through bounded round 2
+      id: launch2
+      if: steps.budget1.outputs.clean == 'true' && steps.budget1.outputs.ready != 'true'
+      run: |
+        set -euo pipefail
+        test ! -e evidence/c29-budget-2
+        date +%s > build/c29-budget-2.started
+        export SOURCE_COMMIT=$(cat evidence/c29-build/source-commit.txt)
+        nohup bash -c 'set +e; env -u GITHUB_OUTPUT node tools/android_c27_sequence.mjs evidence/c29-budget-1/output-contract.json evidence/c29-budget-1 build/c27-profile-native new-media/android-c27.raw build/checkpoint-frame-native evidence/c29-budget-2 "$SOURCE_COMMIT" > build/c29-budget-2.stdout 2> build/c29-budget-2.stderr; cycle_exit=$?; printf "%s\n" "$cycle_exit" > build/c29-budget-2.exit.pending; mv build/c29-budget-2.exit.pending build/c29-budget-2.exit' </dev/null >/dev/null 2>&1 &
+        echo "$!" > build/c29-budget-2.pid
+    - name: Freeze actual fifteen-minute observation in round 2
+      if: steps.launch2.outcome == 'success'
+      continue-on-error: true
+      run: node tools/android_c27_wait_observation.mjs evidence/c29-budget-2/native/journal evidence/c29-budget-2-observed-15m
+        evidence/c29-budget-1/output-contract.json "$(cat evidence/c29-build/source-commit.txt)" 900000 build/c29-budget-2.exit
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch2.outcome == 'success'
+      with:
+        name: reverse-c29-budget-2-observed-15m
+        path: evidence/c29-budget-2-observed-15m/
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 6
+    - name: Validate completed round 2 and its exact runtime evidence
+      id: budget2
+      if: always() && steps.launch2.outcome == 'success'
+      run: node tools/android_c27_wait_complete.mjs build/c29-budget-2.exit evidence/c29-budget-2 build/c29-budget-2.started
+        build/c29-budget-2.stdout build/c29-budget-2.stderr evidence/c29-build
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch2.outcome == 'success'
+      with:
+        name: reverse-c29-budget-2
+        path: |-
+          evidence/c29-budget-2/
+          !evidence/c29-budget-2/native/journal/**
+          !evidence/c29-budget-2/native/current.rvg
+          !evidence/c29-budget-2/native/frame.ppm
+          !evidence/c29-budget-2/native/frame.pending.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 6
+    - name: Continue exact CPU through bounded round 3
+      id: launch3
+      if: steps.budget2.outputs.clean == 'true' && steps.budget2.outputs.ready != 'true'
+      run: |
+        set -euo pipefail
+        test ! -e evidence/c29-budget-3
+        date +%s > build/c29-budget-3.started
+        export SOURCE_COMMIT=$(cat evidence/c29-build/source-commit.txt)
+        nohup bash -c 'set +e; env -u GITHUB_OUTPUT node tools/android_c27_sequence.mjs evidence/c29-budget-2/output-contract.json evidence/c29-budget-2 build/c27-profile-native new-media/android-c27.raw build/checkpoint-frame-native evidence/c29-budget-3 "$SOURCE_COMMIT" > build/c29-budget-3.stdout 2> build/c29-budget-3.stderr; cycle_exit=$?; printf "%s\n" "$cycle_exit" > build/c29-budget-3.exit.pending; mv build/c29-budget-3.exit.pending build/c29-budget-3.exit' </dev/null >/dev/null 2>&1 &
+        echo "$!" > build/c29-budget-3.pid
+    - name: Freeze actual fifteen-minute observation in round 3
+      if: steps.launch3.outcome == 'success'
+      continue-on-error: true
+      run: node tools/android_c27_wait_observation.mjs evidence/c29-budget-3/native/journal evidence/c29-budget-3-observed-15m
+        evidence/c29-budget-2/output-contract.json "$(cat evidence/c29-build/source-commit.txt)" 900000 build/c29-budget-3.exit
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch3.outcome == 'success'
+      with:
+        name: reverse-c29-budget-3-observed-15m
+        path: evidence/c29-budget-3-observed-15m/
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 6
+    - name: Validate completed round 3 and its exact runtime evidence
+      id: budget3
+      if: always() && steps.launch3.outcome == 'success'
+      run: node tools/android_c27_wait_complete.mjs build/c29-budget-3.exit evidence/c29-budget-3 build/c29-budget-3.started
+        build/c29-budget-3.stdout build/c29-budget-3.stderr evidence/c29-build
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch3.outcome == 'success'
+      with:
+        name: reverse-c29-budget-3
+        path: |-
+          evidence/c29-budget-3/
+          !evidence/c29-budget-3/native/journal/**
+          !evidence/c29-budget-3/native/current.rvg
+          !evidence/c29-budget-3/native/frame.ppm
+          !evidence/c29-budget-3/native/frame.pending.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 6
+    - name: Continue exact CPU through bounded round 4
+      id: launch4
+      if: steps.budget3.outputs.clean == 'true' && steps.budget3.outputs.ready != 'true'
+      run: |
+        set -euo pipefail
+        test ! -e evidence/c29-budget-4
+        date +%s > build/c29-budget-4.started
+        export SOURCE_COMMIT=$(cat evidence/c29-build/source-commit.txt)
+        nohup bash -c 'set +e; env -u GITHUB_OUTPUT node tools/android_c27_sequence.mjs evidence/c29-budget-3/output-contract.json evidence/c29-budget-3 build/c27-profile-native new-media/android-c27.raw build/checkpoint-frame-native evidence/c29-budget-4 "$SOURCE_COMMIT" > build/c29-budget-4.stdout 2> build/c29-budget-4.stderr; cycle_exit=$?; printf "%s\n" "$cycle_exit" > build/c29-budget-4.exit.pending; mv build/c29-budget-4.exit.pending build/c29-budget-4.exit' </dev/null >/dev/null 2>&1 &
+        echo "$!" > build/c29-budget-4.pid
+    - name: Freeze actual fifteen-minute observation in round 4
+      if: steps.launch4.outcome == 'success'
+      continue-on-error: true
+      run: node tools/android_c27_wait_observation.mjs evidence/c29-budget-4/native/journal evidence/c29-budget-4-observed-15m
+        evidence/c29-budget-3/output-contract.json "$(cat evidence/c29-build/source-commit.txt)" 900000 build/c29-budget-4.exit
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch4.outcome == 'success'
+      with:
+        name: reverse-c29-budget-4-observed-15m
+        path: evidence/c29-budget-4-observed-15m/
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 6
+    - name: Validate completed round 4 and its exact runtime evidence
+      id: budget4
+      if: always() && steps.launch4.outcome == 'success'
+      run: node tools/android_c27_wait_complete.mjs build/c29-budget-4.exit evidence/c29-budget-4 build/c29-budget-4.started
+        build/c29-budget-4.stdout build/c29-budget-4.stderr evidence/c29-build
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.launch4.outcome == 'success'
+      with:
+        name: reverse-c29-budget-4
+        path: |-
+          evidence/c29-budget-4/
+          !evidence/c29-budget-4/native/journal/**
+          !evidence/c29-budget-4/native/current.rvg
+          !evidence/c29-budget-4/native/frame.ppm
+          !evidence/c29-budget-4/native/frame.pending.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 6
+    - name: Report completed CPU progress without inventing display success
+      if: always()
+      run: |
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {existsSync,readFileSync} from 'node:fs';
+        const summaries=[];for(let i=1;i<=4;i++){const f=`evidence/c29-budget-${i}/boundary-summary.json`;if(existsSync(f))summaries.push(JSON.parse(readFileSync(f)));}
+        assert.ok(summaries.length,'No completed evidence');assert.ok(summaries.every(s=>s.clean_completed),'A continuation failed; inspect its preserved evidence');console.log(JSON.stringify({bounded_rounds:summaries.length,latest:summaries.at(-1),visual_review_required:true},null,2));
+        NODE

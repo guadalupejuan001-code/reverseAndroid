@@ -1,0 +1,146 @@
+name: Android C34 verified continuation from clean C33
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c34-continuation.yml
+      - tools/android_c34_stage.mjs
+      - tests/android_c34_stage.test.mjs
+      - docs/ANDROID_C34_CONTINUATION.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-c33-to-c34-continuation:
+    if: github.event.pull_request.head.ref == 'experiment/android-c34-post-odsign-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Confirm no changes to CPU, guest ABI, disk, original kernel, or XI/Ether
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c34-diagnostics build
+          changes=$(git diff --name-only b6d6240292a462a849a80e8e7cb66e70b197de80 HEAD -- src third_party scripts patches tools/guest_c27_profile_resume.cpp tools/guest_budget_cycles.hpp tools/guest_checkpoint_frame.cpp)
+          test -z "$changes"
+          node --test tests/android_c34_stage.test.mjs tests/android_c33_stage.test.mjs tests/android_c32_stage.test.mjs tests/android_framework_evidence.test.mjs tests/android_c27_profile_resume.test.mjs tests/android_guest_outcome.test.mjs > evidence/c34-diagnostics/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Rebuild original XI Ether guest host tools, preserving C33 SIMD fixes
+        run: |
+          set -euo pipefail
+          tar -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c34-native
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/c34-frame
+          build/c34-native --pins > evidence/c34-diagnostics/native-pins.json
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';
+          verifyNativePins(JSON.parse(readFileSync('evidence/c34-diagnostics/native-pins.json','utf8')));
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c33-usra-fixed-continuation
+          run-id: 41342890275
+          github-token: ${{ github.token }}
+          path: source-c33
+      - name: Authenticate complete original clean C33 checkpoint and boundaries
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c33/output-contract.json source-c33 > evidence/c34-diagnostics/c33-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          import {C33_SOURCE} from './tools/android_c34_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const contract=read('source-c33/output-contract.json');
+          const report=read('source-c33/current.json');
+          const boundary=read('source-c33/boundary-summary.json');
+          assert.equal(contract.schema,'reverse-c27-profile-resume-contract-v1');
+          assert.equal(contract.source_commit,C33_SOURCE.source_commit);
+          assert.equal(contract.checkpoint_sha256,C33_SOURCE.checkpoint_sha256);
+          assert.equal(report.checkpoint_sha256,C33_SOURCE.checkpoint_sha256);
+          assert.equal(report.guest.instructions,C33_SOURCE.instructions);
+          assert.equal(boundary.clean_completed,true);
+          assert.equal(boundary.checkpoint_sha256,C33_SOURCE.checkpoint_sha256);
+          assert.equal(boundary.instructions,C33_SOURCE.instructions);
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Reconstitute byte-identical C27 original disk with new blank userdata
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c34-diagnostics/media.json
+          rm -rf disk-input
+      - name: Execute real ARM64 Android CPU from clean C33 (three bounded budgets)
+        run: |
+          set -euo pipefail
+          SOURCE_COMMIT=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs source-c33/output-contract.json source-c33 build/c34-native new-media/android-c27.raw build/c34-frame evidence/c34 "$SOURCE_COMMIT" 240000 450000000 3 > evidence/c34-diagnostics/native-sequence.json
+      - name: Authenticate new C34 checkpoint, live services and display independently
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {preflight} from './tools/android_c27_profile_resume.mjs';
+          import {classifyC34,C33_SOURCE} from './tools/android_c34_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const sourceContract=read('source-c33/output-contract.json');
+          const outputContract=read('evidence/c34/output-contract.json');
+          preflight(sourceContract,'source-c33');
+          preflight(outputContract,'evidence/c34');
+          const stage=classifyC34({
+            sourceContract,sourceReport:read('source-c33/current.json'),sourceBoundary:read('source-c33/boundary-summary.json'),
+            outputContract,report:read('evidence/c34/current.json'),
+            result:read('evidence/c34/result.json'),host:read('evidence/c34/process-outcome.json'),
+            boundary:read('evidence/c34/boundary-summary.json'),
+            kernel:read('evidence/c34/kernel-observation.json'),frame:read('evidence/c34/checkpoint-frame.json'),
+            framework:read('evidence/c34/runtime-evidence.json'),
+            sourceAuthenticated:true,outputAuthenticated:true
+          });
+          assert.equal(stage.source_sha256,C33_SOURCE.checkpoint_sha256);
+          assert.ok(stage.instructions>C33_SOURCE.instructions);
+          assert.equal(stage.source_checkpoint_unchanged,true);
+          assert.equal(stage.android_display_content_verified,false);
+          writeFileSync('evidence/c34-diagnostics/actual-stage.json',JSON.stringify(stage,null,2)+'\n');
+          console.log(JSON.stringify(stage,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c34-diagnostics
+          path: evidence/c34-diagnostics/
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: reverse-c34-authenticated-continuation
+          path: |-
+            evidence/c34/
+            !evidence/c34/native/journal/**
+            !evidence/c34/native/current.rvg
+            !evidence/c34/native/frame.ppm
+            !evidence/c34/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6

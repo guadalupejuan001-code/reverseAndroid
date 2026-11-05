@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#191c1c">
+  <meta name="description" content="REVERSE. Programas propios, archivos y núcleo XI/Ether en tu dispositivo.">
+  <title>REVERSE</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="desktop.css">
+  <link rel="stylesheet" href="control-center.css">
+  <link rel="stylesheet" href="programs.css">
+  <link rel="stylesheet" href="x-market.css">
+  <link rel="stylesheet" href="desktop-shell.css">
+  <link rel="stylesheet" href="quantum-workbench.css">
+  <link rel="stylesheet" href="guest.css">
+  <script defer src="control-center.js"></script>
+  <script defer src="android-host.js"></script>
+  <script defer src="bbyq-control.js"></script>
+  <script defer src="programs.js"></script>
+  <script defer src="x-market.js"></script>
+  <script defer src="guest.js"></script>
+  <script defer src="desktop.js"></script>
+  <script defer src="core-capabilities.js"></script>
+  <script defer src="quantum-workbench.js"></script>
+  <script defer src="desktop-shell.js"></script>
+</head>
+<body>
+  <div id="wallpaper" aria-hidden="true"><div id="wall-image" class="wall-image"></div><div class="wall-glow"></div><svg class="orbit-art" viewBox="0 0 1200 1000" fill="none"><defs><linearGradient id="orbit" x1="0" y1="0" x2="1000" y2="900" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".04"/><stop offset=".45" stop-color="currentColor" stop-opacity=".65"/><stop offset="1" stop-color="currentColor" stop-opacity=".02"/></linearGradient></defs><g stroke="url(#orbit)"><ellipse cx="620" cy="510" rx="520" ry="200" transform="rotate(-38 620 510)" stroke-width="52"/><ellipse cx="620" cy="510" rx="520" ry="200" transform="rotate(-38 620 510)" stroke-width="1"/><ellipse cx="620" cy="510" rx="395" ry="145" transform="rotate(-38 620 510)" stroke-width="1"/><ellipse cx="620" cy="510" rx="620" ry="260" transform="rotate(-38 620 510)" stroke-width="1"/></g></svg><div class="wall-grid"></div><div class="wall-shade"></div></div>
+  <header class="topbar">
+    <button class="brand" id="brand-menu" aria-label="Abrir aplicaciones"><span class="brand-mark reverse-mark" aria-hidden="true">R</span><span>REVERSE</span></button>
+
+    <div class="top-right"><span id="top-date"></span><button class="top-button" id="customize" aria-label="Ajustes del sistema"><span data-icon="sliders"></span><span>Ajustes</span></button><button id="fullscreen" class="icon-button fullscreen-button" aria-label="Pantalla completa" title="Pantalla completa"><span data-icon="expand"></span></button></div>
+  </header>
+  <main id="desktop" aria-label="Escritorio virtual">
+    <div class="desktop-shortcuts" id="shortcuts"></div>
+    <div class="desktop-label" aria-hidden="true"><span class="tiny-status"></span><span id="workspace-label">PRINCIPAL</span></div>
+    <div id="windows"></div>
+    <div class="clock-widget" id="clock-widget"><span id="desktop-time"></span><span id="desktop-day"></span></div>
+    <button id="desktop-hint" class="desktop-hint" aria-label="Ajustes de apariencia" hidden></button>
+  </main>
+  <footer class="taskbar"><button class="launcher-toggle dock-button" id="launcher-toggle" aria-label="Abrir aplicaciones" title="Aplicaciones"><span class="launcher-mark"><i></i><i></i><i></i><i></i></span><span class="launcher-label">Aplicaciones</span></button><button class="dock-button task-search" data-ui="search" aria-label="Buscar aplicaciones y archivos" title="Buscar"><span data-icon="search"></span></button><div class="dock-separator"></div><div id="pinned-apps"></div><div id="running-apps"></div><div class="task-tray"><nav class="spaces" aria-label="Espacios de trabajo"><button class="space active" data-space="0"><i></i>Principal</button><button class="space" data-space="1"><i></i>Enfoque</button></nav><button class="icon-button" data-ui="control" aria-label="Abrir centro de control" title="Centro de control"><span data-icon="settings"></span></button><span class="task-clock" id="task-time"></span><button id="show-desktop" class="icon-button" aria-label="Mostrar escritorio" title="Mostrar escritorio"><span data-icon="desktop"></span></button></div></footer>
+  <section id="launcher" class="launcher popover" hidden aria-label="Aplicaciones"><div class="launcher-heading"><div><span class="eyebrow">REVERSE</span><h2>Aplicaciones</h2></div><button class="icon-button" data-action="close-launcher" aria-label="Cerrar aplicaciones"><span data-icon="close"></span></button></div><label class="search-box"><span data-icon="search"></span><input id="global-search" placeholder="Buscar aplicaciones o archivos…" autocomplete="off" aria-label="Buscar aplicaciones o archivos"><kbd>ESC</kbd></label><div class="launcher-spaces" role="group" aria-label="Cambiar espacio"><button class="space" data-space="0">Principal</button><button class="space" data-space="1">Enfoque</button></div><div id="launcher-results"></div><div class="launcher-footer"><span class="avatar">X</span><span>Sistema local</span><button class="text-button" data-open="settings">Ajustes<span data-icon="arrow-right"></span></button></div></section>
+  <div id="context-menu" class="context-menu popover" hidden></div>
+  <dialog id="input-dialog"><form method="dialog" id="input-form"><div class="dialog-top"><span class="eyebrow">REVERSE DESKTOP</span><button type="button" class="icon-button" id="dialog-close" aria-label="Cancelar"><span data-icon="close"></span></button></div><h2 id="dialog-title"></h2><p id="dialog-description"></p><label id="dialog-label" for="dialog-input">Nombre</label><input id="dialog-input" maxlength="80" required autocomplete="off"><p id="dialog-error" class="error-text" role="alert"></p><div class="dialog-actions"><button type="button" class="icon-button keyboard-dismiss" data-keyboard-dismiss aria-label="Ocultar teclado"><span data-icon="keyboard"></span></button><button type="button" class="secondary-button" id="dialog-cancel">Cancelar</button><button class="primary-button" id="dialog-confirm">Crear</button></div></form></dialog>
+  <input type="file" id="file-import" hidden accept="text/plain,text/markdown,text/csv,application/json,.txt,.md,.xi,.csv,.json,image/png,image/jpeg,image/webp,image/gif">
+  <input type="file" id="wallpaper-import" hidden accept="image/png,image/jpeg,image/webp">
+  <input type="file" id="backup-import" hidden accept="application/json,.json">
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+</body>
+</html>

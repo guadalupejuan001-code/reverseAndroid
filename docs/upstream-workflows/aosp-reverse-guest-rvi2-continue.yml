@@ -1,0 +1,121 @@
+name: REVERSE Android guest RVI2 continued kernel boot diagnostics
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-reverse-guest-rvi2-continue.yml'
+      - 'src/minimal_guest.hpp'
+      - 'src/minimal_guest_machine.hpp'
+      - 'tools/guest_linux_probe.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  continue-authentic-cuttlefish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-rvi2-profile-evidence
+          run-id: 40803716435
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify precise original Android RVI2 startup state, plus real embedded kernel and bootargs
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          echo '1ba9d86924a7153416aa8404407ea83d9819018fc8a6e0d448b6d54859d31d20  prior/next.rvg' | sha256sum -c -
+          jq -e '.guest.instructions==10000 and .guest.pc=="0x42139470" and
+            .stop_reason=="instruction_budget" and .guest.exception_level==1 and
+            .guest.exceptions==0 and .android_boot==false and
+            .linux_userspace_init_observed==false' prior/actual-stop.json >/dev/null
+          node tools/audit_gki_rvg.mjs prior/next.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            1ba9d86924a7153416aa8404407ea83d9819018fc8a6e0d448b6d54859d31d20 \
+            > evidence/original-rvi2-provenance.json
+          jq -e '.status=="read_only_provenance_verified" and
+            .rvi_version=="RVI2" and .bootargs_bytes==217 and
+            (.bootargs|contains("init=/init bootconfig")) and
+            .kernel_bytes==42031616 and .initrd_bytes==21808620 and
+            .classical_override_limit=="0" and .instructions==10000' \
+            evidence/original-rvi2-provenance.json >/dev/null
+      - name: Build the same original XI Ether ARM64 interpreter, pinned Mundo-X SHA
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+      - name: Test 10000-step direct vs 1+9999 resumed checkpoint equality
+        run: |
+          set -euo pipefail
+          timeout 120 build/linux-probe prior/next.rvg 10000 build/direct.rvg > evidence/direct.json
+          timeout 120 build/linux-probe prior/next.rvg 1 build/one.rvg > evidence/one.json
+          timeout 120 build/linux-probe build/one.rvg 9999 build/sliced.rvg > evidence/sliced.json
+          cmp build/direct.rvg build/sliced.rvg
+          jq -e '.initial_instructions==10000 and .guest.instructions>=10001 and
+            .guest.immutable_image_bytes==63842169 and
+            .guest.max_delta_overrides==0 and .android_boot==false' evidence/direct.json >/dev/null
+          cp build/direct.rvg build/current.rvg
+          sha256sum build/direct.rvg > evidence/replay.sha256
+      - name: Continue original Android GKI bootargs profile in bounded slices to the next real blocker
+        run: |
+          set -euo pipefail
+          echo '## Authentic Cuttlefish kernel /init payload with RVI2 guest Android bootargs' >> "$GITHUB_STEP_SUMMARY"
+          printf '| Batch | Total instructions | EL | Exceptions | Stop | UART bytes |\n|---|---:|---:|---:|---|---:|\n' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 6); do
+            timeout 180 build/linux-probe build/current.rvg 2000000 build/next.rvg > "evidence/batch-$i.json"
+            jq -e '.guest.instructions>=.initial_instructions and
+              .guest.immutable_image_bytes==63842169 and
+              .guest.max_delta_overrides==0 and .adaptive_classical_storage and
+              .android_boot==false and .linux_boot_complete==false' "evidence/batch-$i.json" >/dev/null
+            stop=$(jq -r '.stop_reason' "evidence/batch-$i.json")
+            total=$(jq -r '.guest.instructions' "evidence/batch-$i.json")
+            el=$(jq -r '.guest.exception_level' "evidence/batch-$i.json")
+            exceptions=$(jq -r '.guest.exceptions' "evidence/batch-$i.json")
+            uart=$(jq -r '.console|length' "evidence/batch-$i.json")
+            printf '| %s | %s | %s | %s | %s | %s |\n' "$i" "$total" "$el" "$exceptions" "$stop" "$uart" >> "$GITHUB_STEP_SUMMARY"
+            mv build/next.rvg build/current.rvg
+            if [[ "$stop" != instruction_budget ]]; then break; fi
+          done
+          last=$(ls evidence/batch-*.json | sort -V | tail -1)
+          jq '{initial_instructions,guest:{pc:.guest.pc,instructions:.guest.instructions,
+            exception_level:.guest.exception_level,exceptions:.guest.exceptions,
+            mmu_enabled:.guest.mmu_enabled,immutable_image_bytes:.guest.immutable_image_bytes,
+            delta_overrides:.guest.delta_overrides},stop_reason,next_instruction,
+            console,android_boot,linux_userspace_init_observed}' \
+            "$last" > evidence/actual-stop.json
+          cp build/current.rvg evidence/current.rvg
+          sha256sum evidence/current.rvg > evidence/current.sha256
+          cat evidence/actual-stop.json
+          cat evidence/current.sha256
+          {
+            echo ''
+            echo 'RVI2 persistent guest FDT contains vendor init=/init and bootconfig.'
+            echo 'This alone does NOT prove kernel bootconfig consumption or Android /init execution.'
+            echo 'Still missing REVERSE virtio/block/AVB partitions, Binder/ADB and graphics.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-rvi2-boot-continuation
+          path: |
+            evidence/actual-stop.json
+            evidence/original-rvi2-provenance.json
+            evidence/current.sha256
+            evidence/replay.sha256
+            evidence/batch-*.json
+            evidence/current.rvg
+          retention-days: 7

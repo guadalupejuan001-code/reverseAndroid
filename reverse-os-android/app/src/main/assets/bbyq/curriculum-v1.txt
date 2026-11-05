@@ -1,0 +1,24 @@
+# Observaciones sintéticas para el primer arranque de BBY Q.
+# NO contiene respuestas prearmadas. El aprendiz y los programas son XI.
+# word <token-ASCII> <sensor-0> <sensor-1> <sensor-2>
+word caja 1 0 0
+word bolsa 1 1 0
+word llave 1 2 0
+word cuarto 2 0 0
+word moneda 1 3 0
+word contiene 3 0 0
+word toca 3 1 0
+word luz 2 2 0
+word cofre 1 0 0
+word guarda 3 0 0
+# fact <subject> <relation> <object> <observed 0/1>
+# Each fact is observed twice and gets an evidence count of 2.
+fact caja contiene bolsa 1
+fact bolsa contiene llave 1
+fact caja contiene llave 1
+fact cuarto contiene caja 1
+fact caja contiene moneda 1
+fact cuarto contiene moneda 1
+fact luz toca caja 1
+fact caja toca bolsa 1
+fact luz toca bolsa 0

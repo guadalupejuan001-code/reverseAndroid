@@ -1,0 +1,210 @@
+name: Android C38 actual KeyMint odsign to Zygote with verified cache
+'on':
+  pull_request:
+    types: [synchronize]
+    paths:
+      - docs/ANDROID_C38_EXECUTION_LAUNCH.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  authenticated-c36-to-c38:
+    if: github.event.pull_request.head.ref == 'experiment/android-c38-keymint-to-zygote-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Isolate C38 from all virtual CPU, guest disk and timer modifications
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c38-diagnostics build
+          test -z "$(git diff --name-only fc470ab758be958af97d3e87636909adbd0252fc HEAD -- src third_party scripts patches tools)"
+          node --test tests/android_c35_stage.test.mjs tests/android_c34_stage.test.mjs tests/android_c33_stage.test.mjs tests/android_framework_evidence.test.mjs > evidence/c38-diagnostics/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c37-code-cache-differential
+          run-id: 41353600067
+          github-token: ${{ github.token }}
+          path: c37-proof
+      - name: Require byte-identical C37 code cache differential before executing Android
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const p=JSON.parse(readFileSync('c37-proof/differential.json','utf8'));
+          assert.equal(p.schema,'reverse-android-c37-code-cache-differential-v1');
+          assert.equal(p.bytes_identical,true);
+          assert.equal(p.instructions,5000000);
+          assert.equal(p.source_sha256,'c4bd2ff6b33a3ec79ff7ced57e6e248c848e4b31374cc4a04dc46de8f36b6c8e');
+          assert.equal(p.original_image_unchanged,true);
+          assert.equal(p.android_boot_claimed,false);
+          NODE
+      - name: Require completed successful C36 run before downloading its checkpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ready=0
+          for n in $(seq 1 40); do
+            payload=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/41352354242")
+            status=$(printf '%s' "$payload" | jq -r '.status')
+            conclusion=$(printf '%s' "$payload" | jq -r '.conclusion')
+            if [ "$status" = completed ]; then
+              test "$conclusion" = success || { echo "C36 did not complete successfully"; exit 1; }
+              ready=1
+              break
+            fi
+            sleep 30
+          done
+          test "$ready" -eq 1 || { echo "C36 artifact producer did not finish within this bounded CI run"; exit 1; }
+          echo "C36 completed successfully; the next step will authenticate all four checkpoint files."
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c36-keymint-continuation
+          run-id: 41352354242
+          github-token: ${{ github.token }}
+          path: source-c36
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c36-keymint-diagnostics
+          run-id: 41352354242
+          github-token: ${{ github.token }}
+          path: source-c36-diagnostics
+      - name: Authenticate original C36 four-file checkpoint and exact producer
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c36/output-contract.json source-c36 > evidence/c38-diagnostics/c36-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const source=read('source-c36/output-contract.json');
+          const report=read('source-c36/current.json'),b=read('source-c36/boundary-summary.json');
+          const proof=read('source-c36-diagnostics/c36-diagnostics/actual-stage.json');
+          assert.equal(source.schema,'reverse-c27-profile-resume-contract-v1');
+          assert.equal(source.source_commit,'e4b62afcf3cdf9588a7ccb56b2b2228734d1c811');
+          assert.equal(proof.schema,'reverse-android-c36-keymint-genuine-v1');
+          assert.equal(proof.checkpoint_sha256,source.checkpoint_sha256);
+          assert.equal(proof.source_sha256,'c4bd2ff6b33a3ec79ff7ced57e6e248c848e4b31374cc4a04dc46de8f36b6c8e');
+          assert.equal(proof.instructions,report.guest.instructions);
+          assert.equal(proof.status,'clean_checkpoint');
+          assert.equal(proof.read_only_observations,true);
+          assert.equal(report.initial_instructions,15317348839);
+          assert.ok(report.guest.instructions>15317348839);
+          assert.equal(b.clean_completed,true);
+          assert.equal(b.checkpoint_sha256,source.checkpoint_sha256);
+          assert.equal(proof.android_boot_claimed,false);
+          writeFileSync('evidence/c38-diagnostics/c36-stage.json',JSON.stringify(proof,null,2)+'\n');
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Compile coherent AArch64 cached interpreter from authenticated source branch
+        run: |
+          set -euo pipefail
+          tar -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          FLAGS="-std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools"
+          g++ $FLAGS tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c38-native
+          g++ $FLAGS tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/c38-frame
+          build/c38-native --pins > evidence/c38-diagnostics/native-pins.json
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';
+          verifyNativePins(JSON.parse(readFileSync('evidence/c38-diagnostics/native-pins.json','utf8')));
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Restore exact C27 Android disk and unchanged machine peripherals
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c38-diagnostics/media.json
+          rm -rf disk-input
+      - name: Execute accelerated actual Android from C36 with bounded cycles
+        run: |
+          set -euo pipefail
+          SOURCE_COMMIT=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs source-c36/output-contract.json source-c36 build/c38-native new-media/android-c27.raw build/c38-frame evidence/c38 "$SOURCE_COMMIT" 540000 600000000 3 > evidence/c38-diagnostics/native-sequence.json
+      - name: Verify actual Zygote and framework from one C38 CPU snapshot
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {preflight} from './tools/android_c27_profile_resume.mjs';
+          import {isLiveUserspaceTask} from './tools/android_framework_evidence.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const src=read('source-c36/output-contract.json'),dst=read('evidence/c38/output-contract.json');
+          preflight(src,'source-c36');
+          preflight(dst,'evidence/c38');
+          const source=read('source-c36/current.json'),report=read('evidence/c38/current.json');
+          const result=read('evidence/c38/result.json'),host=read('evidence/c38/process-outcome.json');
+          const kernel=read('evidence/c38/kernel-observation.json'),framework=read('evidence/c38/runtime-evidence.json');
+          assert.equal(report.initial_instructions,source.guest.instructions);
+          assert.ok(report.guest.instructions>source.guest.instructions);
+          assert.equal(report.provenance.input_checkpoint_sha256,src.checkpoint_sha256);
+          assert.equal(report.error,'');
+          assert.equal(result.execution_progress_accepted,true);
+          assert.equal(host.status,'process_completed');
+          assert.equal(host.exit_code,0);
+          assert.equal(kernel.checkpoint_sha256,dst.checkpoint_sha256);
+          assert.equal(kernel.input_unchanged,true);
+          assert.equal(framework.checkpoint_sha256,dst.checkpoint_sha256);
+          for(const key of ['guest_boot_failure','guest_reboot_requested','guest_kernel_panic','guest_terminal_failure'])assert.equal(result[key],false);
+          const tasks=kernel.tasks??[];
+          const live=name=>tasks.some(t=>t.name===name&&isLiveUserspaceTask(t));
+          const key=['odsign','keystore2','zygote64','system_server','surfaceflinger','servicemanager'];
+          const processes=Object.fromEntries(key.map(name=>[name,live(name)]));
+          const names=(kernel.live_boot_property?.boot_chain_property_observations??[])
+             .filter(p=>p.status==='property_observed').map(p=>({name:p.name,value:p.value,file:p.file}));
+          const prop=name=>names.some(p=>p.name===name&&p.value==='1');
+          const stage=framework.framework_runtime_verified?'framework_verified':
+           processes.zygote64?'zygote64_running':
+           prop('odsign.verification.done')?'odsign_verification_done':
+           prop('odsign.key.done')?'odsign_key_done':
+           processes.odsign?'odsign_running':'odsign_unresolved';
+          const p={schema:'reverse-c38-zg-verified-v1',source_sha256:src.checkpoint_sha256,
+           checkpoint_sha256:dst.checkpoint_sha256,instructions:report.guest.instructions,
+           added_instructions:report.advanced_instructions,stage,processes,properties:names,
+           selinux_enforcing_live:framework.selinux_enforcing_live,
+           boot_completed_live:framework.sys_boot_completed_live,
+           scanout_exported:framework.scanout_exported,
+           android_display_content_verified:false,android_boot_claimed:false,
+           reasons:framework.reasons,checkpoint_unchanged_by_observer:true};
+          writeFileSync('evidence/c38-diagnostics/actual-stage.json',JSON.stringify(p,null,2)+'\n');
+          console.log(JSON.stringify(p,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c38-keymint-zygote-diagnostics
+          path: evidence/c38-diagnostics/
+          if-no-files-found: warn
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: reverse-c38-keymint-zygote-checkpoint
+          path: |-
+            evidence/c38/
+            !evidence/c38/native/journal/**
+            !evidence/c38/native/current.rvg
+            !evidence/c38/native/frame.ppm
+            !evidence/c38/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90

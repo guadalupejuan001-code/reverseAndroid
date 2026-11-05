@@ -1,0 +1,14 @@
+{
+  "identities": [
+    {
+      "sha256": "d9a32f841f02c6de6330a9c5993b24d448fe3f1043b279b62cb0544b43d9de31",
+      "host_source": "Recompilar mediante el workflow para identificar esta compilaci\u00f3n"
+    },
+    {
+      "sha256": "f10a24753e57218406e85bbc5f2cb64b3f60410420e5b62eefca7274dc117475",
+      "host_source": "0d867806038e7394a980a76d489ce247bcab2dfc"
+    }
+  ],
+  "bytecode_sha256": "68ab6b622df643e65365d9b167d713b011144c2a4ae715552dc6f7321edda752",
+  "controller_sha256": "7c8373dba3525bfed35a8da7fc0980f62ae86c9ff7aaf7f82ca24238c68237a3"
+}

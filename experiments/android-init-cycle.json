@@ -1,0 +1,17 @@
+{
+  "input_run": 40945076273,
+  "input_artifact": "reverse-c05-original-init-continuation",
+  "checkpoint_sha256": "dc5cd800e10b15fbde4d35242897fc15c478cb231724edfc102266142d13ecdf",
+  "report_sha256": "c84122096017e9b528fb75e30929294cbc2e4ba2abed11e526710e6ea8f3e782",
+  "instructions": 6250777180,
+  "counter_samples": 6285406,
+  "input_exception_level": 0,
+  "input_pc": "0x2a4000",
+  "counter_seed_sha256": "3079c6396c3fdcdaea106572f5da7c1a26a81efb32f64e8d39de7521dd5a1c75",
+  "disk_run": 40910284394,
+  "disk_artifact": "reverse-android-c03-genuine-partition-disk",
+  "wall_ms": 600000,
+  "instructions_budget": 2000000000,
+  "input_counter_instructions_per_tick": 64,
+  "counter_instructions_per_tick": 64
+}

@@ -1,0 +1,43 @@
+name: Android genuine PCI partition disk inputs
+on:
+  pull_request:
+    paths:
+      - 'tools/android_partition_acquire.mjs'
+      - 'tools/android_partition_disk.mjs'
+      - 'tests/android_partition_disk.test.mjs'
+      - '.github/workflows/android-pci-partition-inputs.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  same-build-disk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - name: Verify raw and Android sparse GPT assembly
+        run: |
+          mkdir -p evidence
+          node --test tests/android_partition_disk.test.mjs > evidence/partition-tests.txt
+      - name: Acquire same-build official partitions and assemble sparse GPT disk
+        run: |
+          node tools/android_partition_acquire.mjs input/c03-partitions > evidence/acquisition.json
+          sfdisk --verify input/c03-partitions/android-slot-a.raw > evidence/gpt-independent.txt
+          sfdisk --json input/c03-partitions/android-slot-a.raw > evidence/gpt-independent.json
+          sha256sum input/c03-partitions/android-slot-a.raw > evidence/disk.sha256
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          path: |
+            input/c03-partitions/android-slot-a.raw
+            input/c03-partitions/metadata.img
+            input/c03-partitions/partitions.json
+            input/c03-partitions/archive-members.json
+            input/c03-partitions/acquisition.json
+            evidence/
+          compression-level: 6
+          retention-days: 14

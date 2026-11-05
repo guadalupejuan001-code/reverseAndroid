@@ -1,0 +1,233 @@
+{
+  "checks": 37,
+  "engine": "W4u",
+  "roles": 3,
+  "max_steps": 2,
+  "transcript": [
+    {
+      "input": "maximiza calculadora",
+      "output": "Voy a intentarlo.",
+      "action": [
+        1,
+        2
+      ],
+      "steps": 2,
+      "roles": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": "maximiza calculadora",
+      "output": "Voy a intentarlo.",
+      "action": [
+        1,
+        2
+      ],
+      "steps": 2,
+      "roles": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": "ejecuta programa 1",
+      "output": "Voy a intentarlo.",
+      "action": [
+        1,
+        16
+      ],
+      "steps": 2,
+      "roles": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": "ejecuta programa 1",
+      "output": "Voy a intentarlo.",
+      "action": [
+        1,
+        16
+      ],
+      "steps": 2,
+      "roles": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": "ejecuta programa 1",
+      "output": "Voy a intentarlo.",
+      "action": [
+        1,
+        16
+      ],
+      "steps": 2,
+      "roles": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": "ejecuta programa 17",
+      "output": "No tengo información suficiente para responder.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 0,
+      "roles": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "input": "no ejecuta programa 1",
+      "output": "No tengo información suficiente para responder.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 0,
+      "roles": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "input": "run program 1 if",
+      "output": "No tengo información suficiente para responder.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 0,
+      "roles": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "input": "¿ejecuta programa 1?",
+      "output": "No tengo información suficiente para responder.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 0,
+      "roles": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "input": "borra programa 1",
+      "output": "No tengo información suficiente para responder.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 0,
+      "roles": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "input": "ejecuta programa 1",
+      "output": "Necesito una ventana u orden más precisa.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 1,
+      "roles": [
+        1,
+        2,
+        0
+      ]
+    },
+    {
+      "input": "ejecuta programa 1",
+      "output": "Ahora no encuentro esa ventana.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 1,
+      "roles": [
+        1,
+        2,
+        0
+      ]
+    },
+    {
+      "input": "maximiza calculadora",
+      "output": "Necesito una ventana u orden más precisa.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 2,
+      "roles": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "input": "ejecuta programa 1",
+      "output": "Voy a intentarlo.",
+      "action": [
+        10,
+        16
+      ],
+      "steps": 1,
+      "roles": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": "ejecuta programa 1",
+      "output": "Voy a intentarlo.",
+      "action": [
+        1,
+        16
+      ],
+      "steps": 2,
+      "roles": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "input": "hola",
+      "output": "Hola. Soy BBY Q.",
+      "action": [
+        0,
+        0
+      ],
+      "steps": 0,
+      "roles": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "scope": "Real XI/RXE; bounded planning, independent verification, migration and failure injection. Host observations here are fixtures."
+}

@@ -1,0 +1,61 @@
+name: REVERSE-PC native universality witness
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/universality_probe.cpp'
+      - 'CMakeLists.txt'
+      - 'docs/universality.md'
+      - '.github/workflows/universality.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/universality_probe.cpp'
+      - 'CMakeLists.txt'
+      - 'docs/universality.md'
+      - '.github/workflows/universality.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  universal-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - name: Confirm canonical upstream is pinned
+        run: |
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          test -f deps/mundo-x/native/include/mundo_x/exact_t_experiment.hpp
+      - name: Compile independent C++ research executable
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+          cmake --build build --target reverse_pc_universality -j2
+      - name: Verify Toffoli/NAND, coherent phase and 1000-qubit multiword case
+        run: |
+          mkdir -p evidence
+          ./build/reverse_pc_universality --self-test | tee evidence/universality.json
+          grep -q '"witness_uses_integrated_xi":false' evidence/universality.json
+      - name: Profile non-Clifford resource growth without assumptions
+        run: |
+          ./build/reverse_pc_universality --profile | tee evidence/resources.json
+      - name: Validate both cases through native CTest
+        run: ctest --test-dir build -R '^reverse_pc_universality_' --output-on-failure
+      - name: Preserve exact source revision
+        run: git -C deps/mundo-x rev-parse HEAD > evidence/upstream-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: REVERSE-PC-Universal-Gate-Witness
+          path: evidence/
+          retention-days: 30
+          if-no-files-found: warn

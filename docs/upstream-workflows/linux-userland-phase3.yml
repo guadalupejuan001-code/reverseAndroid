@@ -1,0 +1,83 @@
+name: XI ARM64 Linux userspace continuation phase 3
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/linux-userland-phase3.yml'
+      - 'tools/guest_linux_probe.cpp'
+      - 'src/minimal_guest*'
+      - 'src/minimal_guest_system.inc'
+      - 'examples/guest-linux-init.S'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  resume-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - name: Retrieve verified Linux 29M checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          name: xi-linux-boot-phase2
+          run-id: 40770322394
+          github-token: ${{ github.token }}
+          path: guest-linux-evidence
+      - name: Verify checkpoint provenance and compile original XI/Ether interpreter
+        run: |
+          set -euo pipefail
+          printf '%s  %s\n' '441252b5ee245cc6f403d395f75a8fbf2fca0b55fafc43aaf3c16854cdf5c569' 'guest-linux-evidence/current.rvg' | sha256sum -c -
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          mkdir -p build linux-phase3
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/guest-linux-probe
+          cp guest-linux-evidence/current.rvg linux-phase3/current.rvg
+          sha256sum linux-phase3/current.rvg > linux-phase3/initial.sha256
+      - name: Continue actual Linux execution, detect first user program or architectural limit
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '## Linux 29M checkpoint continuation after PL011 IFLS\n\n' >> "$GITHUB_STEP_SUMMARY"
+          printf '| Step | Total transitions | Overrides | Exceptions | Reason | Userspace witness |\n|---|---:|---:|---:|---|---|\n' >> "$GITHUB_STEP_SUMMARY"
+          # At this exact checkpoint the previously rejected next instruction
+          # configures PL011 IFLS. Refuse to mask the failure with a large budget.
+          timeout 90 build/guest-linux-probe linux-phase3/current.rvg 1 linux-phase3/after-ifls.rvg > linux-phase3/ifls-first-step.json
+          jq -e '.guest.instructions == 29002276 and .stop_reason == "instruction_budget" and .next_instruction.uart_ifls == 18' linux-phase3/ifls-first-step.json >/dev/null
+          mv linux-phase3/after-ifls.rvg linux-phase3/current.rvg
+          reached=no
+          for i in $(seq 1 12); do
+            timeout 240 build/guest-linux-probe linux-phase3/current.rvg 2000000 linux-phase3/next.rvg > "linux-phase3/step-${i}.json"
+            jq -e --arg num "$i" '.initial_instructions >= 29002275 and .guest.instructions >= .initial_instructions and (.stop_reason | type == "string")' "linux-phase3/step-${i}.json" >/dev/null
+            total=$(jq -r '.guest.instructions' "linux-phase3/step-${i}.json")
+            over=$(jq -r '.guest.delta_overrides' "linux-phase3/step-${i}.json")
+            exc=$(jq -r '.guest.exceptions' "linux-phase3/step-${i}.json")
+            reason=$(jq -r '.stop_reason' "linux-phase3/step-${i}.json")
+            witness=$(jq -r '.console | contains("REVERSE_LINUX_INIT_OK")' "linux-phase3/step-${i}.json")
+            printf '| %s | %s | %s | %s | %s | %s |\n' "$i" "$total" "$over" "$exc" "$reason" "$witness" >> "$GITHUB_STEP_SUMMARY"
+            printf '%s %s %s %s %s\n' "$i" "$total" "$over" "$reason" "$witness"
+            mv linux-phase3/next.rvg linux-phase3/current.rvg
+            if [[ "$witness" == true ]]; then reached=yes; break; fi
+            if [[ "$reason" != instruction_budget ]]; then
+              printf 'HALT: %s after %s transitions\n' "$reason" "$total"
+              break
+            fi
+          done
+          printf '%s\n' "$reached" > linux-phase3/userspace-witness.txt
+          sha256sum linux-phase3/current.rvg > linux-phase3/final.sha256
+          echo "Actual /init marker observed: $reached" >> "$GITHUB_STEP_SUMMARY"
+          echo "No Linux userspace milestone is claimed without the marker." >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xi-linux-boot-phase3
+          path: linux-phase3/
+          retention-days: 14

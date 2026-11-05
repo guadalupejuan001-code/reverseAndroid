@@ -1,0 +1,175 @@
+name: REVERSE RXE - BBY Q executable and native desktop
+on:
+  pull_request:
+    branches: [main]
+    paths: ['reverse-os-android/**', 'src/**', 'tests/reverse_os_transport.cpp', 'tests/rxe_app*', 'tests/bbyq_app.py', 'scripts/build-bbyq-app.py', '.github/workflows/reverse-os-android.yml']
+  push:
+    branches: [main]
+    paths: ['reverse-os-android/**', 'src/**', 'tests/rxe_app*', 'tests/bbyq_app.py', 'scripts/build-bbyq-app.py', '.github/workflows/reverse-os-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: reverse-desktop-android
+  cancel-in-progress: true
+jobs:
+  desktop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      REVERSE_SIGNING_KEYSTORE: ${{ github.workspace }}/build-signing/reverse-desktop.jks
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/BBY-Q
+          ref: 7dfa6c31247cf609128db78908313a6ce41c0b80
+          path: deps/bbyq
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/BBY-Q
+          ref: af1f9bff0e95cf78f0e03b5c289f7bd4dcdb9aa3
+          path: deps/bbyq-app
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Retain development signing identity for subsequent main builds
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.REVERSE_SIGNING_KEYSTORE }}
+          key: reverse-desktop-developer-signing-v2
+      - name: Prepare explicit development signing identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p "$(dirname "$REVERSE_SIGNING_KEYSTORE")"
+          if [[ ! -f "$REVERSE_SIGNING_KEYSTORE" ]]; then
+            keytool -genkeypair -keystore "$REVERSE_SIGNING_KEYSTORE" -storetype JKS -storepass android -keypass android -alias reverse-desktop -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=REVERSE Desktop Development"
+          fi
+          test -s "$REVERSE_SIGNING_KEYSTORE"
+      - name: Prepare pinned native dependencies and SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p reverse-os-evidence reverse-os-dist build
+          bash reverse-os-android/scripts/prepare-bbyq.sh deps/bbyq
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' \
+            'cmake;3.22.1' platform-tools emulator 'system-images;android-35;default;x86_64'
+          cp "$ANDROID_HOME/platforms/android-35/android.jar" build/android-35.jar
+      - name: Real files, geometry and calculator compiler
+        shell: bash
+        run: |
+          set -euo pipefail
+          J=reverse-os-android/app/src/main/java/com/reversepc/os
+          mkdir -p build/desktop-tests
+          javac -d build/desktop-tests "$J/WindowGeometry.java" "$J/WorkspaceFiles.java" "$J/CalculatorCompiler.java" "$J/ResultPacket.java" reverse-os-android/tests/DesktopCoreTest.java reverse-os-android/tests/RxePacketTest.java
+          java -cp build/desktop-tests com.reversepc.os.DesktopCoreTest reverse-os-evidence/host > reverse-os-evidence/desktop-core.txt
+          java -cp build/desktop-tests com.reversepc.os.RxePacketTest | tee reverse-os-evidence/rxe-packet.txt
+          cat reverse-os-evidence/desktop-core.txt
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc src/reverse_pc.cpp -o build/reverse_pc
+          python3 reverse-os-android/tests/check-calculator.py build/reverse_pc reverse-os-evidence/host | tee reverse-os-evidence/calculator-native.txt
+          g++ -std=c++17 -O1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/reverse_os_transport.cpp -o build/reverse_os_transport
+          build/reverse_os_transport | tee reverse-os-evidence/transport.txt
+      - name: Verify RXE bytecode and compile runnable native programs
+        shell: bash
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/rxe_test.cpp -o build/rxe_test
+          build/rxe_test . | tee reverse-os-evidence/rxe-native.txt
+          python3 tests/rxe_cli.py build/reverse_pc | tee reverse-os-evidence/rxe-cli.json
+          build/reverse_pc compile examples/hola-reverse.xi reverse-os-dist/Hola-REVERSE.rxe "Hola REVERSE" | tee reverse-os-evidence/rxe-sample.json
+      - name: Package and verify the real BBY Q E016 executable
+        shell: bash
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/rxe_app_test.cpp -o build/rxe_app_test
+          build/rxe_app_test | tee reverse-os-evidence/rxe-app-native.txt
+          python3 tests/rxe_app_cli.py build/reverse_pc | tee reverse-os-evidence/rxe-app-cli.json
+          python3 scripts/build-bbyq-app.py build/reverse_pc deps/bbyq-app reverse-os-dist/BBY-Q.rxe | tee reverse-os-evidence/bbyq-package.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc deps/bbyq-app/ai/native/session.cpp -o build/bbyq-session
+          python3 tests/bbyq_app.py build/reverse_pc build/bbyq-session deps/bbyq-app reverse-os-dist/BBY-Q.rxe reverse-os-evidence/bbyq-native
+          mkdir -p reverse-os-android/app/src/main/assets/native-apps
+          cp reverse-os-dist/BBY-Q.rxe reverse-os-android/app/src/main/assets/native-apps/BBY-Q.rxe
+      - name: Build the desktop RXE edition for ARM64 and x86_64
+        shell: bash
+        run: |
+          set -euo pipefail
+          gradle -p reverse-os-android --no-daemon --stacktrace :app:assembleRxeDebug > reverse-os-evidence/gradle.log 2>&1 || { tail -160 reverse-os-evidence/gradle.log; exit 1; }
+          cp reverse-os-android/app/build/outputs/apk/rxe/debug/app-rxe-debug.apk reverse-os-dist/REVERSE-Desktop-RXE-v1.2.apk
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs reverse-os-dist/REVERSE-Desktop-RXE-v1.2.apk > reverse-os-evidence/signature.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging reverse-os-dist/REVERSE-Desktop-RXE-v1.2.apk > reverse-os-evidence/package.txt
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          reports=[]
+          for apk in Path('reverse-os-dist').glob('*.apk'):
+              with zipfile.ZipFile(apk) as z:
+                  assert z.testzip() is None
+                  assert 'lib/arm64-v8a/libreverse_os.so' in z.namelist()
+                  assert 'lib/x86_64/libreverse_os.so' in z.namelist()
+              reports.append({'file':apk.name,'bytes':apk.stat().st_size,'sha256':hashlib.sha256(apk.read_bytes()).hexdigest()})
+          Path('reverse-os-evidence/apks.json').write_text(json.dumps(reports,indent=2)+'\n')
+          print(reports)
+          PY
+      - name: Exercise real desktop workflows on Android 15
+        timeout-minutes: 30
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          sudo chmod a+rw /dev/kvm
+          export ANDROID_AVD_HOME="$(mktemp -d /tmp/reverse-desktop-avd.XXXXXX)"
+          printf 'no\n' | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force -n desktop -p "$ANDROID_AVD_HOME/desktop.avd" -k 'system-images;android-35;default;x86_64'
+          echo 'hw.keyboard=no' >> "$ANDROID_AVD_HOME/desktop.avd/config.ini"
+          "$ANDROID_HOME/emulator/emulator" -avd desktop -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -memory 2048 > reverse-os-evidence/emulator.log 2>&1 &
+          EMU_PID=$!
+          trap 'adb logcat -d > reverse-os-evidence/all-logcat.txt 2>/dev/null || true; adb exec-out screencap -p > reverse-os-evidence/final-screen.png 2>/dev/null || true; adb shell uiautomator dump /sdcard/reverse-final.xml >/dev/null 2>&1 || true; adb pull /sdcard/reverse-final.xml reverse-os-evidence/final-ui.xml >/dev/null 2>&1 || true; kill "$EMU_PID" 2>/dev/null || true' EXIT
+          ready=false
+          for i in $(seq 1 115); do
+            if [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == 1 ]]; then ready=true;break;fi
+            sleep 2
+          done
+          test "$ready" = true
+          adb shell input keyevent 82
+          adb shell wm size 720x1600
+          adb shell wm density 280
+          adb install -r reverse-os-dist/REVERSE-Desktop-RXE-v1.2.apk
+          adb logcat -c
+          python3 -m pip install -q pillow
+          python3 reverse-os-android/tests/desktop-extras.py reverse-os-evidence/android
+          python3 reverse-os-android/tests/rxe-smoke.py reverse-os-evidence/rxe
+          python3 reverse-os-android/tests/bbyq-app-smoke.py reverse-os-evidence/bbyq-app
+      - name: Publish installable APK and real UI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: REVERSE-RXE-BBYQ-1.2
+          path: |
+            reverse-os-dist/**
+            reverse-os-evidence/**
+          retention-days: 30
+      - name: Preserve the exact platform classpath for local compiler diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-35-compile-support
+          path: build/android-35.jar
+          retention-days: 3

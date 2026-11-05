@@ -1,0 +1,79 @@
+name: Android C09 widening repair and exact C08 continuation
+on:
+  pull_request:
+    paths: ['.github/workflows/android-c09-widen.yml', 'src/minimal_guest_simd.inc', 'tests/minimal_guest_widen_shift_test.cpp', 'tools/guest_c08_resume.cpp', 'tools/android_c09_audit.mjs']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  repair-and-resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-c08-exact-continuation, run-id: 40982823290, github-token: '${{ github.token }}', path: input}
+      - name: Verify original C08 stop and complete ancestry
+        run: |
+          mkdir -p build evidence/c09
+          node tools/android_c09_audit.mjs input > evidence/c09/source-audit.json
+          git rev-parse HEAD > evidence/c09/source-commit.txt
+      - name: Build original runtime and run widening and existing regressions
+        run: |
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc'
+          for SUITE in minimal_guest_widen_shift minimal_guest_fp guest_boot_cycle; do
+            g++ $FLAGS tests/${SUITE}_test.cpp build/softfloat/libreverse_softfloat.a -o build/$SUITE
+            build/$SUITE > evidence/c09/${SUITE}.json
+            cat evidence/c09/${SUITE}.json
+          done
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c08_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c09
+          cp build/c09 evidence/c09/native-continuation
+          tar -czf evidence/c09/reproducer-source.tar.gz src tools tests scripts third_party CMakeLists.txt build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+      - name: Reject altered proof before disk access
+        run: |
+          cp input/current.json build/bad-report.json
+          printf ' ' >> build/bad-report.json
+          if build/c09 input/current.rvg build/bad-report.json input/entry-proof.json no-such-disk build/must-not-exist 1000 1 > evidence/c09/negative.stdout 2> evidence/c09/negative.stderr; then exit 1; fi
+          grep -F 'C08 report hash mismatch' evidence/c09/negative.stderr
+          test ! -e build/must-not-exist
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-android-c03-genuine-partition-disk, run-id: 40910284394, github-token: '${{ github.token }}', path: disk-input}
+      - name: Resume the exact original C08 CPU RAM clock and disk
+        run: |
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          set +e
+          timeout --signal=TERM --kill-after=30s 300s build/c09 input/current.rvg input/current.json input/entry-proof.json "$DISK" evidence/c09/journal 180000 25000000 > evidence/c09/result.json 2> evidence/c09/native-trace.log
+          STATUS=$?
+          set -e
+          printf '%s\n' "$STATUS" > evidence/c09/native-exit-code.txt
+          exit "$STATUS"
+      - name: Preserve and independently audit the exact native prefix
+        if: always()
+        run: node tools/android_c09_audit.mjs input evidence/c09 25000000 > evidence/c09/audit-result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-c09-widen-continuation
+          path: |
+            evidence/c09/
+            !evidence/c09/journal/**
+          retention-days: 14
+          if-no-files-found: error
+      - name: Require normal native progress without claiming Android readiness
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';
+          const p=JSON.parse(readFileSync('evidence/c09/milestone.json'));
+          console.log(JSON.stringify(p,null,2));
+          if(!p.source_c08_verified||!p.execution_progress_accepted)throw Error('Native stop preserved: '+p.stop_reason+' '+p.error);
+          JS

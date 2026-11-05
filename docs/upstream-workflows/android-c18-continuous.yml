@@ -1,0 +1,128 @@
+name: Android C18 continuous-budget controls
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c18-continuous.yml'
+      - 'tools/guest_budget_cycles.hpp'
+      - 'tools/guest_c18_resume.cpp'
+      - 'tools/android_c18_result.mjs'
+      - 'tests/guest_budget_cycles_test.cpp'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-continuous-state:
+    if: github.event.pull_request.head.ref == 'fix/android-c18-continuous-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c16-polynomial-journal-continuation
+          run-id: 41083214500
+          github-token: ${{ github.token }}
+          path: input-c16
+      - name: Check unmodified runtime and compile continuation controls
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence/c18
+          git diff --exit-code b9af40f9cadf75b39bdf0573a16ca6c680267f22 HEAD -- src third_party
+          tar -xzf input-c16/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools'
+          g++ $FLAGS tests/guest_budget_cycles_test.cpp build/softfloat/libreverse_softfloat.a -o build/c18-budget-test
+          build/c18-budget-test > evidence/c18/budget-cycles.json
+          node --test tests/android_c15_result.test.mjs tests/android_guest_outcome.test.mjs tests/android_partition_readiness.test.mjs > evidence/c18/control-tests.tap
+          node --check tools/android_c18_result.mjs
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c18_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c18-native
+          sha256sum build/c18-native > evidence/c18/build-sha256.txt
+          echo 'Unit controls only. Full original-disk C18 execution is separately bound to the local C17 checkpoint; this job does not claim Android boot.' > evidence/c18/scope.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c18-continuous-controls
+          path: evidence/c18/
+          if-no-files-found: error
+          retention-days: 14
+
+  continue-original-android:
+    needs: verify-continuous-state
+    if: github.event.pull_request.head.ref == 'fix/android-c18-continuous-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c17-minmax-continuation
+          run-id: 41088671942
+          github-token: ${{ github.token }}
+          path: input-c17
+      - name: Verify exact C17 origin and build unchanged runtime
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence/c18-boot
+          git diff --exit-code b9af40f9cadf75b39bdf0573a16ca6c680267f22 HEAD -- src third_party
+          tar -xzf input-c17/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          node tools/android_c18_result.mjs preflight input-c17 > evidence/c18-boot/input-preflight.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c18_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c18-native
+          tar -czf evidence/c18-boot/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          git rev-parse HEAD > evidence/c18-boot/source-commit.txt
+          sha256sum build/c18-native evidence/c18-boot/tested-source.tar.gz > evidence/c18-boot/build-sha256.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Continue the same original guest across three bounded cycles
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          export DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          node --input-type=module <<'NODE'
+          import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const r=await superviseNativeCycle({command:'build/c18-native',args:['input-c17/current.rvg','input-c17/current.json',process.env.DISK,'evidence/c18-boot/journal','480000','2000000000'],outputDirectory:'evidence/c18-boot',initialInstructions:1710758639,startupMs:300000,noProgressMs:90000,wallMs:1860000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C18_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(r));if(r.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Audit the actual final state
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f evidence/c18-boot/journal/latest.json; then
+            node tools/android_c18_result.mjs audit input-c17 evidence/c18-boot > evidence/c18-boot/audit-stdout.json
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c18-original-android-continuation
+          path: evidence/c18-boot/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+      - name: Require clean continuation without claiming a framework boot
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c18-boot/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('result.json').execution_progress_accepted,true);
+          console.log('C18 continuation accepted; framework and graphical boot still require actual guest evidence.');
+          NODE

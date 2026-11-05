@@ -1,0 +1,58 @@
+name: Linux initramfs independent AArch64 boot oracle
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/linux-init-oracle.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  qemu-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: own-arm64-linux-development-probe
+          run-id: 40767291737
+          github-token: ${{ github.token }}
+          path: input
+      - name: Verify pinned original Image and initramfs
+        run: |
+          set -euo pipefail
+          printf '%s  %s\n' '1d544da1f95bf33e79ca377104ca328d55f64f2f3fa5997f6b5d987474c2b634' 'input/Image' | sha256sum -c -
+          printf '%s  %s\n' 'f97f00df11ae12893b71818931c1c919c6e03edffa2c88d7c3026985a25eb0e3' 'input/initrd.cpio' | sha256sum -c -
+          grep -q '^CONFIG_BINFMT_ELF=y$' input/linux.config
+          grep -q '^CONFIG_BLK_DEV_INITRD=y$' input/linux.config
+      - name: Boot original Linux 6.1 Image independently in QEMU
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          sudo apt-get update -qq
+          sudo apt-get install -y qemu-system-arm
+          qemu-system-aarch64 -version > evidence/qemu-version.txt
+          set +e
+          timeout 75 qemu-system-aarch64 \
+            -M virt,gic-version=2 -cpu cortex-a57 -m 128M -smp 1 \
+            -nographic -no-reboot -kernel input/Image -initrd input/initrd.cpio \
+            -append 'console=ttyAMA0 earlycon=pl011,0x09000000 maxcpus=1' \
+            > evidence/qemu-console.txt 2>&1
+          status=$?
+          set -e
+          echo "QEMU status (timeout is expected if /init sleeps): $status"
+          tail -60 evidence/qemu-console.txt
+          # The banner can only be emitted after real kernel execve and
+          # a successful userspace write syscall. No fake console text.
+          grep -q 'REVERSE_LINUX_INIT_OK' evidence/qemu-console.txt
+          printf 'Independent userspace ELF /init executed under QEMU.\n' >> "$GITHUB_STEP_SUMMARY"
+          printf 'This does NOT demonstrate execution in REVERSE XI/Ether.\n' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qemu-independent-initramfs-evidence
+          path: evidence/
+          retention-days: 14

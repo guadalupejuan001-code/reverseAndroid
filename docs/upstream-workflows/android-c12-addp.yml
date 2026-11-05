@@ -1,0 +1,152 @@
+name: Android C12 scalar ADDP from verified C11
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/android-c12-addp.yml'
+      - 'experiments/android-c12-*'
+      - 'tests/minimal_guest_addp_scalar_test.cpp'
+      - 'tests/addp_scalar_encoding_test.mjs'
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: android-c12-addp
+  cancel-in-progress: false
+jobs:
+  resume-c11:
+    if: github.event.pull_request.head.ref == 'fix/android-c12-addp-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify and prepare the tested C12 changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=905e98e4ac58ce76bbba1da8b7d03e91024cf14b
+          git merge-base --is-ancestor "$BASE" HEAD
+          git diff --exit-code "$BASE" HEAD -- src tools tests/android_c12_audit.test.mjs
+          mkdir -p evidence/c12 build/c12-before
+          echo '4f45152532abe0d4e2d2859e3412f4f81a54f44e5b439835303426f9ce53ac06  experiments/android-c12-prepare.mjs' | sha256sum --check
+          echo 'd4cdc78ce95fbfe4073d56a8c4685d66ddf4520f236f4fc4158dda9e1682b57f  tests/minimal_guest_addp_scalar_test.cpp' | sha256sum --check
+          echo 'a7311f3322196491ac74c912ce944e06b8ceb7cd7751d08339a08549f7defdad  tests/addp_scalar_encoding_test.mjs' | sha256sum --check
+          git archive "$BASE" src third_party | tar -x -C build/c12-before
+          node experiments/android-c12-prepare.mjs > evidence/c12/generated-source-sha256.txt
+          echo '81e39d3571af94cd8197aaa91110ee48b04cd19bacea485fcc83891bbc8adb3a  src/minimal_guest_simd.inc' | sha256sum --check
+          echo '10561c4024db59198a79d606386dd67069e589966cbe9a1552fa6b40530ece32  tools/guest_c11_resume.cpp' | sha256sum --check
+          echo '03e1aca4a51f31fc5a8a1c80e630a2097902a482121d589c8990db4dc697498b  tools/android_c12_audit.mjs' | sha256sum --check
+          echo 'b18df6b2653845fffe351fd9cf3fb0622db72136fe3efcb9c6002c6251f75e8c  tools/android_c12_supervised.mjs' | sha256sum --check
+          echo 'f3e5a235d1d3994a0703d8f7a4ee5a3865d19c266585a0ada9944bc51acf18f8  tests/android_c12_audit.test.mjs' | sha256sum --check
+          git add src/minimal_guest_simd.inc tools/guest_c11_resume.cpp tools/android_c12_audit.mjs tools/android_c12_supervised.mjs tests/android_c12_audit.test.mjs
+          git diff --cached > evidence/c12/executed-source.patch
+          git diff --cached --name-only -z | xargs -0 sha256sum > evidence/c12/source-sha256.txt
+          git rev-parse HEAD > evidence/c12/runner-commit.txt
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c11-structures-continuation
+          run-id: 41003034259
+          github-token: ${{ github.token }}
+          path: input-c11
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c07-proven-post-init
+          run-id: 40975381521
+          github-token: ${{ github.token }}
+          path: input-c07
+      - name: Verify C11, regressions and the exact failing instruction
+        env:
+          C11_INPUT: input-c11
+          C07_STATE: input-c07/current.rvg
+          C07_REPORT: input-c07/current.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/android_c12_audit.mjs input-c11 > evidence/c12/source-audit.json
+          node --test --test-concurrency=1 tests/android_verified_c07_source.test.mjs tests/android_c08_result.test.mjs tests/android_c08_integrity.test.mjs tests/rvg_checksum.test.mjs tests/android_supervised_cycle.test.mjs tests/android_c12_audit.test.mjs > evidence/c12/host-tests.tap
+          node tests/addp_scalar_encoding_test.mjs > evidence/c12/llvm-addp-scalar.json
+          node tests/structures_encoding_test.mjs > evidence/c12/llvm-structures.json
+          node tests/xtn_encoding_test.mjs > evidence/c12/llvm-xtn.json
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include'
+          g++ $FLAGS -Ibuild/c12-before/src tests/minimal_guest_addp_scalar_test.cpp build/softfloat/libreverse_softfloat.a -o build/c12-before-test
+          if build/c12-before-test > evidence/c12/negative.stdout 2> evidence/c12/negative.stderr; then echo 'Old interpreter unexpectedly accepted ADDP'; exit 1; fi
+          grep -F 'Unsupported AArch64 instruction 0x5ef1b800' evidence/c12/negative.stderr
+          for suite in minimal_guest_addp_scalar minimal_guest_structures minimal_guest_xtn minimal_guest_widen_shift minimal_guest_fp minimal_guest_el0_cache minimal_guest_crc guest_boot_cycle guest_boot_resume_proof; do
+            g++ $FLAGS -Isrc "tests/${suite}_test.cpp" build/softfloat/libreverse_softfloat.a -o "build/c12-$suite"
+            "build/c12-$suite" | tee "evidence/c12/$suite.json"
+          done
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c11_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c12-native
+          cp input-c11/current.json build/changed-report.json
+          printf '\n' >> build/changed-report.json
+          if build/c12-native input-c11/current.rvg build/changed-report.json input-c11/entry-proof.json /nonexistent-disk build/negative 1000 1000 > evidence/c12/native-negative.stdout 2> evidence/c12/native-negative.stderr; then exit 1; fi
+          grep -F 'C11 report hash mismatch' evidence/c12/native-negative.stderr
+          sha256sum build/c12-native > evidence/c12/native-sha256.txt
+      - name: Publish only the verified experimental source
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BRANCH=fix/android-c12-addp-20261030
+          test "$(git ls-remote origin "refs/heads/$BRANCH" | cut -f1)" = "$EXPECTED_HEAD"
+          sha256sum --check evidence/c12/source-sha256.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Implement verified scalar ADDP and exact C11 continuation'
+          git push origin "HEAD:refs/heads/$BRANCH"
+          git rev-parse HEAD > evidence/c12/published-source-commit.txt
+          cp build/c12-native evidence/c12/native-continuation
+          tar -czf evidence/c12/reproducer-source.tar.gz src tools tests scripts experiments third_party CMakeLists.txt build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reverse-c12-tested-source-and-runner
+          path: evidence/c12/
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Resume exact C11 with the original Android disk
+        shell: bash
+        run: |
+          set -euo pipefail
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          test "$(stat -c '%s' "$DISK")" = 8738832384
+          node tools/android_c12_supervised.mjs evidence/c12 -- build/c12-native input-c11/current.rvg input-c11/current.json input-c11/entry-proof.json "$DISK" evidence/c12/journal 300000 300000000 > evidence/c12/supervision-result.json
+      - name: Audit and preserve the authentic terminal state
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c12
+          if test -f evidence/c12/journal/latest.json; then
+            node tools/android_c12_audit.mjs input-c11 evidence/c12 300000000 | tee evidence/c12/audit-result.json
+          else
+            printf '%s\n' '{"status":"no_native_checkpoint_committed","android_display_verified":false,"native_android_games_verified":false}' > evidence/c12/milestone.json
+            exit 1
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c12-addp-continuation
+          path: evidence/c12/
+          if-no-files-found: error
+          retention-days: 14

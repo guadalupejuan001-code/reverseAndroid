@@ -1,0 +1,122 @@
+name: Android C15 exact multiply-long continuation
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c15-multiply-long.yml'
+      - 'patches/android-c15-multiply-long.patch'
+      - 'tools/guest_c15_resume.cpp'
+      - 'tools/android_c15_result.mjs'
+      - 'tests/minimal_guest_multiply_long_test.cpp'
+      - 'tests/multiply_long_encoding_test.mjs'
+      - 'tests/android_c15_result.test.mjs'
+      - 'tests/minimal_guest_addlv_test.cpp'
+      - 'tests/addlv_encoding_test.mjs'
+      - 'tests/minimal_guest_compare_zero_test.cpp'
+      - 'tests/compare_zero_encoding_test.mjs'
+      - 'tests/minimal_guest_mla_test.cpp'
+      - 'tests/mla_encoding_test.mjs'
+      - 'tests/minimal_guest_replicate_load_test.cpp'
+      - 'tests/replicate_load_encoding_test.mjs'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: android-c15-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  continue-original-state:
+    if: github.event.pull_request.head.ref == 'fix/android-c15-multiply-long-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c14-minmax-continuation
+          run-id: 41011484800
+          github-token: ${{ github.token }}
+          path: input-c14
+      - name: Verify authentic input and apply reviewed instruction patches
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c15 build
+          git merge-base --is-ancestor 8767b050e226e777cd6e558b9e97ef3e94e58a1d HEAD
+          git diff --exit-code 8767b050e226e777cd6e558b9e97ef3e94e58a1d HEAD -- src third_party ':!src/minimal_guest_simd.inc'
+          sha256sum --check tools/android_c15_source.sha256
+          echo '33a8436f87b1426f6fb8af0e979627694957d0ce01e6c8972b8f79580ff2d28b  input-c14/current.rvg' | sha256sum --check
+          echo 'cba168210b8b8dfd31e2a887ea80607345e21f6d87b33121bc94b3199a02310f  input-c14/current.json' | sha256sum --check
+          echo 'a55b187eb943306a6807689e03fe1e9902acdb864bd6e8b80b1666bfd4187ad8  src/minimal_guest_simd.inc' | sha256sum --check
+          tar -xzf input-c14/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          node tools/android_c15_result.mjs preflight input-c14 > evidence/c15/input-preflight.json
+          git rev-parse HEAD > evidence/c15/source-commit.txt
+          git diff -- src > evidence/c15/applied-source.patch
+      - name: Compile and test the instruction family and previous regressions
+        run: |
+          set -euo pipefail
+          FLAGS='-std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc'
+          for suite in minimal_guest_multiply_long minimal_guest_addlv minimal_guest_compare_zero minimal_guest_mla minimal_guest_replicate_load minimal_guest_minmax_across minimal_guest_addp_scalar minimal_guest_xtn; do
+            g++ $FLAGS "tests/${suite}_test.cpp" build/softfloat/libreverse_softfloat.a -o "build/c15-$suite"
+            "build/c15-$suite" > "evidence/c15/$suite.json"
+          done
+          node --test tests/android_c15_result.test.mjs tests/android_guest_outcome.test.mjs tests/android_partition_readiness.test.mjs > evidence/c15/control-tests.tap
+          for family in multiply_long addlv compare_zero mla replicate_load; do
+            node "tests/${family}_encoding_test.mjs" > "evidence/c15/${family}_encoding.json"
+          done
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c15_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c15-native
+          tar -czf evidence/c15/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          sha256sum build/c15-native evidence/c15/tested-source.tar.gz > evidence/c15/build-sha256.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Continue the original C14 machine with its full original disk
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          export DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          node --input-type=module <<'NODE'
+          import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const r=await superviseNativeCycle({command:'build/c15-native',args:['input-c14/current.rvg','input-c14/current.json',process.env.DISK,'evidence/c15/journal','480000','2000000000'],outputDirectory:'evidence/c15',initialInstructions:910037410,startupMs:300000,noProgressMs:90000,wallMs:960000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C15_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(r));if(r.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Bind and classify the actual output
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f evidence/c15/journal/latest.json; then
+            node tools/android_c15_result.mjs audit input-c14 evidence/c15 > evidence/c15/audit-stdout.json
+          fi
+      - name: Preserve input identity
+        if: always()
+        run: |
+          mkdir -p evidence/c15
+          if test -f input-c14/current.rvg; then sha256sum input-c14/current.rvg input-c14/current.json > evidence/c15/original-input-sha256.txt; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c15-multiply-long-continuation
+          path: evidence/c15/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+      - name: Require verified CPU continuation
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c15/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('result.json').execution_progress_accepted,true);
+          console.log('C15 CPU continuation verified. Android framework and display still require their own evidence.');
+          NODE

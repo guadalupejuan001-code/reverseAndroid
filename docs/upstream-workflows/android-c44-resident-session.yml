@@ -1,0 +1,189 @@
+name: Android C44 cycle 2 - resident original guest
+on:
+  pull_request:
+    paths:
+      - .github/workflows/android-c44-resident-session.yml
+      - src/guest_resident_session.hpp
+      - tests/guest_resident_session_test.cpp
+      - tests/guest_resident_pause.test.mjs
+      - tools/guest_resident_benchmark.cpp
+      - reverse-os-android/app/src/main/assets/workbench/guest.js
+      - reverse-os-android/app/src/main/cpp/reverse_os_jni.cpp
+      - reverse-os-android/app/src/main/java/com/reversepc/os/GuestStore.java
+      - reverse-os-android/app/src/main/java/com/reversepc/os/NativeRuntime.java
+      - reverse-os-android/app/src/main/java/com/reversepc/os/WorkbenchActivity.java
+      - reverse-os-android/app/src/androidTest/java/com/reversepc/os/WorkbenchTestRunner.java
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native:
+    if: github.event.pull_request.head.ref == 'perf/android-c44-resident-session-cycle2' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {ref: '${{ github.event.pull_request.head.sha }}'}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with: {name: reverse-c29-tested-build, run-id: 41151900393, github-token: '${{ github.token }}', path: pinned-build}
+      - name: Prepare original runtime and exercise resident persistence
+        run: |
+          set -euo pipefail
+          test "$(sha256sum pinned-build/tested-source.tar.gz | cut -d ' ' -f 1)" = 'c872d1d778d6931dbac5c81fbbb630fd2552ca9ff45577b148fc29e1bd84f201'
+          tar --no-same-owner -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          mkdir -p evidence/c44-native
+          FLAGS='-std=c++17 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc'
+          g++ $FLAGS -O2 tests/guest_resident_session_test.cpp build/softfloat/libreverse_softfloat.a -o build/c44-test
+          g++ $FLAGS -O1 -fsanitize=undefined -fno-sanitize-recover=all tests/guest_resident_session_test.cpp build/softfloat/libreverse_softfloat.a -o build/c44-ubsan
+          g++ $FLAGS -O2 tools/guest_resident_benchmark.cpp build/softfloat/libreverse_softfloat.a -o build/c44-benchmark
+          build/c44-test build/c44-test-data > evidence/c44-native/native.json
+          build/c44-ubsan build/c44-ubsan-data > evidence/c44-native/ubsan.json
+          node --test tests/guest_resident_pause.test.mjs > evidence/c44-native/pause-tests.tap
+          build/c44-benchmark fixture evidence/c44-native/resident-input.rvg 0 > evidence/c44-native/fixture.json
+          build/c44-benchmark fixture build/c44-expected.rvg 1000000 > evidence/c44-native/expected.json
+          build/c44-benchmark fixture build/c44-background.rvg 1250000 > evidence/c44-native/background.json
+          build/c44-benchmark reload evidence/c44-native/resident-input.rvg build/c44-reload.rvg 4 250000 > evidence/c44-native/reload.json
+          build/c44-benchmark resident evidence/c44-native/resident-input.rvg build/c44-resident.rvg 4 250000 > evidence/c44-native/resident.json
+          cmp build/c44-reload.rvg build/c44-resident.rvg
+          cmp build/c44-expected.rvg build/c44-resident.rvg
+          cp build/c44-benchmark evidence/c44-native/resident-benchmark
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with: {name: reverse-c44-native-evidence, path: evidence/c44-native, retention-days: 90}
+  genuine-c42:
+    needs: native
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {ref: '${{ github.event.pull_request.head.sha }}'}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with: {name: reverse-c44-native-evidence, path: native-build}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with: {name: reverse-c42-stage-10-verified-checkpoint, run-id: 41394506021, github-token: '${{ github.token }}', path: source-c42}
+      - name: Authenticate the original C42 source
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c44-real
+          node tools/android_c27_profile_resume.mjs preflight source-c42/output-contract.json source-c42 > evidence/c44-real/source.json
+          test "$(sha256sum source-c42/current.rvg | cut -d ' ' -f 1)" = '96c73b59100d80030c53ef9b84324e3dde7fa26c8cb062ebfd5d171b96022706'
+          chmod +x native-build/resident-benchmark
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with: {name: reverse-android-c03-genuine-partition-disk, run-id: 40910284394, github-token: '${{ github.token }}', path: disk-input}
+      - name: Restore the same Android disk
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c44-real/media.json
+          rm -rf disk-input
+      - name: Compare equal real Android CPU requests
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          native-build/resident-benchmark reload source-c42/current.rvg build/reload.rvg 4 250000 new-media/android-c27.raw > evidence/c44-real/reload.json
+          native-build/resident-benchmark resident source-c42/current.rvg build/resident.rvg 4 250000 new-media/android-c27.raw > evidence/c44-real/resident.json
+          cmp build/reload.rvg build/resident.rvg
+          python3 - <<'PY'
+          import json
+          a=json.load(open('evidence/c44-real/reload.json'));b=json.load(open('evidence/c44-real/resident.json'))
+          assert a['sha256']==b['sha256'] and a['instructions']==b['instructions']
+          assert a['initial_instructions']==b['initial_instructions']==25200742731
+          assert 0<a['advanced_instructions']<=1000000
+          assert a['restores']==a['checkpoint_writes']==4
+          assert b['restores']==b['checkpoint_writes']==1
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with: {name: reverse-c44-real-c42-evidence, path: evidence/c44-real, retention-days: 90}
+  android:
+    needs: native
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      REVERSE_SIGNING_KEYSTORE: ${{ github.workspace }}/build-signing/c44-ci-only.jks
+      C44_SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {ref: '${{ github.event.pull_request.head.sha }}'}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/BBY-Q, ref: ed32ab6b73a31e96080b62269ad1eb9f3e15709d, path: deps/bbyq-latest, persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/BBY-Q, ref: 86b52437d851c7c6db8a80a1d2d4c3e5e2affb09, path: deps/bbyq-legacy, persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/BBY-Q, ref: 7dfa6c31247cf609128db78908313a6ce41c0b80, path: deps/bbyq-classic, persist-credentials: false}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '17'}
+      - uses: gradle/actions/setup-gradle@v4
+        with: {gradle-version: '8.9'}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with: {name: reverse-c44-native-evidence, path: native-build}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with: {name: reverse-android-kernel-pairs-continuation, run-id: 40817697618, github-token: '${{ github.token }}', path: gki-input}
+      - name: Prepare the unchanged app assets and independent GKI reference
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence/c44-android build-signing
+          chmod +x native-build/resident-benchmark
+          test "$(sha256sum gki-input/current.rvg | cut -d ' ' -f 1)" = '4f139751053c39bc1d33c7012fe1d61a8135f002c67be6f0466b3e8f97e2eda3'
+          native-build/resident-benchmark reload gki-input/current.rvg build/gki-reference.rvg 1 250000 > evidence/c44-android/gki-reference.json
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc src/reverse_pc.cpp -o build/reverse_pc
+          python3 deps/bbyq-latest/ai/releases/e025/build.py build/reverse_pc build/e025 --assets reverse-os-android/app/src/main/assets > evidence/c44-android/assets.json
+          node bbyq-interface/build.mjs build/reverse_pc deps/bbyq-legacy build/legacy - > evidence/c44-android/interface.log
+          bash reverse-os-android/scripts/prepare-bbyq.sh deps/bbyq-classic
+          python3 - <<'PY'
+          import json,os,pathlib
+          pathlib.Path('reverse-os-android/app/src/main/assets/workbench/build-info.json').write_text(json.dumps({'source_commit':os.environ['C44_SOURCE_SHA'],'bbyq_commit':'ed32ab6b73a31e96080b62269ad1eb9f3e15709d','bbyq_version':'E025-Chain-1','w4u_version':'0.1','mundo_x_commit':'e2778d962af22f6f1a0794058dd4685fc2573966'})+'\n')
+          PY
+      - name: Build ARM64 and x86_64 test packages
+        run: |
+          set -euo pipefail
+          umask 077
+          keytool -genkeypair -keystore "$REVERSE_SIGNING_KEYSTORE" -storetype JKS -storepass android -keypass android -alias reverse-desktop -keyalg RSA -keysize 2048 -validity 30 -dname 'CN=REVERSE C44 disposable CI'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1' platform-tools emulator 'system-images;android-35;default;x86_64' > evidence/c44-android/sdk.log
+          gradle -p reverse-os-android --no-daemon :app:assembleControlDebug :app:assembleControlDebugAndroidTest > evidence/c44-android/gradle.log 2>&1 || { tail -140 evidence/c44-android/gradle.log;exit 1; }
+      - name: Validate resident lifecycle and genuine GKI continuation on Android 15
+        timeout-minutes: 18
+        run: |
+          set -euo pipefail
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          sudo chmod a+rw /dev/kvm
+          export ANDROID_AVD_HOME="$(mktemp -d /tmp/reverse-c44-avd.XXXXXX)"
+          printf 'no\n' | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force -n c44 -p "$ANDROID_AVD_HOME/c44.avd" -k 'system-images;android-35;default;x86_64'
+          "$ANDROID_HOME/emulator/emulator" -avd c44 -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader -feature -Vulkan -memory 2048 > evidence/c44-android/emulator.log 2>&1 &
+          EMU_PID=$!
+          trap 'adb logcat -d > evidence/c44-android/logcat.txt 2>/dev/null || true; adb exec-out screencap -p > evidence/c44-android/screen.png 2>/dev/null || true; kill "$EMU_PID" 2>/dev/null || true' EXIT
+          ready=false
+          for i in $(seq 1 115); do if [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == 1 ]]; then ready=true;break;fi;sleep 2;done
+          test "$ready" = true
+          adb shell wm size 720x1600
+          adb shell wm density 280
+          adb shell settings put system accelerometer_rotation 0
+          adb shell settings put system user_rotation 1
+          adb shell settings put secure immersive_mode_confirmations confirmed
+          adb shell settings put system screen_off_timeout 600000
+          adb shell input keyevent 82
+          adb install -r reverse-os-android/app/build/outputs/apk/control/debug/app-control-debug.apk
+          adb install -r reverse-os-android/app/build/outputs/apk/androidTest/control/debug/app-control-debug-androidTest.apk
+          adb shell run-as com.reversepc.control.workbench mkdir -p files
+          adb push native-build/resident-input.rvg /data/local/tmp/c44-resident.rvg
+          adb shell run-as com.reversepc.control.workbench cp /data/local/tmp/c44-resident.rvg files/resident-input.rvg
+          EXPECTED=$(python3 -c 'import json;print(json.load(open("native-build/expected.json"))["sha256"])')
+          BACKGROUND=$(python3 -c 'import json;print(json.load(open("native-build/background.json"))["sha256"])')
+          timeout 480s adb shell am instrument -w -e mode guestResident -e resident_expected_sha256 "$EXPECTED" -e resident_background_sha256 "$BACKGROUND" com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee evidence/c44-android/resident.txt
+          grep 'WORKBENCH_TESTS_OK mode=guestResident' evidence/c44-android/resident.txt
+          adb exec-out run-as com.reversepc.control.workbench cat files/resident-proof.json > evidence/c44-android/resident-proof.json
+          adb shell am force-stop com.reversepc.control.workbench
+          adb push gki-input/current.rvg /data/local/tmp/c44-gki.rvg
+          adb shell run-as com.reversepc.control.workbench cp /data/local/tmp/c44-gki.rvg files/large-guest-input.rvg
+          GKI_EXPECTED=$(python3 -c 'import json;print(json.load(open("evidence/c44-android/gki-reference.json"))["sha256"])')
+          timeout 480s adb shell am instrument -w -e mode guestLarge -e expected_guest_sha256 "$GKI_EXPECTED" com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee evidence/c44-android/gki.txt
+          grep 'WORKBENCH_TESTS_OK mode=guestLarge' evidence/c44-android/gki.txt
+          adb exec-out run-as com.reversepc.control.workbench cat files/large-guest-proof.json > evidence/c44-android/gki-proof.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with: {name: reverse-c44-android-evidence, path: evidence/c44-android, retention-days: 90}

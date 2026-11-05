@@ -1,0 +1,192 @@
+name: Android C39 block translator and XI Ether data cache differential
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c39-block-differential.yml
+      - src/minimal_guest.hpp
+      - src/minimal_guest_system.inc
+      - src/minimal_guest_hot_block.inc
+      - tools/guest_c27_profile_resume.cpp
+      - tests/minimal_guest_hot_block_test.cpp
+      - docs/ANDROID_C39_BLOCK_TRANSLATION.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  c39-byte-identical:
+    if: github.event.pull_request.head.ref == 'perf/android-c39-xi-block-translator-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Restrict C39 changes to native interpreter scheduling tests and documentation
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c39-proof build
+          changes=$(git diff --name-only df3796992e144fcbd32f36b2a2e6f98650010ebd HEAD -- src tools patches third_party deps scripts)
+          for file in $changes; do
+            case "$file" in
+              src/minimal_guest.hpp|src/minimal_guest_system.inc|src/minimal_guest_hot_block.inc|tools/guest_c27_profile_resume.cpp) ;;
+              *) echo "Unexpected modified executable file: $file"; exit 1 ;;
+            esac
+          done
+          node --test tests/android_c35_stage.test.mjs tests/android_c34_stage.test.mjs tests/android_c33_stage.test.mjs tests/android_framework_evidence.test.mjs > evidence/c39-proof/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Build reference and optimized ARM64 XI Ether with same C39 sources
+        run: |
+          set -euo pipefail
+          tar -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          FLAGS="-std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools"
+          g++ $FLAGS -DREVERSE_PC_BLOCK_TRANSLATION_REFERENCE -DREVERSE_PC_DATA_CACHE_REFERENCE tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c39-reference
+          g++ $FLAGS tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c39-optimized
+          g++ $FLAGS -DREVERSE_PC_BLOCK_TRANSLATION_REFERENCE -DREVERSE_PC_DATA_CACHE_REFERENCE tests/minimal_guest_hot_block_test.cpp build/softfloat/libreverse_softfloat.a -o build/c39-alu-reference
+          g++ $FLAGS tests/minimal_guest_hot_block_test.cpp build/softfloat/libreverse_softfloat.a -o build/c39-alu-optimized
+          g++ $FLAGS tests/minimal_guest_el0_cache_test.cpp build/softfloat/libreverse_softfloat.a -o build/c39-el0
+          g++ $FLAGS tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/c39-system
+          g++ $FLAGS tests/minimal_guest_pci_test.cpp build/softfloat/libreverse_softfloat.a -o build/c39-pci
+          build/c39-system > evidence/c39-proof/arm64-system.json
+          build/c39-pci > evidence/c39-proof/pci.json
+          build/c39-el0 > evidence/c39-proof/el0.json
+          build/c39-alu-reference 20000000 200000 > evidence/c39-proof/alu-reference.json
+          build/c39-alu-optimized 20000000 200000 > evidence/c39-proof/alu-optimized.json
+          build/c39-alu-optimized 500000 50000 > evidence/c39-proof/alu-chunk-50k.json
+          build/c39-alu-optimized 500000 100000 > evidence/c39-proof/alu-chunk-100k.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c39-proof/'+p+'.json','utf8'));
+          const a=read('alu-reference'),b=read('alu-optimized'),x=read('alu-chunk-50k'),y=read('alu-chunk-100k');
+          const invariant=r=>[r.instructions,r.counter,r.memory,r.pc,r.snapshot_hash];
+          assert.deepEqual(invariant(a),invariant(b));
+          assert.deepEqual(invariant(x),invariant(y));
+          assert.equal(a.instructions,20000001);assert.equal(a.memory,4660);
+          const proof={schema:'reverse-c39-host-alu-differential-v1',
+            instructions:20000000,reference_seconds:a.elapsed_seconds,optimized_seconds:b.elapsed_seconds,
+            benchmark_speedup:a.elapsed_seconds/b.elapsed_seconds,snapshot_hash:a.snapshot_hash,
+            chunk_equivalent:true,guest_state_identical:true};
+          writeFileSync('evidence/c39-proof/host-speed.json',JSON.stringify(proof,null,2)+'\n');
+          console.log(JSON.stringify(proof,null,2));
+          NODE
+          build/c39-reference --pins > evidence/c39-proof/reference-pins.json
+          build/c39-optimized --pins > evidence/c39-proof/optimized-pins.json
+          cmp evidence/c39-proof/reference-pins.json evidence/c39-proof/optimized-pins.json
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c38-keymint-zygote-checkpoint
+          run-id: 41355448713
+          github-token: ${{ github.token }}
+          path: source-c38
+      - name: Authenticate C38 source with 18.392 billion actual instructions
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c38/output-contract.json source-c38 > evidence/c39-proof/c38-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const c=read('source-c38/output-contract.json'),r=read('source-c38/current.json');
+          assert.equal(c.source_commit,'df3796992e144fcbd32f36b2a2e6f98650010ebd');
+          assert.equal(c.checkpoint_sha256,'fc0959a4f6f7dbfdc2a525dceae8346fea7b3215c40b01d15b0c39f6c37e5701');
+          assert.equal(r.guest.instructions,18392448839);
+          assert.equal(r.error,'');
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Verify and restore immutable original Android C27 disk
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c39-proof/media.json
+          rm -rf disk-input
+      - name: Execute one million real C38 Android instructions on reference CPU
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs run source-c38/output-contract.json source-c38 build/c39-reference new-media/android-c27.raw evidence/c39-reference 180000 1000000 1 > evidence/c39-proof/real-reference.json
+      - name: Execute identical Android instructions on optimized CPU with 50k transactions
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs run source-c38/output-contract.json source-c38 build/c39-optimized new-media/android-c27.raw evidence/c39-optimized 180000 1000000 1 > evidence/c39-proof/real-optimized.json
+      - name: Execute identical Android instructions with larger 200k XI transactions
+        env:
+          REVERSE_PC_C39_CHUNK: '200000'
+          REVERSE_PC_C39_CHECKPOINT_MS: '120000'
+          REVERSE_PC_C39_CHECKPOINT_INSTRUCTIONS: '200000000'
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs run source-c38/output-contract.json source-c38 build/c39-optimized new-media/android-c27.raw evidence/c39-batched 180000 1000000 1 > evidence/c39-proof/real-batched.json
+      - name: Require byte-identical authenticated Android checkpoints from all three modes
+        run: |
+          set -euo pipefail
+          cmp evidence/c39-reference/current.rvg evidence/c39-optimized/current.rvg
+          cmp evidence/c39-reference/current.rvg evidence/c39-batched/current.rvg
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {preflight,contractForCompletedSource} from './tools/android_c27_profile_resume.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const source=read('source-c38/output-contract.json');
+          const modes=['reference','optimized','batched'];
+          const reports=modes.map(m=>read('evidence/c39-'+m+'/current.json'));
+          const outcomes=modes.map(m=>read('evidence/c39-'+m+'/process-outcome.json'));
+          for(let i=0;i<3;i++){
+            const r=reports[i],p=outcomes[i];
+            assert.equal(r.initial_instructions,18392448839);
+            assert.equal(r.guest.instructions,18393448839);
+            assert.equal(r.advanced_instructions,1000000);
+            assert.equal(r.stop_reason,'instruction_budget');
+            assert.equal(r.error,'');
+            assert.equal(r.provenance.input_checkpoint_sha256,source.checkpoint_sha256);
+            assert.equal(p.status,'process_completed');assert.equal(p.exit_code,0);
+          }
+          assert.equal(reports[0].checkpoint_sha256,reports[1].checkpoint_sha256);
+          assert.equal(reports[0].checkpoint_sha256,reports[2].checkpoint_sha256);
+          const head=await import('node:child_process');
+          const sha=String(head.execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'})).trim();
+          const c=contractForCompletedSource('evidence/c39-batched',sha);
+          writeFileSync('evidence/c39-batched/output-contract.json',JSON.stringify(c,null,2)+'\n');
+          preflight(c,'evidence/c39-batched');
+          const proof={schema:'reverse-c39-authentic-android-differential-v1',
+            source_sha256:source.checkpoint_sha256,checkpoint_sha256:reports[0].checkpoint_sha256,
+            source_instructions:18392448839,final_instructions:18393448839,
+            delta_instructions:1000000,byte_identical:true,guest_time_identical:true,
+            io_and_kernel_state_identical:true,custom_200k_transaction_identical:true,
+            reference_host_ms:outcomes[0].elapsed_ms,
+            optimized_host_ms:outcomes[1].elapsed_ms,
+            batched_host_ms:outcomes[2].elapsed_ms,
+            no_fabricated_zygote:true,android_boot_claimed:false};
+          writeFileSync('evidence/c39-proof/real-differential.json',JSON.stringify(proof,null,2)+'\n');
+          console.log(JSON.stringify(proof,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c39-xi-block-differential-evidence
+          path: evidence/c39-proof/
+          if-no-files-found: warn
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: reverse-c39-verified-android-checkpoint
+          path: |-
+            evidence/c39-batched/
+            !evidence/c39-batched/journal/**
+          if-no-files-found: error
+          retention-days: 90

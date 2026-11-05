@@ -1,0 +1,120 @@
+name: REVERSE real GKI past 35M and EH-frame scan
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-gki-after-5m.yml'
+      - 'tools/audit_gki_rvg.mjs'
+      - 'tests/audit_gki_rvg.test.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-gki-continuation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-gki-after-5m-verified-checkpoint
+          run-id: 40792812364
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify original 35,554,096-step RVG and independently validate real GKI
+        run: |
+          set -euo pipefail
+          mkdir -p evidence build
+          echo 'ffaf1043478dc1a6b7dcb80ea0f6f195f45a58c5e52d63826abd1b673efec31d  prior/current.rvg' | sha256sum -c -
+          jq -e '.guest.instructions==35554096 and .guest.immutable_image_bytes==35778512 and
+            .guest.exception_level==1 and .guest.exceptions==0 and
+            .stop_reason=="instruction_budget" and .next_instruction.opcode=="0x8b090108" and
+            .android_boot==false and .linux_userspace_init_observed==false' prior/actual-stop.json >/dev/null
+          node --test tests/audit_gki_rvg.test.mjs | tee evidence/audit-regressions.tap
+          node tools/audit_gki_rvg.mjs prior/current.rvg \
+            8d8cf5254f0823655e06ffee100d9c19abbf4ce33adb107b66da3fdb3742e0be \
+            ffaf1043478dc1a6b7dcb80ea0f6f195f45a58c5e52d63826abd1b673efec31d \
+            > evidence/input-provenance.json
+          jq -e '.status=="read_only_provenance_verified" and .instructions==35554096 and
+            .kernel_bytes==35777024 and .dtb_bytes>0 and .initrd_bytes==0 and
+            .classical_override_limit=="0" and .android_init_observed==false' evidence/input-provenance.json
+      - name: Build unmodified original interpreter against exact Mundo-X pin
+        run: |
+          set -euo pipefail
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = "e2778d962af22f6f1a0794058dd4685fc2573966"
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+      - name: Confirm deterministic 50K replay on authentic 35M GKI RVG
+        run: |
+          set -euo pipefail
+          timeout 180 build/linux-probe prior/current.rvg 50000 evidence/direct.rvg > evidence/direct.json
+          timeout 180 build/linux-probe prior/current.rvg 1 evidence/one.rvg > evidence/one.json
+          timeout 180 build/linux-probe evidence/one.rvg 49999 evidence/resumed.rvg > evidence/resumed.json
+          cmp evidence/direct.rvg evidence/resumed.rvg
+          jq -e '.initial_instructions==35554096 and .guest.instructions>=35554096 and
+            .guest.instructions<=35604096 and .android_boot==false' evidence/direct.json >/dev/null
+          jq -e '.guest.instructions==(.initial_instructions+49999) or
+            .stop_reason!="instruction_budget"' evidence/resumed.json >/dev/null
+          sha256sum evidence/direct.rvg > evidence/replay.sha256
+          cp evidence/direct.rvg evidence/current.rvg
+      - name: Continue GKI through EH-frame metadata scan in bounded 2M-instruction slices
+        run: |
+          set -euo pipefail
+          printf '## Original XI/Ether with real Android Common GKI (kernel only)\n\n' >> "$GITHUB_STEP_SUMMARY"
+          printf '| Batch | Instructions | EL | Exceptions | Stop | Serial bytes |\n|---|---:|---:|---:|---|---:|\n' >> "$GITHUB_STEP_SUMMARY"
+          # This is a genuine GKI without any Android init ramdisk; preflight proves 0 initrd bytes.
+          # Never interpret an instruction-budget stop as Android boot.
+          for i in $(seq 1 12); do
+            previous=$(node -p 'Number(require("fs").readFileSync("evidence/current.rvg").readBigUInt64LE(8+4*8))')
+            timeout 180 build/linux-probe evidence/current.rvg 2000000 evidence/next.rvg > "evidence/batch-$i.json"
+            jq --argjson n "$previous" -e '.initial_instructions==$n and
+              .guest.instructions >= $n and .guest.instructions<=($n+2000000) and
+              .guest.immutable_image_bytes==35778512 and
+              .adaptive_classical_storage==true and
+              .guest.max_delta_overrides==0 and
+              .guest.exception_level>=0 and .android_boot==false and
+              .linux_boot_complete==false' "evidence/batch-$i.json" >/dev/null
+            reason=$(jq -r '.stop_reason' "evidence/batch-$i.json")
+            total=$(jq -r '.guest.instructions' "evidence/batch-$i.json")
+            el=$(jq -r '.guest.exception_level' "evidence/batch-$i.json")
+            exceptions=$(jq -r '.guest.exceptions' "evidence/batch-$i.json")
+            console_bytes=$(jq -r '.console|length' "evidence/batch-$i.json")
+            printf '| %s | %s | %s | %s | %s | %s |\n' "$i" "$total" "$el" "$exceptions" "$reason" "$console_bytes" >> "$GITHUB_STEP_SUMMARY"
+            mv evidence/next.rvg evidence/current.rvg
+            if [[ "$reason" != instruction_budget ]]; then
+              break
+            fi
+            test "$total" -gt "$previous" || { echo 'No instruction progress despite budget stop' >&2; exit 1; }
+          done
+          last=$(ls evidence/batch-*.json | sort -V | tail -1)
+          jq '{initial_instructions,guest:{pc:.guest.pc,instructions:.guest.instructions,
+            exception_level:.guest.exception_level,exceptions:.guest.exceptions,
+            immutable_image_bytes:.guest.immutable_image_bytes,delta_overrides:.guest.delta_overrides},
+            stop_reason,next_instruction,console,android_boot,linux_userspace_init_observed}' \
+            "$last" > evidence/actual-stop.json
+          sha256sum evidence/current.rvg > evidence/current.sha256
+          cat evidence/actual-stop.json
+          cat evidence/current.sha256
+          {
+            echo ''
+            echo 'No Android init_boot/vendor_boot/system partition, services or ADB were executed.'
+            echo 'Single existing XI/Ether QuantumRuntime/InverseMemory; no parallel RAM authority.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-gki-ehframe-followup-checkpoint
+          path: |
+            evidence/
+          retention-days: 7

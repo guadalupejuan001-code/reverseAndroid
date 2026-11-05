@@ -1,0 +1,21 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {validateContract,verifyNativePins,verifyCleanBoundary} from '../tools/android_profile_resume.mjs';
+import {DISK_SHA,SEED_SHA} from '../tools/android_profile_state.mjs';
+const contract={schema:'reverse-profile-resume-contract-v1',checkpoint_sha256:'1'.repeat(64),report_sha256:'2'.repeat(64),result_sha256:'3'.repeat(64),process_sha256:'4'.repeat(64),source_commit:'5'.repeat(40)};
+test('accepts an explicit complete continuation contract',()=>assert.equal(validateContract(contract),contract));
+for(const key of Object.keys(contract))test('rejects malformed contract '+key,()=>assert.throws(()=>validateContract({...contract,[key]:'invalid'})));
+const pins={schema:'reverse-profile-native-pins-v1',disk_sha256:DISK_SHA,counter_seed_sha256:SEED_SHA,logical_ram_bytes:2147483648,counter_instructions_per_tick:64,host_snapshot_transport_bytes:1073741824};
+test('accepts the fixed native board descriptor',()=>assert.equal(verifyNativePins(pins).compiled_native_profile_verified,true));
+for(const key of Object.keys(pins))test('rejects incompatible native profile '+key,()=>assert.throws(()=>verifyNativePins({...pins,[key]:typeof pins[key]==='number'?0:'0'.repeat(64)})));
+const report={stop_reason:'host_wall_budget',error:'',guest:{halted:false,waiting:false,system_mode:true,pci_bus:true,instructions:10,pc:'0x40080000',counter_subtick:0},provenance:{original_state_modified:false,ram_profile_changed:false,snapshot_round_trip_verified:true},first_user_instruction_verified:false,prior_user_instruction_verified:false,verified_entry_checkpoint_sha256:'',checkpoint_sha256:contract.checkpoint_sha256,console:''};
+const prior={execution_progress_accepted:true,guest_kernel_panic:false,guest_boot_failure:false,guest_terminal_failure:false,guest_reboot_requested:false,source_c21_original_init_verified:true,source_c21_second_stage_verified:true,source_c21_selinux_enforcing_verified:true,checkpoint_sha256:report.checkpoint_sha256,instructions:10,stop_reason:'host_wall_budget',error:''};
+const host={status:'process_completed',exit_code:0};
+test('accepts a clean budget without inventing a new init entry',()=>assert.equal(verifyCleanBoundary(report,prior,host).android_boot_verified,false));
+for(const reason of ['architectural_stop','guest_boot_failure','waiting','halted','running'])test('rejects source reason '+reason,()=>assert.throws(()=>verifyCleanBoundary({...report,stop_reason:reason},prior,host)));
+for(const key of ['guest_kernel_panic','guest_boot_failure','guest_terminal_failure','guest_reboot_requested'])test('rejects prior guest failure '+key,()=>assert.throws(()=>verifyCleanBoundary(report,{...prior,[key]:true},host)));
+for(const key of ['source_c21_original_init_verified','source_c21_second_stage_verified','source_c21_selinux_enforcing_verified','execution_progress_accepted'])test('rejects unverified source '+key,()=>assert.throws(()=>verifyCleanBoundary(report,{...prior,[key]:false},host)));
+for(const key of ['halted','waiting','system_mode','pci_bus'])test('rejects incompatible source CPU '+key,()=>assert.throws(()=>verifyCleanBoundary({...report,guest:{...report.guest,[key]:!report.guest[key]}},prior,host)));
+test('rejects a host failure, report error, fatal console, changed profile, false entry attribution and prior/result mismatch',()=>{
+ for(const x of [{...host,status:'process_failed'},{...host,exit_code:2}])assert.throws(()=>verifyCleanBoundary(report,prior,x));
+ for(const r of [{...report,error:'ISA failure'},{...report,console:'Kernel panic - not syncing: failed'},{...report,console:'reboot: Restarting system'},{...report,provenance:{...report.provenance,original_state_modified:true}},{...report,provenance:{...report.provenance,ram_profile_changed:true}},{...report,first_user_instruction_verified:true},{...report,guest:{...report.guest,instructions:11}},{...report,guest:{...report.guest,counter_subtick:64}}])assert.throws(()=>verifyCleanBoundary(r,prior,host));
+});

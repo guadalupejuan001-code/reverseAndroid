@@ -1,0 +1,683 @@
+{
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "repeats": 21,
+  "warmups_per_case": 1,
+  "timing": "native steady_clock; construction and execution; oracle excluded",
+  "memory": "Linux /proc/self/status VmRSS and VmHWM, KiB, per exec; allocator and library overhead included. getrusage lifetime high water also retained separately because it may include pre-exec launcher RSS",
+  "baseline_commit": "e8a04e029adbeae3fc9bd963374d93d61f24f524",
+  "compiler": "GCC 13.3.0 C++17 -O3 -DNDEBUG; alternating same-host processes",
+  "cases": {
+    "uncompute": {
+      "baseline": {
+        "ms": {
+          "median": 1.574049,
+          "p95": 3.122443,
+          "min": 1.206444,
+          "max": 3.490525
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 1904,
+          "p95": 1908,
+          "min": 1900,
+          "max": 1908
+        },
+        "peak_rss_kib": {
+          "median": 2052,
+          "p95": 2052,
+          "min": 2052,
+          "max": 2052
+        },
+        "payload_bytes_estimate": {
+          "median": 1308,
+          "p95": 1308,
+          "min": 1308,
+          "max": 1308
+        },
+        "state": {
+          "case": "uncompute",
+          "qubits": 32,
+          "ms": 2.181478,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 1308,
+          "rss_kib": 1900,
+          "peak_rss_kib": 2052,
+          "lifetime_ru_maxrss_kib": 11776,
+          "fallback": true,
+          "blocks": 0,
+          "max_block_width": 0,
+          "norm": 1,
+          "z0": 0
+        }
+      },
+      "candidate": {
+        "ms": {
+          "median": 0.036832,
+          "p95": 0.075026,
+          "min": 0.033479,
+          "max": 0.393658
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 1784,
+          "p95": 1788,
+          "min": 1780,
+          "max": 1788
+        },
+        "peak_rss_kib": {
+          "median": 1784,
+          "p95": 1788,
+          "min": 1780,
+          "max": 1788
+        },
+        "payload_bytes_estimate": {
+          "median": 3888,
+          "p95": 3888,
+          "min": 3888,
+          "max": 3888
+        },
+        "state": {
+          "case": "uncompute",
+          "qubits": 32,
+          "ms": 0.036229,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 3888,
+          "rss_kib": 1788,
+          "peak_rss_kib": 1788,
+          "lifetime_ru_maxrss_kib": 11776,
+          "fallback": false,
+          "blocks": 32,
+          "max_block_width": 1,
+          "norm": 1,
+          "z0": 0
+        }
+      }
+    },
+    "history": {
+      "baseline": {
+        "ms": {
+          "median": 1.849234,
+          "p95": 3.701089,
+          "min": 1.366248,
+          "max": 14.091957
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 3036,
+          "p95": 3040,
+          "min": 3032,
+          "max": 3044
+        },
+        "peak_rss_kib": {
+          "median": 3288,
+          "p95": 3292,
+          "min": 3192,
+          "max": 3292
+        },
+        "payload_bytes_estimate": {
+          "median": 1573248,
+          "p95": 1573248,
+          "min": 1573248,
+          "max": 1573248
+        },
+        "state": {
+          "case": "history",
+          "qubits": 4,
+          "ms": 2.332,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 1573248,
+          "rss_kib": 3040,
+          "peak_rss_kib": 3292,
+          "lifetime_ru_maxrss_kib": 11904,
+          "fallback": false,
+          "blocks": 4,
+          "max_block_width": 1,
+          "norm": 1,
+          "z0": 1
+        }
+      },
+      "candidate": {
+        "ms": {
+          "median": 0.486055,
+          "p95": 0.68305,
+          "min": 0.378111,
+          "max": 2.321316
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 1732,
+          "p95": 1736,
+          "min": 1728,
+          "max": 1756
+        },
+        "peak_rss_kib": {
+          "median": 1732,
+          "p95": 1736,
+          "min": 1728,
+          "max": 1756
+        },
+        "payload_bytes_estimate": {
+          "median": 504,
+          "p95": 504,
+          "min": 504,
+          "max": 504
+        },
+        "state": {
+          "case": "history",
+          "qubits": 4,
+          "ms": 0.42178,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 504,
+          "rss_kib": 1736,
+          "peak_rss_kib": 1736,
+          "lifetime_ru_maxrss_kib": 11904,
+          "fallback": false,
+          "blocks": 4,
+          "max_block_width": 1,
+          "norm": 1,
+          "z0": 1
+        }
+      }
+    },
+    "replay": {
+      "baseline": {
+        "ms": {
+          "median": 23.340956,
+          "p95": 26.940197,
+          "min": 20.779617,
+          "max": 29.346447
+        },
+        "fallback_ms": {
+          "median": 22.421068,
+          "p95": 25.815123,
+          "min": 19.963979,
+          "max": 28.575056
+        },
+        "rss_kib": {
+          "median": 2732,
+          "p95": 2736,
+          "min": 2728,
+          "max": 2736
+        },
+        "peak_rss_kib": {
+          "median": 2732,
+          "p95": 2736,
+          "min": 2728,
+          "max": 2736
+        },
+        "payload_bytes_estimate": {
+          "median": 240347,
+          "p95": 240347,
+          "min": 240347,
+          "max": 240347
+        },
+        "state": {
+          "case": "replay",
+          "qubits": 3,
+          "ms": 24.496767,
+          "fallback_ms": 23.8149,
+          "payload_bytes_estimate": 240347,
+          "rss_kib": 2732,
+          "peak_rss_kib": 2732,
+          "lifetime_ru_maxrss_kib": 11904,
+          "fallback": true,
+          "blocks": 0,
+          "max_block_width": 0,
+          "norm": 1,
+          "z0": 0
+        }
+      },
+      "candidate": {
+        "ms": {
+          "median": 0.187445,
+          "p95": 0.406522,
+          "min": 0.177254,
+          "max": 0.472018
+        },
+        "fallback_ms": {
+          "median": 0.025337,
+          "p95": 0.029786,
+          "min": 0.01856,
+          "max": 0.054702
+        },
+        "rss_kib": {
+          "median": 1784,
+          "p95": 1788,
+          "min": 1780,
+          "max": 1788
+        },
+        "peak_rss_kib": {
+          "median": 1784,
+          "p95": 1788,
+          "min": 1780,
+          "max": 1788
+        },
+        "payload_bytes_estimate": {
+          "median": 437,
+          "p95": 437,
+          "min": 437,
+          "max": 437
+        },
+        "state": {
+          "case": "replay",
+          "qubits": 3,
+          "ms": 0.315515,
+          "fallback_ms": 0.029786,
+          "payload_bytes_estimate": 437,
+          "rss_kib": 1784,
+          "peak_rss_kib": 1784,
+          "lifetime_ru_maxrss_kib": 11904,
+          "fallback": true,
+          "blocks": 0,
+          "max_block_width": 0,
+          "norm": 1,
+          "z0": 0
+        }
+      }
+    },
+    "replay_noncancelling": {
+      "baseline": {
+        "ms": {
+          "median": 22.808597,
+          "p95": 28.298509,
+          "min": 20.148894,
+          "max": 28.644286
+        },
+        "fallback_ms": {
+          "median": 22.206059,
+          "p95": 27.195644,
+          "min": 19.439899,
+          "max": 27.31667
+        },
+        "rss_kib": {
+          "median": 2736,
+          "p95": 2740,
+          "min": 2732,
+          "max": 2740
+        },
+        "peak_rss_kib": {
+          "median": 2736,
+          "p95": 2740,
+          "min": 2732,
+          "max": 2740
+        },
+        "payload_bytes_estimate": {
+          "median": 240347,
+          "p95": 240347,
+          "min": 240347,
+          "max": 240347
+        },
+        "state": {
+          "case": "replay_noncancelling",
+          "qubits": 3,
+          "ms": 22.559406,
+          "fallback_ms": 21.850319,
+          "payload_bytes_estimate": 240347,
+          "rss_kib": 2736,
+          "peak_rss_kib": 2736,
+          "lifetime_ru_maxrss_kib": 12032,
+          "fallback": true,
+          "blocks": 0,
+          "max_block_width": 0,
+          "norm": 1,
+          "z0": 0
+        }
+      },
+      "candidate": {
+        "ms": {
+          "median": 0.732988,
+          "p95": 1.115395,
+          "min": 0.638602,
+          "max": 1.243288
+        },
+        "fallback_ms": {
+          "median": 0.038205,
+          "p95": 0.060511,
+          "min": 0.031576,
+          "max": 0.091719
+        },
+        "rss_kib": {
+          "median": 1920,
+          "p95": 1924,
+          "min": 1916,
+          "max": 1924
+        },
+        "peak_rss_kib": {
+          "median": 2440,
+          "p95": 2440,
+          "min": 2440,
+          "max": 2440
+        },
+        "payload_bytes_estimate": {
+          "median": 437,
+          "p95": 437,
+          "min": 437,
+          "max": 437
+        },
+        "state": {
+          "case": "replay_noncancelling",
+          "qubits": 3,
+          "ms": 0.732988,
+          "fallback_ms": 0.034064,
+          "payload_bytes_estimate": 437,
+          "rss_kib": 1916,
+          "peak_rss_kib": 2440,
+          "lifetime_ru_maxrss_kib": 12032,
+          "fallback": true,
+          "blocks": 0,
+          "max_block_width": 0,
+          "norm": 1,
+          "z0": 0
+        }
+      }
+    },
+    "entangled": {
+      "baseline": {
+        "ms": {
+          "median": 1.158515,
+          "p95": 2.359991,
+          "min": 0.908633,
+          "max": 4.047425
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 2128,
+          "p95": 2132,
+          "min": 2124,
+          "max": 2132
+        },
+        "peak_rss_kib": {
+          "median": 2128,
+          "p95": 2132,
+          "min": 2124,
+          "max": 2132
+        },
+        "payload_bytes_estimate": {
+          "median": 264672,
+          "p95": 264672,
+          "min": 264672,
+          "max": 264672
+        },
+        "state": {
+          "case": "entangled",
+          "qubits": 14,
+          "ms": 1.025267,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 264672,
+          "rss_kib": 2128,
+          "peak_rss_kib": 2128,
+          "lifetime_ru_maxrss_kib": 12032,
+          "fallback": false,
+          "blocks": 1,
+          "max_block_width": 14,
+          "norm": 1,
+          "z0": 2.7755575615629e-16
+        }
+      },
+      "candidate": {
+        "ms": {
+          "median": 7.61957,
+          "p95": 11.28272,
+          "min": 6.106316,
+          "max": 14.032547
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 2560,
+          "p95": 2560,
+          "min": 2552,
+          "max": 2560
+        },
+        "peak_rss_kib": {
+          "median": 2560,
+          "p95": 2560,
+          "min": 2552,
+          "max": 2560
+        },
+        "payload_bytes_estimate": {
+          "median": 264432,
+          "p95": 264432,
+          "min": 264432,
+          "max": 264432
+        },
+        "state": {
+          "case": "entangled",
+          "qubits": 14,
+          "ms": 7.652689,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 264432,
+          "rss_kib": 2556,
+          "peak_rss_kib": 2556,
+          "lifetime_ru_maxrss_kib": 12032,
+          "fallback": false,
+          "blocks": 1,
+          "max_block_width": 14,
+          "norm": 1,
+          "z0": 2.7755575615629e-16
+        }
+      }
+    },
+    "random": {
+      "baseline": {
+        "ms": {
+          "median": 0.032292,
+          "p95": 0.080588,
+          "min": 0.027952,
+          "max": 0.198447
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 1748,
+          "p95": 1752,
+          "min": 1744,
+          "max": 1752
+        },
+        "peak_rss_kib": {
+          "median": 1748,
+          "p95": 1752,
+          "min": 1744,
+          "max": 1752
+        },
+        "payload_bytes_estimate": {
+          "median": 7728,
+          "p95": 7728,
+          "min": 7728,
+          "max": 7728
+        },
+        "state": {
+          "case": "random",
+          "qubits": 8,
+          "ms": 0.031371,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 7728,
+          "rss_kib": 1748,
+          "peak_rss_kib": 1748,
+          "lifetime_ru_maxrss_kib": 12160,
+          "fallback": false,
+          "blocks": 1,
+          "max_block_width": 8,
+          "norm": 1,
+          "z0": -1.0321604682062e-16
+        }
+      },
+      "candidate": {
+        "ms": {
+          "median": 0.068429,
+          "p95": 0.219278,
+          "min": 0.062602,
+          "max": 0.553409
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 1800,
+          "p95": 1804,
+          "min": 1796,
+          "max": 1804
+        },
+        "peak_rss_kib": {
+          "median": 1800,
+          "p95": 1804,
+          "min": 1796,
+          "max": 1804
+        },
+        "payload_bytes_estimate": {
+          "median": 7928,
+          "p95": 7928,
+          "min": 7928,
+          "max": 7928
+        },
+        "state": {
+          "case": "random",
+          "qubits": 8,
+          "ms": 0.065925,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 7928,
+          "rss_kib": 1800,
+          "peak_rss_kib": 1800,
+          "lifetime_ru_maxrss_kib": 12160,
+          "fallback": false,
+          "blocks": 1,
+          "max_block_width": 8,
+          "norm": 1,
+          "z0": -7.1557343384043e-18
+        }
+      }
+    },
+    "product": {
+      "baseline": {
+        "ms": {
+          "median": 0.197705,
+          "p95": 0.446891,
+          "min": 0.170488,
+          "max": 0.465002
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 2028,
+          "p95": 2032,
+          "min": 2024,
+          "max": 2032
+        },
+        "peak_rss_kib": {
+          "median": 2028,
+          "p95": 2032,
+          "min": 2024,
+          "max": 2032
+        },
+        "payload_bytes_estimate": {
+          "median": 194304,
+          "p95": 194304,
+          "min": 194304,
+          "max": 194304
+        },
+        "state": {
+          "case": "product",
+          "qubits": 1000,
+          "ms": 0.188663,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 194304,
+          "rss_kib": 2028,
+          "peak_rss_kib": 2028,
+          "lifetime_ru_maxrss_kib": 12160,
+          "fallback": false,
+          "blocks": 1000,
+          "max_block_width": 1,
+          "norm": 0.99999999999978,
+          "z0": 0
+        }
+      },
+      "candidate": {
+        "ms": {
+          "median": 0.227571,
+          "p95": 0.362512,
+          "min": 0.179931,
+          "max": 0.391661
+        },
+        "fallback_ms": {
+          "median": 0,
+          "p95": 0,
+          "min": 0,
+          "max": 0
+        },
+        "rss_kib": {
+          "median": 2080,
+          "p95": 2084,
+          "min": 2076,
+          "max": 2084
+        },
+        "peak_rss_kib": {
+          "median": 2080,
+          "p95": 2084,
+          "min": 2076,
+          "max": 2084
+        },
+        "payload_bytes_estimate": {
+          "median": 218304,
+          "p95": 218304,
+          "min": 218304,
+          "max": 218304
+        },
+        "state": {
+          "case": "product",
+          "qubits": 1000,
+          "ms": 0.261188,
+          "fallback_ms": 0,
+          "payload_bytes_estimate": 218304,
+          "rss_kib": 2084,
+          "peak_rss_kib": 2084,
+          "lifetime_ru_maxrss_kib": 12160,
+          "fallback": false,
+          "blocks": 1000,
+          "max_block_width": 1,
+          "norm": 0.99999999999978,
+          "z0": 0
+        }
+      }
+    }
+  }
+}

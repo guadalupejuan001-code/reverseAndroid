@@ -1,0 +1,99 @@
+name: Android C43 checkpoint cycle 1 - unchanged RVG streaming
+on:
+  pull_request:
+    paths:
+      - .github/workflows/android-c43-checkpoint-stream.yml
+      - src/minimal_guest.hpp
+      - src/guest_file_session.hpp
+      - src/guest_boot_cycle.hpp
+      - src/integration/inverse_memory_adaptive.inc
+      - tests/guest_checkpoint_stream_test.cpp
+      - tools/guest_checkpoint_stream_benchmark.cpp
+      - tools/guest_c27_profile_resume.cpp
+permissions:
+  contents: read
+  actions: read
+jobs:
+  checkpoint-stream:
+    if: github.event.pull_request.head.ref == 'perf/android-c43-checkpoint-stream-cycle1' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Verify and restore pinned dependency build
+        run: |
+          set -euo pipefail
+          test "$(cat pinned-build/source-commit.txt)" = '16d670048a2072862dbdb732c21444c9dc35575d'
+          test "$(sha256sum pinned-build/tested-source.tar.gz | cut -d ' ' -f 1)" = 'c872d1d778d6931dbac5c81fbbb630fd2552ca9ff45577b148fc29e1bd84f201'
+          tar --no-same-owner -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          mkdir -p evidence/c43
+      - name: Compile and validate original-format streaming and publication
+        run: |
+          set -euo pipefail
+          FLAGS='-std=c++17 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc'
+          g++ $FLAGS -O2 tests/guest_checkpoint_stream_test.cpp build/softfloat/libreverse_softfloat.a -o build/c43-stream-test
+          g++ $FLAGS -O2 tests/guest_file_session_test.cpp build/softfloat/libreverse_softfloat.a -o build/c43-file-test
+          g++ $FLAGS -O2 tests/guest_boot_cycle_test.cpp build/softfloat/libreverse_softfloat.a -o build/c43-cycle-test
+          g++ $FLAGS -O2 tools/guest_checkpoint_stream_benchmark.cpp build/softfloat/libreverse_softfloat.a -o build/c43-benchmark
+          g++ $FLAGS -O2 tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c43-native
+          build/c43-stream-test build/c43-stream-data > evidence/c43/stream-tests.json
+          build/c43-file-test build/c43-file-data > evidence/c43/file-tests.json
+          build/c43-cycle-test > evidence/c43/cycle-tests.json
+          build/c43-benchmark legacy build/c43-file-data/large.rvg build/c43-old.rvg > evidence/c43/fixture-legacy.json
+          build/c43-benchmark stream build/c43-file-data/large.rvg build/c43-new.rvg > evidence/c43/fixture-stream.json
+          cmp build/c43-old.rvg build/c43-new.rvg
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c42-stage-10-verified-checkpoint
+          run-id: 41394506021
+          github-token: ${{ github.token }}
+          path: source-c42
+      - name: Authenticate the unchanged C42 checkpoint
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c42/output-contract.json source-c42 > evidence/c43/source-preflight.json
+          test "$(sha256sum source-c42/current.rvg | cut -d ' ' -f 1)" = '96c73b59100d80030c53ef9b84324e3dde7fa26c8cb062ebfd5d171b96022706'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Reconstruct the same C27 disk
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c43/media.json
+          rm -rf disk-input
+      - name: Restore and export the real C42 state with zero CPU instructions
+        run: |
+          set -euo pipefail
+          build/c43-benchmark legacy source-c42/current.rvg build/c43-real-old.rvg new-media/android-c27.raw > evidence/c43/real-legacy.json
+          build/c43-benchmark stream source-c42/current.rvg build/c43-real-new.rvg new-media/android-c27.raw > evidence/c43/real-stream.json
+          cmp source-c42/current.rvg build/c43-real-old.rvg
+          cmp source-c42/current.rvg build/c43-real-new.rvg
+          python3 - <<'PY'
+          import json
+          for name in ('real-legacy','real-stream'):
+              d=json.load(open('evidence/c43/'+name+'.json'))
+              assert d['sha256']=='96c73b59100d80030c53ef9b84324e3dde7fa26c8cb062ebfd5d171b96022706'
+              assert d['instructions']==25200742731 and d['cpu_instructions_executed']==0
+              assert d['bytes']==971694233
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c43-checkpoint-cycle1-evidence
+          path: evidence/c43
+          retention-days: 90
+          if-no-files-found: warn

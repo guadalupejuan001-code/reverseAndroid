@@ -1,0 +1,85 @@
+name: Android explicit normal-boot preparation and execution
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest*'
+      - 'tools/guest_linux_probe.cpp'
+      - 'tools/android_normal_ramdisk.mjs'
+      - 'tests/android_normal_ramdisk_cli.mjs'
+      - '.github/workflows/android-normal-boot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-normal-profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-kernel-pairs-continuation
+          run-id: 40817697618
+          github-token: ${{ github.token }}
+          path: input
+      - name: Extract unchanged genuine inputs and prepare normal-only ramdisk
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {auditGkiRvg} from './tools/audit_gki_rvg.mjs';
+          const b=readFileSync('input/current.rvg');
+          const p=auditGkiRvg(b,'f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8','4f139751053c39bc1d33c7012fe1d61a8135f002c67be6f0466b3e8f97e2eda3');
+          const at=8+43*8+40;
+          writeFileSync('build/kernel.bin',b.subarray(at,at+p.kernel_bytes));
+          writeFileSync('build/original-initrd.bin',b.subarray(at+p.kernel_bytes+p.dtb_bytes,at+p.kernel_bytes+p.dtb_bytes+p.initrd_bytes));
+          JS
+          node tests/android_normal_ramdisk_cli.mjs build/original-initrd.bin > evidence/ramdisk-test.json
+          node tools/android_normal_ramdisk.mjs build/original-initrd.bin build/normal-initrd.bin > evidence/ramdisk-provenance.json
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe
+          build/probe build/kernel.bin 10000 evidence/seed.rvg build/normal-initrd.bin android-cuttlefish-normal-no-scx > evidence/seed.json
+      - name: Verify exact profile restore and advance bounded genuine windows
+        run: |
+          set -euo pipefail
+          build/probe evidence/seed.rvg 20000 build/direct.rvg --chunk=10000 > evidence/direct.json
+          build/probe evidence/seed.rvg 10000 build/half.rvg --chunk=10000 > evidence/half.json
+          build/probe build/half.rvg 10000 build/resumed.rvg --chunk=10000 > evidence/resumed.json
+          cmp build/direct.rvg build/resumed.rvg
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess,json,hashlib
+          p=Path('evidence');current=p/'seed.rvg';console='';last=None
+          for i in range(10):
+              out=Path('build')/f'normal-{i}.rvg'
+              r=subprocess.run(['build/probe',str(current),'100000000',str(out),'--chunk=50000','--wall-ms=45000','--stop-el0=1'],capture_output=True,text=True,check=True)
+              d=json.loads(r.stdout);(p/f'window-{i}.json').write_text(r.stdout);(p/f'window-{i}.heartbeat').write_text(r.stderr)
+              console+=d['console'];current=out;last=d
+              print(json.dumps({'window':i,'instructions':d['guest']['instructions'],'stop':d['stop_reason']}),flush=True)
+              if d['stop_reason'] not in ['instruction_budget','host_wall_budget']:break
+          image=json.loads((p/'ramdisk-provenance.json').read_text())
+          if last['stop_reason']=='userspace_entry' and last['guest']['pc']=='0x2a4000' and last['next_instruction'].get('window64_hex')==image['init_entry_bytes_hex']:
+              r=subprocess.run(['build/probe',str(current),'1',str(p/'first-instruction.rvg')],capture_output=True,text=True,check=True)
+              step=json.loads(r.stdout);(p/'first-instruction.json').write_text(r.stdout)
+              executed=step['guest']['pc']=='0x2a4004' and step['guest']['exception_level']==0 and step['guest']['instructions']==last['guest']['instructions']+1
+          else:executed=False
+          (p/'current.rvg').write_bytes(current.read_bytes())
+          (p/'console.txt').write_text(console)
+          (p/'result.json').write_text(json.dumps({'instructions':last['guest']['instructions'],'stop_reason':last['stop_reason'],'checkpoint_sha256':hashlib.sha256(current.read_bytes()).hexdigest(),'original_android_init_first_instruction_verified':executed,'android_services_verified':False,'android_display_verified':False},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-normal-profile-evidence
+          path: evidence/
+          retention-days: 14

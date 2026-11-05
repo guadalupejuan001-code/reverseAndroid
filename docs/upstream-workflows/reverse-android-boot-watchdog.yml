@@ -1,0 +1,108 @@
+name: REVERSE Android guest wall watchdog, heartbeat and resume parity
+on:
+  pull_request:
+    paths:
+      - 'tools/guest_linux_probe.cpp'
+      - '.github/workflows/reverse-android-boot-watchdog.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-xi-guest-cooperative-stop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-rvi2-boot-continuation
+          run-id: 40804061395
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify real original Cuttlefish ARM64 RVI2 kernel+vendor+generic initrd provenance
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          echo '174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733  prior/current.rvg' | sha256sum -c -
+          node tools/audit_gki_rvg.mjs prior/current.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733 \
+            > evidence/original-rvi2.json
+          jq -e '.rvi_version=="RVI2" and .instructions==12020000 and
+            .initrd_bytes==21808620 and .classical_override_limit=="0"' evidence/original-rvi2.json >/dev/null
+      - name: Compile original XI Ether VM with read-only host wall watchdog
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+      - name: Enforce short host budget and preserve exact original CPU state
+        run: |
+          set -euo pipefail
+          # Keep the instruction allowance above what a faster interpreter
+          # can finish before the host deadline; this test exercises a wall
+          # stop, not a particular historical instructions/second rate.
+          timeout 120 build/linux-probe prior/current.rvg 100000000 \
+            build/watchdog.rvg --chunk=10000 --wall-ms=2000 \
+            > evidence/watchdog.json 2> evidence/heartbeats.txt
+          jq -e '.max_wall_ms==2000 and .run_chunk_instructions==10000 and
+            .stop_reason=="host_wall_budget" and
+            .guest.instructions>12020000 and .guest.instructions<112020000 and
+            .android_boot==false and .linux_userspace_init_observed==false' evidence/watchdog.json >/dev/null
+          grep -q '^REVERSE_ANDROID_GUEST_HEARTBEAT ' evidence/heartbeats.txt
+          # A budget stop never fabricates a guest halt or changes its clock
+          # except by the authentic instructions that really executed.
+          advance=$(jq -r '.guest.instructions-.initial_instructions' evidence/watchdog.json)
+          test "$advance" -gt 0
+          timeout 120 build/linux-probe prior/current.rvg "$advance" \
+            build/direct.rvg --chunk=10000 > evidence/direct.json
+          cmp build/watchdog.rvg build/direct.rvg
+          jq --argjson n "$advance" -e '.guest.instructions==(12020000+$n) and
+            .stop_reason=="instruction_budget" and .max_wall_ms==0' evidence/direct.json >/dev/null
+          sha256sum build/watchdog.rvg > evidence/paused-checkpoint.sha256
+      - name: Confirm resumability and equivalent 10000-step future guest state
+        run: |
+          set -euo pipefail
+          advance=$(jq -r '.guest.instructions-.initial_instructions' evidence/watchdog.json)
+          target=$((advance+10000))
+          timeout 120 build/linux-probe build/watchdog.rvg 10000 \
+            build/resumed.rvg --chunk=10000 > evidence/resumed.json
+          timeout 120 build/linux-probe prior/current.rvg "$target" \
+            build/continuous.rvg --chunk=10000 > evidence/continuous.json
+          cmp build/resumed.rvg build/continuous.rvg
+          jq -e '.guest.instructions==(.initial_instructions+10000) and
+            .stop_reason=="instruction_budget" and .android_boot==false' \
+            evidence/resumed.json >/dev/null
+          sha256sum build/resumed.rvg > evidence/resumed-checkpoint.sha256
+          {
+            echo '## Exact Android guest early-boot watchdog and safe continuation'
+            echo ''
+            echo 'Wall clock timeout stops between original XI/Ether byte transactions.'
+            echo 'The saved RVG is EXACTLY equal to unbounded execution of the observed instruction count.'
+            echo 'A subsequent 10000-step resumed RVG is also EXACTLY equal to continuous execution.'
+            echo 'Host heartbeat is on stderr; no guest UART, first-stage init, Binder or ADB is invented.'
+            jq '{max_wall_ms,run_chunk_instructions,initial_instructions,
+              guest:{instructions:.guest.instructions,pc:.guest.pc},
+              stop_reason,android_boot}' evidence/watchdog.json
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-guest-safe-wall-watchdog
+          path: |
+            evidence/*.json
+            evidence/*.sha256
+            evidence/heartbeats.txt
+          retention-days: 7

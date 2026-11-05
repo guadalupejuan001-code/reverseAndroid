@@ -1,0 +1,72 @@
+name: Android C30 authenticated checkpoint diagnosis
+'on':
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/android-c30-diagnosis.yml
+      - tools/android_c30_checkpoint.mjs
+      - tests/android_c30_checkpoint.test.mjs
+      - docs/ANDROID_C30_AUTH_DIAGNOSIS.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect-completed-c29:
+    if: github.event.pull_request.head.ref == 'fix/android-c30-authenticated-stage-diagnosis-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Validate the diagnosis policy and unchanged guest implementation
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c30-diagnosis
+          git diff --exit-code bb8af1ac5588e79db4ff9a8adaf955de0a7ec6b9 HEAD -- src third_party scripts patches
+          node --test tests/android_c30_checkpoint.test.mjs tests/android_framework_evidence.test.mjs tests/android_c27_profile_resume.test.mjs > evidence/c30-diagnosis/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-budget-4
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: source-c29
+      - name: Authenticate the original four files and inspect C29 without executing CPU
+        run: |
+          set -euo pipefail
+          node tools/android_c30_checkpoint.mjs source-c29 > evidence/c30-diagnosis/diagnosis.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const r=JSON.parse(readFileSync('evidence/c30-diagnosis/diagnosis.json','utf8'));
+          assert.equal(r.original_source_authenticated,true);
+          assert.equal(r.instructions,13615798839);
+          assert.equal(r.source_checkpoint_unchanged,true);
+          assert.equal(r.android_display_content_verified,false);
+          assert.equal(r.read_only_observation_available,true,'C29 runtime observer output unavailable');
+          console.log(JSON.stringify(r,null,2));
+          NODE
+      - name: Inspect authenticated guest console and storage-related counters
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          const r=JSON.parse(readFileSync('source-c29/current.json','utf8'));
+          const interesting=/(init:|mke2fs|late-fs|\/data|vold|zygote|keystore|mount|userdata|fs_mgr|surfaceflinger|system_server)/i;
+          const lines=r.console.split(/\r?\n/).filter(line=>interesting.test(line)).slice(-70).map(line=>line.slice(0,300));
+          const guest=Object.fromEntries(Object.entries(r.guest).filter(([k])=>/(block|disk|data|write|pci|display|frame|instruction|virtual_tick)/i.test(k)));
+          console.log(JSON.stringify({console_event_lines:lines,guest_counters:guest},null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c30-host-only-diagnosis
+          path: evidence/c30-diagnosis/
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6

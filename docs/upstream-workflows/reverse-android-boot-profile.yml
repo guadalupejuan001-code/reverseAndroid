@@ -1,0 +1,133 @@
+name: REVERSE Android guest real boot liveness and exact chunk throughput
+on:
+  pull_request:
+    paths:
+      - 'tools/guest_linux_probe.cpp'
+      - 'tools/android_guest_progress.mjs'
+      - 'tests/android_guest_progress.test.mjs'
+      - '.github/workflows/reverse-android-boot-profile.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-xi-runtime-performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-rvi2-boot-continuation
+          run-id: 40804061395
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Verify authentic original Android boot input and classify real liveness
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = "e2778d962af22f6f1a0794058dd4685fc2573966"
+          echo '174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733  prior/current.rvg' | sha256sum -c -
+          node --test tests/android_guest_progress.test.mjs | tee evidence/liveness-regressions.tap
+          node --test tests/audit_gki_rvg.test.mjs | tee evidence/rvi-regressions.tap
+          node tools/audit_gki_rvg.mjs prior/current.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733 \
+            > evidence/original-rvi2.json
+          jq -e '.rvi_version=="RVI2" and .instructions==12020000 and
+            .kernel_bytes==42031616 and .initrd_bytes==21808620 and
+            (.bootargs|contains("init=/init bootconfig")) and
+            .classical_override_limit=="0"' evidence/original-rvi2.json >/dev/null
+          node tools/android_guest_progress.mjs \
+            prior/batch-1.json prior/batch-2.json prior/batch-3.json \
+            prior/batch-4.json prior/batch-5.json prior/batch-6.json \
+            > evidence/real-12m-liveness.json
+          jq -e '.status=="real_guest_diagnostic_only" and
+              .progress_kind=="cpu_state_changes_stage_unclassified" and
+            .observed_end_instruction==12020000 and
+            .measured_instructions_per_second>0 and
+            .suspected_no_progress==false and
+            .android_first_stage_init_observed==false' evidence/real-12m-liveness.json
+      - name: Compile unchanged original XI Ether CPU with optional transaction chunk profiling
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a \
+            -o build/linux-probe
+      - name: Independently compare exact real 1M-instruction RVG state under 10K 100K and 500K chunks
+        run: |
+          set -euo pipefail
+          for chunk in 10000 100000 500000; do
+            timeout 155 build/linux-probe prior/current.rvg 1000000 \
+              "build/out-$chunk.rvg" "--chunk=$chunk" \
+              > "evidence/perf-$chunk.json"
+            jq --argjson chunk "$chunk" -e '.run_chunk_instructions==$chunk and
+              .initial_instructions==12020000 and
+              .guest.instructions==13020000 and
+              .guest.immutable_image_bytes==63842169 and
+              .guest.max_delta_overrides==0 and
+              .stop_reason=="instruction_budget" and
+              .android_boot==false and .linux_userspace_init_observed==false' \
+              "evidence/perf-$chunk.json"
+            sha256sum "build/out-$chunk.rvg" >> evidence/chunks.sha256
+          done
+          cmp build/out-10000.rvg build/out-100000.rvg
+          cmp build/out-10000.rvg build/out-500000.rvg
+          node --input-type=module <<'NODE' | tee evidence/performance.json
+          import {readFileSync} from 'node:fs';
+          const chunks=[10000,100000,500000].map(n=>{
+            const x=JSON.parse(readFileSync('evidence/perf-'+n+'.json','utf8'));
+            return {chunk:n,guest_instructions:x.guest.instructions,
+              wall_ns:x.host_elapsed_ns,
+              guest_instructions_per_second:Math.round(1000000*1e9/x.host_elapsed_ns),
+              pc:x.guest.pc,stop:x.stop_reason,
+              delta_overrides:x.guest.delta_overrides};
+          });
+          const base=chunks[0].wall_ns;
+          const sorted=[...chunks].sort((a,b)=>a.wall_ns-b.wall_ns);
+          const preferred=sorted[0];
+          console.log(JSON.stringify({
+            status:'exact_real_guest_state_equivalence_passed',
+            source_checkpoint_sha256:'174a4582b80139f7fe00213068fe3a091bb7fff15a438ca0e0e290d377934733',
+            same_original_guest_cpu:true,
+            all_outputs_byte_identical:true,
+            measured:chunks,
+            fastest_chunk:preferred.chunk,
+            fastest_vs_10k_wall_time_ratio:Math.round(base/preferred.wall_ns*1000)/1000,
+            caveat:'CI host wall time includes input/output and snapshot serialization; use reproducible relative measurements, do not claim Android boot or hardware FPS',
+            android_init_observed:false,adb:false
+          },null,2));
+          NODE
+          {
+            echo '## Genuine REVERSE Android guest: stall diagnosis + transaction speed'
+            echo ''
+            jq '{progress_kind,measured_instructions_per_second,observed_x19_changed,
+              observed_inverse_memory_deltas_changed,suspected_no_progress}' \
+              evidence/real-12m-liveness.json
+            echo ''
+            jq '{measured,fastest_chunk,fastest_vs_10k_wall_time_ratio,
+              all_outputs_byte_identical}' evidence/performance.json
+            echo ''
+            echo 'No CPU instruction skipping. No guest Android /init or ADB execution.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-guest-liveness-and-throughput
+          path: |
+            evidence/*.json
+            evidence/*.tap
+            evidence/*.sha256
+          retention-days: 7

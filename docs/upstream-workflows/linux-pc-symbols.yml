@@ -1,0 +1,112 @@
+name: REVERSE Linux checkpoint PC symbol diagnostic
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/linux-pc-symbols.yml'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  map-kernel-program-counters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: torvalds/linux
+          ref: 830b3c68c1fb1e9176028d02ef86f3cf76aa2476
+          path: deps/linux
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: own-arm64-linux-development-probe
+          run-id: 40767291737
+          github-token: ${{ github.token }}
+          path: old-linux
+      - uses: actions/download-artifact@v4
+        with:
+          name: xi-linux-boot-continuation
+          run-id: 40769156660
+          github-token: ${{ github.token }}
+          path: steps
+      - name: Reproduce original Linux config and compile vmlinux symbols
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y clang lld llvm make flex bison bc libelf-dev
+          mkdir -p evidence
+          cp old-linux/linux.config deps/linux/.config
+          make -C deps/linux ARCH=arm64 LLVM=1 olddefconfig > evidence/config.log 2>&1
+          cmp old-linux/linux.config deps/linux/.config
+          export KBUILD_BUILD_USER=runner
+          export KBUILD_BUILD_HOST=runnervm48cm3
+          export KBUILD_BUILD_VERSION=1
+          export KBUILD_BUILD_TIMESTAMP='Wed Oct 28 20:56:52 UTC 2026'
+          make -C deps/linux ARCH=arm64 LLVM=1 -j2 Image > evidence/build.log 2>&1 || { tail -60 evidence/build.log; exit 1; }
+          sha256sum deps/linux/arch/arm64/boot/Image > evidence/rebuild-image.sha256
+          sha256sum old-linux/Image > evidence/reference-image.sha256
+          # A different SHA does not justify an unchecked symbol mapping.
+          # Instead require local instruction bytes to match at each target PC.
+          if cmp -s old-linux/Image deps/linux/arch/arm64/boot/Image; then
+            echo 'global_byte_match=true' > evidence/identity.txt
+          else
+            echo 'global_byte_match=false' > evidence/identity.txt
+            echo 'Rebuilt Image differs: only symbol windows that match locally are usable.'
+          fi
+          llvm-nm -n --defined-only deps/linux/vmlinux > evidence/vmlinux-nm.txt
+      - name: Resolve real XI/Ether checkpoint PCs to exact kernel symbols
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import bisect, json
+          from pathlib import Path
+          symbols=[]
+          for line in Path('evidence/vmlinux-nm.txt').read_text().splitlines():
+              words=line.split()
+              if len(words)!=3 or words[1].upper() not in ('T','W'): continue
+              try: address=int(words[0],16)
+              except ValueError: continue
+              symbols.append((address,words[2]))
+          symbols.sort()
+          addresses=[x[0] for x in symbols]
+          text_entries=[addr for addr,name in symbols if name=='_text']
+          if len(text_entries)!=1: raise ValueError('Cannot establish unique kernel _text address')
+          text_base=text_entries[0]
+          old_image=Path('old-linux/Image').read_bytes()
+          rebuilt_image=Path('deps/linux/arch/arm64/boot/Image').read_bytes()
+          globally_equal=(old_image==rebuilt_image)
+          report=[]
+          for path in sorted(Path('steps').glob('step-*.json'),key=lambda p:int(p.stem.split('-')[1])):
+              j=json.loads(path.read_text())
+              pc=int(j['guest']['pc'],16)
+              idx=bisect.bisect_right(addresses,pc)-1
+              candidate=symbols[idx] if idx>=0 else None
+              location=pc-text_base
+              entry=candidate[0]-text_base if candidate else -1
+              # Compare exact instruction windows in the ORIGINAL and rebuilt
+              # Images. Never claim the rebuilt symbol is exact if they differ.
+              in_bounds=(0<=location<=min(len(old_image),len(rebuilt_image))-64
+                         and 0<=entry<=min(len(old_image),len(rebuilt_image))-64)
+              local_match=bool(in_bounds and old_image[location:location+64]==rebuilt_image[location:location+64]
+                         and old_image[entry:entry+64]==rebuilt_image[entry:entry+64])
+              verified=globally_equal or local_match
+              report.append({'instructions':j['guest']['instructions'],'pc':j['guest']['pc'],
+                             'nearest_symbol':candidate[1] if verified and candidate else None,
+                             'unverified_candidate':candidate[1] if not verified and candidate else None,
+                             'symbol_offset_bytes':pc-candidate[0] if verified and candidate else None,
+                             'symbol_locally_verified':bool(local_match),
+                             'image_globally_identical':globally_equal,
+                             'exceptions':j['guest']['exceptions'],'overrides':j['guest']['delta_overrides'],
+                             'stop_reason':j['stop_reason']})
+          Path('evidence/pc-analysis.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xi-linux-symbol-map-diagnostic
+          path: evidence/
+          retention-days: 14

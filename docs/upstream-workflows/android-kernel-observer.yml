@@ -1,0 +1,57 @@
+name: Android kernel read-only observer
+on:
+  pull_request:
+    paths:
+      - 'tools/android_kernel_observer.mjs'
+      - 'tools/android_guest_progress.mjs'
+      - 'tools/audit_gki_rvg.mjs'
+      - 'tests/android_kernel_observer_cli.mjs'
+      - 'tests/android_guest_progress.test.mjs'
+      - '.github/workflows/android-kernel-observer.yml'
+      - '.github/workflows/reverse-android-boot-profile.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-checkpoint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-kernel-pairs-continuation
+          run-id: 40817697618
+          github-token: ${{ github.token }}
+          path: input
+      - name: Validate controls and replay the genuine 180M checkpoint
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          node --test tests/android_guest_progress.test.mjs > evidence/progress-tests.txt
+          node tools/audit_gki_rvg.mjs input/current.rvg f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 4f139751053c39bc1d33c7012fe1d61a8135f002c67be6f0466b3e8f97e2eda3 > evidence/input.json
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe
+          build/probe input/current.rvg 250000 evidence/direct.rvg --chunk=10000 > evidence/direct.json
+          build/probe input/current.rvg 125000 build/half.rvg --chunk=10000 > evidence/half.json
+          build/probe build/half.rvg 125000 evidence/resumed.rvg --chunk=10000 > evidence/resumed.json
+          cmp evidence/direct.rvg evidence/resumed.rvg
+          SHA=$(sha256sum evidence/direct.rvg | cut -d' ' -f1)
+          node tests/android_kernel_observer_cli.mjs evidence/direct.rvg evidence/direct.json "$SHA" > evidence/observer-replay.json
+          node tools/android_kernel_observer.mjs evidence/direct.rvg "$SHA" > evidence/observer.json
+          jq -e '.android_init_observed == false and .input_unchanged == true and .task_count > 0' evidence/observer.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-kernel-observer-evidence
+          path: evidence/
+          retention-days: 14

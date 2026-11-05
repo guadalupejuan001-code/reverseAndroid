@@ -1,0 +1,169 @@
+name: Android kernel CPU, memory and early device continuation
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest*'
+      - 'tests/minimal_guest_system_test.cpp'
+      - 'tools/guest_linux_probe.cpp'
+      - 'src/integration/adaptive_override_map.hpp'
+      - 'scripts/prepare-ether-compat.py'
+      - 'scripts/ether_integration.py'
+      - 'tests/adaptive_inverse_memory_test.cpp'
+      - '.github/workflows/android-kernel-enumeration.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-android-memory-init:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-scs-isar3-verified-continuation
+          run-id: 40812472586
+          github-token: ${{ github.token }}
+          path: input
+      - name: Verify exact previously completed Android state
+        run: |
+          set -euo pipefail
+          mkdir -p build/base evidence
+          echo '73cc99ba20eed6488858db212aef0473998d482de1462f6c9c6f1479866464e3  input/current.rvg' | sha256sum -c -
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          node tools/audit_gki_rvg.mjs input/current.rvg \
+            f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 \
+            73cc99ba20eed6488858db212aef0473998d482de1462f6c9c6f1479866464e3 \
+            > evidence/input-provenance.json
+      - name: Build original and current own XI Ether interpreters
+        run: |
+          set -euo pipefail
+          cp src/minimal_guest*.hpp src/minimal_guest*.inc build/base/
+          for f in minimal_guest.hpp minimal_guest_system.inc minimal_guest_machine.hpp; do
+            git show "06373c2cdc0270013e31c94de8d4378acbc2ffc2:src/$f" > "build/base/$f"
+          done
+          git show 06373c2cdc0270013e31c94de8d4378acbc2ffc2:tools/guest_linux_probe.cpp \
+            > build/base/guest_linux_probe.cpp
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          for kind in old new; do
+            extra=-Isrc
+            source=tools/guest_linux_probe.cpp
+            if test "$kind" = old; then extra="-Ibuild/base -Isrc"; source=build/base/guest_linux_probe.cpp; fi
+            g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+              -Ibuild/ether-compat -Ideps/mundo-x/native/include $extra \
+              "$source" build/softfloat/libreverse_softfloat.a -o "build/probe-$kind"
+          done
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -DREVERSE_PC_TRANSLATION_REFERENCE=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe-reference
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -DREVERSE_PC_NUMERIC_READ_REFERENCE=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe-numeric-reference
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tests/adaptive_inverse_memory_test.cpp build/softfloat/libreverse_softfloat.a -o build/native-memory
+          build/native-memory > evidence/native-memory.json
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/native-system
+          build/native-system > evidence/native-system.json
+          jq -e '.checks>=1976 and .existing_quantum_qubits==4096' evidence/native-system.json
+      - name: Independently reproduce exact prior ID and pair failures
+        run: |
+          set -euo pipefail
+          build/probe-old input/current.rvg 1 build/id-rejected.rvg > evidence/old-id.json
+          cmp input/current.rvg build/id-rejected.rvg
+          jq -e '.stop_reason=="Unsupported AArch64 system register read 0xc03c" and
+            .guest.instructions==65788362' evidence/old-id.json
+          timeout 120 build/probe-new input/current.rvg 3337755 build/before-pair.rvg \
+            > evidence/before-pair.json
+          echo 'fc84fb8d6f9312d239be2d1365ed72aaa46c7c7e491d0d2b6f3779f438f7588d  build/before-pair.rvg' | sha256sum -c -
+          jq -e '.guest.instructions==69126117 and .next_instruction.opcode=="0xc87f06c0" and
+            .guest.exceptions==0' evidence/before-pair.json
+          build/probe-old build/before-pair.rvg 1 build/pair-rejected.rvg > evidence/old-pair.json
+          cmp build/before-pair.rvg build/pair-rejected.rvg
+          jq -e '.stop_reason=="Unsupported AArch64 instruction 0xc87f06c0 at 0xffffffc0800e0120"' evidence/old-pair.json
+      - name: Restore a live paired monitor and prove byte-identical future execution
+        run: |
+          set -euo pipefail
+          build/probe-new build/before-pair.rvg 1 build/live-pair.rvg > evidence/live-pair.json
+          build/probe-new build/live-pair.rvg 99999 build/resumed.rvg > evidence/resumed.json
+          build/probe-new build/before-pair.rvg 100000 build/direct.rvg > evidence/direct.json
+          cmp build/resumed.rvg build/direct.rvg
+          jq -e '.guest.instructions==69226117 and .guest.exceptions==0 and
+            .stop_reason=="instruction_budget"' evidence/direct.json
+      - name: Compare address hints and numeric reads against their independent references
+        run: |
+          set -euo pipefail
+          python3 - <<'PYCODE'
+          import hashlib,json,pathlib,subprocess
+          for oracle,baseline in [('translation','reference'),('numeric-read','numeric-reference')]:
+            records=[]
+            for i,kind in enumerate([baseline,'new','new',baseline]):
+              path=pathlib.Path(f'build/{oracle}-{i}.rvg')
+              result=subprocess.run([f'build/probe-{kind}','build/before-pair.rvg',
+                '1000000',str(path),'--chunk=10000'],check=True,capture_output=True,text=True)
+              data=json.loads(result.stdout)
+              records.append({'kind':kind,'host_elapsed_ns':data['host_elapsed_ns'],
+                'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+                'instructions':data['guest']['instructions'],'stop_reason':data['stop_reason']})
+            assert len({row['sha256'] for row in records})==1
+            assert all(row['instructions']==70126117 and row['stop_reason']=='instruction_budget'
+              for row in records)
+            reference=sum(row['host_elapsed_ns'] for row in records if row['kind']==baseline)/2
+            optimized=sum(row['host_elapsed_ns'] for row in records if row['kind']=='new')/2
+            pathlib.Path(f'evidence/{oracle}-abba.json').write_text(json.dumps({
+              'samples':records,'byte_identical':True,'speedup':reference/optimized},indent=2)+'\n')
+          PYCODE
+      - name: Continue the unmodified Android kernel to real allocator initialization
+        run: |
+          set -euo pipefail
+          timeout 300 build/probe-new build/direct.rvg 40000000 evidence/current.rvg \
+            --chunk=10000 --wall-ms=240000 > evidence/continued.json \
+            2> evidence/continued.heartbeat
+          jq -e '.guest.instructions==109226117 and .guest.exceptions==0 and
+            .stop_reason=="instruction_budget" and
+            (.console|contains("SLUB: HWalign=64")) and .android_boot==false' evidence/continued.json
+          sha256sum evidence/current.rvg > evidence/current.sha256
+          {
+            echo '## Genuine Android CPU enumeration and paired exclusives'
+            jq '{checks,existing_quantum_qubits}' evidence/native-system.json
+            jq '{instructions:.guest.instructions,pc:.guest.pc,stop:.stop_reason,console}' evidence/continued.json
+            echo 'Independent paired-exclusive QEMU witness is validated in the ARM64 compatibility workflow.'
+            echo 'No completed Android /init, ADB or UI claim.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Reach and validate the genuine cold-boot debug-slot reset
+        run: |
+          set -euo pipefail
+          timeout 300 build/probe-new evidence/current.rvg 70100331 build/before-debug.rvg \
+            --chunk=10000 --wall-ms=270000 > evidence/before-debug.json \
+            2> evidence/before-debug.heartbeat
+          jq -e '.guest.instructions==179326448 and .next_instruction.opcode=="0xd51000a2" and
+            .stop_reason=="instruction_budget" and
+            (.console|contains("hw-breakpoint: found 1 breakpoint and 1 watchpoint registers"))' \
+            evidence/before-debug.json
+          build/probe-old build/before-debug.rvg 1 build/debug-rejected.rvg > evidence/old-debug.json
+          cmp build/before-debug.rvg build/debug-rejected.rvg
+          jq -e '.stop_reason=="Unsupported AArch64 system register write 0x8005"' evidence/old-debug.json
+          build/probe-new build/before-debug.rvg 1000000 evidence/current.rvg \
+            --stop-el0=1 > evidence/after-debug.json
+          jq -e '.guest.instructions==180326448 and .stop_reason=="instruction_budget" and
+            .guest.exception_level==1 and .android_boot==false' evidence/after-debug.json
+          sha256sum evidence/current.rvg > evidence/current.sha256
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-kernel-pairs-continuation
+          path: evidence/
+          retention-days: 14

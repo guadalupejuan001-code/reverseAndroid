@@ -1,0 +1,8 @@
+# A Bell pair on q0/q1 and an independent phased |+> qubit q2.
+h 0
+cx 0 1
+h 2
+t 2
+# CNOT to a |+> target leaves q3 independent.
+h 3
+cx 2 3

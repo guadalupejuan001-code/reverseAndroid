@@ -1,0 +1,708 @@
+name: Android C67 high narrowing arithmetic and original compact Android continuation
+'on':
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
+    paths:
+    - .github/workflows/android-c67-high-narrow-compact-continue.yml
+    - CMakeLists.txt
+    - src/minimal_guest_simd.inc
+    - tests/minimal_guest_high_narrow_test.cpp
+    - docs/ANDROID_C67_HIGH_NARROW_COMPACT.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native:
+    if: github.event.pull_request.head.ref == 'fix/android-c67-high-narrow-compact' && github.event.pull_request.head.repo.full_name
+      == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        repository: guadalupejuan001-code/mundo-X
+        ref: e2778d962af22f6f1a0794058dd4685fc2573966
+        path: deps/mundo-x
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Verify exact CPU scope and build the pinned original model
+      run: |
+        set -euo pipefail
+        mkdir -p evidence/c67-native build
+        git diff --exit-code e14eff979e847ba3a65ef421ba30db2300e0f360 HEAD -- src scripts patches third_party tools ':(exclude)src/minimal_guest_simd.inc'
+        python3 - <<'PYCODE'
+        import pathlib,subprocess
+        p='src/minimal_guest_simd.inc';old=subprocess.check_output(['git','show','e14eff979e847ba3a65ef421ba30db2300e0f360:'+p]).decode();new=pathlib.Path(p).read_text();a=new.index('  if((i&0x9f20dc00u)==0x0e204000u)');b=new.index('  ArmFloat fp(floating_);',a);assert new[:a]+new[b:]==old
+        PYCODE
+        python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+        python3 scripts/build-softfloat.py
+    - name: Verify 24 high narrowing forms, original rounding and SIMD neighbors, UBSan and original compact decoder
+      run: |
+        set -euo pipefail
+        FLAGS='-std=c++17 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -DREVERSE_PC_NUMERIC_BYTE_STORES=1 -DREVERSE_PC_COMPACT_INDEX_LOOKASIDE=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools'
+        for item in high_narrow rounding_shift fp; do
+          g++ $FLAGS -O2 tests/minimal_guest_${item}_test.cpp build/softfloat/libreverse_softfloat.a -o build/c67-$item
+          build/c67-$item > evidence/c67-native/$item.json
+        done
+        g++ $FLAGS -O1 -fsanitize=undefined -fno-sanitize-recover=all tests/minimal_guest_high_narrow_test.cpp build/softfloat/libreverse_softfloat.a -o build/c67-high-narrow-ubsan
+        build/c67-high-narrow-ubsan > evidence/c67-native/ubsan.json
+        g++ $FLAGS -O2 tests/guest_checkpoint_view_test.cpp build/softfloat/libreverse_softfloat.a -o build/c67-view
+        build/c67-view build/c67-view-data > evidence/c67-native/original-decoder.json
+        HOST='-DREVERSE_PC_COMPACT_RESTORE_VIEW=1 -DREVERSE_PC_OPENSSL_DISK_SHA=1'
+        g++ $FLAGS $HOST -O3 tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -lcrypto -o evidence/c67-native/native
+        evidence/c67-native/native --pins > evidence/c67-native/native-pins.json
+        sha256sum evidence/c67-native/native > evidence/c67-native/binary-sha256.txt
+        g++ --version > evidence/c67-native/compiler.txt
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverse-c67-tested-native
+        path: evidence/c67-native
+        retention-days: 90
+        compression-level: 1
+  arm-hardware:
+    if: github.event.pull_request.head.ref == 'fix/android-c67-high-narrow-compact' && github.event.pull_request.head.repo.full_name
+      == github.repository
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        persist-credentials: false
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        repository: guadalupejuan001-code/mundo-X
+        ref: e2778d962af22f6f1a0794058dd4685fc2573966
+        path: deps/mundo-x
+        persist-credentials: false
+    - name: Execute every allocated ADDHN RADDHN SUBHN RSUBHN register triple on physical ARM
+      run: |
+        set -euo pipefail
+        mkdir -p evidence/c67-arm build
+        python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+        python3 scripts/build-softfloat.py
+        FLAGS='-std=c++17 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -DREVERSE_PC_NUMERIC_BYTE_STORES=1 -DREVERSE_PC_COMPACT_INDEX_LOOKASIDE=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools'
+        g++ $FLAGS -O2 tests/minimal_guest_high_narrow_test.cpp build/softfloat/libreverse_softfloat.a -o build/c67-arm
+        build/c67-arm > evidence/c67-arm/hardware.json
+        python3 - <<'PYCODE'
+        import json
+        v=json.load(open('evidence/c67-arm/hardware.json'));assert v['native_hardware_cases']>=814465 and v['high_narrow_forms']==24 and v['exact_android_opcode']=='0x2e254082'
+        PYCODE
+        uname -a > evidence/c67-arm/machine.txt
+        g++ --version > evidence/c67-arm/compiler.txt
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverse-c67-arm-hardware
+        path: evidence/c67-arm
+        retention-days: 90
+        compression-level: 1
+  android-continuation:
+    needs:
+    - native
+    - arm-hardware
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+      REVERSE_PC_C39_CHUNK: '1000000'
+      REVERSE_PC_C39_CHECKPOINT_MS: '120000'
+      REVERSE_PC_C39_CHECKPOINT_INSTRUCTIONS: '200000000'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c67-tested-native
+        path: native-build
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c66-tested-native
+        run-id: 42001644090
+        github-token: ${{ github.token }}
+        path: reference-build
+    - name: Wait for independently produced clean C65 stage 5
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        mkdir -p evidence/c67-source
+        for c65_artifact_attempt in $(seq 1 240); do
+          gh api repos/guadalupejuan001-code/REVERSE-PC/actions/runs/41993666038/artifacts > evidence/c67-source/c64-artifacts.json
+          if node --input-type=module <<'NODE'
+        import {readFileSync} from 'node:fs';const r=JSON.parse(readFileSync('evidence/c67-source/c64-artifacts.json'));process.exit(r.artifacts.some(a=>a.name==='reverse-c65-stage-5-verified-checkpoint'&&!a.expired)?0:1);
+        NODE
+          then exit 0; fi
+          sleep 30
+        done
+        echo 'Original clean C65 stage 5 was not published within the bounded wait' >&2
+        exit 1
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c65-stage-5-verified-checkpoint
+        run-id: 41993666038
+        github-token: ${{ github.token }}
+        path: source-c65-stage5
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c53-tested-native
+        run-id: 41937211283
+        github-token: ${{ github.token }}
+        path: original-decoder
+    - name: Authenticate independently pinned clean C65 stage 5, tested C66 reference CPU and original decoder
+      run: |
+        set -euo pipefail
+        mkdir -p evidence/c67-source
+        cp original-decoder/frame native-build/frame
+        chmod +x native-build/native native-build/frame reference-build/native
+        test "$(sha256sum native-build/frame | cut -d ' ' -f 1)" = '4eff5aeb8f30c9e8b36aed3dbc6d9b22c6ffab9f33b1d0735f79395133284a19'
+        test "$(sha256sum reference-build/native | cut -d ' ' -f 1)" = '2dd4364d17fa79480baebcb33a85d0e9bb4a3fc9eed7f5cb5b6f296c2a6c5c07'
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';import {preflight} from './tools/android_c27_profile_resume.mjs';
+        const c=JSON.parse(readFileSync('source-c65-stage5/output-contract.json')),p=preflight(c,'source-c65-stage5',{maxTransportBytes:2147483648});assert.equal(c.source_commit,'0268e4f4a0ee593a435ae3071e20c3500dd70cfd');assert.equal(c.checkpoint_sha256,'7ecf0706237f127e6c78cbbdee4e5c640941ecfd6ba2b7ec8c3e282d6a13e5d0');assert.equal(p.report.guest.instructions,51183780033);writeFileSync('evidence/c67-source/preflight.json',JSON.stringify(c,null,2)+String.fromCharCode(10));
+        NODE
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c47-original-media-manifest
+        run-id: 41919163772
+        github-token: ${{ github.token }}
+        path: media-input
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c47-original-media-aa
+        run-id: 41919163772
+        github-token: ${{ github.token }}
+        path: media-input
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c47-original-media-ab
+        run-id: 41919163772
+        github-token: ${{ github.token }}
+        path: media-input
+    - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: reverse-c47-original-media-ac
+        run-id: 41919163772
+        github-token: ${{ github.token }}
+        path: media-input
+    - name: Restore and authenticate the unchanged original Android disk
+      run: |
+        set -euo pipefail
+        python3 - <<'PYCODE'
+        import pathlib,json,hashlib
+        root=pathlib.Path('media-input');m=json.loads((root/'manifest.json').read_text());assert m['disk_bytes']==10888413184 and m['disk_sha256']=='4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e';assert [r['file'] for r in m['parts']]==['disk.part-aa','disk.part-ab','disk.part-ac']
+        for r in m['parts']:
+         p=root/r['file'];assert p.stat().st_size==r['bytes'];h=hashlib.sha256()
+         with p.open('rb') as f:
+          for b in iter(lambda:f.read(1024*1024),b''):h.update(b)
+         assert h.hexdigest()==r['sha256']
+        PYCODE
+        mkdir new-media
+        cat media-input/disk.part-aa media-input/disk.part-ab media-input/disk.part-ac | gzip -dc > new-media/android-c27.raw
+        test "$(stat -c %s new-media/android-c27.raw)" = 10888413184
+        test "$(sha256sum new-media/android-c27.raw | cut -d ' ' -f 1)" = '4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e'
+        cp media-input/media.json evidence/c67-source/media.json
+        cp media-input/manifest.json evidence/c67-source/media-transport.json
+        rm -rf media-input
+        fallocate --dig-holes new-media/android-c27.raw
+        test "$(sha256sum new-media/android-c27.raw | cut -d ' ' -f 1)" = '4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e'
+    - name: Independently replay the original C66 CPU to the clean pre-RADDHN boundary
+      run: |
+        set -euo pipefail
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';import {run} from './tools/android_c27_profile_resume.mjs';
+        const r=await run(JSON.parse(readFileSync('source-c65-stage5/output-contract.json')),'source-c65-stage5','reference-build/native','new-media/android-c27.raw','evidence/c67-reference',{wallMs:900000,instructions:591279704,cycles:1,maxTransportBytes:2147483648});writeFileSync('evidence/c67-source/reference.json',JSON.stringify(r,null,2)+String.fromCharCode(10));assert.equal(r.process.status,'process_completed');assert.equal(r.result.execution_progress_accepted,true);assert.equal(JSON.parse(readFileSync('evidence/c67-reference/current.json')).guest.instructions,51775059737);assert.equal(r.result.checkpoint_sha256,'d516911ec8bb44cff9987e57909a9e5e0a454ad23f77a2f023dfdb2f0895c391');
+        NODE
+    - name: C67 stage 1 execute and verify the authentic Android machine
+      id: s1
+      if: success()
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs source-c65-stage5 evidence/c67-1 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" source-c65-stage5/c42-progress.json 591279704 2147483648 > evidence/c67-source/stage-1.json
+        cmp evidence/c67-reference/current.rvg evidence/c67-1/current.rvg
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';const r=JSON.parse(readFileSync('evidence/c67-1/current.json'));assert.equal(r.guest.instructions,51775059737);assert.equal(r.error,'');assert.equal(r.checkpoint_sha256,'d516911ec8bb44cff9987e57909a9e5e0a454ad23f77a2f023dfdb2f0895c391');
+        NODE
+        rm -rf evidence/c67-reference reference-build
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';const p=JSON.parse(readFileSync('evidence/c67-1/c42-progress.json'));assert.equal(p.zygote_pid,567);assert.equal(p.zygote_comm,'main');assert.equal(p.android_boot_completed_verified,false);
+        NODE
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s1.outcome == 'success'
+      with:
+        name: reverse-c67-stage-1-verified-checkpoint
+        path: |-
+          evidence/c67-1/
+          !evidence/c67-1/native/journal/**
+          !evidence/c67-1/native/current.rvg
+          !evidence/c67-1/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s1.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-1-diagnostics
+        path: |-
+          evidence/c67-1/*.json
+          evidence/c67-1/*.txt
+          evidence/c67-1/*.log
+          evidence/c67-1/native/*.json
+          evidence/c67-1/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 2 execute and verify the authentic Android machine
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-1 evidence/c67-2 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-1/c42-progress.json 1 2147483648 > evidence/c67-source/stage-2.json
+        python3 - <<'PYCODE'
+        import hashlib,json,mmap,pathlib,struct
+        root=pathlib.Path('evidence')
+        before=root/'c67-1/current.rvg';after=root/'c67-2/current.rvg'
+        r=json.loads((root/'c67-2/current.json').read_text())
+        assert r['guest']['instructions']==51775059738 and r['guest']['pc']=='0x7b9af6a8a0' and not r['error']
+        with before.open('rb') as fa,after.open('rb') as fb:
+         with mmap.mmap(fa.fileno(),0,access=mmap.ACCESS_READ) as aa,mmap.mmap(fb.fileno(),0,access=mmap.ACCESS_READ) as bb:
+          u=lambda data,at:struct.unpack_from('<Q',data,at)[0]
+          assert hashlib.sha256(aa).hexdigest()=='d516911ec8bb44cff9987e57909a9e5e0a454ad23f77a2f023dfdb2f0895c391'
+          assert hashlib.sha256(bb).hexdigest()==r['checkpoint_sha256'] and len(aa)==len(bb)
+          assert aa[:8]==bb[:8]==b'RVG3\r\n\x1a\n'
+          assert u(aa,24)==0x7b9af6a89c and u(bb,24)==0x7b9af6a8a0
+          assert u(aa,40)==51775059737 and u(bb,40)==51775059738
+          sizes=[u(aa,o) for o in (320,328,336,344,352)];assert sizes==[u(bb,o) for o in (320,328,336,344,352)]
+          fp=len(aa)-8-sizes[4];assert fp==360+sum(sizes[:4])
+          assert aa[fp:fp+8]==bb[fp:fp+8]==b'RFP1\r\n\x1a\n'
+          assert struct.unpack_from('<III',aa,fp+8)==struct.unpack_from('<III',bb,fp+8)==(0,16,2013200584)
+          assert 2013200584&((1<<2)|(1<<4)|(1<<5))==0
+          phase=fp-8;assert u(aa,phase)==28 and u(bb,phase)==29
+          at=0
+          for start,end in [(24,32),(40,48),(phase,phase+8),(len(aa)-8,len(aa))]:
+           for pos in range(at,start,1048576):assert aa[pos:min(pos+1048576,start)]==bb[pos:min(pos+1048576,start)],str(pos)
+           at=end
+          assert at==len(aa)
+        proof={'opcode':'0x2e254082','instruction':'RADDHN V2.8B,V4.8H,V5.8H','source_v4':bytes(16).hex(),'source_v5':bytes(16).hex(),'destination_v2':bytes(16).hex(),'instructions':51775059738,'pc':'0x7b9af6a8a0','counter_subtick_before':28,'counter_subtick_after':29,'all_original_bytes_unchanged_except_exact_pc_count_phase_and_checksum':True,'all_32_vectors_fpcr_fpsr_and_sparse_fpu_bytes_unchanged':True,'zero_background_preserved_without_new_fpu_or_ram_entries':True,'checkpoint_sha256':r['checkpoint_sha256']}
+        (root/'c67-source/high-narrow-crossing.json').write_text(json.dumps(proof,indent=2)+chr(10))
+        PYCODE
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s2.outcome == 'success'
+      with:
+        name: reverse-c67-stage-2-verified-checkpoint
+        path: |-
+          evidence/c67-2/
+          !evidence/c67-2/native/journal/**
+          !evidence/c67-2/native/current.rvg
+          !evidence/c67-2/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s2.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-1
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s2.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-2-diagnostics
+        path: |-
+          evidence/c67-2/*.json
+          evidence/c67-2/*.txt
+          evidence/c67-2/*.log
+          evidence/c67-2/native/*.json
+          evidence/c67-2/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 3 execute and verify the authentic Android machine
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-2 evidence/c67-3 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-2/c42-progress.json 1000000 2147483648 > evidence/c67-source/stage-3.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s3.outcome == 'success'
+      with:
+        name: reverse-c67-stage-3-verified-checkpoint
+        path: |-
+          evidence/c67-3/
+          !evidence/c67-3/native/journal/**
+          !evidence/c67-3/native/current.rvg
+          !evidence/c67-3/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s3.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-2
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s3.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-3-diagnostics
+        path: |-
+          evidence/c67-3/*.json
+          evidence/c67-3/*.txt
+          evidence/c67-3/*.log
+          evidence/c67-3/native/*.json
+          evidence/c67-3/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 4 execute and verify the authentic Android machine
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-3 evidence/c67-4 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-3/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-4.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s4.outcome == 'success'
+      with:
+        name: reverse-c67-stage-4-verified-checkpoint
+        path: |-
+          evidence/c67-4/
+          !evidence/c67-4/native/journal/**
+          !evidence/c67-4/native/current.rvg
+          !evidence/c67-4/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s4.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-3
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s4.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-4-diagnostics
+        path: |-
+          evidence/c67-4/*.json
+          evidence/c67-4/*.txt
+          evidence/c67-4/*.log
+          evidence/c67-4/native/*.json
+          evidence/c67-4/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 5 execute and verify the authentic Android machine
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-4 evidence/c67-5 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-4/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-5.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s5.outcome == 'success'
+      with:
+        name: reverse-c67-stage-5-verified-checkpoint
+        path: |-
+          evidence/c67-5/
+          !evidence/c67-5/native/journal/**
+          !evidence/c67-5/native/current.rvg
+          !evidence/c67-5/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s5.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-4
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s5.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-5-diagnostics
+        path: |-
+          evidence/c67-5/*.json
+          evidence/c67-5/*.txt
+          evidence/c67-5/*.log
+          evidence/c67-5/native/*.json
+          evidence/c67-5/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 6 execute and verify the authentic Android machine
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-5 evidence/c67-6 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-5/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-6.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s6.outcome == 'success'
+      with:
+        name: reverse-c67-stage-6-verified-checkpoint
+        path: |-
+          evidence/c67-6/
+          !evidence/c67-6/native/journal/**
+          !evidence/c67-6/native/current.rvg
+          !evidence/c67-6/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s6.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-5
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s6.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-6-diagnostics
+        path: |-
+          evidence/c67-6/*.json
+          evidence/c67-6/*.txt
+          evidence/c67-6/*.log
+          evidence/c67-6/native/*.json
+          evidence/c67-6/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 7 execute and verify the authentic Android machine
+      id: s7
+      if: success() && steps.s6.outcome == 'success' && steps.s6.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-6 evidence/c67-7 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-6/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-7.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s7.outcome == 'success'
+      with:
+        name: reverse-c67-stage-7-verified-checkpoint
+        path: |-
+          evidence/c67-7/
+          !evidence/c67-7/native/journal/**
+          !evidence/c67-7/native/current.rvg
+          !evidence/c67-7/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s7.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-6
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s7.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-7-diagnostics
+        path: |-
+          evidence/c67-7/*.json
+          evidence/c67-7/*.txt
+          evidence/c67-7/*.log
+          evidence/c67-7/native/*.json
+          evidence/c67-7/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 8 execute and verify the authentic Android machine
+      id: s8
+      if: success() && steps.s7.outcome == 'success' && steps.s7.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-7 evidence/c67-8 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-7/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-8.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s8.outcome == 'success'
+      with:
+        name: reverse-c67-stage-8-verified-checkpoint
+        path: |-
+          evidence/c67-8/
+          !evidence/c67-8/native/journal/**
+          !evidence/c67-8/native/current.rvg
+          !evidence/c67-8/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s8.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-7
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s8.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-8-diagnostics
+        path: |-
+          evidence/c67-8/*.json
+          evidence/c67-8/*.txt
+          evidence/c67-8/*.log
+          evidence/c67-8/native/*.json
+          evidence/c67-8/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 9 execute and verify the authentic Android machine
+      id: s9
+      if: success() && steps.s8.outcome == 'success' && steps.s8.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-8 evidence/c67-9 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-8/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-9.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s9.outcome == 'success'
+      with:
+        name: reverse-c67-stage-9-verified-checkpoint
+        path: |-
+          evidence/c67-9/
+          !evidence/c67-9/native/journal/**
+          !evidence/c67-9/native/current.rvg
+          !evidence/c67-9/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s9.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-8
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s9.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-9-diagnostics
+        path: |-
+          evidence/c67-9/*.json
+          evidence/c67-9/*.txt
+          evidence/c67-9/*.log
+          evidence/c67-9/native/*.json
+          evidence/c67-9/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 10 execute and verify the authentic Android machine
+      id: s10
+      if: success() && steps.s9.outcome == 'success' && steps.s9.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-9 evidence/c67-10 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-9/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-10.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s10.outcome == 'success'
+      with:
+        name: reverse-c67-stage-10-verified-checkpoint
+        path: |-
+          evidence/c67-10/
+          !evidence/c67-10/native/journal/**
+          !evidence/c67-10/native/current.rvg
+          !evidence/c67-10/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s10.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-9
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s10.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-10-diagnostics
+        path: |-
+          evidence/c67-10/*.json
+          evidence/c67-10/*.txt
+          evidence/c67-10/*.log
+          evidence/c67-10/native/*.json
+          evidence/c67-10/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 11 execute and verify the authentic Android machine
+      id: s11
+      if: success() && steps.s10.outcome == 'success' && steps.s10.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-10 evidence/c67-11 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-10/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-11.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s11.outcome == 'success'
+      with:
+        name: reverse-c67-stage-11-verified-checkpoint
+        path: |-
+          evidence/c67-11/
+          !evidence/c67-11/native/journal/**
+          !evidence/c67-11/native/current.rvg
+          !evidence/c67-11/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s11.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-10
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s11.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-11-diagnostics
+        path: |-
+          evidence/c67-11/*.json
+          evidence/c67-11/*.txt
+          evidence/c67-11/*.log
+          evidence/c67-11/native/*.json
+          evidence/c67-11/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - name: C67 stage 12 execute and verify the authentic Android machine
+      id: s12
+      if: success() && steps.s11.outcome == 'success' && steps.s11.outputs.visual != 'true'
+      run: |
+        set -euo pipefail
+        COMMIT=$(git rev-parse HEAD)
+        node tools/android_c46_continue.mjs evidence/c67-11 evidence/c67-12 native-build/native new-media/android-c27.raw native-build/frame "$COMMIT" evidence/c67-11/c42-progress.json 1000000000 2147483648 > evidence/c67-source/stage-12.json
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: steps.s12.outcome == 'success'
+      with:
+        name: reverse-c67-stage-12-verified-checkpoint
+        path: |-
+          evidence/c67-12/
+          !evidence/c67-12/native/journal/**
+          !evidence/c67-12/native/current.rvg
+          !evidence/c67-12/native/frame.ppm
+        if-no-files-found: error
+        retention-days: 90
+        compression-level: 1
+    - name: Release the previously uploaded temporary stage
+      if: steps.s12.outcome == 'success'
+      run: |
+        rm -rf evidence/c67-11
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always() && steps.s12.outcome == 'failure'
+      with:
+        name: reverse-c67-stage-12-diagnostics
+        path: |-
+          evidence/c67-12/*.json
+          evidence/c67-12/*.txt
+          evidence/c67-12/*.log
+          evidence/c67-12/native/*.json
+          evidence/c67-12/native/*.log
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 1
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverse-c67-source-and-progress-evidence
+        path: evidence/c67-source
+        retention-days: 90
+        compression-level: 1
+    - name: Require actual completed Android boot and original GPU frame
+      run: |
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {existsSync,readFileSync} from 'node:fs';const reports=Array.from({length:12},(_,i)=>'evidence/c67-source/stage-'+(i+1)+'.json').filter(existsSync).map(p=>JSON.parse(readFileSync(p)));const last=reports.at(-1);assert.ok(last,'No authenticated continuation completed');console.log(JSON.stringify(last,null,2));assert.equal(last.ready_for_visual_review,true,'Stages ended at a verified boundary; completed boot and a genuine frame are still pending');
+        NODE

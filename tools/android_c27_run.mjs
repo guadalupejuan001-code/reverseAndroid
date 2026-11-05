@@ -1,0 +1,7 @@
+import assert from'node:assert/strict';import{existsSync,mkdirSync,writeFileSync}from'node:fs';import{join}from'node:path';import{spawnSync}from'node:child_process';import{verifyC27Pins}from'./android_c27_state.mjs';import{auditC27}from'./android_c27_result.mjs';import{superviseNativeCycle}from'./android_supervised_cycle.mjs';
+try{
+ const[source,command,disk,output,wall]=process.argv.slice(2),wallMs=Number(wall);assert.ok(source&&command&&disk&&output&&!existsSync(output));assert.ok(Number.isSafeInteger(wallMs)&&wallMs>0&&wallMs<=900000);
+ const pins=spawnSync(command,['--pins'],{encoding:'utf8',timeout:30000,maxBuffer:65536});assert.ifError(pins.error);assert.equal(pins.status,0,pins.stderr);const descriptor=JSON.parse(pins.stdout);verifyC27Pins(descriptor);mkdirSync(output);writeFileSync(join(output,'native-pins.json'),JSON.stringify(descriptor,null,2)+'\n');
+ const host=await superviseNativeCycle({command,args:[source,disk,join(output,'journal'),String(wallMs)],outputDirectory:output,initialInstructions:0,startupMs:600000,noProgressMs:90000,wallMs:3600000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C27_SUPERVISOR '+JSON.stringify(s)+'\n')});
+ const result=existsSync(join(output,'journal/latest.json'))?auditC27(output):null;console.log(JSON.stringify({process:host,result},null,2));if(host.status!=='process_completed'||!result?.execution_progress_accepted)process.exitCode=2;
+}catch(e){console.error(e.stack);process.exitCode=1;}

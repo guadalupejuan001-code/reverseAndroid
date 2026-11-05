@@ -1,0 +1,87 @@
+name: REVERSE XI AArch64 STTR Linux continuation
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/linux-sttr-resume.yml'
+      - 'src/minimal_guest.hpp'
+      - 'src/minimal_guest_system.inc'
+      - 'tests/minimal_guest_system_test.cpp'
+      - 'tools/guest_linux_probe.cpp'
+      - 'scripts/prepare-ether-compat.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  sttr-guest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: xi-adaptive-ether-linux-evidence
+          run-id: 40776374158
+          github-token: ${{ github.token }}
+          path: prior-evidence
+      - name: Verify exact 29,415,473-step Linux checkpoint and build original XI/Ether
+        run: |
+          set -euo pipefail
+          mkdir -p build sttr-evidence
+          printf '%s  %s\n' '25381b1ddf1b7d81ef834af24213e9170eff61d9026511a4c63b4313ab51ed75' 'prior-evidence/current.rvg' | sha256sum -c -
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/sttr-system-test
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/guest-linux-probe
+      - name: Run EL0 permissions, cross-page rollback and checkpoint tests
+        run: |
+          set -euo pipefail
+          timeout 180 build/sttr-system-test | tee sttr-evidence/system-native.json
+          jq -e '.system=="own-EL1-MMU-IRQ-EL0-SVC" and .existing_quantum_qubits==4096' sttr-evidence/system-native.json
+      - name: Replay precisely the previously unsupported STTR instruction
+        run: |
+          set -euo pipefail
+          timeout 180 build/guest-linux-probe prior-evidence/current.rvg 1 sttr-evidence/after-sttr.rvg > sttr-evidence/first.json
+          jq -e '.initial_instructions==29415473 and
+                  .guest.instructions==29415474 and
+                  .guest.exceptions==5660 and
+                  .guest.pc=="0xffffffc008186080" and
+                  .adaptive_classical_storage and
+                  .guest.max_delta_overrides==0 and
+                  .stop_reason=="instruction_budget"' sttr-evidence/first.json
+          cp sttr-evidence/after-sttr.rvg sttr-evidence/current.rvg
+          printf 'Actual Linux STTR executed with preserved EL1 state, EL0 access and no extra fault.\n' >> "$GITHUB_STEP_SUMMARY"
+      - name: Continue Linux with the exact resumed XI/Ether state
+        run: |
+          set -euo pipefail
+          printf '## Linux after STTR\n\n| Batch | Total instructions | Exceptions | Overrides | Stop reason | /init |\n|---|---:|---:|---:|---|---|\n' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 8); do
+            timeout 210 build/guest-linux-probe sttr-evidence/current.rvg 250000 sttr-evidence/next.rvg > "sttr-evidence/step-$i.json"
+            jq -e '.adaptive_classical_storage and .guest.max_delta_overrides==0' "sttr-evidence/step-$i.json" >/dev/null
+            total=$(jq -r '.guest.instructions' "sttr-evidence/step-$i.json")
+            errors=$(jq -r '.guest.exceptions' "sttr-evidence/step-$i.json")
+            over=$(jq -r '.guest.delta_overrides' "sttr-evidence/step-$i.json")
+            reason=$(jq -r '.stop_reason' "sttr-evidence/step-$i.json")
+            init=$(jq -r '.linux_userspace_init_observed' "sttr-evidence/step-$i.json")
+            printf '| %s | %s | %s | %s | %s | %s |\n' "$i" "$total" "$errors" "$over" "$reason" "$init" >> "$GITHUB_STEP_SUMMARY"
+            mv sttr-evidence/next.rvg sttr-evidence/current.rvg
+            if [[ "$reason" != instruction_budget || "$init" == true ]]; then
+              jq '{stop_reason,next_instruction,guest:{pc:.guest.pc,instructions:.guest.instructions,exceptions:.guest.exceptions,delta_overrides:.guest.delta_overrides},console,linux_userspace_init_observed}' "sttr-evidence/step-$i.json" > sttr-evidence/next-blocker.json
+              break
+            fi
+          done
+          sha256sum sttr-evidence/current.rvg > sttr-evidence/current.sha256
+          printf '\nNo Linux userspace or Android boot may be claimed without an actual guest witness.\n' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-linux-sttr-checkpoint
+          path: sttr-evidence/
+          retention-days: 14

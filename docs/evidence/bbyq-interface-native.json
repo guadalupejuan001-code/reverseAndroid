@@ -1,0 +1,6677 @@
+{
+  "checks": 839,
+  "grammar_combinations": 803,
+  "negative_controls": 19,
+  "real_rxe_execution": true,
+  "old_account_retained": true,
+  "conflicting_migration_rejected": true,
+  "scope": "Finite interface grammar and actual XI/RXE; this is not a general-language or Android UI benchmark",
+  "transcript": [
+    {
+      "input": "abre archivos",
+      "language": 1,
+      "output": "Necesito estar conectado a tu escritorio.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 105.56274
+    },
+    {
+      "input": "abre archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 151.83645799999996
+    },
+    {
+      "input": "abre files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 144.523974
+    },
+    {
+      "input": "abre mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 134.14586299999996
+    },
+    {
+      "input": "abre calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 125.84270600000002
+    },
+    {
+      "input": "abre calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 123.40762199999995
+    },
+    {
+      "input": "abre la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 133.94966399999998
+    },
+    {
+      "input": "abre ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 121.745676
+    },
+    {
+      "input": "abre configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 110.20294899999999
+    },
+    {
+      "input": "abre settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 125.42467699999997
+    },
+    {
+      "input": "abre aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 129.570917
+    },
+    {
+      "input": "abre apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 118.64188700000022
+    },
+    {
+      "input": "abre programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 133.4290659999997
+    },
+    {
+      "input": "abre xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 165.89667699999973
+    },
+    {
+      "input": "abre xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 186.97284400000035
+    },
+    {
+      "input": "abre studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 113.52909799999998
+    },
+    {
+      "input": "abre ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 88.55911000000015
+    },
+    {
+      "input": "abre guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 94.46353799999997
+    },
+    {
+      "input": "abre help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 138.75297799999998
+    },
+    {
+      "input": "abre control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 117.46404399999983
+    },
+    {
+      "input": "abre centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 95.7293279999999
+    },
+    {
+      "input": "abre sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 92.84685300000001
+    },
+    {
+      "input": "abre bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 88.81824400000005
+    },
+    {
+      "input": "abre bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 96.30523399999993
+    },
+    {
+      "input": "abre bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 110.25827200000049
+    },
+    {
+      "input": "abre notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 141.38228299999992
+    },
+    {
+      "input": "abre notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 106.90172799999982
+    },
+    {
+      "input": "abre fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 114.81168200000047
+    },
+    {
+      "input": "abre editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 105.99298100000033
+    },
+    {
+      "input": "abre wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 108.29485699999987
+    },
+    {
+      "input": "abrir archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 102.30465300000014
+    },
+    {
+      "input": "abrir files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 116.6753490000001
+    },
+    {
+      "input": "abrir mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 102.64834299999984
+    },
+    {
+      "input": "abrir calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 92.70112299999982
+    },
+    {
+      "input": "abrir calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 104.66810400000031
+    },
+    {
+      "input": "abrir la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 106.00601499999993
+    },
+    {
+      "input": "abrir ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 107.94684899999993
+    },
+    {
+      "input": "abrir configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 110.8168770000002
+    },
+    {
+      "input": "abrir settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 117.8282079999999
+    },
+    {
+      "input": "abrir aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 136.053586
+    },
+    {
+      "input": "abrir apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 102.57531600000038
+    },
+    {
+      "input": "abrir programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 94.80311999999958
+    },
+    {
+      "input": "abrir xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 90.58123399999931
+    },
+    {
+      "input": "abrir xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 96.07976299999973
+    },
+    {
+      "input": "abrir studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 97.82377299999916
+    },
+    {
+      "input": "abrir ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 106.15793900000062
+    },
+    {
+      "input": "abrir guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 102.08589099999972
+    },
+    {
+      "input": "abrir help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 91.59868300000016
+    },
+    {
+      "input": "abrir control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 90.60516800000005
+    },
+    {
+      "input": "abrir centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 104.77266000000054
+    },
+    {
+      "input": "abrir sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 95.01191299999937
+    },
+    {
+      "input": "abrir bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 99.0589399999999
+    },
+    {
+      "input": "abrir bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 98.83866499999931
+    },
+    {
+      "input": "abrir bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 99.1726090000011
+    },
+    {
+      "input": "abrir notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 99.59097500000098
+    },
+    {
+      "input": "abrir notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 117.38110200000119
+    },
+    {
+      "input": "abrir fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 107.71868600000016
+    },
+    {
+      "input": "abrir editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 131.23196800000005
+    },
+    {
+      "input": "abrir wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 123.73953500000061
+    },
+    {
+      "input": "open archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 108.8984419999997
+    },
+    {
+      "input": "open files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 117.69292899999891
+    },
+    {
+      "input": "open mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 154.03048800000033
+    },
+    {
+      "input": "open calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 122.23869999999988
+    },
+    {
+      "input": "open calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 125.15833700000076
+    },
+    {
+      "input": "open la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 106.90872799999852
+    },
+    {
+      "input": "open ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 106.6666069999992
+    },
+    {
+      "input": "open configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 102.60940800000026
+    },
+    {
+      "input": "open settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 102.1936910000004
+    },
+    {
+      "input": "open aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 96.7357890000003
+    },
+    {
+      "input": "open apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 109.05506299999979
+    },
+    {
+      "input": "open programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 107.24829599999975
+    },
+    {
+      "input": "open xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 107.21956599999976
+    },
+    {
+      "input": "open xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 130.10996200000045
+    },
+    {
+      "input": "open studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 133.50337800000125
+    },
+    {
+      "input": "open ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 120.56253300000026
+    },
+    {
+      "input": "open guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 115.74854800000139
+    },
+    {
+      "input": "open help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 114.91163899999992
+    },
+    {
+      "input": "open control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 112.38013499999943
+    },
+    {
+      "input": "open centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 159.1424279999992
+    },
+    {
+      "input": "open sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 112.825925000001
+    },
+    {
+      "input": "open bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 113.9606930000009
+    },
+    {
+      "input": "open bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 101.80389099999957
+    },
+    {
+      "input": "open bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 105.5987929999992
+    },
+    {
+      "input": "open notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 109.41081599999961
+    },
+    {
+      "input": "open notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 98.5512519999993
+    },
+    {
+      "input": "open fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 102.47121700000025
+    },
+    {
+      "input": "open editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 112.6200919999992
+    },
+    {
+      "input": "open wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 99.17269900000065
+    },
+    {
+      "input": "launch archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 99.98302400000102
+    },
+    {
+      "input": "launch files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 98.6649180000004
+    },
+    {
+      "input": "launch mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 103.80990900000143
+    },
+    {
+      "input": "launch calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 122.87087900000006
+    },
+    {
+      "input": "launch calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 123.25037300000076
+    },
+    {
+      "input": "launch la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 122.10937999999987
+    },
+    {
+      "input": "launch ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 167.2042620000011
+    },
+    {
+      "input": "launch configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 107.70941099999982
+    },
+    {
+      "input": "launch settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 113.88519300000007
+    },
+    {
+      "input": "launch aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 90.66811700000108
+    },
+    {
+      "input": "launch apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 105.6741290000009
+    },
+    {
+      "input": "launch programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 95.44748900000013
+    },
+    {
+      "input": "launch xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 95.38557499999843
+    },
+    {
+      "input": "launch xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 93.7289039999996
+    },
+    {
+      "input": "launch studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 111.00499399999899
+    },
+    {
+      "input": "launch ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 110.97813900000074
+    },
+    {
+      "input": "launch guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 112.98575900000105
+    },
+    {
+      "input": "launch help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 121.5477979999996
+    },
+    {
+      "input": "launch control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 93.37013099999967
+    },
+    {
+      "input": "launch centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 101.22746099999858
+    },
+    {
+      "input": "launch sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 104.77682800000002
+    },
+    {
+      "input": "launch bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 123.35040000000299
+    },
+    {
+      "input": "launch bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 96.86916200000269
+    },
+    {
+      "input": "launch bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 95.63086699999985
+    },
+    {
+      "input": "launch notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 87.9547330000023
+    },
+    {
+      "input": "launch notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 121.5083080000004
+    },
+    {
+      "input": "launch fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 105.63968000000023
+    },
+    {
+      "input": "launch editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 85.69725900000049
+    },
+    {
+      "input": "launch wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 87.38480200000049
+    },
+    {
+      "input": "puedes abrir archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 89.05389999999898
+    },
+    {
+      "input": "puedes abrir files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 107.71810299999925
+    },
+    {
+      "input": "puedes abrir mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 105.77804900000046
+    },
+    {
+      "input": "puedes abrir calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 98.70135200000004
+    },
+    {
+      "input": "puedes abrir calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 103.25276200000008
+    },
+    {
+      "input": "puedes abrir la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 102.42946200000006
+    },
+    {
+      "input": "puedes abrir ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 135.254911
+    },
+    {
+      "input": "puedes abrir configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 88.33757500000138
+    },
+    {
+      "input": "puedes abrir settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 113.42470400000093
+    },
+    {
+      "input": "puedes abrir aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 111.91632899999968
+    },
+    {
+      "input": "puedes abrir apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 107.96803999999975
+    },
+    {
+      "input": "puedes abrir programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 109.27497199999925
+    },
+    {
+      "input": "puedes abrir xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 92.22070499999973
+    },
+    {
+      "input": "puedes abrir xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 105.98010399999839
+    },
+    {
+      "input": "puedes abrir studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 100.44357599999785
+    },
+    {
+      "input": "puedes abrir ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 89.81167999999889
+    },
+    {
+      "input": "puedes abrir guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 90.94521600000007
+    },
+    {
+      "input": "puedes abrir help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 105.76427800000238
+    },
+    {
+      "input": "puedes abrir control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 95.42410499999824
+    },
+    {
+      "input": "puedes abrir centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 88.61112499999945
+    },
+    {
+      "input": "puedes abrir sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 92.67090900000039
+    },
+    {
+      "input": "puedes abrir bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 103.39076300000306
+    },
+    {
+      "input": "puedes abrir bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 103.1010040000001
+    },
+    {
+      "input": "puedes abrir bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 93.95082700000057
+    },
+    {
+      "input": "puedes abrir notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 95.83060699999987
+    },
+    {
+      "input": "puedes abrir notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 101.04740400000082
+    },
+    {
+      "input": "puedes abrir fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 97.60070300000007
+    },
+    {
+      "input": "puedes abrir editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 91.82191299999977
+    },
+    {
+      "input": "puedes abrir wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 107.81215499999962
+    },
+    {
+      "input": "por favor abre archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 107.2995800000026
+    },
+    {
+      "input": "por favor abre files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 103.42674100000295
+    },
+    {
+      "input": "por favor abre mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 95.83230299999923
+    },
+    {
+      "input": "por favor abre calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 93.39500099999714
+    },
+    {
+      "input": "por favor abre calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 87.4644449999978
+    },
+    {
+      "input": "por favor abre la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 94.37385500000164
+    },
+    {
+      "input": "por favor abre ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 108.39314599999852
+    },
+    {
+      "input": "por favor abre configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 99.73600499999884
+    },
+    {
+      "input": "por favor abre settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 92.17748900000151
+    },
+    {
+      "input": "por favor abre aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 92.32062900000165
+    },
+    {
+      "input": "por favor abre apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 90.11727000000246
+    },
+    {
+      "input": "por favor abre programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 95.32464800000162
+    },
+    {
+      "input": "por favor abre xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 97.05384200000117
+    },
+    {
+      "input": "por favor abre xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 100.32848399999784
+    },
+    {
+      "input": "por favor abre studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 104.38899800000218
+    },
+    {
+      "input": "por favor abre ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 106.04473299999881
+    },
+    {
+      "input": "por favor abre guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 97.02991300000213
+    },
+    {
+      "input": "por favor abre help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 119.64646300000095
+    },
+    {
+      "input": "por favor abre control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 97.83031699999992
+    },
+    {
+      "input": "por favor abre centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 91.48275699999795
+    },
+    {
+      "input": "por favor abre sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 108.47458800000095
+    },
+    {
+      "input": "por favor abre bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 101.6068180000002
+    },
+    {
+      "input": "por favor abre bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 112.00910899999872
+    },
+    {
+      "input": "por favor abre bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 95.31437200000073
+    },
+    {
+      "input": "por favor abre notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 93.3279849999999
+    },
+    {
+      "input": "por favor abre notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 101.17570700000215
+    },
+    {
+      "input": "por favor abre fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 96.05415100000027
+    },
+    {
+      "input": "por favor abre editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 87.91266499999983
+    },
+    {
+      "input": "por favor abre wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 89.16796299999987
+    },
+    {
+      "input": "abre archivos por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 91.90726799999902
+    },
+    {
+      "input": "abre files por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 113.41411700000026
+    },
+    {
+      "input": "abre mis archivos por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 89.30961199999729
+    },
+    {
+      "input": "abre calculadora por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 96.70239299999957
+    },
+    {
+      "input": "abre calculator por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 96.21258999999918
+    },
+    {
+      "input": "abre la calculadora por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 98.74226600000111
+    },
+    {
+      "input": "abre ajustes por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 121.13508399999773
+    },
+    {
+      "input": "abre configuración por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 90.5791449999997
+    },
+    {
+      "input": "abre settings por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 92.9173800000026
+    },
+    {
+      "input": "abre aplicaciones por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 99.08582600000227
+    },
+    {
+      "input": "abre apps por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 104.30494499999986
+    },
+    {
+      "input": "abre programas por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 100.06455799999821
+    },
+    {
+      "input": "abre xi por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 139.35407000000123
+    },
+    {
+      "input": "abre xi studio por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 100.26523200000156
+    },
+    {
+      "input": "abre studio xi por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 99.47244599999976
+    },
+    {
+      "input": "abre ayuda por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 90.62263600000006
+    },
+    {
+      "input": "abre guía rápida por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 100.58227399999669
+    },
+    {
+      "input": "abre help por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 98.17559999999867
+    },
+    {
+      "input": "abre control por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 118.29507000000012
+    },
+    {
+      "input": "abre centro de control por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 95.82374400000117
+    },
+    {
+      "input": "abre sistema por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 91.70409300000028
+    },
+    {
+      "input": "abre bbyq por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 90.8807510000006
+    },
+    {
+      "input": "abre bby q por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 90.44298200000048
+    },
+    {
+      "input": "abre bby por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 94.63472000000183
+    },
+    {
+      "input": "abre notas por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 104.5376299999989
+    },
+    {
+      "input": "abre notes por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 100.0313559999995
+    },
+    {
+      "input": "abre fondo por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 90.04245499999888
+    },
+    {
+      "input": "abre editor de fondo por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 106.19945399999779
+    },
+    {
+      "input": "abre wallpaper por favor",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 96.58167899999899
+    },
+    {
+      "input": "please open archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 103.78135899999688
+    },
+    {
+      "input": "please open files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 129.41157399999793
+    },
+    {
+      "input": "please open mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 92.2932490000021
+    },
+    {
+      "input": "please open calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 96.66050900000118
+    },
+    {
+      "input": "please open calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 102.90463100000125
+    },
+    {
+      "input": "please open la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 90.30529100000058
+    },
+    {
+      "input": "please open ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 103.40295499999775
+    },
+    {
+      "input": "please open configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 122.02860700000019
+    },
+    {
+      "input": "please open settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 95.29117000000042
+    },
+    {
+      "input": "please open aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 106.47558099999878
+    },
+    {
+      "input": "please open apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 123.27748100000099
+    },
+    {
+      "input": "please open programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 98.83142999999836
+    },
+    {
+      "input": "please open xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 95.53446299999996
+    },
+    {
+      "input": "please open xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 91.70853899999929
+    },
+    {
+      "input": "please open studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 91.10366200000135
+    },
+    {
+      "input": "please open ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 101.36901899999793
+    },
+    {
+      "input": "please open guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 94.68151500000022
+    },
+    {
+      "input": "please open help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 111.40082500000062
+    },
+    {
+      "input": "please open control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 98.4792230000021
+    },
+    {
+      "input": "please open centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 102.21191900000122
+    },
+    {
+      "input": "please open sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 102.89574300000095
+    },
+    {
+      "input": "please open bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 96.91064499999993
+    },
+    {
+      "input": "please open bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 93.36509899999874
+    },
+    {
+      "input": "please open bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 107.85433299999931
+    },
+    {
+      "input": "please open notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 151.8961960000015
+    },
+    {
+      "input": "please open notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 130.85546299999987
+    },
+    {
+      "input": "please open fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 111.3288160000011
+    },
+    {
+      "input": "please open editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 93.62117999999828
+    },
+    {
+      "input": "please open wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 87.7160739999963
+    },
+    {
+      "input": "open archivos please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 91.12501200000406
+    },
+    {
+      "input": "open files please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 90.62504600000102
+    },
+    {
+      "input": "open mis archivos please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 93.24971399999777
+    },
+    {
+      "input": "open calculadora please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 93.45036800000526
+    },
+    {
+      "input": "open calculator please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 88.29184499999974
+    },
+    {
+      "input": "open la calculadora please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 2,
+      "cli_turn_ms": 99.14624700000422
+    },
+    {
+      "input": "open ajustes please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 92.78812099999777
+    },
+    {
+      "input": "open configuración please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 106.1390259999971
+    },
+    {
+      "input": "open settings please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 3,
+      "cli_turn_ms": 95.8250659999976
+    },
+    {
+      "input": "open aplicaciones please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 93.2329979999995
+    },
+    {
+      "input": "open apps please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 93.00784900000144
+    },
+    {
+      "input": "open programas please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 4,
+      "cli_turn_ms": 97.1945229999983
+    },
+    {
+      "input": "open xi please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 109.51939300000231
+    },
+    {
+      "input": "open xi studio please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 97.36946100000205
+    },
+    {
+      "input": "open studio xi please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 5,
+      "cli_turn_ms": 93.36794799999916
+    },
+    {
+      "input": "open ayuda please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 121.00917899999331
+    },
+    {
+      "input": "open guía rápida please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 109.36195900000166
+    },
+    {
+      "input": "open help please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 6,
+      "cli_turn_ms": 98.32581500000379
+    },
+    {
+      "input": "open control please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 101.29745299999922
+    },
+    {
+      "input": "open centro de control please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 102.11107700000139
+    },
+    {
+      "input": "open sistema please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 7,
+      "cli_turn_ms": 91.47707700000319
+    },
+    {
+      "input": "open bbyq please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 89.03979000000254
+    },
+    {
+      "input": "open bby q please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 93.625377999997
+    },
+    {
+      "input": "open bby please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 8,
+      "cli_turn_ms": 94.91523000000598
+    },
+    {
+      "input": "open notas please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 96.29279200000019
+    },
+    {
+      "input": "open notes please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 9,
+      "cli_turn_ms": 97.3526469999997
+    },
+    {
+      "input": "open fondo please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 104.81974199999968
+    },
+    {
+      "input": "open editor de fondo please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 107.11812600000121
+    },
+    {
+      "input": "open wallpaper please",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 1,
+      "target": 10,
+      "cli_turn_ms": 105.34856999999465
+    },
+    {
+      "input": "enfoca archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 95.69587299999694
+    },
+    {
+      "input": "enfoca files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 98.01536199999828
+    },
+    {
+      "input": "enfoca mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 99.72437199999695
+    },
+    {
+      "input": "enfoca calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 110.24938000000111
+    },
+    {
+      "input": "enfoca calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 110.30689999999595
+    },
+    {
+      "input": "enfoca la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 100.45487300000241
+    },
+    {
+      "input": "enfoca ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 99.56341200000315
+    },
+    {
+      "input": "enfoca configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 90.67352100000426
+    },
+    {
+      "input": "enfoca settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 93.29804899999726
+    },
+    {
+      "input": "enfoca aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 95.35289400000329
+    },
+    {
+      "input": "enfoca apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 104.93646399999852
+    },
+    {
+      "input": "enfoca programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 102.28291699999681
+    },
+    {
+      "input": "enfoca xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 103.12053700000251
+    },
+    {
+      "input": "enfoca xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 91.66027600000234
+    },
+    {
+      "input": "enfoca studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 98.39254000000074
+    },
+    {
+      "input": "enfoca ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 94.66140200000518
+    },
+    {
+      "input": "enfoca guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 103.81835699999647
+    },
+    {
+      "input": "enfoca help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 107.40160199999809
+    },
+    {
+      "input": "enfoca control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 103.90018699999928
+    },
+    {
+      "input": "enfoca centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 109.7507889999979
+    },
+    {
+      "input": "enfoca sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 108.5314090000029
+    },
+    {
+      "input": "enfoca bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 106.9653049999979
+    },
+    {
+      "input": "enfoca bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 97.49830199999997
+    },
+    {
+      "input": "enfoca bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 91.65435000000434
+    },
+    {
+      "input": "enfoca notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 104.8939090000058
+    },
+    {
+      "input": "enfoca notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 104.47209199999634
+    },
+    {
+      "input": "enfoca fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 104.09783700000116
+    },
+    {
+      "input": "enfoca editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 117.27492999999959
+    },
+    {
+      "input": "enfoca wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 100.45266699999775
+    },
+    {
+      "input": "enfoca esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 103.18278799999825
+    },
+    {
+      "input": "enfoca la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 103.9360549999983
+    },
+    {
+      "input": "enfoca this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 92.43533899999602
+    },
+    {
+      "input": "enfoca current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 109.32717299999786
+    },
+    {
+      "input": "muestra archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 102.10889600000519
+    },
+    {
+      "input": "muestra files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 96.45055200000206
+    },
+    {
+      "input": "muestra mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 110.23855600000388
+    },
+    {
+      "input": "muestra calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 123.0478310000035
+    },
+    {
+      "input": "muestra calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 107.70353700000123
+    },
+    {
+      "input": "muestra la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 123.47984500000166
+    },
+    {
+      "input": "muestra ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 105.77986300000339
+    },
+    {
+      "input": "muestra configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 100.73826299999928
+    },
+    {
+      "input": "muestra settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 136.2261639999997
+    },
+    {
+      "input": "muestra aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 124.49872900000628
+    },
+    {
+      "input": "muestra apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 87.42096700000548
+    },
+    {
+      "input": "muestra programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 97.79698199999984
+    },
+    {
+      "input": "muestra xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 105.11965600000258
+    },
+    {
+      "input": "muestra xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 105.83980599999632
+    },
+    {
+      "input": "muestra studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 108.35750399999961
+    },
+    {
+      "input": "muestra ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 96.96840900000097
+    },
+    {
+      "input": "muestra guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 104.03969499999948
+    },
+    {
+      "input": "muestra help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 108.97260700000334
+    },
+    {
+      "input": "muestra control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 97.5229740000068
+    },
+    {
+      "input": "muestra centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 99.49162399999477
+    },
+    {
+      "input": "muestra sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 122.68082300000242
+    },
+    {
+      "input": "muestra bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 115.97708399999829
+    },
+    {
+      "input": "muestra bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 128.9049720000039
+    },
+    {
+      "input": "muestra bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 101.87277700000413
+    },
+    {
+      "input": "muestra notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 132.29942600000504
+    },
+    {
+      "input": "muestra notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 112.1691009999995
+    },
+    {
+      "input": "muestra fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 99.96650700000464
+    },
+    {
+      "input": "muestra editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 132.98246400000062
+    },
+    {
+      "input": "muestra wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 99.90639899999951
+    },
+    {
+      "input": "muestra esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 103.62607399999979
+    },
+    {
+      "input": "muestra la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 90.7906359999979
+    },
+    {
+      "input": "muestra this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 100.03658999999607
+    },
+    {
+      "input": "muestra current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 92.14588899999944
+    },
+    {
+      "input": "focus archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 112.91401799999585
+    },
+    {
+      "input": "focus files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 110.31692199999816
+    },
+    {
+      "input": "focus mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 114.48818399999436
+    },
+    {
+      "input": "focus calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 112.55544599999848
+    },
+    {
+      "input": "focus calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 96.02929199999926
+    },
+    {
+      "input": "focus la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 104.44383500000549
+    },
+    {
+      "input": "focus ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 123.47964299999876
+    },
+    {
+      "input": "focus configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 149.04747399999906
+    },
+    {
+      "input": "focus settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 106.02025400000275
+    },
+    {
+      "input": "focus aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 97.72853300000133
+    },
+    {
+      "input": "focus apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 95.35537599999952
+    },
+    {
+      "input": "focus programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 98.08518700000423
+    },
+    {
+      "input": "focus xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 96.23475899999903
+    },
+    {
+      "input": "focus xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 110.04965999999695
+    },
+    {
+      "input": "focus studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 94.10172099999909
+    },
+    {
+      "input": "focus ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 106.62939200000255
+    },
+    {
+      "input": "focus guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 92.04575299999851
+    },
+    {
+      "input": "focus help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 104.74286500000017
+    },
+    {
+      "input": "focus control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 92.45557700000063
+    },
+    {
+      "input": "focus centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 93.47690400000283
+    },
+    {
+      "input": "focus sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 91.45986400000402
+    },
+    {
+      "input": "focus bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 92.7002319999956
+    },
+    {
+      "input": "focus bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 96.01550300000235
+    },
+    {
+      "input": "focus bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 93.74236799999926
+    },
+    {
+      "input": "focus notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 102.62108900000021
+    },
+    {
+      "input": "focus notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 116.85951699999714
+    },
+    {
+      "input": "focus fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 93.04745099999855
+    },
+    {
+      "input": "focus editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 102.38061700000253
+    },
+    {
+      "input": "focus wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 101.53273900000204
+    },
+    {
+      "input": "focus esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 103.04787500000384
+    },
+    {
+      "input": "focus la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 107.97510399999737
+    },
+    {
+      "input": "focus this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 104.26950500000385
+    },
+    {
+      "input": "focus current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 118.87411600000632
+    },
+    {
+      "input": "show archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 115.92784499999834
+    },
+    {
+      "input": "show files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 107.483954000003
+    },
+    {
+      "input": "show mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 1,
+      "cli_turn_ms": 97.11174900000333
+    },
+    {
+      "input": "show calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 114.30521399999998
+    },
+    {
+      "input": "show calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 94.29206700000213
+    },
+    {
+      "input": "show la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 2,
+      "cli_turn_ms": 107.34343700000318
+    },
+    {
+      "input": "show ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 121.10534500000358
+    },
+    {
+      "input": "show configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 97.48626700000023
+    },
+    {
+      "input": "show settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 3,
+      "cli_turn_ms": 89.15202200000203
+    },
+    {
+      "input": "show aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 89.62673599999835
+    },
+    {
+      "input": "show apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 91.3289500000028
+    },
+    {
+      "input": "show programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 4,
+      "cli_turn_ms": 100.8609079999951
+    },
+    {
+      "input": "show xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 94.90710799999943
+    },
+    {
+      "input": "show xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 134.61051700000098
+    },
+    {
+      "input": "show studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 5,
+      "cli_turn_ms": 119.20313000000169
+    },
+    {
+      "input": "show ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 124.12387599999784
+    },
+    {
+      "input": "show guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 112.56033699999534
+    },
+    {
+      "input": "show help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 6,
+      "cli_turn_ms": 105.19961999999941
+    },
+    {
+      "input": "show control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 93.56403599999612
+    },
+    {
+      "input": "show centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 136.99719899999764
+    },
+    {
+      "input": "show sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 7,
+      "cli_turn_ms": 117.8027360000051
+    },
+    {
+      "input": "show bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 126.23130999999557
+    },
+    {
+      "input": "show bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 121.61880200000451
+    },
+    {
+      "input": "show bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 8,
+      "cli_turn_ms": 139.22531199999503
+    },
+    {
+      "input": "show notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 106.06741700000566
+    },
+    {
+      "input": "show notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 9,
+      "cli_turn_ms": 110.39914100000169
+    },
+    {
+      "input": "show fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 112.70935199999803
+    },
+    {
+      "input": "show editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 129.20077300000412
+    },
+    {
+      "input": "show wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 10,
+      "cli_turn_ms": 105.57462799999485
+    },
+    {
+      "input": "show esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 148.461722
+    },
+    {
+      "input": "show la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 130.1705409999995
+    },
+    {
+      "input": "show this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 143.64630500000203
+    },
+    {
+      "input": "show current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 2,
+      "target": 15,
+      "cli_turn_ms": 108.67357300000003
+    },
+    {
+      "input": "minimiza archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 108.5203610000026
+    },
+    {
+      "input": "minimiza files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 106.010245999998
+    },
+    {
+      "input": "minimiza mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 102.29775599999994
+    },
+    {
+      "input": "minimiza calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 102.05081799999607
+    },
+    {
+      "input": "minimiza calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 107.183474999998
+    },
+    {
+      "input": "minimiza la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 103.56962499999645
+    },
+    {
+      "input": "minimiza ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 105.59336400000029
+    },
+    {
+      "input": "minimiza configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 94.85751700000401
+    },
+    {
+      "input": "minimiza settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 90.21609299999545
+    },
+    {
+      "input": "minimiza aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 93.107388000004
+    },
+    {
+      "input": "minimiza apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 93.80462100000295
+    },
+    {
+      "input": "minimiza programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 93.50809699999809
+    },
+    {
+      "input": "minimiza xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 92.69649299999583
+    },
+    {
+      "input": "minimiza xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 109.62009199999738
+    },
+    {
+      "input": "minimiza studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 92.4078359999985
+    },
+    {
+      "input": "minimiza ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 101.50976400000218
+    },
+    {
+      "input": "minimiza guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 92.88935700000002
+    },
+    {
+      "input": "minimiza help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 100.49647200000618
+    },
+    {
+      "input": "minimiza control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 96.62722699999722
+    },
+    {
+      "input": "minimiza centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 93.20440799999778
+    },
+    {
+      "input": "minimiza sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 91.94183699999849
+    },
+    {
+      "input": "minimiza bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 124.65968799999973
+    },
+    {
+      "input": "minimiza bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 106.8846790000025
+    },
+    {
+      "input": "minimiza bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 93.26594699999987
+    },
+    {
+      "input": "minimiza notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 9,
+      "cli_turn_ms": 93.0571889999992
+    },
+    {
+      "input": "minimiza notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 9,
+      "cli_turn_ms": 91.96827000000485
+    },
+    {
+      "input": "minimiza fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 89.87641500000609
+    },
+    {
+      "input": "minimiza editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 93.5333660000033
+    },
+    {
+      "input": "minimiza wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 95.19666300000245
+    },
+    {
+      "input": "minimiza esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 94.66794899999513
+    },
+    {
+      "input": "minimiza la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 91.41091499999311
+    },
+    {
+      "input": "minimiza this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 95.69645499999751
+    },
+    {
+      "input": "minimiza current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 101.14115399999719
+    },
+    {
+      "input": "minimizar archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 97.74112500000047
+    },
+    {
+      "input": "minimizar files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 104.84268300000258
+    },
+    {
+      "input": "minimizar mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 99.33241999999882
+    },
+    {
+      "input": "minimizar calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 105.6274390000035
+    },
+    {
+      "input": "minimizar calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 113.77838000000338
+    },
+    {
+      "input": "minimizar la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 113.88250899999548
+    },
+    {
+      "input": "minimizar ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 93.63874999999825
+    },
+    {
+      "input": "minimizar configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 103.89326000000437
+    },
+    {
+      "input": "minimizar settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 114.76762199999939
+    },
+    {
+      "input": "minimizar aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 105.58518700000423
+    },
+    {
+      "input": "minimizar apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 119.43022799999744
+    },
+    {
+      "input": "minimizar programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 102.38940000000002
+    },
+    {
+      "input": "minimizar xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 93.84029099999316
+    },
+    {
+      "input": "minimizar xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 96.74091300000146
+    },
+    {
+      "input": "minimizar studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 90.98532800000248
+    },
+    {
+      "input": "minimizar ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 93.25245300000097
+    },
+    {
+      "input": "minimizar guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 92.47625800000242
+    },
+    {
+      "input": "minimizar help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 111.03141499999765
+    },
+    {
+      "input": "minimizar control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 118.16654500000004
+    },
+    {
+      "input": "minimizar centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 132.56394200000068
+    },
+    {
+      "input": "minimizar sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 100.99784100000397
+    },
+    {
+      "input": "minimizar bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 98.69474700000137
+    },
+    {
+      "input": "minimizar bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 95.98968199999945
+    },
+    {
+      "input": "minimizar bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 89.36826000000292
+    },
+    {
+      "input": "minimizar notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 9,
+      "cli_turn_ms": 91.41431100000045
+    },
+    {
+      "input": "minimizar notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 9,
+      "cli_turn_ms": 95.5434580000001
+    },
+    {
+      "input": "minimizar fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 97.18431899999996
+    },
+    {
+      "input": "minimizar editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 90.11930299999949
+    },
+    {
+      "input": "minimizar wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 101.88733100000536
+    },
+    {
+      "input": "minimizar esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 169.707736999997
+    },
+    {
+      "input": "minimizar la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 97.16184200000134
+    },
+    {
+      "input": "minimizar this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 98.81739399999788
+    },
+    {
+      "input": "minimizar current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 97.32569599999988
+    },
+    {
+      "input": "minimize archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 99.06349300000147
+    },
+    {
+      "input": "minimize files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 100.73785599999974
+    },
+    {
+      "input": "minimize mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 1,
+      "cli_turn_ms": 112.12712499999907
+    },
+    {
+      "input": "minimize calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 105.1124970000019
+    },
+    {
+      "input": "minimize calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 87.4722099999999
+    },
+    {
+      "input": "minimize la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 2,
+      "cli_turn_ms": 91.69655399999465
+    },
+    {
+      "input": "minimize ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 87.35306400000263
+    },
+    {
+      "input": "minimize configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 97.41177700000117
+    },
+    {
+      "input": "minimize settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 3,
+      "cli_turn_ms": 96.44454100000439
+    },
+    {
+      "input": "minimize aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 106.961942000009
+    },
+    {
+      "input": "minimize apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 102.52622500000871
+    },
+    {
+      "input": "minimize programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 4,
+      "cli_turn_ms": 95.63445199999842
+    },
+    {
+      "input": "minimize xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 122.24557900000946
+    },
+    {
+      "input": "minimize xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 112.04633900000772
+    },
+    {
+      "input": "minimize studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 5,
+      "cli_turn_ms": 95.08990300000005
+    },
+    {
+      "input": "minimize ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 101.24499400000786
+    },
+    {
+      "input": "minimize guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 111.50571599999967
+    },
+    {
+      "input": "minimize help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 6,
+      "cli_turn_ms": 111.12183800000639
+    },
+    {
+      "input": "minimize control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 99.30519200001436
+    },
+    {
+      "input": "minimize centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 94.16494900001271
+    },
+    {
+      "input": "minimize sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 7,
+      "cli_turn_ms": 94.45023400000355
+    },
+    {
+      "input": "minimize bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 94.90326500000083
+    },
+    {
+      "input": "minimize bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 94.62561899999855
+    },
+    {
+      "input": "minimize bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 8,
+      "cli_turn_ms": 94.15688599999703
+    },
+    {
+      "input": "minimize notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 9,
+      "cli_turn_ms": 95.85221300000558
+    },
+    {
+      "input": "minimize notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 9,
+      "cli_turn_ms": 93.93211800001154
+    },
+    {
+      "input": "minimize fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 92.63910499999474
+    },
+    {
+      "input": "minimize editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 96.2515310000017
+    },
+    {
+      "input": "minimize wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 10,
+      "cli_turn_ms": 98.14739700000791
+    },
+    {
+      "input": "minimize esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 107.67097500000091
+    },
+    {
+      "input": "minimize la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 108.04521699999168
+    },
+    {
+      "input": "minimize this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 108.52979899999627
+    },
+    {
+      "input": "minimize current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 3,
+      "target": 15,
+      "cli_turn_ms": 103.27823099998932
+    },
+    {
+      "input": "maximiza archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 115.9502530000027
+    },
+    {
+      "input": "maximiza files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 99.06348699999216
+    },
+    {
+      "input": "maximiza mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 112.86956399999326
+    },
+    {
+      "input": "maximiza calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 97.90501500001119
+    },
+    {
+      "input": "maximiza calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 99.0581119999988
+    },
+    {
+      "input": "maximiza la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 107.81385200000659
+    },
+    {
+      "input": "maximiza ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 99.78004699999292
+    },
+    {
+      "input": "maximiza configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 97.8823379999958
+    },
+    {
+      "input": "maximiza settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 111.46927800000412
+    },
+    {
+      "input": "maximiza aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 109.20012399999541
+    },
+    {
+      "input": "maximiza apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 118.76122000000032
+    },
+    {
+      "input": "maximiza programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 121.90979900000093
+    },
+    {
+      "input": "maximiza xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 90.95426000001316
+    },
+    {
+      "input": "maximiza xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 89.55071999999927
+    },
+    {
+      "input": "maximiza studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 87.51610300000175
+    },
+    {
+      "input": "maximiza ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 93.90673299999617
+    },
+    {
+      "input": "maximiza guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 88.70816099998774
+    },
+    {
+      "input": "maximiza help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 93.94152300000133
+    },
+    {
+      "input": "maximiza control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 101.70511600001191
+    },
+    {
+      "input": "maximiza centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 108.91090099999565
+    },
+    {
+      "input": "maximiza sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 91.64508800000476
+    },
+    {
+      "input": "maximiza bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 86.33533799998986
+    },
+    {
+      "input": "maximiza bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 101.90593699998863
+    },
+    {
+      "input": "maximiza bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 85.57580999999482
+    },
+    {
+      "input": "maximiza notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 9,
+      "cli_turn_ms": 113.84171000000788
+    },
+    {
+      "input": "maximiza notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 9,
+      "cli_turn_ms": 95.39089399999648
+    },
+    {
+      "input": "maximiza fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 93.02141400000255
+    },
+    {
+      "input": "maximiza editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 102.95735599999898
+    },
+    {
+      "input": "maximiza wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 100.9056980000023
+    },
+    {
+      "input": "maximiza esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 97.26993599999696
+    },
+    {
+      "input": "maximiza la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 97.50304999999935
+    },
+    {
+      "input": "maximiza this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 95.87833799999498
+    },
+    {
+      "input": "maximiza current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 97.35818100000324
+    },
+    {
+      "input": "maximizar archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 94.60317599998962
+    },
+    {
+      "input": "maximizar files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 101.8784650000016
+    },
+    {
+      "input": "maximizar mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 94.05695300000662
+    },
+    {
+      "input": "maximizar calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 90.75225499999942
+    },
+    {
+      "input": "maximizar calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 97.69184200000018
+    },
+    {
+      "input": "maximizar la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 96.7136499999906
+    },
+    {
+      "input": "maximizar ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 98.01388100000622
+    },
+    {
+      "input": "maximizar configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 108.02825499999744
+    },
+    {
+      "input": "maximizar settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 95.19711300000199
+    },
+    {
+      "input": "maximizar aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 115.43509700000868
+    },
+    {
+      "input": "maximizar apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 118.0660280000011
+    },
+    {
+      "input": "maximizar programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 111.0248419999989
+    },
+    {
+      "input": "maximizar xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 94.1957609999954
+    },
+    {
+      "input": "maximizar xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 95.50912499999686
+    },
+    {
+      "input": "maximizar studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 99.86298900000111
+    },
+    {
+      "input": "maximizar ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 108.99282200000016
+    },
+    {
+      "input": "maximizar guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 101.16392400000768
+    },
+    {
+      "input": "maximizar help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 93.77109400001063
+    },
+    {
+      "input": "maximizar control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 102.7988689999911
+    },
+    {
+      "input": "maximizar centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 93.56296300000395
+    },
+    {
+      "input": "maximizar sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 90.07865399999719
+    },
+    {
+      "input": "maximizar bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 86.89216799999122
+    },
+    {
+      "input": "maximizar bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 91.29551999999967
+    },
+    {
+      "input": "maximizar bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 92.80748499999754
+    },
+    {
+      "input": "maximizar notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 9,
+      "cli_turn_ms": 94.76433399999223
+    },
+    {
+      "input": "maximizar notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 9,
+      "cli_turn_ms": 93.26262300000235
+    },
+    {
+      "input": "maximizar fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 96.40508799999952
+    },
+    {
+      "input": "maximizar editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 105.74945300001127
+    },
+    {
+      "input": "maximizar wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 119.02157100000477
+    },
+    {
+      "input": "maximizar esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 109.66856600000756
+    },
+    {
+      "input": "maximizar la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 110.72789000000921
+    },
+    {
+      "input": "maximizar this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 104.90990899999451
+    },
+    {
+      "input": "maximizar current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 95.09781999999541
+    },
+    {
+      "input": "maximize archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 105.92825399999856
+    },
+    {
+      "input": "maximize files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 110.79809500000556
+    },
+    {
+      "input": "maximize mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 1,
+      "cli_turn_ms": 88.8014739999926
+    },
+    {
+      "input": "maximize calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 92.97317399999883
+    },
+    {
+      "input": "maximize calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 109.89433499998995
+    },
+    {
+      "input": "maximize la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 2,
+      "cli_turn_ms": 95.20170999999391
+    },
+    {
+      "input": "maximize ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 92.74376700000721
+    },
+    {
+      "input": "maximize configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 100.25723200000357
+    },
+    {
+      "input": "maximize settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 3,
+      "cli_turn_ms": 100.43146799999522
+    },
+    {
+      "input": "maximize aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 101.20940799999516
+    },
+    {
+      "input": "maximize apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 104.40328100000625
+    },
+    {
+      "input": "maximize programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 4,
+      "cli_turn_ms": 100.68491999999969
+    },
+    {
+      "input": "maximize xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 97.79104299999017
+    },
+    {
+      "input": "maximize xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 88.71529300000111
+    },
+    {
+      "input": "maximize studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 5,
+      "cli_turn_ms": 100.80468300000939
+    },
+    {
+      "input": "maximize ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 111.56427400000393
+    },
+    {
+      "input": "maximize guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 110.02505100000417
+    },
+    {
+      "input": "maximize help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 6,
+      "cli_turn_ms": 92.01712200000475
+    },
+    {
+      "input": "maximize control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 93.39516700000968
+    },
+    {
+      "input": "maximize centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 98.13440799999807
+    },
+    {
+      "input": "maximize sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 7,
+      "cli_turn_ms": 96.91893600000185
+    },
+    {
+      "input": "maximize bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 129.25365699999384
+    },
+    {
+      "input": "maximize bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 108.53713500000595
+    },
+    {
+      "input": "maximize bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 8,
+      "cli_turn_ms": 93.49363700000686
+    },
+    {
+      "input": "maximize notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 9,
+      "cli_turn_ms": 94.89628300000913
+    },
+    {
+      "input": "maximize notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 9,
+      "cli_turn_ms": 100.97194600000512
+    },
+    {
+      "input": "maximize fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 115.9849009999889
+    },
+    {
+      "input": "maximize editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 114.78048800000397
+    },
+    {
+      "input": "maximize wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 10,
+      "cli_turn_ms": 121.70655500001158
+    },
+    {
+      "input": "maximize esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 105.18871499999659
+    },
+    {
+      "input": "maximize la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 115.44921500000055
+    },
+    {
+      "input": "maximize this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 109.88292299999739
+    },
+    {
+      "input": "maximize current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 4,
+      "target": 15,
+      "cli_turn_ms": 112.4860689999914
+    },
+    {
+      "input": "restaura archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 89.45978400000604
+    },
+    {
+      "input": "restaura files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 101.1262410000054
+    },
+    {
+      "input": "restaura mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 101.52803899999708
+    },
+    {
+      "input": "restaura calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 106.07445099999313
+    },
+    {
+      "input": "restaura calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 92.88282900000922
+    },
+    {
+      "input": "restaura la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 118.15138700000534
+    },
+    {
+      "input": "restaura ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 97.59322100000281
+    },
+    {
+      "input": "restaura configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 101.99478799999633
+    },
+    {
+      "input": "restaura settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 85.4517909999995
+    },
+    {
+      "input": "restaura aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 99.28450999999768
+    },
+    {
+      "input": "restaura apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 91.22883899998851
+    },
+    {
+      "input": "restaura programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 118.38966499999515
+    },
+    {
+      "input": "restaura xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 107.85290800000075
+    },
+    {
+      "input": "restaura xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 107.8433500000101
+    },
+    {
+      "input": "restaura studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 116.23655399998825
+    },
+    {
+      "input": "restaura ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 88.11253100000613
+    },
+    {
+      "input": "restaura guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 88.00822800000606
+    },
+    {
+      "input": "restaura help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 85.84800900000846
+    },
+    {
+      "input": "restaura control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 89.54630600000382
+    },
+    {
+      "input": "restaura centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 113.16373800000292
+    },
+    {
+      "input": "restaura sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 93.40595400000166
+    },
+    {
+      "input": "restaura bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 99.22213900000497
+    },
+    {
+      "input": "restaura bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 95.52827600001183
+    },
+    {
+      "input": "restaura bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 94.97149500000523
+    },
+    {
+      "input": "restaura notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 9,
+      "cli_turn_ms": 114.68551700000535
+    },
+    {
+      "input": "restaura notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 9,
+      "cli_turn_ms": 137.08333100000164
+    },
+    {
+      "input": "restaura fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 134.1596680000075
+    },
+    {
+      "input": "restaura editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 96.63682499999413
+    },
+    {
+      "input": "restaura wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 118.56928399999742
+    },
+    {
+      "input": "restaura esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 132.2677740000072
+    },
+    {
+      "input": "restaura la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 95.8085970000102
+    },
+    {
+      "input": "restaura this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 91.96244599999045
+    },
+    {
+      "input": "restaura current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 95.37371099999291
+    },
+    {
+      "input": "restaurar archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 90.43369099999836
+    },
+    {
+      "input": "restaurar files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 91.5861450000084
+    },
+    {
+      "input": "restaurar mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 102.09665799999493
+    },
+    {
+      "input": "restaurar calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 93.17302099999506
+    },
+    {
+      "input": "restaurar calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 89.4745649999968
+    },
+    {
+      "input": "restaurar la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 92.66039599999203
+    },
+    {
+      "input": "restaurar ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 93.54044599999906
+    },
+    {
+      "input": "restaurar configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 98.37401699999464
+    },
+    {
+      "input": "restaurar settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 95.39816499999142
+    },
+    {
+      "input": "restaurar aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 92.8762790000037
+    },
+    {
+      "input": "restaurar apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 115.69507400000293
+    },
+    {
+      "input": "restaurar programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 96.49668100000417
+    },
+    {
+      "input": "restaurar xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 98.70460300000559
+    },
+    {
+      "input": "restaurar xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 99.7112930000003
+    },
+    {
+      "input": "restaurar studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 92.4623750000028
+    },
+    {
+      "input": "restaurar ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 98.18057700000645
+    },
+    {
+      "input": "restaurar guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 99.87308699999994
+    },
+    {
+      "input": "restaurar help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 98.86063400001149
+    },
+    {
+      "input": "restaurar control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 96.58659799999441
+    },
+    {
+      "input": "restaurar centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 99.8018560000055
+    },
+    {
+      "input": "restaurar sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 98.55648700000893
+    },
+    {
+      "input": "restaurar bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 98.45558899999014
+    },
+    {
+      "input": "restaurar bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 91.8422120000032
+    },
+    {
+      "input": "restaurar bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 92.0887470000016
+    },
+    {
+      "input": "restaurar notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 9,
+      "cli_turn_ms": 93.69774199998938
+    },
+    {
+      "input": "restaurar notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 9,
+      "cli_turn_ms": 90.30580600000394
+    },
+    {
+      "input": "restaurar fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 93.63165499999013
+    },
+    {
+      "input": "restaurar editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 89.09274199999345
+    },
+    {
+      "input": "restaurar wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 94.08824500000628
+    },
+    {
+      "input": "restaurar esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 101.11522700000205
+    },
+    {
+      "input": "restaurar la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 89.59823399999004
+    },
+    {
+      "input": "restaurar this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 86.69122999999672
+    },
+    {
+      "input": "restaurar current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 101.59231200000795
+    },
+    {
+      "input": "restore archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 96.48585099999036
+    },
+    {
+      "input": "restore files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 104.12333300001046
+    },
+    {
+      "input": "restore mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 1,
+      "cli_turn_ms": 104.24442000000272
+    },
+    {
+      "input": "restore calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 89.76598999999987
+    },
+    {
+      "input": "restore calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 92.58704499999294
+    },
+    {
+      "input": "restore la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 2,
+      "cli_turn_ms": 90.22695000001113
+    },
+    {
+      "input": "restore ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 88.0630339999916
+    },
+    {
+      "input": "restore configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 93.52480600000126
+    },
+    {
+      "input": "restore settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 3,
+      "cli_turn_ms": 94.2110640000028
+    },
+    {
+      "input": "restore aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 90.97112100000959
+    },
+    {
+      "input": "restore apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 92.47941900001024
+    },
+    {
+      "input": "restore programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 4,
+      "cli_turn_ms": 90.73939900001278
+    },
+    {
+      "input": "restore xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 117.20664899999974
+    },
+    {
+      "input": "restore xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 111.50750700000208
+    },
+    {
+      "input": "restore studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 5,
+      "cli_turn_ms": 101.19435000000522
+    },
+    {
+      "input": "restore ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 89.32780500000808
+    },
+    {
+      "input": "restore guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 107.0344369999948
+    },
+    {
+      "input": "restore help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 6,
+      "cli_turn_ms": 87.87580700000399
+    },
+    {
+      "input": "restore control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 106.74203199999465
+    },
+    {
+      "input": "restore centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 99.87657999999647
+    },
+    {
+      "input": "restore sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 7,
+      "cli_turn_ms": 93.63636699999915
+    },
+    {
+      "input": "restore bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 93.73717200000829
+    },
+    {
+      "input": "restore bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 107.17428999999538
+    },
+    {
+      "input": "restore bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 8,
+      "cli_turn_ms": 100.26774999999907
+    },
+    {
+      "input": "restore notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 9,
+      "cli_turn_ms": 104.33236800000304
+    },
+    {
+      "input": "restore notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 9,
+      "cli_turn_ms": 127.47493199999735
+    },
+    {
+      "input": "restore fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 92.6632580000005
+    },
+    {
+      "input": "restore editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 92.9521539999987
+    },
+    {
+      "input": "restore wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 10,
+      "cli_turn_ms": 95.36446799999976
+    },
+    {
+      "input": "restore esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 111.70490900000732
+    },
+    {
+      "input": "restore la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 104.06925200000114
+    },
+    {
+      "input": "restore this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 100.30159799999092
+    },
+    {
+      "input": "restore current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 5,
+      "target": 15,
+      "cli_turn_ms": 101.40366299999005
+    },
+    {
+      "input": "cierra archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 101.92328799999086
+    },
+    {
+      "input": "cierra files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 88.00200800001039
+    },
+    {
+      "input": "cierra mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 94.49180799999158
+    },
+    {
+      "input": "cierra calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 112.10719000000972
+    },
+    {
+      "input": "cierra calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 97.00350400000752
+    },
+    {
+      "input": "cierra la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 121.20298899999761
+    },
+    {
+      "input": "cierra ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 102.94635100000596
+    },
+    {
+      "input": "cierra configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 107.76693199999863
+    },
+    {
+      "input": "cierra settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 129.65758199999982
+    },
+    {
+      "input": "cierra aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 111.47184199999901
+    },
+    {
+      "input": "cierra apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 92.40758999998798
+    },
+    {
+      "input": "cierra programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 94.21143500000471
+    },
+    {
+      "input": "cierra xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 95.4285830000008
+    },
+    {
+      "input": "cierra xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 91.65677899999719
+    },
+    {
+      "input": "cierra studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 103.63455200000317
+    },
+    {
+      "input": "cierra ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 95.97236500000872
+    },
+    {
+      "input": "cierra guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 98.72421400000167
+    },
+    {
+      "input": "cierra help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 93.84696199999598
+    },
+    {
+      "input": "cierra control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 97.02480400000059
+    },
+    {
+      "input": "cierra centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 91.114293000006
+    },
+    {
+      "input": "cierra sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 96.15987499999756
+    },
+    {
+      "input": "cierra bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 94.44239500000549
+    },
+    {
+      "input": "cierra bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 94.06934000000183
+    },
+    {
+      "input": "cierra bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 91.26396599999862
+    },
+    {
+      "input": "cierra notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 9,
+      "cli_turn_ms": 101.2643839999946
+    },
+    {
+      "input": "cierra notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 9,
+      "cli_turn_ms": 104.71764699999767
+    },
+    {
+      "input": "cierra fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 91.283362999995
+    },
+    {
+      "input": "cierra editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 116.15756700000202
+    },
+    {
+      "input": "cierra wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 101.67300399999658
+    },
+    {
+      "input": "cierra esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 121.81306400000176
+    },
+    {
+      "input": "cierra la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 117.7309430000023
+    },
+    {
+      "input": "cierra this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 107.31870299999719
+    },
+    {
+      "input": "cierra current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 99.57271699998819
+    },
+    {
+      "input": "cerrar archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 96.5742739999987
+    },
+    {
+      "input": "cerrar files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 94.30151399999158
+    },
+    {
+      "input": "cerrar mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 91.61589100000856
+    },
+    {
+      "input": "cerrar calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 89.04976899999019
+    },
+    {
+      "input": "cerrar calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 88.42594699999609
+    },
+    {
+      "input": "cerrar la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 88.53329700000177
+    },
+    {
+      "input": "cerrar ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 96.34448200000043
+    },
+    {
+      "input": "cerrar configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 88.07133100001374
+    },
+    {
+      "input": "cerrar settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 99.15696500000195
+    },
+    {
+      "input": "cerrar aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 104.54194900000584
+    },
+    {
+      "input": "cerrar apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 84.97204999999667
+    },
+    {
+      "input": "cerrar programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 85.35666700000002
+    },
+    {
+      "input": "cerrar xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 95.85273600000073
+    },
+    {
+      "input": "cerrar xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 85.46544499999436
+    },
+    {
+      "input": "cerrar studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 84.42821800000092
+    },
+    {
+      "input": "cerrar ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 84.18315599999914
+    },
+    {
+      "input": "cerrar guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 93.95493900000292
+    },
+    {
+      "input": "cerrar help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 89.32607300000382
+    },
+    {
+      "input": "cerrar control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 101.92113099999551
+    },
+    {
+      "input": "cerrar centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 99.81305799999973
+    },
+    {
+      "input": "cerrar sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 102.24755900001037
+    },
+    {
+      "input": "cerrar bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 99.3763340000005
+    },
+    {
+      "input": "cerrar bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 119.99388900000486
+    },
+    {
+      "input": "cerrar bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 95.57088400000066
+    },
+    {
+      "input": "cerrar notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 9,
+      "cli_turn_ms": 96.76972399999795
+    },
+    {
+      "input": "cerrar notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 9,
+      "cli_turn_ms": 99.28326900000684
+    },
+    {
+      "input": "cerrar fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 93.87970900000073
+    },
+    {
+      "input": "cerrar editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 108.05499399999098
+    },
+    {
+      "input": "cerrar wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 89.91638700000476
+    },
+    {
+      "input": "cerrar esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 112.06914300000062
+    },
+    {
+      "input": "cerrar la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 92.05822999999509
+    },
+    {
+      "input": "cerrar this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 106.27712600000086
+    },
+    {
+      "input": "cerrar current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 90.57175899999856
+    },
+    {
+      "input": "close archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 100.22974300000351
+    },
+    {
+      "input": "close files",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 113.23686000000453
+    },
+    {
+      "input": "close mis archivos",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 1,
+      "cli_turn_ms": 110.7961629999918
+    },
+    {
+      "input": "close calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 99.56131999999343
+    },
+    {
+      "input": "close calculator",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 126.35424099999364
+    },
+    {
+      "input": "close la calculadora",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 2,
+      "cli_turn_ms": 99.51149699999951
+    },
+    {
+      "input": "close ajustes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 98.45643599999312
+    },
+    {
+      "input": "close configuración",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 99.68705799999589
+    },
+    {
+      "input": "close settings",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 3,
+      "cli_turn_ms": 96.28320599999279
+    },
+    {
+      "input": "close aplicaciones",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 102.73321900000155
+    },
+    {
+      "input": "close apps",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 92.11749999999302
+    },
+    {
+      "input": "close programas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 4,
+      "cli_turn_ms": 94.7099959999905
+    },
+    {
+      "input": "close xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 100.52725400000054
+    },
+    {
+      "input": "close xi studio",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 97.51661199999216
+    },
+    {
+      "input": "close studio xi",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 5,
+      "cli_turn_ms": 92.69030800000473
+    },
+    {
+      "input": "close ayuda",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 94.62965500001155
+    },
+    {
+      "input": "close guía rápida",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 90.70023400000355
+    },
+    {
+      "input": "close help",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 6,
+      "cli_turn_ms": 101.90627599999425
+    },
+    {
+      "input": "close control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 111.46856900000421
+    },
+    {
+      "input": "close centro de control",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 95.5848110000079
+    },
+    {
+      "input": "close sistema",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 7,
+      "cli_turn_ms": 89.27672999999777
+    },
+    {
+      "input": "close bbyq",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 114.68910400000459
+    },
+    {
+      "input": "close bby q",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 122.95002400000521
+    },
+    {
+      "input": "close bby",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 8,
+      "cli_turn_ms": 109.30046700000821
+    },
+    {
+      "input": "close notas",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 9,
+      "cli_turn_ms": 105.07343799999217
+    },
+    {
+      "input": "close notes",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 9,
+      "cli_turn_ms": 97.80581999999413
+    },
+    {
+      "input": "close fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 107.15181899999152
+    },
+    {
+      "input": "close editor de fondo",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 92.41193499999645
+    },
+    {
+      "input": "close wallpaper",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 10,
+      "cli_turn_ms": 108.81848099999479
+    },
+    {
+      "input": "close esta ventana",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 107.13228900000104
+    },
+    {
+      "input": "close la ventana actual",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 101.11460599998827
+    },
+    {
+      "input": "close this window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 116.4504309999902
+    },
+    {
+      "input": "close current window",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 6,
+      "target": 15,
+      "cli_turn_ms": 116.52459400000225
+    },
+    {
+      "input": "ordena las ventanas",
+      "language": 1,
+      "output": "Voy a intentarlo.",
+      "op": 7,
+      "target": 0,
+      "cli_turn_ms": 136.78399500000523
+    },
+    {
+      "input": "organiza las ventanas",
+      "language": 1,
+      "output": "Voy a intentarlo.",
+      "op": 7,
+      "target": 0,
+      "cli_turn_ms": 98.79729299999599
+    },
+    {
+      "input": "arrange windows",
+      "language": 1,
+      "output": "Voy a intentarlo.",
+      "op": 7,
+      "target": 0,
+      "cli_turn_ms": 97.50229999999283
+    },
+    {
+      "input": "muestra el escritorio",
+      "language": 1,
+      "output": "Voy a intentarlo.",
+      "op": 8,
+      "target": 0,
+      "cli_turn_ms": 100.88712299999315
+    },
+    {
+      "input": "mostrar escritorio",
+      "language": 1,
+      "output": "Voy a intentarlo.",
+      "op": 8,
+      "target": 0,
+      "cli_turn_ms": 99.45706599998812
+    },
+    {
+      "input": "show desktop",
+      "language": 1,
+      "output": "Voy a intentarlo.",
+      "op": 8,
+      "target": 0,
+      "cli_turn_ms": 116.355853999994
+    },
+    {
+      "input": "cambia a principal",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 13,
+      "cli_turn_ms": 161.47760800000106
+    },
+    {
+      "input": "cambia a main",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 13,
+      "cli_turn_ms": 123.93852699999115
+    },
+    {
+      "input": "cambia a enfoque",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 14,
+      "cli_turn_ms": 109.52456799999345
+    },
+    {
+      "input": "cambia a focus",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 14,
+      "cli_turn_ms": 106.44353899999987
+    },
+    {
+      "input": "switch to principal",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 13,
+      "cli_turn_ms": 115.24922399999923
+    },
+    {
+      "input": "switch to main",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 13,
+      "cli_turn_ms": 103.79886399999668
+    },
+    {
+      "input": "switch to enfoque",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 14,
+      "cli_turn_ms": 97.46104999999807
+    },
+    {
+      "input": "switch to focus",
+      "language": 2,
+      "output": "I will try that.",
+      "op": 9,
+      "target": 14,
+      "cli_turn_ms": 109.93196899999748
+    },
+    {
+      "input": "no abras archivos",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 101.01021199999377
+    },
+    {
+      "input": "no abrir calculadora",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 105.4073650000064
+    },
+    {
+      "input": "qué significa abrir archivos",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 122.22306199999002
+    },
+    {
+      "input": "no open files",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 112.6134779999993
+    },
+    {
+      "input": "what is open files",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 124.20482500000799
+    },
+    {
+      "input": "abre archivos y calculadora",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 114.93287799999234
+    },
+    {
+      "input": "abre archivos si",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 110.18859499999962
+    },
+    {
+      "input": "open files if",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 109.74458099999174
+    },
+    {
+      "input": "cierra desconocido",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 107.10857699999178
+    },
+    {
+      "input": "borra archivos",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 112.01591699999699
+    },
+    {
+      "input": "delete files",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 102.84378899999138
+    },
+    {
+      "input": "ejecuta set r0 9",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 105.0129190000007
+    },
+    {
+      "input": "close files and notes",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 106.47483999999531
+    },
+    {
+      "input": "abre enfoque",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 108.68501100000867
+    },
+    {
+      "input": "switch to files",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 106.99608199999784
+    },
+    {
+      "input": "muestra principal",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 108.62283300000126
+    },
+    {
+      "input": "abre archivos; cierra notas",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 93.39238400000613
+    },
+    {
+      "input": "\"abre archivos\"",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 95.5769350000046
+    },
+    {
+      "input": "¿qué significa calculadora?",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 104.19204200000968
+    },
+    {
+      "input": "cierra archivos",
+      "language": 1,
+      "output": "Ahora no encuentro esa ventana.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 93.51414800000202
+    },
+    {
+      "input": "focus files",
+      "language": 2,
+      "output": "I need a more precise window or command.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 91.25082600000314
+    },
+    {
+      "input": "hola",
+      "language": 1,
+      "output": "Hola. Soy BBY Q.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 97.49547300000268
+    },
+    {
+      "input": "aprende que interfazprueba es clasea",
+      "language": 1,
+      "output": "Aprendí esa afirmación del diálogo.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 103.54640600000857
+    },
+    {
+      "input": "Oye, ¿qué requiere interfazprueba?",
+      "language": 1,
+      "output": "Según lo aprendido: Interfazprueba requiere agua.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 117.9377739999909
+    },
+    {
+      "input": "qué requiere interfazprueba si",
+      "language": 1,
+      "output": "No tengo información suficiente para responder.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 117.89887400000589
+    },
+    {
+      "input": "qué requiere interfazprueba",
+      "language": 1,
+      "output": "Según lo aprendido: Interfazprueba requiere agua.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 118.33519800000067
+    },
+    {
+      "input": "abre archivos",
+      "language": 1,
+      "output": "Voy a intentarlo.",
+      "op": 1,
+      "target": 1,
+      "cli_turn_ms": 110.30891799999517
+    },
+    {
+      "input": "por qué",
+      "language": 1,
+      "output": "Necesito una pregunta anterior con evidencia para explicarla.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 100.26984300000186
+    },
+    {
+      "input": "qué requiere interfazprueba",
+      "language": 1,
+      "output": "Según lo aprendido: Interfazprueba requiere agua.",
+      "op": 0,
+      "target": 0,
+      "cli_turn_ms": 146.8822119999968
+    }
+  ],
+  "tested_bytecode_sha256": "68ab6b622df643e65365d9b167d713b011144c2a4ae715552dc6f7321edda752",
+  "tested_seed_sha256": "7c8373dba3525bfed35a8da7fc0980f62ae86c9ff7aaf7f82ca24238c68237a3"
+}

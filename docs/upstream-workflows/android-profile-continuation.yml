@@ -1,0 +1,139 @@
+name: Verified Android profile continuation and observation transport
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/android-profile-continuation.yml'
+      - 'tools/guest_profile_resume.cpp'
+      - 'tools/android_profile_resume.mjs'
+      - 'tools/android_pin_checkpoint.mjs'
+      - 'tests/android_profile_resume.test.mjs'
+      - 'tests/android_pin_checkpoint.test.mjs'
+      - 'tools/android_live_property.mjs'
+      - 'tools/android_kernel_observer.mjs'
+      - 'tools/android_boot_property.mjs'
+      - 'tests/android_live_property.test.mjs'
+      - 'tests/android_boot_property.test.mjs'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-fixed-profile-resume:
+    if: github.event.pull_request.head.ref == 'fix/android-c25-lane-transfer-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - name: Verify host-only transport scope
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/profile-media evidence/profile-boot build
+          git diff --exit-code 1d4201daec21578be4d4cc7b325b5e4bbea0eee0 HEAD -- src third_party scripts patches
+          node --test tests/android_profile_resume.test.mjs tests/android_pin_checkpoint.test.mjs tests/rvg_memory_lines.test.mjs tests/android_boot_property.test.mjs tests/audit_gki_rvg.test.mjs tests/android_live_property.test.mjs > evidence/profile-media/host-tests.tap
+          node --check tools/android_profile_resume.mjs
+          git rev-parse HEAD > evidence/profile-media/source-commit.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c20-userdata-media
+          run-id: 41099915731
+          github-token: ${{ github.token }}
+          path: input-media
+      - name: Recover the exact official userdata and measured new media identity
+        run: |
+          set -euo pipefail
+          mkdir new-userdata
+          gzip -dc input-media/userdata.img.gz > new-userdata/userdata.img
+          echo '860a526936e3c6ddf414ee8fbc84d20d718a363c2b8a5257aeb21527bdf0fba2  new-userdata/userdata.img' | sha256sum --check
+          cp input-media/userdata-acquisition.json new-userdata/
+          cp input-media/userdata-acquisition.json input-media/userdata.img.gz evidence/profile-media/
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Add writable partitions and prove all original partition bytes remain identical
+        run: |
+          set -euo pipefail
+          export ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';import {extendAndroidUserdataDisk} from './tools/android_partition_disk.mjs';
+          const input=JSON.parse(readFileSync('new-userdata/userdata-acquisition.json'));
+          const r=await extendAndroidUserdataDisk(process.env.ORIGINAL,'new-userdata/userdata.img','android-c20.raw',{expectedUserdataSha256:input.partitions[0].sha256});
+          if(r.disk_sha256!=='0e829fad2cd1cfef8ea707044270d97559127c6cd48bdf268e7eb5cf1b573ce6'||r.disk_bytes!==17330864128)throw Error('New media differs from measured C20 identity');writeFileSync('evidence/profile-media/media.json',JSON.stringify(r,null,2)+'\n');console.log(JSON.stringify(r));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-profile-resume-media
+          path: evidence/profile-media/
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c22-c21-continuation
+          run-id: 41112055019
+          github-token: ${{ github.token }}
+          path: input-profile
+      - name: Compile generic continuation and verify the exact historical C22 contract
+        run: |
+          set -euo pipefail
+          tar -xzf input-profile/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          node --input-type=module <<'NODE'
+          import {writeFileSync} from 'node:fs';
+          writeFileSync('input-contract.json',JSON.stringify({schema:'reverse-profile-resume-contract-v1',source_commit:'56e0ff254e2f144917a32da7c7dcfb34f40a0cd9',checkpoint_sha256:'2f5fb515e0bfdaeddd6359ca697bb7d76b95b5ea9b013f0feb92ebef5bc7bb33',report_sha256:'1819ceff169f873d3b185d1f2e5d6c60903419551e135383f8f6d673387ff923',result_sha256:'0621282d52037cc3950f9c73015c835b01d1905486bd07f92d21e8a73d911e4a',process_sha256:'5ea69d43d0c7600f16c07ab919882a1c9814589085a842b5a04faac3d3be4689'},null,2)+'\n');
+          NODE
+          node tools/android_profile_resume.mjs preflight input-contract.json input-profile > evidence/profile-media/input-preflight.json
+          node tools/android_kernel_observer.mjs input-profile/current.rvg 2f5fb515e0bfdaeddd6359ca697bb7d76b95b5ea9b013f0feb92ebef5bc7bb33 1073741824 --live-properties > evidence/profile-media/source-live-properties.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';const r=JSON.parse(readFileSync('evidence/profile-media/source-live-properties.json'));
+          assert.equal(r.input_unchanged,true);assert.ok(r.live_boot_property.vma_count>0);assert.ok(r.live_boot_property.property_mappings>0);assert.equal(r.live_boot_property.read_error,undefined);assert.equal(r.live_boot_property.boot_completed_property_live,false);assert.equal(r.live_boot_property.android_framework_verified,false);
+          NODE
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/profile-native
+          tar -czf evidence/profile-media/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          sha256sum build/profile-native evidence/profile-media/tested-source.tar.gz > evidence/profile-media/build-sha256.txt
+      - name: Resume 250000 genuine instructions with independent source and output checks
+        continue-on-error: true
+        run: |
+          node tools/android_profile_resume.mjs run input-contract.json input-profile build/profile-native android-c20.raw evidence/profile-boot/native 60000 250000 1 > evidence/profile-boot/supervised-stdout.json
+      - name: Pin the real published generation without changing its bytes
+        if: always()
+        continue-on-error: true
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';import {pinCheckpoint} from './tools/android_pin_checkpoint.mjs';
+          const r=pinCheckpoint('evidence/profile-boot/native/journal','evidence/profile-boot/observed-prefix',{inputSha:'2f5fb515e0bfdaeddd6359ca697bb7d76b95b5ea9b013f0feb92ebef5bc7bb33',experiment:'profile-budget-continuation',sourceCommit:readFileSync('evidence/profile-media/source-commit.txt','utf8').trim(),minimumInstructions:4485354075});
+          writeFileSync('evidence/profile-boot/pin-result.json',JSON.stringify(r,null,2)+'\n');assert.equal(r.status,'pinned');console.log(JSON.stringify(r));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-profile-resume-contract
+          path: |
+            evidence/profile-boot/
+            evidence/profile-media/
+            !evidence/profile-boot/native/journal/**
+            !evidence/profile-boot/native/current.rvg
+            !evidence/profile-boot/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+      - name: Require the actual bounded continuation and preserved observation
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/profile-boot/'+p));
+          assert.equal(read('native/process-outcome.json').status,'process_completed');
+          const r=read('native/result.json');assert.equal(r.execution_progress_accepted,true);assert.equal(r.advanced_instructions,250000);assert.equal(r.guest_state_modified_before_resume,false);assert.equal(r.android_framework_verified,false);
+          assert.equal(read('observed-prefix/observation.json').checkpoint_sha256,r.checkpoint_sha256);assert.equal(read('observed-prefix/observation.json').original_snapshot_modified,false);
+          console.log('Actual C22 state resumed and observed through the generic transport; complete Android boot remains a separate runtime result.');
+          NODE

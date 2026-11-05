@@ -1,0 +1,27 @@
+name: X MARKET Workbench user interface
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'reverse-os-android/app/src/main/assets/workbench/**'
+      - 'reverse-os-android/tests/x-market-ui-test.js'
+      - '.github/workflows/x-market-workbench-ui.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  interface:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate original embedded scripts
+        run: |
+          node --check reverse-os-android/app/src/main/assets/workbench/desktop.js
+          node --check reverse-os-android/app/src/main/assets/workbench/control-center.js
+          node --check reverse-os-android/app/src/main/assets/workbench/x-market.js
+          node --check reverse-os-android/tests/x-market-ui-test.js
+      - name: Verify app registration, market empty states and Laplace interactions
+        run: node reverse-os-android/tests/x-market-ui-test.js

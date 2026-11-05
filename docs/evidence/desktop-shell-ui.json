@@ -1,0 +1,45 @@
+{
+  "checks": 99,
+  "layouts": [
+    {
+      "width": 640,
+      "height": 360,
+      "windows": 2,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 740,
+      "height": 360,
+      "windows": 2,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "windows": 2,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 915,
+      "height": 412,
+      "windows": 2,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "windows": 2,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "windows": 2,
+      "horizontal_overflow": false
+    }
+  ],
+  "actual_internal_program_runs": 1,
+  "actual_isolated_experiments": 2,
+  "page_errors": [],
+  "scope": "PC desktop in six landscape Chromium viewports; transport fixtures call the real XI/RXE runtime. APK orientation checked separately. No Android device/emulator was launched."
+}

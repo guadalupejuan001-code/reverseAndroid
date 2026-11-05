@@ -1,0 +1,143 @@
+{
+  "checks": 77,
+  "native_backed_actions": 17,
+  "history": [
+    {
+      "role": "user",
+      "text": "abre archivos"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "maximiza archivos"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "restaura archivos"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "minimiza archivos"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "muestra archivos"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "cierra archivos"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "abre calculadora"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "ordena las ventanas"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "open files"
+    },
+    {
+      "role": "assistant",
+      "text": "Action completed."
+    },
+    {
+      "role": "user",
+      "text": "close files"
+    },
+    {
+      "role": "assistant",
+      "text": "Action completed."
+    },
+    {
+      "role": "user",
+      "text": "abre ajustes"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "abre aplicaciones"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "abre xi studio"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "abre ayuda"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "abre centro de control"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "abre fondo"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    },
+    {
+      "role": "user",
+      "text": "abre notas"
+    },
+    {
+      "role": "assistant",
+      "text": "Acción completada."
+    }
+  ],
+  "scope": "Shipped JS window functions and real XI via CLI; DOM drawing/Android storage are fixtures"
+}

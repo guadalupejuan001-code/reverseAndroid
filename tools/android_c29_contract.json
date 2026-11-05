@@ -1,0 +1,9 @@
+{
+  "schema": "reverse-c27-profile-resume-contract-v1",
+  "root_checkpoint_sha256": "9db40b80214344583f855ccc777eb74963ece41ca5a1afab8de0737507f0e939",
+  "source_commit": "8dcb7159d22497b46b736227f4447df36c40bb23",
+  "checkpoint_sha256": "70beb3330cb568068cab8c16df8082f98bab42ca1c106aa70fe8cafdbc76ba9b",
+  "report_sha256": "f2d2076e9d923b0abe2c29970556031839593044d4351d9f07d1393816bd28a7",
+  "result_sha256": "fb0242138498c490e363e755b4675a4c9bde0e561dfc249efa11476c732b6b02",
+  "process_sha256": "5c5d4afa2c129da446cd3aaf7bcddabf778b4cbc9ca3821b91dec70a73661092"
+}

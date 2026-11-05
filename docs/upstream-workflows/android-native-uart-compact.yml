@@ -1,0 +1,79 @@
+name: Original modeled UART input with unchanged compact CPU and codecs
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-native-uart-compact.yml
+      - CMakeLists.txt
+      - tools/guest_console_input.hpp
+      - tools/guest_c27_profile_resume.cpp
+      - tests/guest_console_input_test.cpp
+      - docs/ANDROID_NATIVE_UART_COMPACT.md
+permissions:
+  contents: read
+jobs:
+  native:
+    if: github.event.pull_request.head.ref == 'feat/android-native-uart-compact' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - name: Verify unchanged CPU, original codecs and exact transport additions
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence/native-uart
+          git diff --exit-code 34eb37e06f8a484bd739aad74fe713cbe42696ac HEAD -- src scripts patches third_party
+          git diff --exit-code 34eb37e06f8a484bd739aad74fe713cbe42696ac HEAD -- tools ':(exclude)tools/guest_console_input.hpp' ':(exclude)tools/guest_c27_profile_resume.cpp'
+          python3 - <<'PY'
+          import pathlib,subprocess
+          path='tools/guest_c27_profile_resume.cpp'
+          old=subprocess.check_output(['git','show','34eb37e06f8a484bd739aad74fe713cbe42696ac:'+path]).decode()
+          new=pathlib.Path(path).read_text()
+          additions=[
+            '#include "guest_console_input.hpp"\n',
+            '  const auto console_input=guest_console_input_file(std::getenv("REVERSE_PC_UART_INPUT_FILE"));\n',
+            '  // Only after the original state has round-tripped and every source pin passed.\n',
+            '  // Empty or absent input preserves the original execution and provenance bytes.\n',
+            '  const auto uart_provenance=guest_console_input_event(guest,console_input);\n',
+          ]
+          for addition in additions:
+            assert new.count(addition)==1
+            new=new.replace(addition,'',1)
+          assert new.count('"+uart_provenance+"')==1
+          new=new.replace('"+uart_provenance+"','',1)
+          assert new==old,'Changes extend beyond the bounded input adapter and receipt'
+          PY
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+      - name: Verify UART bounds, original decoder, empty input and rollback
+        run: |
+          set -euo pipefail
+          FLAGS='-std=c++17 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -DREVERSE_PC_NUMERIC_BYTE_STORES=1 -DREVERSE_PC_COMPACT_INDEX_LOOKASIDE=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools'
+          g++ $FLAGS -O2 tests/guest_console_input_test.cpp build/softfloat/libreverse_softfloat.a -o build/uart-test
+          build/uart-test build/uart-fixtures > evidence/native-uart/uart.json
+          g++ $FLAGS -O1 -fsanitize=undefined -fno-sanitize-recover=all tests/guest_console_input_test.cpp build/softfloat/libreverse_softfloat.a -o build/uart-ubsan
+          build/uart-ubsan build/uart-ubsan-fixtures > evidence/native-uart/ubsan.json
+          g++ $FLAGS -O2 tests/guest_checkpoint_view_test.cpp build/softfloat/libreverse_softfloat.a -o build/uart-decoder
+          build/uart-decoder build/uart-decoder-fixtures > evidence/native-uart/original-decoder.json
+          HOST='-DREVERSE_PC_COMPACT_RESTORE_VIEW=1 -DREVERSE_PC_OPENSSL_DISK_SHA=1'
+          g++ $FLAGS $HOST -O3 tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -lcrypto -o evidence/native-uart/native
+          evidence/native-uart/native --pins > evidence/native-uart/native-pins.json
+          sha256sum evidence/native-uart/native > evidence/native-uart/binary-sha256.txt
+          g++ --version > evidence/native-uart/compiler.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-native-uart-tested-native
+          path: evidence/native-uart
+          retention-days: 90
+          compression-level: 1

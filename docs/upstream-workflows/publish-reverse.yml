@@ -1,0 +1,68 @@
+name: Publish verified REVERSE distribution
+on:
+  push:
+    branches: [main]
+    paths: ['releases/v2.5.1/**', '.github/workflows/publish-reverse.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - name: Retrieve immutable distribution files
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view v2.5.1 >/dev/null 2>&1; then
+            gh release download v2.5.1 --dir releases/v2.5.1 --pattern '*.apk' --pattern '*.rxe'
+          else
+            python3 - <<'PYDATA'
+          import base64,json,os,subprocess
+          from pathlib import Path
+          root=Path('releases/v2.5.1')
+          m=json.loads((root/'release-manifest.json').read_text())
+          for name,sha in m['git_blobs'].items():
+              assert Path(name).name==name
+              raw=subprocess.check_output(['gh','api','repos/'+os.environ['GITHUB_REPOSITORY']+'/git/blobs/'+sha])
+              blob=json.loads(raw)
+              assert blob['encoding']=='base64'
+              (root/name).write_bytes(base64.b64decode(blob['content']))
+          PYDATA
+          fi
+      - name: Verify source, successful CI and distribution checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('releases/v2.5.1')
+          m=json.loads((root/'release-manifest.json').read_text())
+          assert m['version']=='2.5.1'
+          for name,digest in m['sha256'].items():
+              assert Path(name).name==name
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest()==digest,name
+          PY
+          SOURCE=$(jq -r .reverse_source_commit releases/v2.5.1/release-manifest.json)
+          RUN_ID=$(jq -r .ci_run_id releases/v2.5.1/release-manifest.json)
+          git merge-base --is-ancestor "$SOURCE" HEAD
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" > /tmp/reverse-ci.json
+          test "$(jq -r .conclusion /tmp/reverse-ci.json)" = success
+          test "$(jq -r .head_sha /tmp/reverse-ci.json)" = "$SOURCE"
+          APK_SIGNER="$ANDROID_HOME/build-tools/35.0.0/apksigner"
+          if [[ ! -x "$APK_SIGNER" ]]; then "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'build-tools;35.0.0'; fi
+          "$APK_SIGNER" verify --verbose --print-certs releases/v2.5.1/REVERSE-v2.5.1.apk > /tmp/reverse-signature.txt
+          grep -F 'cd76d2fef0c238b19b7ad679606f3dbecf44affd93fd585cc1a5bcf057d05a7d' /tmp/reverse-signature.txt
+      - name: Publish the signed installer and native applications
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh release view v2.5.1 >/dev/null 2>&1; then
+            gh release create v2.5.1 --target "$GITHUB_SHA" --title 'REVERSE 2.5.1 · BBY Q E025 · W4u 0.1' --notes-file releases/v2.5.1/RELEASE_NOTES.md releases/v2.5.1/REVERSE-v2.5.1.apk releases/v2.5.1/BBY-Q-E025.rxe releases/v2.5.1/W4u-v0.1.rxe releases/v2.5.1/release-manifest.json
+          fi

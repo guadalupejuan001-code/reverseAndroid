@@ -1,0 +1,8 @@
+{
+  "bytecode_sha256": "bf44360bae3b8490ca6745f355cddb181e94b7b05d939ca64bb7049815a462c5",
+  "controller_sha256": "47d24d2d6165fbfad0cd236eabd0ceb6593fb3242a2f3aecf5267813ecb4cde4",
+  "executable_sha256": "58c33dd9fa36b3f6eb218e7c0d1f9ca3cb0496bc719755272bfaf244cf427ff7",
+  "interface_source_commit": "1d443d82606576611b138cc9d85763f87beec841",
+  "linked_source_sha256": "68646fabc65e54a39aa07ee8299b205488e11055fd4b1f4635c1f798694570ff",
+  "version": "E023-W4u-1"
+}

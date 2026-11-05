@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="Theme.ReverseOS" parent="android:style/Theme.Material.NoActionBar">
+    <item name="android:fontFamily">sans</item>
+    <item name="android:windowBackground">#000000</item>
+    <item name="android:colorAccent">#42e8cc</item>
+    <item name="android:statusBarColor">#070d15</item>
+    <item name="android:navigationBarColor">#070d15</item>
+    <item name="android:windowLightStatusBar">false</item>
+    <item name="android:windowLightNavigationBar">false</item>
+  </style>
+</resources>

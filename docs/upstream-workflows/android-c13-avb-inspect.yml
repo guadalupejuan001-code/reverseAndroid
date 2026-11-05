@@ -1,0 +1,50 @@
+name: Android C13 original AVB metadata inspection
+# The original GPT and footer inspection is preserved in runs 41007984436
+# and 41008304292. Reopen this PR to repeat the now fully signed-chain audit.
+# Ordinary source/documentation commits do not redownload the 8.7 GB disk.
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths: ['.github/workflows/android-c13-avb-inspect.yml', 'tools/android_c13_avb.mjs']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: android-c13-avb-inspect
+  cancel-in-progress: false
+jobs:
+  inspect-original-disk:
+    if: github.event.pull_request.head.ref == 'fix/android-c13-avb-handoff-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Verify exact original disk, signatures and all six chain members
+        shell: bash
+        run: |
+          set -euo pipefail
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          echo '3a842599bbe5734ebbfe696663d73f8cd241341694692fab62db4e17f26f7778  tools/android_c13_avb.mjs' | sha256sum --check
+          node tools/android_c13_avb.mjs --disk "$DISK" evidence/c13-inspect
+          C13_METADATA=evidence/c13-inspect node --test tests/android_c13_avb.test.mjs > evidence/c13-inspect/avb-tests.tap
+          git rev-parse HEAD > evidence/c13-inspect/source-commit.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c13-original-avb-metadata
+          path: evidence/c13-inspect/
+          if-no-files-found: error
+          retention-days: 14

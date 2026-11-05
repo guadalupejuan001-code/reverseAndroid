@@ -1,0 +1,82 @@
+name: Android C08 exact C07 continuation
+on:
+  pull_request:
+    paths: ['.github/workflows/android-c08-continuation.yml', 'tools/guest_c07_resume.cpp', 'tools/android_c08_audit.mjs', 'tests/android_c08_audit.test.mjs']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  continue-c07:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-c07-proven-post-init, run-id: 40975381521, github-token: '${{ github.token }}', path: input}
+      - uses: actions/download-artifact@v4
+        with: {name: reverse-android-c03-genuine-partition-disk, run-id: 40910284394, github-token: '${{ github.token }}', path: disk-input}
+      - name: Verify exact C07 ancestry and evidence rejection controls
+        run: |
+          mkdir -p build evidence/c08
+          node tools/android_c08_audit.mjs input > evidence/c08/source-audit.json
+          C07_INPUT=input node --test tests/android_c08_audit.test.mjs > evidence/c08/audit-tests.txt
+          git rev-parse HEAD > evidence/c08/source-commit.txt
+          git rev-parse HEAD:src > evidence/c08/unchanged-native-src-tree.txt
+      - name: Build the existing native engine and checked continuation host
+        run: |
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/guest_boot_cycle_test.cpp build/softfloat/libreverse_softfloat.a -o build/cycle-test
+          build/cycle-test > evidence/c08/native-cycle-tests.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_c07_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c08
+          cp build/c08 evidence/c08/native-continuation
+          tar -czf evidence/c08/reproducer-source.tar.gz src tools tests scripts third_party CMakeLists.txt build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+      - name: Reject altered reports before opening any disk or running the guest
+        run: |
+          cp input/current.json build/bad-report.json
+          printf ' ' >> build/bad-report.json
+          if build/c08 input/current.rvg build/bad-report.json input/entry-proof.json no-such-disk build/must-not-exist 1000 1 > evidence/c08/negative-report.stdout 2> evidence/c08/negative-report.stderr; then exit 1; fi
+          grep -F 'C07 report hash mismatch' evidence/c08/negative-report.stderr
+          test ! -e build/must-not-exist
+          cp input/entry-proof.json build/bad-entry.json
+          printf ' ' >> build/bad-entry.json
+          if build/c08 input/current.rvg input/current.json build/bad-entry.json no-such-disk build/must-not-exist 1000 1 > evidence/c08/negative-entry.stdout 2> evidence/c08/negative-entry.stderr; then exit 1; fi
+          grep -F 'C06 ancestor proof hash mismatch' evidence/c08/negative-entry.stderr
+          test ! -e build/must-not-exist
+      - name: Resume C07 without replaying init or replacing CPU RAM clock or disk
+        run: |
+          DISK=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$DISK"
+          set +e
+          timeout --signal=TERM --kill-after=30s 300s build/c08 input/current.rvg input/current.json input/entry-proof.json "$DISK" evidence/c08/journal 240000 200000000 > evidence/c08/result.json 2> evidence/c08/native-trace.log
+          STATUS=$?
+          set -e
+          printf '%s\n' "$STATUS" > evidence/c08/native-exit-code.txt
+          exit "$STATUS"
+      - name: Independently verify and preserve the exact committed prefix
+        if: always()
+        run: node tools/android_c08_audit.mjs input evidence/c08 200000000 > evidence/c08/audit-result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-c08-exact-continuation
+          path: |
+            evidence/c08/
+            !evidence/c08/journal/**
+          retention-days: 14
+          if-no-files-found: error
+      - name: Require verified execution progress, never infer Android readiness
+        if: always()
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';
+          const p=JSON.parse(readFileSync('evidence/c08/milestone.json'));
+          console.log(JSON.stringify(p,null,2));
+          if(!p.source_c07_verified||!p.ancestor_c06_verified||!p.execution_progress_accepted)throw Error('Native stop preserved: '+p.stop_reason+' '+p.error);
+          JS

@@ -1,0 +1,88 @@
+name: Android C32 read-only UART and stage evidence audit
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c32-uart-audit.yml
+      - tools/android_c32_stage.mjs
+      - tests/android_c32_stage.test.mjs
+      - docs/ANDROID_C32_UART_AUDIT.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit-existing-c31-c32:
+    if: github.event.pull_request.head.ref == 'fix/android-c32-uart-stage-proof-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify guest unchanged and test UART interpretation against false results
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c32-uart-audit
+          git diff --exit-code 48f1e18f30e9072d81cbb73ab4724f317d5613c6 HEAD -- src third_party scripts patches tools/guest_budget_cycles.hpp tools/guest_c27_profile_resume.cpp tools/guest_checkpoint_frame.cpp
+          node --test tests/android_c32_stage.test.mjs tests/android_framework_evidence.test.mjs tests/android_c27_profile_resume.test.mjs > evidence/c32-uart-audit/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c31-authenticated-continuation
+          run-id: 41334664768
+          github-token: ${{ github.token }}
+          path: source-c31
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c32-authenticated-continuation
+          run-id: 41338225255
+          github-token: ${{ github.token }}
+          path: output-c32
+      - name: Authenticate immutable C31 and C32 four-file source contracts
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c31/output-contract.json source-c31 > evidence/c32-uart-audit/c31-preflight.json
+          node tools/android_c27_profile_resume.mjs preflight output-c32/output-contract.json output-c32 > evidence/c32-uart-audit/c32-preflight.json
+      - name: Derive proven new UART stage from authenticated output
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {evaluateC32} from './tools/android_c32_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const result=evaluateC32({
+           sourceContract:read('source-c31/output-contract.json'),sourceReport:read('source-c31/current.json'),
+           sourceBoundary:read('source-c31/boundary-summary.json'),
+           report:read('output-c32/current.json'),result:read('output-c32/result.json'),
+           host:read('output-c32/process-outcome.json'),boundary:read('output-c32/boundary-summary.json'),
+           kernel:read('output-c32/kernel-observation.json'),frame:read('output-c32/checkpoint-frame.json'),
+           framework:read('output-c32/runtime-evidence.json'),sourceAuthenticated:true,outputAuthenticated:true
+          });
+          assert.equal(result.uart_scope,'current_authenticated_continuation');
+          assert.equal(result.original_c31_source_authenticated,true);
+          assert.equal(result.original_c32_output_authenticated,true);
+          assert.equal(result.source_checkpoint_unchanged,true);
+          assert.equal(result.derive_classpath_service_exit_zero_verified,true);
+          assert.equal(result.art_boot_service_exit_zero_verified,true);
+          assert.equal(result.odsign_live_userspace_verified,true);
+          assert.equal(result.stage,'odsign_running_after_art_boot');
+          assert.equal(result.total_instructions,13867398839);
+          assert.equal(result.live_framework_verified,false);
+          assert.equal(result.scanout_exported,false);
+          assert.equal(result.android_display_content_verified,false);
+          writeFileSync('evidence/c32-uart-audit/proven-stage.json',JSON.stringify(result,null,2)+'\n');
+          console.log(JSON.stringify(result,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c32-proven-uart-stage
+          path: evidence/c32-uart-audit/
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6

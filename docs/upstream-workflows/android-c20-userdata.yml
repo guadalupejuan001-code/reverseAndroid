@@ -1,0 +1,120 @@
+name: Android C20 fresh userdata profile
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c20-userdata.yml'
+      - 'tools/android_partition_disk.mjs'
+      - 'tools/android_partition_acquire.mjs'
+      - 'tools/guest_c20_fresh.cpp'
+      - 'tools/android_c20_result.mjs'
+      - 'tests/android_userdata_disk.test.mjs'
+      - 'tools/audit_gki_rvg.mjs'
+      - 'tests/audit_gki_rvg.test.mjs'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  prepare-and-boot-new-profile:
+    if: github.event.pull_request.head.ref == 'fix/android-c20-userdata-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - name: Verify scoped host changes and disk regression tests
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c20-media evidence/c20-boot build
+          git diff --exit-code 4b3e5f05c06ab12060f407e6e3e062528694d325 HEAD -- src third_party
+          node --test tests/android_partition_disk.test.mjs tests/android_partition_readiness.test.mjs tests/android_userdata_disk.test.mjs tests/audit_gki_rvg.test.mjs > evidence/c20-media/disk-tests.tap
+          node --check tools/android_c20_result.mjs
+          git rev-parse HEAD > evidence/c20-media/source-commit.txt
+      - name: Prepare same-build userdata input without changing signed system images
+        run: |
+          set -euo pipefail
+          node tools/android_partition_acquire.mjs --userdata-only new-userdata > evidence/c20-media/acquisition-stdout.json
+          cp new-userdata/userdata-acquisition.json evidence/c20-media/
+          cp new-userdata/archive-members.json evidence/c20-media/
+          gzip -c new-userdata/userdata.img > evidence/c20-media/userdata.img.gz
+          sha256sum evidence/c20-media/userdata.img.gz > evidence/c20-media/userdata-compressed.sha256
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Add writable partitions and prove all original partition bytes remain identical
+        run: |
+          set -euo pipefail
+          export ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';import {extendAndroidUserdataDisk} from './tools/android_partition_disk.mjs';
+          const input=JSON.parse(readFileSync('new-userdata/userdata-acquisition.json'));
+          const r=await extendAndroidUserdataDisk(process.env.ORIGINAL,'new-userdata/userdata.img','android-c20.raw',{expectedUserdataSha256:input.partitions[0].sha256});
+          writeFileSync('evidence/c20-media/media.json',JSON.stringify(r,null,2)+'\n');console.log(JSON.stringify(r));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c20-userdata-media
+          path: evidence/c20-media/
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c18-original-android-continuation
+          run-id: 41094706102
+          github-token: ${{ github.token }}
+          path: input-c18
+      - name: Compile the explicit fresh native profile
+        run: |
+          set -euo pipefail
+          tar -xzf input-c18/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c20_fresh.cpp build/softfloat/libreverse_softfloat.a -o build/c20-native
+          tar -czf evidence/c20-boot/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          git rev-parse HEAD > evidence/c20-boot/source-commit.txt
+          sha256sum build/c20-native evidence/c20-boot/tested-source.tar.gz > evidence/c20-boot/build-sha256.txt
+      - name: Start a new 2 GiB Android machine with original AVB handoff and writable userdata
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';import {superviseNativeCycle} from './tools/android_supervised_cycle.mjs';
+          const media=JSON.parse(readFileSync('evidence/c20-media/media.json'));
+          const r=await superviseNativeCycle({command:'build/c20-native',args:['input-c18/current.rvg','android-c20.raw',media.disk_sha256,String(media.disk_bytes),'evidence/c20-boot/journal','1500000'],outputDirectory:'evidence/c20-boot',initialInstructions:0,startupMs:300000,noProgressMs:90000,wallMs:1860000,graceMs:30000,onStatus:s=>process.stderr.write('REVERSE_C20_SUPERVISOR '+JSON.stringify(s)+'\n')});
+          console.log(JSON.stringify(r));if(r.status!=='process_completed')process.exitCode=2;
+          NODE
+      - name: Bind actual new-machine evidence without inheriting old boot claims
+        if: always()
+        continue-on-error: true
+        run: |
+          if test -f evidence/c20-boot/journal/latest.json; then
+            node tools/android_c20_result.mjs evidence/c20-media/media.json evidence/c20-boot > evidence/c20-boot/audit-stdout.json
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c20-fresh-userdata-android
+          path: evidence/c20-boot/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+      - name: Require genuine fresh init execution and classify completion separately
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c20-boot/'+p));
+          assert.equal(read('process-outcome.json').status,'process_completed');
+          assert.equal(read('result.json').fresh_machine,true);assert.equal(read('result.json').old_cpu_or_init_proof_reused,false);
+          assert.equal(read('result.json').first_user_instruction_verified,true);assert.equal(read('result.json').execution_progress_accepted,true);
+          console.log('Genuine new-profile init execution accepted; complete framework/display boot requires actual evidence.');
+          NODE

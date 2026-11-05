@@ -1,0 +1,74 @@
+name: Independent normal Android payload oracle
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest_machine.hpp'
+      - 'tools/android_normal_ramdisk.mjs'
+      - '.github/workflows/android-normal-boot-oracle.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-first-stage-payload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-kernel-pairs-continuation
+          run-id: 40817697618
+          github-token: ${{ github.token }}
+          path: input
+      - name: Prepare byte-verified same-kernel normal inputs
+        run: |
+          set -euo pipefail
+          mkdir -p build evidence
+          node --input-type=module - <<'JS'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {auditGkiRvg} from './tools/audit_gki_rvg.mjs';
+          const b=readFileSync('input/current.rvg');
+          const p=auditGkiRvg(b,'f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8','4f139751053c39bc1d33c7012fe1d61a8135f002c67be6f0466b3e8f97e2eda3');
+          const at=8+43*8+40;
+          writeFileSync('build/kernel.bin',b.subarray(at,at+p.kernel_bytes));
+          writeFileSync('build/source-initrd.bin',b.subarray(at+p.kernel_bytes+p.dtb_bytes,at+p.kernel_bytes+p.dtb_bytes+p.initrd_bytes));
+          JS
+          node tools/android_normal_ramdisk.mjs build/source-initrd.bin build/normal-initrd.bin > evidence/preparation.json
+          g++ -std=c++17 -Isrc -x c++ -o build/print-bootargs - <<'CPP'
+          #include "minimal_guest_machine.hpp"
+          #include <iostream>
+          int main(){std::cout<<reverse_pc::guest::guest_android_cuttlefish_normal_no_scx_bootargs();}
+          CPP
+          build/print-bootargs > evidence/bootargs.txt
+          sha256sum build/kernel.bin build/normal-initrd.bin > evidence/input.sha256
+      - name: Run independent payload oracle, never the product executor
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y qemu-system-arm
+          REVERSE_NORMAL_BOOTARGS=$(cat evidence/bootargs.txt)
+          set +e
+          timeout 75 qemu-system-aarch64 -M virt,gic-version=2,virtualization=off -cpu cortex-a53 -m 128 -nographic -monitor none -serial stdio -no-reboot -kernel build/kernel.bin -initrd build/normal-initrd.bin -append "$REVERSE_NORMAL_BOOTARGS" > evidence/oracle-console.txt 2>&1
+          STATUS=$?
+          set -e
+          test "$STATUS" = 0 -o "$STATUS" = 124
+          grep -F 'init first stage started!' evidence/oracle-console.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          text=Path('evidence/oracle-console.txt').read_text()
+          assert 'init first stage started!' in text
+          assert 'Loaded 19 modules from /lib/modules' in text
+          assert "Switching root to '/first_stage_ramdisk'" in text
+          assert 'Error updating for slotselect' not in text
+          assert 'failed to read default fstab for first stage mount' not in text
+          Path('evidence/result.json').write_text(json.dumps({'independent_reference_only':True,'qemu_embedded_in_reverse':False,'normal_android_first_stage_payload_valid':True,'all_19_modules_loaded':True,'first_stage_root_selected':True,'slotselect_error_observed':False,'own_xi_ether_android_init_verified':False,'android_partitions_mounted_verified':False,'android_services_verified':False,'android_display_verified':False,'remaining_console_failures':[line for line in text.splitlines() if any(word in line.lower() for word in ('failed', 'not found', 'panic', 'timed out'))]},indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-normal-android-payload-oracle
+          path: evidence/
+          retention-days: 14

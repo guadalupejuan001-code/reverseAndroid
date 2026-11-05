@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {verifyNativePins,verifyInstructionProbe,INPUT_SHA,REPORT_SHA} from '../tools/android_c24_result.mjs';
+import {DISK_SHA,SEED_SHA} from '../tools/android_profile_state.mjs';
+const pins={schema:'reverse-c24-native-pins-v1',state_sha256:INPUT_SHA,report_sha256:REPORT_SHA,disk_sha256:DISK_SHA,counter_seed_sha256:SEED_SHA,host_snapshot_transport_bytes:1073741824};
+test('compiled descriptor agrees with independently pinned inputs',()=>assert.equal(verifyNativePins(pins).compiled_native_pins_verified,true));
+for(const key of Object.keys(pins))test('reject compiled pin mismatch: '+key,()=>assert.throws(()=>verifyNativePins({...pins,[key]:typeof pins[key]==='number'?256*1024*1024:'0'.repeat(64)})));
+test('reject the observed C23 label replacement inside the counter seed',()=>assert.throws(()=>verifyNativePins({...pins,counter_seed_sha256:SEED_SHA.replace('fc22','fc23')})));
+const probe={opcode:'0x2e261066',pc:'0x5565cc14ac',input_checkpoint_sha256:INPUT_SHA,instructions_retired:1,fpcr_preserved:true,fpsr_preserved:true,unrelated_registers_preserved:true,original_snapshot_unchanged:true,v3_low:'0xfffffffefdfc0001',v3_high:'0x0',v6_low:'0x0807060504030201',v6_high:'0xffffffffffffffff',result_low:'0x00030001fdfe0002',result_high:'0x0008000700060005'};
+test('BigInt checks authenticated aliasing UADDW result including modular carry',()=>assert.equal(verifyInstructionProbe(probe).authenticated_instruction_probe_verified,true));
+for(const [key,value] of [['opcode','0x2e261065'],['pc','0x5565cc14b0'],['input_checkpoint_sha256','0'.repeat(64)],['instructions_retired',0],['fpcr_preserved',false],['fpsr_preserved',false],['unrelated_registers_preserved',false],['original_snapshot_unchanged',false],['result_low','0x2'],['result_high','0x0'],['v3_low','0x10000000000000000']])test('reject invalid authentic instruction probe: '+key,()=>assert.throws(()=>verifyInstructionProbe({...probe,[key]:value})));

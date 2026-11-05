@@ -1,0 +1,270 @@
+{
+  "repetitions": 21,
+  "warmups": 1,
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "timing": "128 individual XI X gates; initialization excluded; steady_clock",
+  "memory": "Linux /proc/self/status VmRSS and VmHWM KiB after exec",
+  "reference": "unmodified pinned Mundo X e2778d962af22f6f1a0794058dd4685fc2573966",
+  "cases": {
+    "1": {
+      "baseline": {
+        "summary": {
+          "ms": {
+            "median": 0.108325,
+            "p95": 0.370078
+          },
+          "rss_kib": {
+            "median": 1992,
+            "p95": 1996
+          },
+          "peak_rss_kib": {
+            "median": 1992,
+            "p95": 1996
+          }
+        },
+        "state": {
+          "active": 1,
+          "gates": 128,
+          "revision": 129,
+          "ms": 0.359936,
+          "rss_kib": 1996,
+          "peak_rss_kib": 1996,
+          "tableau_bytes": 17
+        }
+      },
+      "candidate": {
+        "summary": {
+          "ms": {
+            "median": 0.081409,
+            "p95": 0.224023
+          },
+          "rss_kib": {
+            "median": 1992,
+            "p95": 1996
+          },
+          "peak_rss_kib": {
+            "median": 1992,
+            "p95": 1996
+          }
+        },
+        "state": {
+          "active": 1,
+          "gates": 128,
+          "revision": 129,
+          "ms": 0.079739,
+          "rss_kib": 1992,
+          "peak_rss_kib": 1992,
+          "tableau_bytes": 17
+        }
+      }
+    },
+    "64": {
+      "baseline": {
+        "summary": {
+          "ms": {
+            "median": 0.622828,
+            "p95": 1.651134
+          },
+          "rss_kib": {
+            "median": 2036,
+            "p95": 2040
+          },
+          "peak_rss_kib": {
+            "median": 2036,
+            "p95": 2040
+          }
+        },
+        "state": {
+          "active": 64,
+          "gates": 128,
+          "revision": 129,
+          "ms": 0.5575,
+          "rss_kib": 2040,
+          "peak_rss_kib": 2040,
+          "tableau_bytes": 1088
+        }
+      },
+      "candidate": {
+        "summary": {
+          "ms": {
+            "median": 0.085772,
+            "p95": 0.244801
+          },
+          "rss_kib": {
+            "median": 2024,
+            "p95": 2028
+          },
+          "peak_rss_kib": {
+            "median": 2024,
+            "p95": 2028
+          }
+        },
+        "state": {
+          "active": 64,
+          "gates": 128,
+          "revision": 129,
+          "ms": 0.244801,
+          "rss_kib": 2024,
+          "peak_rss_kib": 2024,
+          "tableau_bytes": 1088
+        }
+      }
+    },
+    "256": {
+      "baseline": {
+        "summary": {
+          "ms": {
+            "median": 1.910789,
+            "p95": 3.662819
+          },
+          "rss_kib": {
+            "median": 2148,
+            "p95": 2152
+          },
+          "peak_rss_kib": {
+            "median": 2148,
+            "p95": 2152
+          }
+        },
+        "state": {
+          "active": 256,
+          "gates": 128,
+          "revision": 129,
+          "ms": 1.657327,
+          "rss_kib": 2148,
+          "peak_rss_kib": 2148,
+          "tableau_bytes": 4352
+        }
+      },
+      "candidate": {
+        "summary": {
+          "ms": {
+            "median": 0.09583,
+            "p95": 0.286083
+          },
+          "rss_kib": {
+            "median": 2124,
+            "p95": 2128
+          },
+          "peak_rss_kib": {
+            "median": 2124,
+            "p95": 2128
+          }
+        },
+        "state": {
+          "active": 256,
+          "gates": 128,
+          "revision": 129,
+          "ms": 0.094,
+          "rss_kib": 2124,
+          "peak_rss_kib": 2124,
+          "tableau_bytes": 4352
+        }
+      }
+    },
+    "1024": {
+      "baseline": {
+        "summary": {
+          "ms": {
+            "median": 8.639202,
+            "p95": 13.390056
+          },
+          "rss_kib": {
+            "median": 2616,
+            "p95": 2620
+          },
+          "peak_rss_kib": {
+            "median": 2616,
+            "p95": 2620
+          }
+        },
+        "state": {
+          "active": 1024,
+          "gates": 128,
+          "revision": 129,
+          "ms": 11.846516,
+          "rss_kib": 2616,
+          "peak_rss_kib": 2616,
+          "tableau_bytes": 17408
+        }
+      },
+      "candidate": {
+        "summary": {
+          "ms": {
+            "median": 0.217126,
+            "p95": 0.433988
+          },
+          "rss_kib": {
+            "median": 2544,
+            "p95": 2548
+          },
+          "peak_rss_kib": {
+            "median": 2544,
+            "p95": 2548
+          }
+        },
+        "state": {
+          "active": 1024,
+          "gates": 128,
+          "revision": 129,
+          "ms": 0.121482,
+          "rss_kib": 2544,
+          "peak_rss_kib": 2544,
+          "tableau_bytes": 17408
+        }
+      }
+    },
+    "4096": {
+      "baseline": {
+        "summary": {
+          "ms": {
+            "median": 35.279752,
+            "p95": 58.727491
+          },
+          "rss_kib": {
+            "median": 4496,
+            "p95": 4500
+          },
+          "peak_rss_kib": {
+            "median": 4496,
+            "p95": 4500
+          }
+        },
+        "state": {
+          "active": 4096,
+          "gates": 128,
+          "revision": 129,
+          "ms": 35.279752,
+          "rss_kib": 4496,
+          "peak_rss_kib": 4496,
+          "tableau_bytes": 69632
+        }
+      },
+      "candidate": {
+        "summary": {
+          "ms": {
+            "median": 0.692861,
+            "p95": 1.684518
+          },
+          "rss_kib": {
+            "median": 4044,
+            "p95": 4048
+          },
+          "peak_rss_kib": {
+            "median": 4132,
+            "p95": 4140
+          }
+        },
+        "state": {
+          "active": 4096,
+          "gates": 128,
+          "revision": 129,
+          "ms": 0.793932,
+          "rss_kib": 4044,
+          "peak_rss_kib": 4132,
+          "tableau_bytes": 69632
+        }
+      }
+    }
+  }
+}

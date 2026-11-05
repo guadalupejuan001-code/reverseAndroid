@@ -1,0 +1,308 @@
+name: REVERSE ARM64 compatibility
+on:
+  pull_request:
+    paths: ['src/minimal_guest*', 'src/guest_file_session.hpp', 'tests/guest_file_session_test.cpp', 'src/reverse_guest.cpp', 'tests/minimal_guest*', 'examples/guest-*.S', 'scripts/embed-guest-system-demo.py', 'third_party/softfloat/**', 'scripts/build-softfloat.py', 'scripts/prepare-ether-compat.py', 'tools/guest_linux_probe.cpp', 'reverse-os-android/**', 'CMakeLists.txt', '.github/workflows/minimal-state-guest.yml']
+  push:
+    branches: [main]
+    paths: ['src/minimal_guest*', 'src/guest_file_session.hpp', 'tests/guest_file_session_test.cpp', 'src/reverse_guest.cpp', 'tests/minimal_guest*', 'examples/guest-*.S', 'scripts/embed-guest-system-demo.py', 'third_party/softfloat/**', 'scripts/build-softfloat.py', 'scripts/prepare-ether-compat.py', 'tools/guest_linux_probe.cpp', 'reverse-os-android/**', '.github/workflows/minimal-state-guest.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - name: Install independent assembler and execution oracle
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y clang lld qemu-user qemu-system-arm device-tree-compiler
+      - name: Build the own guest CPU and run correctness checks
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE=-O1 -DREVERSE_PC_BUILD_PREVIOUS_MAIN_REFERENCE=OFF
+          cmake --build build --target reverse_guest reverse_pc_minimal_guest reverse_pc_minimal_system reverse_pc_minimal_counter reverse_pc_minimal_fp reverse_pc_minimal_bytes reverse_pc_runtime_reference reverse_pc_runtime_contract --parallel 2
+          mkdir -p guest-evidence
+          node --test tests/minimal_guest_tab_restore.test.mjs > guest-evidence/tab-restoration.txt
+          build/reverse_pc_minimal_guest > guest-evidence/native-tests.json
+          build/reverse_pc_minimal_system > guest-evidence/system-native.json
+          build/reverse_pc_minimal_counter > guest-evidence/counter-native.json
+          build/reverse_pc_minimal_fp > guest-evidence/fp-native.json
+          build/reverse_pc_minimal_bytes > guest-evidence/native-bytes.json
+          python3 tests/compare_runtime.py build/reverse_pc_runtime_reference build/reverse_pc_runtime_contract > guest-evidence/xi-contract.json
+          build/reverse_guest fp-demo guest-evidence/fp-demo.rvg > guest-evidence/fp-demo.json
+          python3 tests/minimal_guest_system_cli.py build/reverse_guest > guest-evidence/system-cli.json
+          build/reverse_guest demo guest-evidence/demo.rvg > guest-evidence/demo.json
+          python3 tests/minimal_guest_cli.py build/reverse_guest > guest-evidence/checkpoints.json
+      - name: Compare an independently assembled ARM64 ELF against QEMU
+        run: |
+          clang --target=aarch64-linux-gnu -fuse-ld=lld -nostdlib -static -Wl,--build-id=none -o guest-evidence/clang-guest.elf examples/guest-aarch64.S
+          python3 tests/minimal_guest_cli.py build/reverse_guest guest-evidence/clang-guest.elf > guest-evidence/independent-oracle.json
+          clang --target=aarch64-linux-gnu -fuse-ld=lld -nostdlib -static -Wl,--build-id=none -o guest-evidence/integer-extended.elf examples/guest-integer-extended.S
+          python3 tests/minimal_guest_integer_cli.py build/reverse_guest guest-evidence/integer-extended.elf > guest-evidence/integer-extended.json
+          clang --target=aarch64-none-elf -c examples/guest-system-aarch64.S -o guest-evidence/system-witness.o
+          python3 scripts/embed-guest-system-demo.py guest-evidence/system-witness.o --check
+          ld.lld -T examples/guest-system-aarch64.ld --build-id=none -o guest-evidence/system-witness.elf guest-evidence/system-witness.o
+          python3 tests/minimal_guest_system_cli.py build/reverse_guest guest-evidence/system-witness.elf > guest-evidence/system-oracle.json
+          build/reverse_guest device-tree guest-evidence/reverse.dtb
+          dtc -I dtb -O dts guest-evidence/reverse.dtb > guest-evidence/reverse.dts
+          clang --target=aarch64-linux-gnu -fuse-ld=lld -nostdlib -static -Wl,--build-id=none -o guest-evidence/fp-simd.elf examples/guest-fp-simd.S
+          clang --target=aarch64-none-elf -c examples/guest-fp-demo.S -o guest-evidence/fp-demo.o
+          python3 scripts/embed-guest-system-demo.py guest-evidence/fp-demo.o --fp --check
+          clang --target=aarch64-linux-gnu -fuse-ld=lld -nostdlib -static -Wl,--build-id=none -o guest-evidence/fp-demo.elf examples/guest-fp-demo.S
+          qemu-aarch64 guest-evidence/fp-demo.elf > guest-evidence/fp-demo-qemu.txt
+          python3 -c 'import json;from pathlib import Path;p=Path("guest-evidence");d=json.loads((p/"fp-demo.json").read_text());assert d["stdout"]=="REVERSE: FP32 FP64 SIMD OK\n"==(p/"fp-demo-qemu.txt").read_text() and d["guest"]["exit_code"]==0'
+          python3 tests/minimal_guest_fp_cli.py build/reverse_guest guest-evidence/fp-simd.elf > guest-evidence/fp-simd-oracle.json
+          clang --target=aarch64-none-elf -c examples/guest-exclusive-pairs.S -o guest-evidence/exclusive-pairs.o
+          ld.lld -T examples/guest-system-aarch64.ld --build-id=none -o guest-evidence/exclusive-pairs.elf guest-evidence/exclusive-pairs.o
+          node tests/minimal_guest_exclusive_pairs_cli.mjs build/reverse_guest guest-evidence/exclusive-pairs.elf > guest-evidence/exclusive-pairs-oracle.json
+          clang --version > guest-evidence/clang-version.txt
+          qemu-aarch64 --version > guest-evidence/oracle-version.txt
+      - name: Check undefined behavior and failed transactions
+        run: |
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=all -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/guest_file_session_test.cpp build/softfloat/libreverse_softfloat.a -o build/file-session-ubsan
+          build/file-session-ubsan build/file-session-checks > guest-evidence/file-session.json
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=all -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_test.cpp build/softfloat/libreverse_softfloat.a -o build/guest-ubsan
+          build/guest-ubsan > guest-evidence/ubsan.json
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=all -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/system-ubsan
+          build/system-ubsan > guest-evidence/system-ubsan.json
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=all -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_fp_test.cpp build/softfloat/libreverse_softfloat.a -o build/fp-ubsan
+          build/fp-ubsan > guest-evidence/fp-ubsan.json
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=all -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_bytes_test.cpp build/softfloat/libreverse_softfloat.a -o build/bytes-ubsan
+          build/bytes-ubsan > guest-evidence/bytes-ubsan.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: minimal-state-guest-native, path: guest-evidence/, retention-days: 14}
+  linux-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: torvalds/linux, ref: 830b3c68c1fb1e9176028d02ef86f3cf76aa2476, path: deps/linux, persist-credentials: false}
+      - name: Build a pinned small upstream Linux Image for development
+        run: |
+          mkdir -p guest-linux-evidence
+          sudo apt-get update -qq
+          sudo apt-get install -y clang lld llvm make flex bison bc libelf-dev jq cpio binutils
+          make -C deps/linux ARCH=arm64 LLVM=1 tinyconfig > guest-linux-evidence/configure.log 2>&1
+          deps/linux/scripts/config --file deps/linux/.config --enable PRINTK --enable TTY --enable SERIAL_AMBA_PL011 --enable SERIAL_AMBA_PL011_CONSOLE --enable BLK_DEV_INITRD --enable BINFMT_ELF --disable KERNEL_MODE_NEON --disable RANDOMIZE_BASE
+          make -C deps/linux ARCH=arm64 LLVM=1 olddefconfig >> guest-linux-evidence/configure.log 2>&1
+          grep -q '^CONFIG_BINFMT_ELF=y$' deps/linux/.config
+          make -C deps/linux ARCH=arm64 LLVM=1 -j2 Image > guest-linux-evidence/build.log 2>&1 || { tail -100 guest-linux-evidence/build.log; exit 1; }
+          cp deps/linux/arch/arm64/boot/Image guest-linux-evidence/Image
+          cp deps/linux/.config guest-linux-evidence/linux.config
+          cp deps/linux/COPYING guest-linux-evidence/COPYING
+          printf '%s\n' 'Source: https://github.com/torvalds/linux/tree/830b3c68c1fb1e9176028d02ef86f3cf76aa2476' 'Build commands and configuration are in this repository/workflow and linux.config.' 'Engineering probe only: not an Android image or a claim of full Linux boot.' > guest-linux-evidence/SOURCE.txt
+          sha256sum guest-linux-evidence/Image > guest-linux-evidence/Image.sha256
+      - name: Package a minimal static ARM64 /init and /dev/console
+        run: |
+          # An actual ELF in a real newc initramfs is a userspace milestone,
+          # not an emulated "boot success" or an Android APK.
+          mkdir -p build/linux-initrd-root/dev
+          clang --target=aarch64-linux-gnu -fuse-ld=lld -nostdlib -static -Wl,--build-id=none -Wl,-e,_start -o build/linux-initrd-root/init examples/guest-linux-init.S
+          chmod 0755 build/linux-initrd-root/init
+          readelf -h build/linux-initrd-root/init > guest-linux-evidence/init-elf.txt
+          grep -q 'Machine:.*AArch64' guest-linux-evidence/init-elf.txt
+          grep -q 'Type:.*EXEC' guest-linux-evidence/init-elf.txt
+          ! readelf -l build/linux-initrd-root/init | grep -q INTERP
+          sudo mknod -m 600 build/linux-initrd-root/dev/console c 5 1
+          (cd build/linux-initrd-root && find . -print0 | LC_ALL=C sort -z | cpio --null --reproducible -o -H newc --owner=0:0) > guest-linux-evidence/initrd.cpio
+          cpio -it < guest-linux-evidence/initrd.cpio > guest-linux-evidence/initrd-contents.txt
+          grep -Eq '^\.?/?init$' guest-linux-evidence/initrd-contents.txt
+          sha256sum guest-linux-evidence/initrd.cpio > guest-linux-evidence/initrd.sha256
+      - name: Record the first unsupported operation using the own interpreter
+        run: |
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/guest-linux-probe
+          timeout 180 build/guest-linux-probe guest-linux-evidence/Image 500000 guest-linux-evidence/fast-500k.rvg guest-linux-evidence/initrd.cpio > guest-linux-evidence/own-linux-prefix.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_BYTEWISE_ACCESS_REFERENCE=1 -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/linux-bytewise
+          timeout 180 build/linux-bytewise guest-linux-evidence/Image 500000 guest-linux-evidence/bytewise-500k.rvg guest-linux-evidence/initrd.cpio > guest-linux-evidence/bytewise-prefix.json
+          cmp guest-linux-evidence/fast-500k.rvg guest-linux-evidence/bytewise-500k.rvg
+          # A real Linux checkpoint must resume byte-identically to an uninterrupted run,
+          # including output, FP state, MMU, interrupts, XI/Ether deltas and virtual time.
+          timeout 180 build/guest-linux-probe guest-linux-evidence/fast-500k.rvg 500000 guest-linux-evidence/resumed-1m.rvg > guest-linux-evidence/resumed-1m.json
+          timeout 180 build/guest-linux-probe guest-linux-evidence/Image 1000000 guest-linux-evidence/continuous-1m.rvg guest-linux-evidence/initrd.cpio > guest-linux-evidence/continuous-1m.json
+          cmp guest-linux-evidence/resumed-1m.rvg guest-linux-evidence/continuous-1m.rvg
+          jq -e -n \
+            --slurpfile prefix guest-linux-evidence/own-linux-prefix.json \
+            --slurpfile resumed guest-linux-evidence/resumed-1m.json \
+            --slurpfile continuous guest-linux-evidence/continuous-1m.json \
+            '($prefix[0].console + $resumed[0].console) == $continuous[0].console and
+             $resumed[0].initial_instructions == 500000 and
+             $resumed[0].guest.instructions == 1000000 and
+             $continuous[0].guest.instructions == 1000000 and
+             $resumed[0].checkpoint_fnv == $continuous[0].checkpoint_fnv and
+             $resumed[0].stop_reason == "instruction_budget" and
+             $continuous[0].stop_reason == "instruction_budget"'
+          rm guest-linux-evidence/fast-500k.rvg guest-linux-evidence/bytewise-500k.rvg guest-linux-evidence/resumed-1m.rvg guest-linux-evidence/continuous-1m.rvg
+          # Preserve real 5M/6M checkpoints and diagnostic JSON. Boot is NOT implied.
+          timeout 180 build/guest-linux-probe guest-linux-evidence/Image 5000000 guest-linux-evidence/own-linux-5m.rvg guest-linux-evidence/initrd.cpio > guest-linux-evidence/own-linux-progress.json
+          timeout 180 build/guest-linux-probe guest-linux-evidence/own-linux-5m.rvg 1000000 guest-linux-evidence/own-linux-6m.rvg > guest-linux-evidence/own-linux-continued.json
+          cat guest-linux-evidence/own-linux-prefix.json
+          cat guest-linux-evidence/own-linux-continued.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: own-arm64-linux-development-probe, path: guest-linux-evidence/, retention-days: 14}
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      REVERSE_SIGNING_KEYSTORE: ${{ github.workspace }}/build-signing/guest-preview.jks
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with: {repository: guadalupejuan001-code/mundo-X, ref: e2778d962af22f6f1a0794058dd4685fc2573966, path: deps/mundo-x, persist-credentials: false}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '17'}
+      - uses: gradle/actions/setup-gradle@v4
+        with: {gradle-version: '8.9'}
+      - name: Reuse the owner's verified released application assets
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libpulse0
+          mkdir -p guest-evidence guest-dist build-signing
+          curl --fail --location --retry 2 --output "$RUNNER_TEMP/reverse-base.apk" https://github.com/guadalupejuan001-code/REVERSE-PC/releases/download/v2.5.1/REVERSE-v2.5.1.apk
+          python3 - <<'PY'
+          import hashlib,json,os,zipfile
+          from pathlib import Path
+          source=Path(os.environ['RUNNER_TEMP'])/'reverse-base.apk'
+          assert hashlib.sha256(source.read_bytes()).hexdigest()=='62c35d9020b2ad497983544775546c399bdcff46affe89a1c615e62add692aa2'
+          with zipfile.ZipFile(source) as archive:
+              for name in archive.namelist():
+                  if name.startswith(('assets/native-apps/','assets/bbyq/','assets/bbyq-interface/')) and not name.endswith('/'):
+                      target=Path('reverse-os-android/app/src/main')/name
+                      target.parent.mkdir(parents=True,exist_ok=True)
+                      target.write_bytes(archive.read(name))
+          Path('reverse-os-android/app/src/main/assets/workbench/build-info.json').write_text(json.dumps({'source_commit':os.environ['GITHUB_SHA'],'bbyq_version':'E025-Chain-1','w4u_version':'0.1','arm64_compatibility_version':'0.3','mundo_x_commit':'e2778d962af22f6f1a0794058dd4685fc2573966'})+'\n')
+          PY
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          keytool -genkeypair -keystore "$REVERSE_SIGNING_KEYSTORE" -storetype JKS -storepass android -keypass android -alias reverse-desktop -keyalg RSA -keysize 2048 -validity 365 -dname 'CN=REVERSE Guest Preview Development'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1' platform-tools 'system-images;android-35;default;x86_64' > guest-evidence/sdk.log
+          test -x "$ANDROID_HOME/emulator/emulator"
+          "$ANDROID_HOME/emulator/emulator" -version > guest-evidence/emulator-version.txt
+      - name: Build existing REVERSE package with ARM64 compatibility in XI
+        run: |
+          gradle -p reverse-os-android --no-daemon :app:assembleControlDebug :app:assembleControlDebugAndroidTest > guest-evidence/gradle.log 2>&1 || { tail -160 guest-evidence/gradle.log; exit 1; }
+          cp reverse-os-android/app/build/outputs/apk/control/debug/app-control-debug.apk guest-dist/REVERSE-ARM64-integration-ci.apk
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs guest-dist/REVERSE-ARM64-integration-ci.apk > guest-evidence/signature.txt
+          sudo chmod a+rw /dev/kvm
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-kernel-pairs-continuation
+          run-id: 40817697618
+          github-token: ${{ github.token }}
+          path: large-input
+      - name: Independently advance the exact genuine large Android checkpoint
+        run: |
+          set -euo pipefail
+          echo '4f139751053c39bc1d33c7012fe1d61a8135f002c67be6f0466b3e8f97e2eda3  large-input/current.rvg' | sha256sum -c -
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 \
+            -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc \
+            tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/large-reference
+          build/large-reference large-input/current.rvg 250000 build/large-reference.rvg \
+            --chunk=250000 > guest-evidence/large-reference.json
+          sha256sum build/large-reference.rvg > guest-evidence/large-reference.sha256
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_counter_test.cpp build/softfloat/libreverse_softfloat.a -o build/counter-reference
+          build/counter-reference > guest-evidence/counter-native.json
+      - name: Exercise integrated XI/ARM64, original quantum engine and persistence
+        timeout-minutes: 10
+        shell: bash
+        run: |
+            set -euo pipefail
+            export PATH="$ANDROID_HOME/platform-tools:$PATH"
+            export ANDROID_AVD_HOME="$RUNNER_TEMP/reverse-guest-avd"
+            mkdir -p "$ANDROID_AVD_HOME"
+            printf 'no\n' | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force -n guest -p "$ANDROID_AVD_HOME/guest.avd" -k 'system-images;android-35;default;x86_64'
+            "$ANDROID_HOME/emulator/emulator" -avd guest -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -memory 2048 > guest-evidence/emulator.log 2>&1 &
+            GUEST_EMULATOR_PID=$!
+            trap 'adb logcat -d > guest-evidence/logcat.txt 2>/dev/null || true; adb pull /sdcard/Android/data/com.reversepc.control.workbench/files/visual-evidence guest-evidence/visual >/dev/null 2>&1 || true; kill "$GUEST_EMULATOR_PID" 2>/dev/null || true' EXIT
+            ready=false
+            for i in $(seq 1 115); do
+              if [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; then ready=true;break;fi
+              sleep 2
+            done
+            test "$ready" = true
+            adb shell settings put secure immersive_mode_confirmations confirmed
+            adb shell input keyevent 82
+            adb shell wm size 720x1600
+            adb shell wm density 280
+            adb install -r guest-dist/REVERSE-ARM64-integration-ci.apk
+            adb install -r reverse-os-android/app/build/outputs/apk/androidTest/control/debug/app-control-debug-androidTest.apk
+            adb shell am instrument -w -e mode guest com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-guest.txt
+            grep 'WORKBENCH_TESTS_OK mode=guest ' guest-evidence/android-guest.txt
+            adb shell am force-stop com.reversepc.control.workbench
+            adb shell am instrument -w -e mode guestRestore com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-restore.txt
+            grep 'WORKBENCH_TESTS_OK mode=guestRestore ' guest-evidence/android-restore.txt
+            adb shell am instrument -w -e mode armSystem com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-system.txt
+            grep 'WORKBENCH_TESTS_OK mode=armSystem ' guest-evidence/android-system.txt
+            adb shell am force-stop com.reversepc.control.workbench
+            adb shell am instrument -w -e mode armSystemRestore com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-system-restore.txt
+            grep 'WORKBENCH_TESTS_OK mode=armSystemRestore ' guest-evidence/android-system-restore.txt
+            adb shell am instrument -w -e mode armFloat com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-fp.txt
+            grep 'WORKBENCH_TESTS_OK mode=armFloat ' guest-evidence/android-fp.txt
+            adb shell am force-stop com.reversepc.control.workbench
+            adb shell am instrument -w -e mode armFloatRestore com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-fp-restore.txt
+            grep 'WORKBENCH_TESTS_OK mode=armFloatRestore ' guest-evidence/android-fp-restore.txt
+            adb shell am instrument -w -e mode armGraphics com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-pci-graphics.txt
+            grep 'WORKBENCH_TESTS_OK mode=armGraphics ' guest-evidence/android-pci-graphics.txt
+            adb shell am force-stop com.reversepc.control.workbench
+            adb shell am instrument -w -e mode armGraphicsRestore com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-pci-graphics-restore.txt
+            grep 'WORKBENCH_TESTS_OK mode=armGraphicsRestore ' guest-evidence/android-pci-graphics-restore.txt
+            adb exec-out run-as com.reversepc.control.workbench cat files/graphics-frame.png > guest-evidence/graphics-frame.png
+            adb exec-out run-as com.reversepc.control.workbench cat files/graphics-proof.json > guest-evidence/graphics-proof.json
+            expected_counter_sha256=$(python3 -c 'import json;print(json.load(open("guest-evidence/counter-native.json"))["expected_finished_sha256"])')
+            adb shell am instrument -w -e mode armCounter -e expected_counter_sha256 "$expected_counter_sha256" com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-counter.txt
+            grep 'WORKBENCH_TESTS_OK mode=armCounter ' guest-evidence/android-counter.txt
+            adb shell am force-stop com.reversepc.control.workbench
+            adb shell am instrument -w -e mode armCounterRestore com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-counter-restore.txt
+            grep 'WORKBENCH_TESTS_OK mode=armCounterRestore ' guest-evidence/android-counter-restore.txt
+            adb exec-out run-as com.reversepc.control.workbench cat files/counter-proof.json > guest-evidence/counter-proof.json
+            expected_counter_rate_sha256=$(python3 -c 'import json;print(json.load(open("guest-evidence/counter-native.json"))["expected_prescaled_finished_sha256"])')
+            adb shell am instrument -w -e mode armCounterRate -e expected_counter_sha256 "$expected_counter_rate_sha256" com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-counter-rate.txt
+            grep 'WORKBENCH_TESTS_OK mode=armCounterRate ' guest-evidence/android-counter-rate.txt
+            adb shell am force-stop com.reversepc.control.workbench
+            adb shell am instrument -w -e mode armCounterRateRestore com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-counter-rate-restore.txt
+            grep 'WORKBENCH_TESTS_OK mode=armCounterRateRestore ' guest-evidence/android-counter-rate-restore.txt
+            adb exec-out run-as com.reversepc.control.workbench cat files/counter-rate-proof.json > guest-evidence/counter-rate-proof.json
+            adb shell am instrument -w -e mode guestContinuous com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-continuous.txt
+            grep 'WORKBENCH_TESTS_OK mode=guestContinuous ' guest-evidence/android-continuous.txt
+            adb shell -T "run-as com.reversepc.control.workbench sh -c 'cat > files/large-guest-input.rvg'" < large-input/current.rvg
+            expected_guest_sha256=$(cut -d ' ' -f 1 guest-evidence/large-reference.sha256)
+            adb shell am instrument -w -e mode guestLarge -e expected_guest_sha256 "$expected_guest_sha256" com.reversepc.control.workbench.test/com.reversepc.os.WorkbenchTestRunner | tee guest-evidence/android-large.txt
+            grep 'WORKBENCH_TESTS_OK mode=guestLarge ' guest-evidence/android-large.txt
+            adb exec-out run-as com.reversepc.control.workbench cat files/large-guest-proof.json > guest-evidence/android-large-proof.json
+            adb exec-out run-as com.reversepc.control.workbench cat files/large-guest-export.rvg | sha256sum > guest-evidence/android-large-export.sha256
+            python3 - <<'PYPROOF'
+            import json,pathlib
+            p=pathlib.Path('guest-evidence')
+            expected=(p/'large-reference.sha256').read_text().split()[0]
+            assert (p/'android-large-export.sha256').read_text().split()[0]==expected
+            proof=json.loads((p/'android-large-proof.json').read_text())
+            assert proof['host_state_identical'] and proof['corrupt_import_preserved']
+            assert proof['instructions']==180576448 and proof['checkpoint_bytes']>32*1024*1024
+            assert proof['android_boot'] is False
+            PYPROOF
+            adb exec-out screencap -p > guest-evidence/android-screen.png
+            adb pull /sdcard/Android/data/com.reversepc.control.workbench/files/visual-evidence guest-evidence/visual
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: REVERSE-ARM64-integration-CI
+          path: |
+            guest-dist/
+            guest-evidence/
+          retention-days: 14
+

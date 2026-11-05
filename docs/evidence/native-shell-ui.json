@@ -1,0 +1,39 @@
+{
+  "checks": 82,
+  "layouts": [
+    {
+      "width": 360,
+      "height": 780,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 412,
+      "height": 915,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 768,
+      "height": 900,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "horizontal_overflow": false
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "horizontal_overflow": false
+    }
+  ],
+  "actual_internal_program_runs": 1,
+  "actual_isolated_experiments": 2,
+  "page_errors": [],
+  "scope": "Chromium viewport/interaction checks, transport fixtures and real XI/RXE backend. No Android device/emulator was used."
+}

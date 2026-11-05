@@ -1,0 +1,21 @@
+{
+  "schema": "reverseandroid-continuation-plan-v1",
+  "cycle": "C69-migration",
+  "source": {
+    "repository": "guadalupejuan001-code/REVERSE-PC",
+    "source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+    "run_id": 42022683885,
+    "artifact_id": 13423050281,
+    "artifact_name": "reverse-c68-stage-12-verified-checkpoint",
+    "artifact_zip_sha256": "e8c9879e1ecb72757f4eb1a2fdb1853cd65a2309ab968ea050d8006e8ff5bdae",
+    "checkpoint_sha256": "f306e9ef430186b8839a75a4e29c4f57cda106f9b958ab0c5db10670c246b18e",
+    "instructions": 64295950532
+  },
+  "instruction_budget": 100000000,
+  "logical_ram_bytes": 2147483648,
+  "counter_instructions_per_tick": 64,
+  "host_snapshot_transport_bytes": 2147483648,
+  "uart_input": null,
+  "guest_priority_changes": false,
+  "retain_original_source": true
+}

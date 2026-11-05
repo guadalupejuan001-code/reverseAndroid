@@ -1,0 +1,23 @@
+--- a/src/minimal_guest_simd.inc
++++ b/src/minimal_guest_simd.inc
+@@ -207,6 +207,20 @@
+     for(unsigned n=0;n<width/element;n++)value.lane(n,element,source.lane(n,element)==0?UINT64_MAX:0);
+     commit(value);return true;
+   }
++  const auto minmax_across=i&0x9f3ffc00u;
++  if(minmax_across==0x0e30a800u||minmax_across==0x0e31a800u){ // S/UMAXV and S/UMINV across lanes.
++    if(size==3||(size==2&&!q))return false; // Neither 64-bit lanes nor the 2S arrangement is allocated.
++    fp_access();const auto source=floating_.v[rn];
++    const bool minimum=minmax_across==0x0e31a800u;
++    const auto sign=u?UINT64_C(0):(UINT64_C(1)<<(element-1));
++    auto best=source.lane(0,element);
++    for(unsigned n=1;n<width/element;n++){
++      const auto x=source.lane(n,element);
++      // Flipping the sign bit gives the signed ordering without implementation-defined casts.
++      if(minimum?((x^sign)<(best^sign)):((x^sign)>(best^sign)))best=x;
++    }
++    fp_set(rd,best,element);return true; // Scalar result clears all remaining vector bits, including Rd==Rn.
++  }
+   const auto pairwise=i&0x9f20fc00u;
+   if(pairwise==0x0e20bc00u||pairwise==0x0e20a400u||pairwise==0x0e20ac00u){ // ADDP, S/UMAXP, S/UMINP.
+     const bool add=pairwise==0x0e20bc00u,minimum=pairwise==0x0e20ac00u;

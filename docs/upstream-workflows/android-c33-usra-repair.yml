@@ -1,0 +1,143 @@
+name: Android C33 USRA repair and verified original C32 replay
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c33-usra-repair.yml
+      - src/minimal_guest_simd.inc
+      - tests/minimal_guest_shift_accumulate_test.cpp
+      - docs/ANDROID_C33_USRA_REPAIR.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native-isa-then-real-continuation:
+    if: github.event.pull_request.head.ref == 'fix/android-c33-usra-isa-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Prove isolated SIMD ISA change and host policy regressions
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c33-fixed-diagnostics build
+          changes=$(git diff --name-only 7ce3c264e970930ffc617be0d198f3fb4feac38c HEAD -- src third_party scripts patches tools/guest_c27_profile_resume.cpp tools/guest_budget_cycles.hpp tools/guest_checkpoint_frame.cpp)
+          test "$changes" = "src/minimal_guest_simd.inc"
+          node --test tests/android_c33_stage.test.mjs tests/android_c32_stage.test.mjs tests/android_framework_evidence.test.mjs tests/android_c27_profile_resume.test.mjs tests/android_guest_outcome.test.mjs > evidence/c33-fixed-diagnostics/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Check exact failing opcode with native bit-oracle and FP traps
+        run: |
+          set -euo pipefail
+          tar -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tests/minimal_guest_shift_accumulate_test.cpp build/softfloat/libreverse_softfloat.a -o build/c33-shift-oracle
+          build/c33-shift-oracle > evidence/c33-fixed-diagnostics/native-isa-oracle.json
+          python3 -m json.tool evidence/c33-fixed-diagnostics/native-isa-oracle.json > /dev/null
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c32-authenticated-continuation
+          run-id: 41338225255
+          github-token: ${{ github.token }}
+          path: source-c32
+      - name: Authenticate original clean C32 checkpoint and original board
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c32/output-contract.json source-c32 > evidence/c33-fixed-diagnostics/source-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          import {C32_SOURCE} from './tools/android_c33_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const c=read('source-c32/output-contract.json'),r=read('source-c32/current.json'),s=read('source-c32/boundary-summary.json');
+          assert.equal(c.checkpoint_sha256,C32_SOURCE.checkpoint_sha256);
+          assert.equal(c.source_commit,C32_SOURCE.source_commit);
+          assert.equal(r.guest.instructions,C32_SOURCE.instructions);
+          assert.equal(s.clean_completed,true);
+          assert.equal(s.checkpoint_sha256,C32_SOURCE.checkpoint_sha256);
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Restore byte-identical C27 blank-data disk
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c33-fixed-diagnostics/media.json
+          rm -rf disk-input
+      - name: Compile original XI Ether emulator with only supported USRA opcode added
+        run: |
+          set -euo pipefail
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c33-fixed-native
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/c33-fixed-frame
+          build/c33-fixed-native --pins > evidence/c33-fixed-diagnostics/pins.json
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';
+          verifyNativePins(JSON.parse(readFileSync('evidence/c33-fixed-diagnostics/pins.json','utf8')));
+          NODE
+      - name: Execute unchanged Android guest from C32 with repaired SIMD
+        run: |
+          set -euo pipefail
+          SOURCE_COMMIT=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs source-c32/output-contract.json source-c32 build/c33-fixed-native new-media/android-c27.raw build/c33-fixed-frame evidence/c33-fixed "$SOURCE_COMMIT" 180000 350000000 2 > evidence/c33-fixed-diagnostics/native-sequence.json
+      - name: Authenticate recovered C33 checkpoint, live services and display
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {preflight} from './tools/android_c27_profile_resume.mjs';
+          import {classifyC33,C32_SOURCE} from './tools/android_c33_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const sourceContract=read('source-c32/output-contract.json'),outputContract=read('evidence/c33-fixed/output-contract.json');
+          preflight(sourceContract,'source-c32');preflight(outputContract,'evidence/c33-fixed');
+          const stage=classifyC33({
+            sourceContract,sourceReport:read('source-c32/current.json'),sourceBoundary:read('source-c32/boundary-summary.json'),
+            outputContract,report:read('evidence/c33-fixed/current.json'),result:read('evidence/c33-fixed/result.json'),
+            host:read('evidence/c33-fixed/process-outcome.json'),boundary:read('evidence/c33-fixed/boundary-summary.json'),
+            kernel:read('evidence/c33-fixed/kernel-observation.json'),frame:read('evidence/c33-fixed/checkpoint-frame.json'),
+            framework:read('evidence/c33-fixed/runtime-evidence.json'),sourceAuthenticated:true,outputAuthenticated:true
+          });
+          assert.equal(stage.source_sha256,C32_SOURCE.checkpoint_sha256);
+          assert.ok(stage.instructions>13918491536,'Must execute beyond previous USRA architectural stop');
+          assert.equal(stage.source_checkpoint_unchanged,true);
+          assert.equal(stage.android_display_content_verified,false);
+          writeFileSync('evidence/c33-fixed-diagnostics/actual-stage.json',JSON.stringify(stage,null,2)+'\n');
+          console.log(JSON.stringify(stage,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c33-usra-fixed-diagnostics
+          path: evidence/c33-fixed-diagnostics/
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c33-usra-fixed-continuation
+          path: |-
+            evidence/c33-fixed/
+            !evidence/c33-fixed/native/journal/**
+            !evidence/c33-fixed/native/current.rvg
+            !evidence/c33-fixed/native/frame.ppm
+            !evidence/c33-fixed/native/frame.pending.ppm
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6

@@ -1,0 +1,108 @@
+name: REVERSE-PC symbolic computer experiment
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  executable-space:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - name: Verify pinned Ether source
+        run: |
+          test "$(git -C deps/mundo-x rev-parse HEAD)" = e2778d962af22f6f1a0794058dd4685fc2573966
+          test -f deps/mundo-x/native/include/mundo_x/quantum_runtime.hpp
+      - name: Build real QuantumRuntime-backed computer
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+          cmake --build build --parallel 2
+      - name: Test both programs, persistence and rollback
+        run: ctest --test-dir build --output-on-failure
+      - name: Produce reproducible evidence
+        run: |
+          ./build/reverse_pc demo evidence
+          python3 -m json.tool evidence/report.json > evidence/report-pretty.json
+          ./build/reverse_pc run examples/inspect.xi evidence/program-a.rvp evidence/inspected-a.rvp > evidence/reloaded-observation.jsonl
+          git -C deps/mundo-x rev-parse HEAD > evidence/upstream-commit.txt
+      - name: Run and publish adaptive factorization comparisons
+        run: |
+          ./build/reverse_pc_factorized --self-test | tee evidence/factorized-tests.json
+          ./build/reverse_pc_factorized --benchmark | tee evidence/factorized-benchmark.json
+          ./build/reverse_pc_factorized --run 4 examples/factorized-small.qxi | tee evidence/factorized-program.json
+          python3 -m json.tool evidence/factorized-benchmark.json > /dev/null
+      - name: Capture architecture bottlenecks and verify JSON
+        run: |
+          ./build/reverse_pc_architecture_audit | tee evidence/architecture-bottlenecks.json
+          python3 -m json.tool evidence/architecture-bottlenecks.json > /dev/null
+      - name: Restored rigorous audit and dynamic refactorization
+        run: |
+          ./build/reverse_pc_rigorous_reduced | tee evidence/rigorous-reduced.json
+          python3 tests/rigor_cli.py ./build/reverse_pc build/rigor_data | tee evidence/rigorous-cli.json
+          ./build/reverse_pc_refactorization | tee evidence/refactorization.json
+          ./build/reverse_pc_history_transfer | tee evidence/history-transfer.json
+          ./build/reverse_pc_state_transfer | tee evidence/current-state-transfer.json
+          cp build/ether-compat/changes.diff evidence/ether-compat.diff
+      - name: Integrated authority, Born probabilities, XI and durable state
+        run: |
+          ./build/reverse_pc_integrated_correctness | tee evidence/integrated-correctness.json
+          python3 tests/integrated_cli.py ./build/reverse_pc evidence/integrated-cli ./build/reverse_pc_previous_cli --hard | tee evidence/integrated-cli.json
+      - name: Verify programmable XI over the live integrated core
+        run: |
+          ./build/reverse_pc_xi_machine | tee evidence/xi-machine.json
+          python3 tests/xi_machine_cli.py ./build/reverse_pc | tee evidence/xi-machine-cli.json
+          python3 -m json.tool evidence/xi-machine.json >/dev/null
+          python3 -m json.tool evidence/xi-machine-cli.json >/dev/null
+      - name: Large XI circuit matrix and matched performance comparisons
+        run: |
+          python3 scripts/integrated-matrix.py ./build/reverse_pc_integrated_large --legacy ./build/reverse_pc_legacy_large --parallel ./build/reverse_pc_parallel_observation --full --repeats 5 --checkpoint evidence/integrated-matrix-checkpoint.json > evidence/integrated-matrix.json
+          python3 -m json.tool evidence/integrated-matrix.json > /dev/null
+      - name: Exact binary Born sampling and preserved half-probability RNG
+        run: |
+          ./build/reverse_pc_born_sampling | tee evidence/born-sampling-tests.json
+          ./build/reverse_pc_born_sampling --benchmark | tee evidence/born-sampling-resources.json
+      - name: Certified unchanged cosets and allocation traffic
+        run: |
+          ./build/reverse_pc_clifford_cosets | tee evidence/clifford-cosets-tests.json
+          python3 scripts/compare-clifford-cosets.py ./build/reverse_pc_clifford_cosets --repeats 5 --checkpoint evidence/clifford-cosets-checkpoint.json > evidence/clifford-cosets.json
+          ./build/reverse_pc_coset_reference_large 1000 adversarial 17 65536 1 > evidence/coset-reference-integrated.json
+          ./build/reverse_pc_integrated_large 1000 adversarial 17 65536 1 > evidence/coset-optimized-integrated.json
+      - name: Full regression suites with ASan and UBSan
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: |
+          cmake -S . -B build-full-sanitized -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DCMAKE_CXX_FLAGS="-O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined" -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
+          cmake --build build-full-sanitized --parallel 2
+          ctest --test-dir build-full-sanitized --output-on-failure -E "speed_and_precision|universality_resources"
+          python3 tests/integrated_cli.py ./build-full-sanitized/reverse_pc evidence/integrated-cli-sanitized ./build-full-sanitized/reverse_pc_previous_cli --hard > evidence/integrated-cli-sanitized.json
+      - name: Compare the same workloads against the preserved main baseline
+        run: |
+          mkdir -p build/resource-baseline
+          git show e8a04e029adbeae3fc9bd963374d93d61f24f524:src/adaptive_reduced.hpp > build/resource-baseline/adaptive_reduced.hpp
+          g++ -std=c++17 -O3 -DNDEBUG -Ibuild/resource-baseline -Ideps/mundo-x/native/include tests/resource_probe.cpp -o build/resource-baseline/probe
+          python3 scripts/compare-resources.py build/resource-baseline/probe build/reverse_pc_resource_probe > evidence/resource-comparison.json
+      - name: Verify XI contract against unmodified pinned code and compare resources
+        run: |
+          python3 tests/compare_runtime.py build/reverse_pc_runtime_reference build/reverse_pc_runtime_contract | tee evidence/xi-contract.json
+          python3 scripts/compare-runtime-resources.py build/reverse_pc_runtime_reference build/reverse_pc_runtime_contract > evidence/xi-resources.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: REVERSE-PC-Two-Programs-Evidence
+          path: evidence/
+          retention-days: 30
+          if-no-files-found: warn

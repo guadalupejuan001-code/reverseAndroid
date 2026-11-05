@@ -1,0 +1,47 @@
+--- a/src/minimal_guest_simd.inc
++++ b/src/minimal_guest_simd.inc
+@@ -11,27 +11,28 @@
+     const unsigned lane_bits=8u<<size,index=immediate>>(size+1);
+     fp_access();const auto value=floating_.v[rn].lane(index,lane_bits);fp_set(rd,value,lane_bits);return true;
+   }
+-  // LD1/ST1 multiple structures: one through four consecutive V registers,
+-  // no offset or post-index. Transfers use the encoded element size, so
+-  // unaligned byte structures do not inherit a 16-byte scalar alignment rule.
++  // LD1/ST1 sequential registers and LD2/3/4-ST2/3/4 interleaved structures.
++  // Traverse memory in architectural element order; Q selects 64/128-bit vectors.
+   if((i&0xbf200000u)==0x0c000000u){
+     const bool post=i&0x00800000u,load=i&0x00400000u,wide=i&0x40000000u;
+     const unsigned operation=(i>>12)&15,element_bytes=1u<<((i>>10)&3),vector_bytes=wide?16:8;
+-    const unsigned count=operation==7?1:operation==10?2:operation==6?3:operation==2?4:0;
+-    if(!count||(!post&&rm))return false;
++    const bool interleaved=operation==0||operation==4||operation==8;
++    const unsigned count=operation==0?4:operation==4?3:operation==8?2:
++                         operation==7?1:operation==10?2:operation==6?3:operation==2?4:0;
++    if(!count||(!post&&rm)||(interleaved&&!wide&&element_bytes==8))return false;
+     fp_access();const auto base=reg(rn,64,true),increment=post?(rm==31?std::uint64_t(count*vector_bytes):reg(rm)):0;
++    const unsigned lanes=vector_bytes/element_bytes,total=count*lanes;
+     std::array<Vector128,4> values{};
+-    for(unsigned n=0;n<count;n++)for(unsigned offset=0;offset<vector_bytes;offset+=element_bytes)
+-      check_access(base+std::uint64_t(n)*vector_bytes+offset,element_bytes,!load);
+-    if(load){
+-      for(unsigned n=0;n<count;n++)for(unsigned offset=0;offset<vector_bytes;offset+=element_bytes)
+-        values[n].lane(offset/element_bytes,element_bytes*8,cpu_read(base+std::uint64_t(n)*vector_bytes+offset,element_bytes,result));
+-      for(unsigned n=0;n<count;n++)floating_.v[(rd+n)&31]=values[n];
+-    }else{
+-      for(unsigned n=0;n<count;n++)values[n]=floating_.v[(rd+n)&31];
+-      for(unsigned n=0;n<count;n++)for(unsigned offset=0;offset<vector_bytes;offset+=element_bytes)
+-        cpu_write(base+std::uint64_t(n)*vector_bytes+offset,values[n].lane(offset/element_bytes,element_bytes*8),element_bytes,result);
+-    }
++    // Preflight every transfer before any destination register or memory write.
++    for(unsigned k=0;k<total;k++)check_access(base+std::uint64_t(k)*element_bytes,element_bytes,!load);
++    if(!load)for(unsigned n=0;n<count;n++)values[n]=floating_.v[(rd+n)&31];
++    for(unsigned k=0;k<total;k++){
++      const unsigned n=interleaved?k%count:k/lanes,lane=interleaved?k/count:k%lanes;
++      const auto address=base+std::uint64_t(k)*element_bytes;
++      if(load)values[n].lane(lane,element_bytes*8,cpu_read(address,element_bytes,result));
++      else cpu_write(address,values[n].lane(lane,element_bytes*8),element_bytes,result);
++    }
++    if(load)for(unsigned n=0;n<count;n++)floating_.v[(rd+n)&31]=values[n];
+     if(post)set(rn,base+increment,64,true);return true;
+   }
+   // Scalar and Q memory operations use the same physical XI/Ether bytes.

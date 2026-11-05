@@ -1,0 +1,7 @@
+{
+  "suite": "xi_runtime_contract",
+  "byte_identical": true,
+  "transcript_bytes": 4534143,
+  "sha256": "906bc742e60d2413bbe8061c99309c589d15c7c4b1d8e897735f4c27affa0535",
+  "cases": 175
+}

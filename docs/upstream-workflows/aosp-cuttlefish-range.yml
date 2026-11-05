@@ -1,0 +1,68 @@
+name: REVERSE Cuttlefish ZIP byte range transport probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-cuttlefish-range.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  range-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - name: Get only tiny exact ranges of official 1.1GB AOSP image archive
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          url="https://ci.android.com/builds/submitted/16644040/aosp_cf_arm64_only_phone-userdebug/latest/aosp_cf_arm64_only_phone-img-16644040.zip"
+          curl --fail --silent --show-error --location --retry 1 --max-time 70 \
+            --max-filesize 131072 --range 0-127 -D evidence/head-http.txt \
+            "$url" -o evidence/first-128.bin
+          curl --fail --silent --show-error --location --retry 1 --max-time 70 \
+            --max-filesize 262144 --range -262144 -D evidence/tail-http.txt \
+            "$url" -o evidence/last-256k.bin
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const hdr=(path)=>{
+            const content=readFileSync(path,'utf8').trim();
+            const last=content.split(/\r?\n\r?\n/).at(-1)??'';
+            const m=/^HTTP\/[\d.]+\s+(\d+)/m.exec(last);
+            return {status:Number(m?.[1]||0),
+              content_range:/^content-range:\s*(.+)$/im.exec(last)?.[1]??null,
+              content_length:/^content-length:\s*(.+)$/im.exec(last)?.[1]??null,
+              content_type:/^content-type:\s*(.+)$/im.exec(last)?.[1]??null};
+          };
+          const first=readFileSync('evidence/first-128.bin');
+          const tail=readFileSync('evidence/last-256k.bin');
+          const start=hdr('evidence/head-http.txt'),end=hdr('evidence/tail-http.txt');
+          const tailSig=Buffer.from('504b0506','hex');
+          let eocd=-1;
+          for(let i=tail.length-22;i>=0;i--){
+            if(tail.subarray(i,i+4).equals(tailSig)){
+              const comment=tail.readUInt16LE(i+20);
+              if(i+22+comment===tail.length){eocd=i;break;}
+            }
+          }
+          const report={
+            official_build:'16644040',official_target:'aosp_cf_arm64_only_phone-userdebug',
+            first_http:start,last_http:end,first_bytes:first.length,last_bytes:tail.length,
+            zip_local_header_magic:first.subarray(0,4).toString('hex'),
+            eocd_in_tail:eocd>=0,
+            zip_64_indicator:eocd>=0?tail.readUInt32LE(eocd+12)===0xffffffff:null,
+            android_boot:false,android_init_observed:false,adb:false
+          };
+          writeFileSync('evidence/range-report.json',JSON.stringify(report,null,2)+'\n');
+          console.log(JSON.stringify(report,null,2));
+          if(start.status!==206||end.status!==206||
+            first.subarray(0,4).toString('hex')!=='504b0304'||eocd<0)
+            throw Error('ZIP range access/format is not available; refuse unbounded full ZIP download');
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aosp-cuttlefish-arm64-range-proof
+          path: evidence/range-report.json
+          retention-days: 7

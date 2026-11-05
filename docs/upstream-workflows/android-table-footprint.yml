@@ -1,0 +1,90 @@
+name: Android page-table footprint correctness
+on:
+  pull_request:
+    paths:
+      - 'src/minimal_guest*'
+      - 'tests/minimal_guest_system_test.cpp'
+      - 'tools/android_kernel_observer.mjs'
+      - '.github/workflows/android-table-footprint.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-runtime-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-android-kernel-pairs-continuation
+          run-id: 40817697618
+          github-token: ${{ github.token }}
+          path: input
+      - name: Build current and exact original CPU
+        run: |
+          set -euo pipefail
+          mkdir -p build/original evidence
+          node tools/audit_gki_rvg.mjs input/current.rvg f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8 4f139751053c39bc1d33c7012fe1d61a8135f002c67be6f0466b3e8f97e2eda3 > evidence/input.json
+          git show 43a9635c00c8263a1ba419eda6ef07f35844472d:src/minimal_guest.hpp > build/original/minimal_guest.hpp
+          git show 43a9635c00c8263a1ba419eda6ef07f35844472d:src/minimal_guest_system.inc > build/original/minimal_guest_system.inc
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe-new
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Ibuild/original -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/probe-original
+          g++ -std=c++17 -O1 -fsanitize=undefined -fno-sanitize-recover=all -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/native-system
+          build/native-system > evidence/native-system.json
+          jq -e '.checks>=1989 and .existing_quantum_qubits==4096' evidence/native-system.json
+      - name: Compare genuine states in ABBA order
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess,json,hashlib
+          p=Path('evidence');rows=[]
+          for i,kind in enumerate(['original','new','new','original']):
+              out=p/f'abba-{i}.rvg'
+              r=subprocess.run([f'build/probe-{kind}','input/current.rvg','1000000',str(out),'--chunk=10000'],capture_output=True,text=True,check=True)
+              d=json.loads(r.stdout);(p/f'abba-{i}.json').write_text(r.stdout)
+              rows.append({'kind':kind,'sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'instructions':d['guest']['instructions'],'ns':d['host_elapsed_ns']})
+          assert len({r['sha256'] for r in rows})==1
+          (p/'abba.json').write_text(json.dumps({'rows':rows,'states_identical':True})+'\n')
+          PY
+          build/probe-new input/current.rvg 500000 build/half.rvg --chunk=10000 > evidence/half.json
+          build/probe-new build/half.rvg 500000 evidence/resumed.rvg --chunk=10000 > evidence/resumed.json
+          cmp evidence/resumed.rvg evidence/abba-1.rvg
+          SHA=$(sha256sum evidence/resumed.rvg | cut -d' ' -f1)
+          node tests/android_kernel_observer_cli.mjs evidence/resumed.rvg evidence/resumed.json "$SHA" > evidence/observer-replay.json
+          node tools/android_kernel_observer.mjs evidence/resumed.rvg "$SHA" > evidence/observer.json
+      - name: Prove that the nonlocal quantum guard is necessary
+        run: |
+          set -euo pipefail
+          mkdir -p build/no-guard
+          cp src/minimal_guest_system_demo.hpp build/no-guard/
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('src/minimal_guest.hpp').read_text()
+          line='    if(runtime_.memory().stats().quantum_bindings){invalidate_translation_hints();return;}\n'
+          assert s.count(line)==1
+          Path('build/no-guard/minimal_guest.hpp').write_text(s.replace(line,''))
+          PY
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Ibuild/no-guard -Isrc tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/no-guard-test
+          if build/no-guard-test > evidence/no-guard.stdout 2> evidence/no-guard.stderr; then
+            echo 'The regression did not reproduce without its required guard' >&2
+            exit 1
+          fi
+          grep -F 'remote quantum alias retained a stale PTE hint' evidence/no-guard.stderr
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-android-table-footprint-evidence
+          path: evidence/
+          retention-days: 14

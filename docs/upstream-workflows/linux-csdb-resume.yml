@@ -1,0 +1,81 @@
+name: REVERSE XI CSDB Linux /init continuation
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/linux-csdb-resume.yml'
+      - 'src/minimal_guest.hpp'
+      - 'tests/minimal_guest_system_test.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  csdb-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-linux-eret-checkpoint
+          run-id: 40778832975
+          github-token: ${{ github.token }}
+          path: prior
+      - name: Compile original XI/Ether and validate pinned input
+        run: |
+          set -euo pipefail
+          mkdir -p build csdb-evidence
+          printf '%s  %s\n' '3eeae0765fda668d18e48b19794890a0dbe08bad89e330de014d4bdfd409100f' 'prior/current.rvg' | sha256sum -c -
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/native-system
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/linux-probe
+      - name: Verify CSDB memory-order semantics and all ARM64 system regression tests
+        run: |
+          set -euo pipefail
+          timeout 180 build/native-system | tee csdb-evidence/native.json
+          jq -e '.system=="own-EL1-MMU-IRQ-EL0-SVC" and .existing_quantum_qubits==4096' csdb-evidence/native.json >/dev/null
+      - name: Replay the exact Linux CSDB after real EL0 /init entry
+        run: |
+          set -euo pipefail
+          timeout 120 build/linux-probe prior/current.rvg 1 csdb-evidence/after-csdb.rvg > csdb-evidence/first.json
+          jq -e '.initial_instructions==29474606 and
+                  .guest.instructions==29474607 and
+                  .guest.pc=="0xffffffc00801a16c" and
+                  .guest.exceptions==5671 and
+                  .stop_reason=="instruction_budget" and
+                  .adaptive_classical_storage and
+                  .guest.max_delta_overrides==0' csdb-evidence/first.json
+          cp csdb-evidence/after-csdb.rvg csdb-evidence/current.rvg
+      - name: Continue Linux until real /init marker or next exact architectural stop
+        run: |
+          set -euo pipefail
+          printf '## Linux after CSDB\n\n| Batch | Instructions | Exceptions | Stop | /init confirmed |\n|---|---:|---:|---|---|\n' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 8); do
+            timeout 210 build/linux-probe csdb-evidence/current.rvg 250000 csdb-evidence/next.rvg > "csdb-evidence/step-$i.json"
+            jq -e '.adaptive_classical_storage and .guest.max_delta_overrides==0' "csdb-evidence/step-$i.json" >/dev/null
+            total=$(jq -r '.guest.instructions' "csdb-evidence/step-$i.json")
+            errors=$(jq -r '.guest.exceptions' "csdb-evidence/step-$i.json")
+            reason=$(jq -r '.stop_reason' "csdb-evidence/step-$i.json")
+            witness=$(jq -r '.linux_userspace_init_observed' "csdb-evidence/step-$i.json")
+            printf '| %s | %s | %s | %s | %s |\n' "$i" "$total" "$errors" "$reason" "$witness" >> "$GITHUB_STEP_SUMMARY"
+            mv csdb-evidence/next.rvg csdb-evidence/current.rvg
+            if [[ "$reason" != instruction_budget || "$witness" == true ]]; then
+              jq '{stop_reason,next_instruction,console,linux_userspace_init_observed,guest:{pc:.guest.pc,instructions:.guest.instructions,exception_level:.guest.exception_level,exceptions:.guest.exceptions}}' "csdb-evidence/step-$i.json" > csdb-evidence/next-blocker.json
+              break
+            fi
+          done
+          sha256sum csdb-evidence/current.rvg > csdb-evidence/current.sha256
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-linux-csdb-checkpoint
+          path: csdb-evidence/
+          retention-days: 14

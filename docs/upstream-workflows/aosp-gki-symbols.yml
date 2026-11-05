@@ -1,0 +1,99 @@
+name: REVERSE pinned GKI symbol-map diagnostic (read only)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-gki-symbols.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  symbols:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - name: Retrieve and hash official same-build ARM64 GKI System.map
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          curl --fail --location --silent --show-error --retry 2 --max-time 90 \
+            https://ci.android.com/builds/submitted/16707926/kernel_aarch64/latest/raw/System.map \
+            -o evidence/System.map
+          test "$(stat -c '%s' evidence/System.map)" -gt 100000
+          test "$(stat -c '%s' evidence/System.map)" -lt 25000000
+          sha256sum evidence/System.map > evidence/system-map.sha256
+          grep -Eq '^[[:xdigit:]]{16} [[:alpha:]] ' evidence/System.map
+      - name: Identify actual code PC and changing kernel data pointer
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE' > evidence/symbol-context.json
+          import {readFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const bytes=readFileSync('evidence/System.map');
+          const lines=bytes.toString('utf8').split('\n');
+          const symbols=[];
+          for(const line of lines){
+            const match=/^([0-9a-fA-F]{16})\s+(\S)\s+(\S+)/.exec(line);
+            if(match)symbols.push({address:BigInt('0x'+match[1]),
+              type:match[2],name:match[3]});
+          }
+          if(symbols.length<100)throw Error('System.map has too few symbols');
+          symbols.sort((a,b)=>a.address<b.address?-1:a.address>b.address?1:0);
+          const nearest = address => {
+            const target=BigInt(address);let low=0,high=symbols.length;
+            while(low<high){
+              const mid=(low+high)>>1;
+              if(symbols[mid].address<=target)low=mid+1;else high=mid;
+            }
+            return low?{
+              name:symbols[low-1].name,type:symbols[low-1].type,
+              start:'0x'+symbols[low-1].address.toString(16),
+              offset_bytes:(target-symbols[low-1].address).toString(),
+              next_symbol:low<symbols.length?{
+                name:symbols[low].name,
+                address:'0x'+symbols[low].address.toString(16)}:null
+            }:null;
+          };
+          const related=symbols.filter(s=>/alternat|altinstr|__alt_instruct|patch_text/i.test(s.name))
+            .map(s=>({name:s.name,address:'0x'+s.address.toString(16)}));
+          console.log(JSON.stringify({
+            status:'independent_same_build_symbol_lookup',
+            official_build:'16707926/kernel_aarch64',
+            system_map_sha256:createHash('sha256').update(bytes).digest('hex'),
+            symbols:symbols.length,
+            kernel_pc:'0xffffffc0090135fc',
+            pc_symbol:nearest('0xffffffc0090135fc'),
+            x19_first:'0xffffffc009d666d0',
+            x19_last:'0xffffffc009f01484',
+            data_start:nearest('0xffffffc009d666d0'),
+            data_end:nearest('0xffffffc009f01484'),
+            post_eh_frame:{
+              checkpoint_sha256:'7bfbdb74a4cdcea31167f00202edafb9265406c0c7dbc2f7cb1e5c6c3d93577f',
+              total_instructions:59604096,
+              pc_after_49m:nearest('0xffffffc008fe09c4'),
+              pc_after_51m:nearest('0xffffffc0082b42fc'),
+              pc_after_53m:nearest('0xffffffc0086d29c0'),
+              pc_after_59m:nearest('0xffffffc0086d2a60')
+            },
+            alternative_symbols:related.slice(0,80),
+            android_init_observed:false,adb:false
+          },null,2));
+          NODE
+          cat evidence/symbol-context.json
+          {
+            echo '## GKI kernel code diagnostic — official build 16707926'
+            echo ''
+            echo 'No Android init/vendor partitions and no guest boot asserted.'
+            echo ''
+            jq '{pc_symbol,data_start,data_end,post_eh_frame}' evidence/symbol-context.json
+            cat evidence/system-map.sha256
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-gki-symbol-context
+          path: |
+            evidence/symbol-context.json
+            evidence/system-map.sha256
+          retention-days: 7

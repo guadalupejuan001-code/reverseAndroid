@@ -1,0 +1,8 @@
+{
+  "schema": "reverse-profile-resume-contract-v1",
+  "source_commit": "1d4201daec21578be4d4cc7b325b5e4bbea0eee0",
+  "checkpoint_sha256": "3a4b6b0f8e1e522c43f03165f8378065cfa2a2daa2ba475e5e549a5a7815f9cb",
+  "report_sha256": "4ca7e46643d5ea0c16ee02662c16ade4c8bb0f95c2139203dc105a6363094e24",
+  "result_sha256": "59c5c3a1bd46e3a28112d8ee0cecaf1b370422d6a9ef82f6404cba444380aeaa",
+  "process_sha256": "4f0a3feb38adfa07ba26ec960a3b45de15ed5ba84df8823adb510c64c6877892"
+}

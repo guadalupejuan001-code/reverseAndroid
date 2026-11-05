@@ -1,0 +1,156 @@
+name: Android C35 genuine continuation from verified C34
+'on':
+  pull_request:
+    types: [synchronize]
+    # Deliberately do NOT run while C34 is still executing.
+    # Create this release-gate file ONLY after C34 run 41345457550
+    # finishes successfully and its artifacts are independently validated.
+    paths:
+      - docs/ANDROID_C35_EXECUTION_LAUNCH.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  c34-to-c35:
+    if: github.event.pull_request.head.ref == 'experiment/android-c35-source-gate-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Prove C35 changed no virtual CPU, kernel, guest disk, XI ISA or PCI
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c35-diagnostics build
+          changes=$(git diff --name-only 75f92559d488ca13f81e51acc8157aa650ff86e0 HEAD -- src third_party scripts patches tools/guest_c27_profile_resume.cpp tools/guest_budget_cycles.hpp tools/guest_checkpoint_frame.cpp)
+          test -z "$changes"
+          node --test tests/android_c35_source_gate.test.mjs tests/android_c35_stage.test.mjs tests/android_c34_stage.test.mjs tests/android_c33_stage.test.mjs tests/android_framework_evidence.test.mjs tests/android_c27_profile_resume.test.mjs > evidence/c35-diagnostics/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c34-authenticated-continuation
+          run-id: 41345457550
+          github-token: ${{ github.token }}
+          path: source-c34
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c34-diagnostics
+          run-id: 41345457550
+          github-token: ${{ github.token }}
+          path: source-c34-diagnostics
+      - name: Independently authenticate C34 four-file checkpoint and stage
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c34/output-contract.json source-c34 > evidence/c35-diagnostics/source-preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {admitC34Source,C34_PRODUCER} from './tools/android_c35_source_gate.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const contract=read('source-c34/output-contract.json');
+          const admitted=admitC34Source({
+            contract,report:read('source-c34/current.json'),boundary:read('source-c34/boundary-summary.json'),
+            stage:read('source-c34-diagnostics/actual-stage.json'),authenticated:true
+          });
+          assert.equal(admitted.source_run_id,C34_PRODUCER.run_id);
+          assert.equal(admitted.source_commit,C34_PRODUCER.commit);
+          assert.equal(readFileSync('source-c34/source-commit.txt','utf8').trim(),C34_PRODUCER.commit);
+          writeFileSync('evidence/c35-diagnostics/admitted-c34-source.json',JSON.stringify(admitted,null,2)+'\n');
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-tested-build
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: pinned-build
+      - name: Build exact XI Ether guest host tools including already tested C33 SIMD
+        run: |
+          set -euo pipefail
+          tar -xzf pinned-build/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c35-native
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/c35-frame
+          build/c35-native --pins > evidence/c35-diagnostics/native-pins.json
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';
+          verifyNativePins(JSON.parse(readFileSync('evidence/c35-diagnostics/native-pins.json','utf8')));
+          NODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Restore original C27 immutable disk and fresh guest-formatted userdata layout
+        run: |
+          set -euo pipefail
+          ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c35-diagnostics/media.json
+          rm -rf disk-input
+      - name: Execute native Android from authenticated C34 with three bounded CPU budgets
+        run: |
+          set -euo pipefail
+          SOURCE_COMMIT=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs source-c34/output-contract.json source-c34 build/c35-native new-media/android-c27.raw build/c35-frame evidence/c35 "$SOURCE_COMMIT" 240000 450000000 3 > evidence/c35-diagnostics/native-sequence.json
+      - name: Validate C35 checkpoint and actual live service/display evidence
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {preflight} from './tools/android_c27_profile_resume.mjs';
+          import {classifyC35} from './tools/android_c35_stage.mjs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const sourceContract=read('source-c34/output-contract.json');
+          const outputContract=read('evidence/c35/output-contract.json');
+          preflight(sourceContract,'source-c34');
+          preflight(outputContract,'evidence/c35');
+          const stage=classifyC35({
+            sourceContract,sourceReport:read('source-c34/current.json'),
+            sourceBoundary:read('source-c34/boundary-summary.json'),
+            sourceStage:read('source-c34-diagnostics/actual-stage.json'),
+            outputContract,report:read('evidence/c35/current.json'),
+            result:read('evidence/c35/result.json'),
+            host:read('evidence/c35/process-outcome.json'),
+            boundary:read('evidence/c35/boundary-summary.json'),
+            kernel:read('evidence/c35/kernel-observation.json'),
+            frame:read('evidence/c35/checkpoint-frame.json'),
+            framework:read('evidence/c35/runtime-evidence.json'),
+            sourceAuthenticated:true,outputAuthenticated:true
+          });
+          assert.equal(stage.source_c34_authenticated,true);
+          assert.equal(stage.output_c35_authenticated,true);
+          assert.ok(stage.added_instructions>0);
+          assert.equal(stage.android_display_content_verified,false);
+          writeFileSync('evidence/c35-diagnostics/actual-stage.json',JSON.stringify(stage,null,2)+'\n');
+          console.log(JSON.stringify(stage,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c35-diagnostics
+          path: |-
+            evidence/c35-diagnostics/
+            evidence/c35/continuation-error.txt
+            evidence/c35/boundary-summary.json
+            evidence/c35/recovery-prefix.json
+          if-no-files-found: warn
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: success()
+        with:
+          name: reverse-c35-authenticated-continuation
+          path: |-
+            evidence/c35/
+            !evidence/c35/native/journal/**
+            !evidence/c35/native/current.rvg
+            !evidence/c35/native/frame.ppm
+            !evidence/c35/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90

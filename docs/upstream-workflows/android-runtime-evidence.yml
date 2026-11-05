@@ -1,0 +1,22 @@
+name: Android runtime evidence policy
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/android-runtime-evidence.yml'
+      - 'tools/android_framework_evidence.mjs'
+      - 'tests/android_framework_evidence.test.mjs'
+permissions:
+  contents: read
+jobs:
+  readonly-runtime-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - name: Validate runtime evidence without executing Android
+        run: node --test tests/android_framework_evidence.test.mjs tests/android_guest_outcome.test.mjs tests/android_boot_property.test.mjs tests/android_live_property.test.mjs

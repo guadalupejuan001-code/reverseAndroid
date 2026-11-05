@@ -1,0 +1,83 @@
+--- a/src/minimal_guest_simd.inc
++++ b/src/minimal_guest_simd.inc
+@@ -17,6 +17,20 @@
+     // Scalar writes clear the upper 64 bits and leave NZCV/FPCR/FPSR unchanged.
+     fp_set(rd,source.low+source.high,64);return true;
+   }
++  if((i&0xbf40d000u)==0x0d40c000u){ // LD1R/LD2R/LD3R/LD4R, replicate one element per vector.
++    const bool post=i&0x00800000u,wide=i&0x40000000u;
++    if(!post&&rm)return false;
++    const unsigned count=1+((i>>21)&1)+2*((i>>13)&1),bytes=1u<<((i>>10)&3),lanes=(wide?16:8)/bytes;
++    fp_access();const auto base=reg(rn,64,true),increment=post?(rm==31?std::uint64_t(count*bytes):reg(rm)):0;
++    std::array<Vector128,4> values{};
++    for(unsigned n=0;n<count;n++)check_access(base+std::uint64_t(n)*bytes,bytes,false);
++    for(unsigned n=0;n<count;n++){
++      const auto x=cpu_read(base+std::uint64_t(n)*bytes,bytes,result);
++      for(unsigned lane=0;lane<lanes;lane++)values[n].lane(lane,bytes*8,x);
++    }
++    for(unsigned n=0;n<count;n++)floating_.v[(rd+n)&31]=values[n];
++    if(post)set(rn,base+increment,64,true);return true;
++  }
+   // LD1/ST1 sequential registers and LD2/3/4-ST2/3/4 interleaved structures.
+   // Traverse memory in architectural element order; Q selects 64/128-bit vectors.
+   if((i&0xbf200000u)==0x0c000000u){
+@@ -202,10 +216,24 @@
+     }
+     if(q)floating_.v[rd].high=result.low;else floating_.v[rd]={result.low,0};return true;
+   }
+-  if((i&0xbf3ffc00u)==0x0e209800u){ // CMEQ vector, immediate zero.
++  const auto compare_zero=i&0xbf3ffc00u;
++  if(compare_zero==0x0e208800u||compare_zero==0x2e208800u||compare_zero==0x0e209800u||compare_zero==0x2e209800u||compare_zero==0x0e20a800u){ // CMGT/CMGE/CMEQ/CMLE/CMLT, signed comparisons with zero.
+     if(size==3&&!q)return false;fp_access();const auto source=floating_.v[rn];Vector128 value;
+-    for(unsigned n=0;n<width/element;n++)value.lane(n,element,source.lane(n,element)==0?UINT64_MAX:0);
+-    commit(value);return true;
++    for(unsigned n=0;n<width/element;n++){
++      const auto x=source.lane(n,element);const bool negative=x&(UINT64_C(1)<<(element-1));
++      const bool yes=compare_zero==0x0e208800u?!negative&&x:compare_zero==0x2e208800u?!negative:compare_zero==0x0e209800u?!x:compare_zero==0x2e209800u?negative||!x:negative;
++      value.lane(n,element,yes?UINT64_MAX:0);
++    }commit(value);return true;
++  }
++  if((i&0x9f3ffc00u)==0x0e303800u){ // SADDLV/UADDLV: widen and add all lanes into one scalar.
++    if(size==3||(size==2&&!q))return false;
++    fp_access();const auto source=floating_.v[rn];std::uint64_t sum=0;
++    for(unsigned n=0;n<width/element;n++){
++      auto x=source.lane(n,element);
++      if(!u&&(x&(UINT64_C(1)<<(element-1))))x|=~low_mask(element);
++      sum+=x;
++    }
++    fp_set(rd,sum,2*element);return true;
+   }
+   const auto minmax_across=i&0x9f3ffc00u;
+   if(minmax_across==0x0e30a800u||minmax_across==0x0e31a800u){ // S/UMAXV and S/UMINV across lanes.
+@@ -240,13 +268,28 @@
+       switch(size){case 0:return x^y;case 1:return (old&x)|(~old&y);case 2:return (old&~y)|(x&y);default:return (old&y)|(x&~y);}
+     };value.low=logic(a.low,b.low,d.low);value.high=logic(a.high,b.high,d.high);commit(value);return true;
+   }
++  const auto multiply_long=i&0x9f20fc00u;
++  if(multiply_long==0x0e20c000u||multiply_long==0x0e208000u||multiply_long==0x0e20a000u){ // S/UMULL, S/UMLAL, S/UMLSL, lower or upper source half.
++    if(size==3)return false;
++    fp_access();const auto a=floating_.v[rn],b=floating_.v[rm],old=floating_.v[rd];Vector128 value;
++    const unsigned lanes=64/element,first=q?lanes:0;
++    for(unsigned n=0;n<lanes;n++){
++      auto x=a.lane(first+n,element),y=b.lane(first+n,element);
++      if(!u){const auto sign=UINT64_C(1)<<(element-1);if(x&sign)x|=~low_mask(element);if(y&sign)y|=~low_mask(element);}
++      const auto product=x*y,accumulator=old.lane(n,2*element);
++      value.lane(n,2*element,multiply_long==0x0e20c000u?product:multiply_long==0x0e208000u?accumulator+product:accumulator-product);
++    }
++    // Q selects the narrow source half. Every destination is a full 128-bit vector.
++    floating_.v[rd]=value;return true;
++  }
+   const auto same=i&0x9f20fc00;
+-  if(same==0x0e208400||same==0x0e209c00||same==0x0e208c00||same==0x0e203400||same==0x0e203c00){
+-    if((element==64&&!q)||(same==0x0e209c00&&(u||size==3))||(same==0x0e208c00&&!u))return false;
+-    fp_access();const auto a=floating_.v[rn],b=floating_.v[rm];Vector128 value;
++  if(same==0x0e208400||same==0x0e209c00||same==0x0e209400||same==0x0e208c00||same==0x0e203400||same==0x0e203c00){
++    if((element==64&&!q)||(same==0x0e209c00&&(u||size==3))||(same==0x0e209400&&size==3)||(same==0x0e208c00&&!u))return false;
++    fp_access();const auto a=floating_.v[rn],b=floating_.v[rm],old=floating_.v[rd];Vector128 value;
+     for(unsigned lane=0;lane<width/element;++lane){const auto x=a.lane(lane,element),y=b.lane(lane,element);std::uint64_t out=0;
+       if(same==0x0e208400)out=u?x-y:x+y;
+       else if(same==0x0e209c00)out=x*y;
++      else if(same==0x0e209400)out=u?old.lane(lane,element)-x*y:old.lane(lane,element)+x*y;
+       else if(same==0x0e208c00)out=x==y?UINT64_MAX:0;
+       else{const auto sign=UINT64_C(1)<<(element-1);const auto ordered_x=u?x:x^sign,ordered_y=u?y:y^sign;
+         out=(same==0x0e203400?ordered_x>ordered_y:ordered_x>=ordered_y)?UINT64_MAX:0;}

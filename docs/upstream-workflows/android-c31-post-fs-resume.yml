@@ -1,0 +1,117 @@
+name: Android C31 genuine post-fs-data checkpoint continuation
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c31-post-fs-resume.yml
+      - docs/ANDROID_C31_POST_FS_CONTINUATION.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  resume-authenticated-c29:
+    if: github.event.pull_request.head.ref == 'experiment/android-c31-post-fs-data-resume-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Require unchanged XI Ether native CPU and run host regression tests
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c31-diagnostics build
+          git diff --exit-code 16d670048a2072862dbdb732c21444c9dc35575d HEAD -- src third_party scripts patches tools/guest_c27_profile_resume.cpp tools/guest_budget_cycles.hpp tools/guest_checkpoint_frame.cpp
+          node --test tests/android_c30_checkpoint.test.mjs tests/android_framework_evidence.test.mjs tests/android_c27_profile_resume.test.mjs tests/android_guest_outcome.test.mjs > evidence/c31-diagnostics/host-tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c29-budget-4
+          run-id: 41151900393
+          github-token: ${{ github.token }}
+          path: source-c29
+      - name: Authenticate C29 final CPU original and check post-fs source
+        run: |
+          set -euo pipefail
+          node tools/android_c30_checkpoint.mjs source-c29 > evidence/c31-diagnostics/input-diagnosis.json
+          node tools/android_c27_profile_resume.mjs preflight source-c29/output-contract.json source-c29 > evidence/c31-diagnostics/input-preflight.json
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Reconstruct exact C27 blank-data block image
+        run: |
+          set -euo pipefail
+          export ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node tools/android_c27_media.mjs "$ORIGINAL" new-media > evidence/c31-diagnostics/media-stdout.json
+          rm -rf disk-input
+      - name: Compile pinned native emulator and scanout observer
+        run: |
+          set -euo pipefail
+          tar -xzf source-c29/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c27_profile_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c31-native
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_checkpoint_frame.cpp build/softfloat/libreverse_softfloat.a -o build/c31-frame
+          build/c31-native --pins > evidence/c31-diagnostics/native-pins.json
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import {verifyNativePins} from './tools/android_c27_profile_resume.mjs';
+          verifyNativePins(JSON.parse(readFileSync('evidence/c31-diagnostics/native-pins.json')));
+          console.log('Original board, disk, RAM and timing pins verified');
+          NODE
+      - name: Resume the same original guest for one bounded observed CPU budget
+        run: |
+          set -euo pipefail
+          SOURCE_COMMIT=$(git rev-parse HEAD)
+          node tools/android_c27_sequence.mjs source-c29/output-contract.json source-c29 build/c31-native new-media/android-c27.raw build/c31-frame evidence/c31 "$SOURCE_COMMIT" 120000 300000000 1 > evidence/c31-diagnostics/sequence-summary.json
+      - name: Report actual guest progress and framework status
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const r=read('evidence/c31/boundary-summary.json');
+          assert.equal(r.clean_completed,true,'Cannot continue from a failed or nonterminal boundary');
+          assert.ok(r.instructions>13615798839,'No CPU progress');
+          const k=read('evidence/c31/kernel-observation.json');
+          const framework=read('evidence/c31/runtime-evidence.json');
+          const g=read('evidence/c31/current.json');
+          const s={clean_completed:true,source_checkpoint_sha256:'454e29a90cc1af34df95b2c60f1fc90d29927096c72be962e95b2e9fca16598d',
+           output_checkpoint_sha256:r.checkpoint_sha256,total_instructions:r.instructions,added_instructions:r.instructions-13615798839,
+           observed_process_count:k.task_count,current_task:k.current_task_details,
+           process_names:['zygote64','system_server','surfaceflinger'].filter(n=>k.tasks.some(t=>t.name===n&&t.exit_state===0)),
+           framework_runtime_verified:framework.framework_runtime_verified,
+           sys_boot_completed_live:framework.sys_boot_completed_live,
+           scanout_exported:framework.scanout_exported,
+           ready_for_visual_review:framework.ready_for_visual_review,
+           android_display_content_verified:false,
+           last_uart_lines:g.console.split(/\r?\n/).filter(Boolean).slice(-18).map(s=>s.slice(0,250))};
+          console.log(JSON.stringify(s,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c31-checks
+          path: evidence/c31-diagnostics/
+          if-no-files-found: warn
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c31-authenticated-continuation
+          path: |-
+            evidence/c31/
+            !evidence/c31/native/journal/**
+            !evidence/c31/native/current.rvg
+            !evidence/c31/native/frame.ppm
+            !evidence/c31/native/frame.pending.ppm
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6

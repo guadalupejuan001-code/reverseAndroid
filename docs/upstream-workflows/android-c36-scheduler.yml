@@ -1,0 +1,92 @@
+name: Android C36 diagnose guest scheduler and KeyMint thread
+'on':
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/android-c36-scheduler.yml
+      - tools/android_kernel_observer.mjs
+      - docs/ANDROID_C36_SCHEDULER.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-gki-scheduling:
+    if: github.event.pull_request.head.ref == 'fix/android-odsign-zygote-scheduling-20261101' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify diagnostic isolation and existing guest evidence checks
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c36-scheduler
+          changes=$(git diff --name-only 14df2df1020c75b38a38a05d17480bfcface228e HEAD -- src third_party scripts patches tools/guest_c27_profile_resume.cpp tools/guest_budget_cycles.hpp tools/guest_checkpoint_frame.cpp)
+          test -z "$changes"
+          node --check tools/android_kernel_observer.mjs
+          node --test tests/android_odsign_property_probe.test.mjs tests/android_boot_property.test.mjs tests/android_live_property.test.mjs tests/android_framework_evidence.test.mjs > evidence/c36-scheduler/tests.tap
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c35-authenticated-continuation
+          run-id: 41347214737
+          github-token: ${{ github.token }}
+          path: source-c35
+      - name: Authenticate C35 four-file contract and exact CPU boundary
+        run: |
+          set -euo pipefail
+          node tools/android_c27_profile_resume.mjs preflight source-c35/output-contract.json source-c35 > evidence/c36-scheduler/preflight.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync(p,'utf8'));
+          const c=read('source-c35/output-contract.json'),r=read('source-c35/current.json');
+          assert.equal(c.source_commit,'a2e1b145ff573ffd69ffc6a32c646de69cbe1e18');
+          assert.equal(c.checkpoint_sha256,'c4bd2ff6b33a3ec79ff7ced57e6e248c848e4b31374cc4a04dc46de8f36b6c8e');
+          assert.equal(r.guest.instructions,15317348839);
+          assert.equal(r.error,'');
+          NODE
+      - name: Read actual current hardware thread priority and scheduling policy
+        run: |
+          set -euo pipefail
+          node tools/android_kernel_observer.mjs source-c35/current.rvg c4bd2ff6b33a3ec79ff7ced57e6e248c848e4b31374cc4a04dc46de8f36b6c8e 1073741824 --scheduler-probe > evidence/c36-scheduler/full-kernel.json
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const k=JSON.parse(readFileSync('evidence/c36-scheduler/full-kernel.json','utf8'));
+          assert.equal(k.checkpoint_sha256,'c4bd2ff6b33a3ec79ff7ced57e6e248c848e4b31374cc4a04dc46de8f36b6c8e');
+          assert.equal(k.instructions,15317348839);
+          assert.equal(k.input_unchanged,true);
+          const p=k.scheduler_probe;
+          assert.equal(p.schema,'reverse-android-task-scheduler-readonly-v1');
+          assert.equal(p.current_task_verified,true);
+          assert.equal(p.read_only,true);
+          assert.equal(p.current.pid,409);
+          assert.equal(p.source_machine_ticks,'246990946');
+          assert.equal(p.timer_frequency_hz,1000000);
+          assert.equal(p.virtual_timer.control,1);
+          assert.equal(p.virtual_irq.distributor,1);
+          assert.equal(p.virtual_irq.cpu_interface,1);
+          assert.equal(p.virtual_irq.daif&0x80,0);
+          const summary={schema:'reverse-android-c36-scheduler-evidence-v1',
+            checkpoint_sha256:k.checkpoint_sha256,instructions:k.instructions,
+            current:p.current,pc_mapping:p.current_pc_mapping??null,pc_mapping_error:p.current_pc_mapping_error??null,service_leaders:p.observed_service_leaders,
+            timer:p.virtual_timer,interrupts:p.virtual_irq,read_only:true};
+          writeFileSync('evidence/c36-scheduler/summary.json',JSON.stringify(summary,null,2)+'\n');
+          console.log(JSON.stringify(summary,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c36-odsign-scheduler-evidence
+          path: |-
+            evidence/c36-scheduler/tests.tap
+            evidence/c36-scheduler/preflight.json
+            evidence/c36-scheduler/summary.json
+          if-no-files-found: warn
+          retention-days: 90

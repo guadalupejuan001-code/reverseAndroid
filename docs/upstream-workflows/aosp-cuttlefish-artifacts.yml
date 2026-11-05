@@ -1,0 +1,72 @@
+name: REVERSE official Cuttlefish ARM64 artifact endpoint probe
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-cuttlefish-artifacts.yml'
+      - 'docs/AOSP_CUTTLEFISH_INTEGRATION.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  endpoint-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - name: Probe official exact build 16644040 without downloading giant archives
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          node --input-type=module <<'NODE'
+          import {spawnSync} from 'node:child_process';
+          import {writeFileSync,readFileSync} from 'node:fs';
+          const build='16644040',target='aosp_cf_arm64_only_phone-userdebug';
+          const root='https://ci.android.com/builds/submitted/'+build+'/'+target+'/latest';
+          const paths=[
+            '/raw/aosp_cf_arm64_only_phone-img-'+build+'.zip',
+            '/aosp_cf_arm64_only_phone-img-'+build+'.zip',
+            '/raw/boot.img','/raw/init_boot.img','/raw/vendor_boot.img',
+            '/raw/cvd-host_package.tar.gz'
+          ];
+          const results=[];
+          for(let i=0;i<paths.length;i++){
+            const output='evidence/headers-'+i+'.txt';
+            const args=['--silent','--show-error','--location','--head',
+              '--max-time','25','--max-redirs','6','--output',output,
+              '--write-out','%{http_code}',root+paths[i]];
+            const run=spawnSync('curl',args,{encoding:'utf8',timeout:32000});
+            const data=run.status===0?readFileSync(output,'utf8'):'';
+            const last=data.trim().split(/\r?\n\r?\n/).at(-1)||'';
+            const hdr=(name)=>{
+              const m=new RegExp('^'+name+':\\s*(.+)$','im').exec(last);
+              return m?.[1].trim()||null;
+            };
+            const item={artifact:paths[i],http_status:Number(run.stdout?.trim()||0),
+              content_length:hdr('content-length'),accept_ranges:hdr('accept-ranges'),
+              content_type:hdr('content-type'),content_range:hdr('content-range'),
+              curl_exit:run.status,stderr:String(run.stderr||'').slice(0,160)};
+            results.push(item);
+          }
+          const found=results.filter(x=>x.http_status===200);
+          const report={official_target:target,official_build:build,
+            source_branch:'aosp-android-latest-release',
+            accepted_public_artifact_endpoints:found.length,
+            files:results,android_boot:false,adb:false};
+          writeFileSync('evidence/endpoint-probe.json',JSON.stringify(report,null,2)+'\n');
+          console.log(JSON.stringify(report,null,2));
+          if(found.length===0)process.exitCode=1;
+          NODE
+      - name: Record only what was actually accessible
+        if: always()
+        run: |
+          if test -f evidence/endpoint-probe.json; then
+            cat evidence/endpoint-probe.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo 'No image boot, /init or ADB is claimed.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aosp-cuttlefish-arm64-endpoint-probe
+          path: evidence/endpoint-probe.json
+          retention-days: 7

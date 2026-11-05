@@ -1,0 +1,87 @@
+{
+  "schema": "reverse-userdata-media-v1",
+  "status": "new_media_requires_fresh_boot",
+  "original_disk_sha256": "28303ac7b2832cbde4e1c56551bf81816b55bc946cc75a444f2605316ed97e1c",
+  "original_disk_bytes": 8738832384,
+  "userdata_source_sha256": "a7c744c13cc101ed66c29f672f92455547889cc586ce6d44fe76ae824958ea51",
+  "userdata_expanded_bytes": 2147483648,
+  "disk_sha256": "4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e",
+  "disk_bytes": 10888413184,
+  "preserved_partitions": [
+    {
+      "name": "boot_a",
+      "first": 2048,
+      "last": 133119,
+      "index": 0,
+      "sha256": "b6f1c12a695e99c761f6a23713f4601dba06e690e77acfb5d1906b0d32f5c967"
+    },
+    {
+      "name": "init_boot_a",
+      "first": 133120,
+      "last": 149503,
+      "index": 1,
+      "sha256": "c4f820039ef9c2d1957461f33916f4d24b94d7b866e03ff91dbd7e9f72793d29"
+    },
+    {
+      "name": "metadata",
+      "first": 149504,
+      "last": 280575,
+      "index": 2,
+      "sha256": "e574b788d99514e75bfda7e6330c4fb728e208fe6b19d709e18eeee3abe0f953"
+    },
+    {
+      "name": "super",
+      "first": 280576,
+      "last": 17057791,
+      "index": 3,
+      "sha256": "91effacdbc2170fe16269fb71666b739befe8b192e0dc049a2b11de3f093a017"
+    },
+    {
+      "name": "vbmeta_a",
+      "first": 17057792,
+      "last": 17057815,
+      "index": 4,
+      "sha256": "260e1e38e27f363342d2d2c5bde20e10b748924e821f202130ba755dd2388f1b"
+    },
+    {
+      "name": "vbmeta_system_a",
+      "first": 17059840,
+      "last": 17059847,
+      "index": 5,
+      "sha256": "898e1e0b3b1e369af1ad8e517b6b32ee1540cd0801757400e90b1c50c361c2dd"
+    },
+    {
+      "name": "vbmeta_system_dlkm_a",
+      "first": 17061888,
+      "last": 17061895,
+      "index": 6,
+      "sha256": "5625cc8cadf992f91f83aaebbab77a43b0de9968a95b1239568608d21d1ed358"
+    },
+    {
+      "name": "vbmeta_vendor_dlkm_a",
+      "first": 17063936,
+      "last": 17063943,
+      "index": 7,
+      "sha256": "ab774cc3996333dd814e760beb8144f5e1262f8335165abb05b664516fd63d61"
+    }
+  ],
+  "added_partitions": [
+    {
+      "name": "userdata",
+      "first": 17068032,
+      "last": 21262335
+    },
+    {
+      "name": "misc",
+      "first": 21262336,
+      "last": 21264383
+    }
+  ],
+  "source_payloads_preserved": true,
+  "old_snapshot_resume_allowed": false,
+  "android_boot_verified": false,
+  "avb_verified": false,
+  "userdata_input_policy": "new_blank_zero_2GiB_guest_formats_and_encrypts",
+  "official_userdata_source_preserved": true,
+  "cuttlefish_policy_reference": "google/android-cuttlefish@c857a805bd20fe32a791eb3552ed0c43d48b6452:base/cvd/cuttlefish/host/libs/config/data_image.cpp"
+}

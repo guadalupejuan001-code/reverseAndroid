@@ -1,0 +1,154 @@
+name: Preserve verified Android recovery media in a draft
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: ['.github/workflows/android-recovery-media.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: android-c21-recovery-draft
+  cancel-in-progress: false
+jobs:
+  preserve-verified-media:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.ref == 'fix/android-c22-continuation-20261030' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      RECOVERY_TAG: android-c21-recovery-20261030
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: reverse-original-disk-part-*
+          merge-multiple: true
+          run-id: 41074363920
+          github-token: ${{ github.token }}
+          path: recovery
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c21-fresh-apex-android
+          run-id: 41102829244
+          github-token: ${{ github.token }}
+          path: input-c21
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c20-userdata-media
+          run-id: 41099915731
+          github-token: ${{ github.token }}
+          path: input-media
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - name: Verify every compressed part, reconstructed base disk and actual C21 checkpoint
+        run: |
+          set -euo pipefail
+          mkdir -p evidence recovery/C21-healthy recovery/media
+          cat > recovery/original-parts.sha256 <<'SHA'
+          8a5b3cac0993344c83ff58285e5912843ea3fdfb17fa264f3ec16ab12b70bb5b  android-slot-a.raw.gz.part-00
+          2e7741b7f0d8a8c9a45682c6002db572cd65defc550849ac655eb3f7db8f25e0  android-slot-a.raw.gz.part-01
+          0018eb02ff9bec8dfee9c37327275500e698fa4ede647651568335a16e9a4446  android-slot-a.raw.gz.part-02
+          SHA
+          (cd recovery && sha256sum --check original-parts.sha256)
+          cat recovery/android-slot-a.raw.gz.part-{00,01,02} | gzip -dc | python3 -c '
+          import sys,hashlib,json
+          h=hashlib.sha256();n=0
+          for b in iter(lambda:sys.stdin.buffer.read(1048576),b""):h.update(b);n+=len(b)
+          assert n==8738832384 and h.hexdigest()=="28303ac7b2832cbde4e1c56551bf81816b55bc946cc75a444f2605316ed97e1c"
+          print(json.dumps({"original_disk_bytes":n,"original_disk_sha256":h.hexdigest()}))
+          ' > evidence/base-disk-verification.json
+          node tools/android_c22_result.mjs preflight input-c21 > evidence/c21-preflight.json
+          gzip -dc input-media/userdata.img.gz | sha256sum > evidence/userdata-source.sha256
+          grep '^860a526936e3c6ddf414ee8fbc84d20d718a363c2b8a5257aeb21527bdf0fba2 ' evidence/userdata-source.sha256
+          cp input-c21/current.rvg input-c21/current.json input-c21/result.json input-c21/process-outcome.json input-c21/profile.json input-c21/source-commit.txt input-c21/console-new.txt recovery/C21-healthy/
+          cp input-media/userdata.img.gz input-media/userdata-acquisition.json input-media/media.json recovery/media/
+          cp evidence/base-disk-verification.json recovery/media/
+          python3 - <<'PY'
+          import json,os,re
+          from pathlib import Path
+          sha=os.environ['SOURCE_COMMIT'];assert re.fullmatch('[0-9a-f]{40}',sha)
+          text='''REVERSE-PC: recuperación experimental C21
+
+          Arranque completo de Android, framework y pantalla todavía NO verificados.
+          Se conserva el estado real C21 con /init original, segunda etapa de init y
+          SELinux enforcing. Su parada fue un límite limpio de tiempo. C22 continúa
+          esa misma CPU; no reanudar los estados C19 que solicitaron reinicio.
+
+          Concatenar las partes 00, 01 y 02 en ese orden y descomprimir gzip para
+          recuperar el disco base original de 8.738.832.384 bytes. Exigir el SHA256
+          28303ac7b2832cbde4e1c56551bf81816b55bc946cc75a444f2605316ed97e1c.
+          El paquete C21 incluye userdata oficial y los informes/procedencia.
+          Crear el disco extendido con extendAndroidUserdataDisk; exigir SHA256
+          0e829fad2cd1cfef8ea707044270d97559127c6cd48bdf268e7eb5cf1b573ce6
+          y 17.330.864.128 bytes antes de reanudar C21-healthy/current.rvg.
+          No cambiar RAM, reloj, kernel, initrd o disco de la CPU reanudada.
+
+          AVB y SELinux siguen activos. No se sustituye XI/Ether por otro VMM.
+          El perfil HAL usa implementaciones locales por software de Cuttlefish.
+          Este borrador conserva datos de recuperación; no declara un producto
+          terminado ni soporte de juegos. El flujo no publica el borrador.
+          '''
+          text+='\nCódigo y procedimiento:\nhttps://github.com/'+os.environ['GITHUB_REPOSITORY']+'/tree/'+sha+'\n'
+          Path('recovery/LEEME.txt').write_text(text)
+          PY
+          tar -cJf recovery/REVERSE-C21-healthy-recovery.tar.xz -C recovery C21-healthy media LEEME.txt
+          (cd recovery && sha256sum android-slot-a.raw.gz.part-{00,01,02} REVERSE-C21-healthy-recovery.tar.xz LEEME.txt > SHA256SUMS)
+      - name: Create one reviewable draft and attach verified media without publishing
+        run: |
+          set -euo pipefail
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/releases?per_page=100" > evidence/existing-releases.json
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          releases=[r for page in json.loads(Path('evidence/existing-releases.json').read_text()) for r in page]
+          assert not any(r['tag_name']==os.environ['RECOVERY_TAG'] for r in releases),'Recovery draft already exists; inspect it before any further write.'
+          body=Path('recovery/LEEME.txt').read_text()
+          request={'tag_name':os.environ['RECOVERY_TAG'],'target_commitish':os.environ['SOURCE_COMMIT'],'name':'REVERSE Android C21: recuperación experimental','body':body,'draft':True,'prerelease':True,'generate_release_notes':False}
+          Path('evidence/draft-request.json').write_text(json.dumps(request))
+          PY
+          gh api --method POST "repos/$GITHUB_REPOSITORY/releases" --input evidence/draft-request.json > evidence/draft-created.json
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads(Path('evidence/draft-created.json').read_text());assert r['draft'] is True and r['tag_name']==os.environ['RECOVERY_TAG'] and r['target_commitish']==os.environ['SOURCE_COMMIT']
+          Path('evidence/release-id.txt').write_text(str(r['id']))
+          PY
+          gh release upload "$RECOVERY_TAG" recovery/android-slot-a.raw.gz.part-{00,01,02} recovery/REVERSE-C21-healthy-recovery.tar.xz recovery/SHA256SUMS recovery/LEEME.txt --repo "$GITHUB_REPOSITORY"
+          gh api "repos/$GITHUB_REPOSITORY/releases/$(cat evidence/release-id.txt)" > evidence/draft-complete.json
+          python3 - <<'PY'
+          import json,hashlib,os,subprocess,tempfile
+          from pathlib import Path
+          r=json.loads(Path('evidence/draft-complete.json').read_text());assert r['draft'] is True
+          expected=['android-slot-a.raw.gz.part-00','android-slot-a.raw.gz.part-01','android-slot-a.raw.gz.part-02','REVERSE-C21-healthy-recovery.tar.xz','SHA256SUMS','LEEME.txt']
+          assets={a['name']:a for a in r['assets']};assert set(assets)==set(expected)
+          proof=[]
+          for name in expected:
+              p=Path('recovery')/name;h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for b in iter(lambda:f.read(1048576),b''):h.update(b)
+              a=assets[name];assert a['state']=='uploaded' and a['size']==p.stat().st_size
+              if a.get('digest'):assert a['digest']=='sha256:'+h.hexdigest()
+              else:
+                  with tempfile.TemporaryDirectory() as temp:
+                      subprocess.run(['gh','release','download',os.environ['RECOVERY_TAG'],'--pattern',name,'--dir',temp,'--repo',os.environ['GITHUB_REPOSITORY']],check=True)
+                      remote=hashlib.sha256()
+                      with (Path(temp)/name).open('rb') as f:
+                          for b in iter(lambda:f.read(1048576),b''):remote.update(b)
+                      assert remote.hexdigest()==h.hexdigest()
+              proof.append({'name':name,'bytes':a['size'],'sha256':h.hexdigest(),'asset_id':a['id']})
+          result={'draft':True,'published':False,'release_id':r['id'],'html_url':r['html_url'],'assets':proof,'android_boot_verified':False}
+          Path('evidence/recovery-proof.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c21-draft-recovery-proof
+          path: evidence/
+          retention-days: 90
+          if-no-files-found: error

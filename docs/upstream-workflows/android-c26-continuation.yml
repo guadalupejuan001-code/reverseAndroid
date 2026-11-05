@@ -1,0 +1,203 @@
+name: Android C26 CMTST and exact C25 continuation with live checkpoints
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/android-c26-continuation.yml'
+      - 'tools/android_c26_contract.json'
+      - 'tools/guest_c26_resume.cpp'
+      - 'tools/android_c26_result.mjs'
+      - 'tools/android_c26_run.mjs'
+      - 'tests/minimal_guest_cmtst_test.cpp'
+      - 'tests/cmtst_encoding_test.mjs'
+      - 'tests/android_c26_result.test.mjs'
+      - 'src/minimal_guest_simd.inc'
+      - 'tools/android_profile_resume.mjs'
+      - 'tools/android_pin_checkpoint.mjs'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  continue-verified-c25-cmtst:
+    if: github.event.pull_request.head.ref == 'fix/android-c26-cmtst-20261030' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - name: Verify scoped ISA change and host transport
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/c26-media evidence/c26-boot build
+          git diff --exit-code b6e3f74a78a746fb1f5d559c2ddd9eb4238d4378 HEAD -- src third_party scripts patches ':(exclude)src/minimal_guest_simd.inc'
+          node --test tests/android_profile_resume.test.mjs tests/android_pin_checkpoint.test.mjs tests/rvg_memory_lines.test.mjs tests/android_boot_property.test.mjs tests/audit_gki_rvg.test.mjs tests/android_c26_result.test.mjs tests/android_live_property.test.mjs > evidence/c26-media/host-tests.tap
+          node --check tools/android_c26_run.mjs
+          git rev-parse HEAD > evidence/c26-media/source-commit.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c20-userdata-media
+          run-id: 41099915731
+          github-token: ${{ github.token }}
+          path: input-media
+      - name: Recover the exact official userdata and measured new media identity
+        run: |
+          set -euo pipefail
+          mkdir new-userdata
+          gzip -dc input-media/userdata.img.gz > new-userdata/userdata.img
+          echo '860a526936e3c6ddf414ee8fbc84d20d718a363c2b8a5257aeb21527bdf0fba2  new-userdata/userdata.img' | sha256sum --check
+          cp input-media/userdata-acquisition.json new-userdata/
+          cp input-media/userdata-acquisition.json input-media/userdata.img.gz evidence/c26-media/
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-android-c03-genuine-partition-disk
+          run-id: 40910284394
+          github-token: ${{ github.token }}
+          path: disk-input
+      - name: Add writable partitions and prove all original partition bytes remain identical
+        run: |
+          set -euo pipefail
+          export ORIGINAL=$(find disk-input -name android-slot-a.raw -print -quit)
+          test -n "$ORIGINAL"
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';import {extendAndroidUserdataDisk} from './tools/android_partition_disk.mjs';
+          const input=JSON.parse(readFileSync('new-userdata/userdata-acquisition.json'));
+          const r=await extendAndroidUserdataDisk(process.env.ORIGINAL,'new-userdata/userdata.img','android-c20.raw',{expectedUserdataSha256:input.partitions[0].sha256});
+          if(r.disk_sha256!=='0e829fad2cd1cfef8ea707044270d97559127c6cd48bdf268e7eb5cf1b573ce6'||r.disk_bytes!==17330864128)throw Error('New media differs from measured C20 identity');writeFileSync('evidence/c26-media/media.json',JSON.stringify(r,null,2)+'\n');console.log(JSON.stringify(r));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c26-continuation-media
+          path: evidence/c26-media/
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: reverse-c25-c24-continuation
+          run-id: 41129133213
+          github-token: ${{ github.token }}
+          path: input-profile
+      - name: Compile the verified continuation from the exact C25 contract
+        run: |
+          set -euo pipefail
+          tar -xzf input-profile/tested-source.tar.gz build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          cp tools/android_c26_contract.json input-contract.json
+          node tools/android_c26_result.mjs preflight input-profile > evidence/c26-media/input-preflight.json
+          cp input-profile/profile.json evidence/c26-boot/
+          g++ -std=c++17 -O1 -pthread -fsanitize=undefined -fno-sanitize-recover=all -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_cmtst_test.cpp build/softfloat/libreverse_softfloat.a -o build/c26-cmtst-test
+          build/c26-cmtst-test > evidence/c26-boot/cmtst.json
+          node tests/cmtst_encoding_test.mjs > evidence/c26-boot/cmtst-encoding.json
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_test.cpp build/softfloat/libreverse_softfloat.a -o build/c26-base-test
+          build/c26-base-test > evidence/c26-boot/base-regression.json
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc -Itools tools/guest_c26_resume.cpp build/softfloat/libreverse_softfloat.a -o build/c26-native
+          tar -czf evidence/c26-media/tested-source.tar.gz src tools tests scripts third_party patches build/ether-compat build/softfloat/libreverse_softfloat.a deps/mundo-x/native/include
+          sha256sum build/c26-native evidence/c26-media/tested-source.tar.gz > evidence/c26-media/build-sha256.txt
+          cp evidence/c26-media/source-commit.txt evidence/c26-boot/
+          cp evidence/c26-media/tested-source.tar.gz evidence/c26-boot/
+          cp evidence/c26-media/build-sha256.txt evidence/c26-media/input-preflight.json evidence/c26-media/media.json evidence/c26-boot/
+          build/c26-native --pins > evidence/c26-boot/compiled-native-pins.json
+          node tools/android_c26_result.mjs native-pins evidence/c26-boot/compiled-native-pins.json > evidence/c26-boot/compiled-pins-verification.json
+      - name: Start the native continuation under its bounded supervisor
+        run: |
+          set -euo pipefail
+          date +%s > build/c26-started.txt
+          nohup bash -c 'set +e; node tools/android_c26_run.mjs input-profile build/c26-native android-c20.raw evidence/c26-boot/native 900000 2000000000 > evidence/c26-boot/supervised-stdout.json 2> evidence/c26-boot/supervisor.log; cycle_exit=$?; printf "%s\n" "$cycle_exit" > evidence/c26-boot/runner-exit.pending; mv evidence/c26-boot/runner-exit.pending evidence/c26-boot/runner-exit.txt' </dev/null >/dev/null 2>&1 &
+          echo "$!" > build/c26-runner.pid
+          cat > build/c26-wait-prefix.mjs <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync as read,writeFileSync as write,existsSync,linkSync,statSync} from 'node:fs';import {join} from 'node:path';import {setTimeout as delay} from 'node:timers/promises';import {pinCheckpoint} from '../tools/android_pin_checkpoint.mjs';
+          const [output,elapsed]=process.argv.slice(2),minimumElapsedMs=Number(elapsed),root='evidence/c26-boot',journal=root+'/native/journal',c=JSON.parse(read('input-contract.json')),initial=JSON.parse(read('input-profile/current.json')).guest.instructions;
+          const sourceCommit=read('evidence/c26-media/source-commit.txt','utf8').trim(),deadline=Date.now()+16*60*1000;
+          for(;;){
+            if(minimumElapsedMs>60000&&existsSync(root+'/runner-exit.txt')){console.log('Native finished; preserve final canonical evidence');break;}
+            try{
+              if(existsSync(journal+'/latest.json')){
+                const pointer=JSON.parse(read(journal+'/latest.json'));assert.match(pointer.generation,/^generation-[1-9][0-9]*$/);const report=JSON.parse(read(join(journal,pointer.generation,'report.json')));
+                if(report.error||report.host_elapsed_ms>=minimumElapsedMs||existsSync(root+'/runner-exit.txt')){
+                  const result=pinCheckpoint(journal,output,{inputSha:c.checkpoint_sha256,experiment:'c26-c25-cmtst-continuation',sourceCommit,minimumInstructions:initial+1});
+                  if(result.status==='pinned'){
+                    const frame=root+'/native/frame.ppm';
+                    if(existsSync(frame)&&statSync(frame).size<=64*1024*1024){linkSync(frame,output+'/captured-frame.ppm');write(output+'/frame-observation.json',JSON.stringify({captured_by_same_native_continuation:true,not_bound_to_exact_checkpoint_boundary:true,android_display_content_requires_visual_review:true})+'\n');}
+                    console.log(JSON.stringify(result));break;
+                  }
+                }
+              }
+            }catch(e){if(e.code!=='ENOENT')throw e;}
+            assert.ok(!existsSync(root+'/runner-exit.txt'),'Native process ended without a valid observed generation');assert.ok(Date.now()<deadline,'Timed out waiting for a published native generation');await delay(2000);
+          }
+          NODE
+      - name: Verify and freeze the first minute of actual progress
+        continue-on-error: true
+        run: node build/c26-wait-prefix.mjs evidence/c26-observed-early 60000
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c26-observed-early
+          path: evidence/c26-observed-early/
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6
+      - name: Verify and freeze the first fifteen minutes of actual progress
+        continue-on-error: true
+        run: node build/c26-wait-prefix.mjs evidence/c26-observed-15m 900000
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c26-observed-15m
+          path: evidence/c26-observed-15m/
+          if-no-files-found: warn
+          retention-days: 90
+          compression-level: 6
+      - name: Wait for the same native CPU to finish its bounded continuation
+        if: always()
+        continue-on-error: true
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync,existsSync} from 'node:fs';import {setTimeout as delay} from 'node:timers/promises';
+          const deadline=Number(readFileSync('build/c26-started.txt','utf8').trim())*1000+70*60*1000,file='evidence/c26-boot/runner-exit.txt';
+          while(!existsSync(file)){assert.ok(Date.now()<deadline,'Native supervisor completion deadline');await delay(5000);}
+          const code=readFileSync(file,'utf8').trim();assert.equal(code,'0','Native continuation failed; inspect preserved result and checkpoint');
+          NODE
+      - name: Publish canonical final evidence without duplicating journal generations
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil,os,json,re
+          root=Path('evidence/c26-boot');native=root/'native'
+          if (native/'current.rvg').exists():
+              os.link(native/'current.rvg',root/'current.rvg')
+              for name in ['current.json','result.json','process-outcome.json','instruction-probe.json','native-pins.json','native-pins-verification.json','console-new.txt']:
+                  if (native/name).exists():shutil.copyfile(native/name,root/name)
+          elif (native/'journal/latest.json').exists():
+              p=json.loads((native/'journal/latest.json').read_text());assert re.fullmatch('generation-[1-9][0-9]*',p['generation'])
+              generation=native/'journal'/p['generation'];os.link(generation/'checkpoint.rvg',root/'recovery-prefix.rvg');shutil.copyfile(generation/'report.json',root/'recovery-prefix.json')
+          if (native/'frame.ppm').exists():os.link(native/'frame.ppm',root/'frame.ppm')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverse-c26-c25-continuation
+          path: |
+            evidence/c26-boot/
+            !evidence/c26-boot/native/journal/**
+            !evidence/c26-boot/native/current.rvg
+            !evidence/c26-boot/native/frame.ppm
+            !evidence/c26-boot/native/frame.pending.ppm
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 6
+      - name: Require genuine progress and preserve distinct framework/display evidence
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+          const read=p=>JSON.parse(readFileSync('evidence/c26-boot/'+p));
+          assert.equal(read('native/process-outcome.json').status,'process_completed');const r=read('native/result.json');assert.equal(r.execution_progress_accepted,true);assert.ok(r.advanced_instructions>0);assert.equal(r.guest_state_modified_before_resume,false);
+          console.log('Genuine C25 CMTST continuation preserved. Full Android framework/display success requires actual runtime evidence.');
+          NODE

@@ -1,0 +1,84 @@
+name: REVERSE XI Linux ERET userspace continuation
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/linux-eret-resume.yml'
+      - 'src/minimal_guest.hpp'
+      - 'tests/minimal_guest_system_test.cpp'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  eret-guest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: reverse-linux-sttr-checkpoint
+          run-id: 40778191523
+          github-token: ${{ github.token }}
+          path: previous
+      - name: Verify pinned 29,455,637-step Linux checkpoint and compile tests
+        run: |
+          set -euo pipefail
+          mkdir -p build eret-evidence
+          printf '%s  %s\n' 'bbf0d5fb96015045bae97444cf3328e5759ad75815a1fd869df4027ba4984777' 'previous/current.rvg' | sha256sum -c -
+          python3 scripts/prepare-ether-compat.py deps/mundo-x build/ether-compat
+          python3 scripts/build-softfloat.py
+          g++ -std=c++17 -O1 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tests/minimal_guest_system_test.cpp build/softfloat/libreverse_softfloat.a -o build/system-tests
+          g++ -std=c++17 -O2 -pthread -DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1 -Ibuild/ether-compat -Ideps/mundo-x/native/include -Isrc tools/guest_linux_probe.cpp build/softfloat/libreverse_softfloat.a -o build/linux-probe
+      - name: Validate SSBS ERET, EL0 stack, reserved-bit rejection and rollback
+        run: |
+          set -euo pipefail
+          timeout 180 build/system-tests | tee eret-evidence/native-system-tests.json
+          jq -e '.system=="own-EL1-MMU-IRQ-EL0-SVC" and .existing_quantum_qubits==4096' eret-evidence/native-system-tests.json >/dev/null
+      - name: Execute the exact Linux ERET from its last verified RVG
+        run: |
+          set -euo pipefail
+          timeout 120 build/linux-probe previous/current.rvg 1 eret-evidence/after-eret.rvg > eret-evidence/first.json
+          jq -e '.initial_instructions==29455637 and
+                  .guest.instructions==29455638 and
+                  .guest.exception_level==0 and
+                  .guest.pc=="0x210148" and
+                  .guest.exceptions==5664 and
+                  .stop_reason=="instruction_budget" and
+                  .adaptive_classical_storage' eret-evidence/first.json
+          cp eret-evidence/after-eret.rvg eret-evidence/current.rvg
+          printf 'Linux ERET returned from EL1 to actual EL0 at user PC 0x210148.\n' >> "$GITHUB_STEP_SUMMARY"
+      - name: Continue real Linux from first EL0 PC and record next blocker or /init
+        run: |
+          set -euo pipefail
+          printf '## Linux after ERET\n\n| Batch | Instructions | EL | Exceptions | Stop | /init |\n|---|---:|---:|---:|---|---|\n' >> "$GITHUB_STEP_SUMMARY"
+          for i in $(seq 1 8); do
+            timeout 210 build/linux-probe eret-evidence/current.rvg 250000 eret-evidence/next.rvg > "eret-evidence/step-$i.json"
+            jq -e '.adaptive_classical_storage and .guest.max_delta_overrides==0' "eret-evidence/step-$i.json" >/dev/null
+            count=$(jq -r '.guest.instructions' "eret-evidence/step-$i.json")
+            el=$(jq -r '.guest.exception_level' "eret-evidence/step-$i.json")
+            errors=$(jq -r '.guest.exceptions' "eret-evidence/step-$i.json")
+            reason=$(jq -r '.stop_reason' "eret-evidence/step-$i.json")
+            witness=$(jq -r '.linux_userspace_init_observed' "eret-evidence/step-$i.json")
+            printf '| %s | %s | %s | %s | %s | %s |\n' "$i" "$count" "$el" "$errors" "$reason" "$witness" >> "$GITHUB_STEP_SUMMARY"
+            mv eret-evidence/next.rvg eret-evidence/current.rvg
+            if [[ "$reason" != instruction_budget || "$witness" == true ]]; then
+              jq '{stop_reason,next_instruction,console,linux_userspace_init_observed,guest:{pc:.guest.pc,instructions:.guest.instructions,exception_level:.guest.exception_level,exceptions:.guest.exceptions}}' "eret-evidence/step-$i.json" > eret-evidence/next-blocker.json
+              break
+            fi
+          done
+          sha256sum eret-evidence/current.rvg > eret-evidence/current.sha256
+          printf 'Do not claim full Linux/Android boot without an actual guest /init marker.\n' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reverse-linux-eret-checkpoint
+          path: eret-evidence/
+          retention-days: 14

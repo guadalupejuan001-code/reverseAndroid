@@ -1,0 +1,23 @@
+{
+  "same_complete_guest_state": true,
+  "instructions": 5000000,
+  "source_checkpoint_sha256": "2e03e0aeb714368c5d8eb1e03c520d5b7bb333d9370fc5be722f5fff5750a6a8",
+  "final_snapshot_sha256": "8e19b2d92461898c57713f977bfc2c231e6e61bce199fe725983e6ee31af2989",
+  "o2_elapsed_ns": 6956477922,
+  "o3_native_elapsed_ns": 6503494889,
+  "ratio_o2_over_o3": 1.0696522470965841,
+  "benchmark_only": true,
+  "android_boot_verified": false,
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "flags_compared": [
+    "-O2",
+    "-O3 -march=native"
+  ],
+  "build_flags_changed": false,
+  "scope": "One local five-million-instruction diagnostic; not a new boot milestone or continuation source. Small timing difference does not justify a build-policy change.",
+  "benchmark_source_sha256": "677adb2a1d5c95c75ce24fa879e0a51cad4fd81ec3da703eddfafb6c96d05f08",
+  "binaries": {
+    "benchmark-o2": "8942fa194ff228884846d6eac42cfb1c6b9e160c962a66aee548b6d0fcd06903",
+    "benchmark-o3": "b004706752426308832a4252dd9e267d05551c6ca164e296717cb4d60b152bf2"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "prefs": {},
+  "space": 0,
+  "windows": [],
+  "files": [
+    {
+      "id": "personal",
+      "parent": null,
+      "type": "folder",
+      "name": "Personal",
+      "date": 123
+    },
+    {
+      "id": "projects",
+      "parent": null,
+      "type": "folder",
+      "name": "Proyectos",
+      "date": 123
+    },
+    {
+      "id": "resources",
+      "parent": null,
+      "type": "folder",
+      "name": "Recursos",
+      "date": 123
+    },
+    {
+      "id": "welcome",
+      "parent": "personal",
+      "type": "text",
+      "name": "Empieza aquí.txt",
+      "content": "Bienvenido a tu mesa de trabajo.\n\nEste espacio es tuyo: cambia el fondo, el color y la forma de las ventanas desde Personalizar.\n\nPuedes crear carpetas, escribir notas y abrir varias herramientas a la vez. Prueba a arrastrar una ventana desde su barra superior.\n\nLos documentos de esta mesa se guardan en la aplicación. Exporta un respaldo desde el Centro de control para conservar una copia.\n\nREVERSE — Un espacio por construir.",
+      "date": 123
+    },
+    {
+      "id": "ideas",
+      "parent": "projects",
+      "type": "text",
+      "name": "Ideas para mi escritorio.txt",
+      "content": "Mi próximo espacio\n\n¿Qué quiero tener siempre a mano?\n\n→ Mis proyectos\n→ Un lugar para mis ideas\n→ Herramientas que realmente use\n\nLo demás, lo iré diseñando.",
+      "date": 123
+    },
+    {
+      "id": "quick",
+      "parent": "personal",
+      "type": "text",
+      "name": "Primero, una idea.txt",
+      "content": "No tiene que estar todo definido.\n\nEmpieza con una idea pequeña.\nDale un lugar.\nHazla crecer.\n\n________________________\n\nMi siguiente paso…",
+      "date": 123
+    }
+  ]
+}

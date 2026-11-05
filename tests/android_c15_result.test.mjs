@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {acceptsProgress,checkInputHashes} from '../tools/android_c15_result.mjs';
+const good=()=>({stop_reason:'instruction_budget',error:'',advanced_instructions:1,guest:{halted:false,waiting:false}});
+test('a completed CPU budget with progress is accepted',()=>assert.equal(acceptsProgress(good(),{}),true));
+for(const why of ['architectural_stop','halted','guest_boot_failure','interrupted'])test('stop rejected: '+why,()=>{const r=good();r.stop_reason=why;assert.equal(acceptsProgress(r,{}),false);});
+for(const field of ['halted','waiting'])test('guest '+field+' is not completed boot',()=>{const r=good();r.guest[field]=true;assert.equal(acceptsProgress(r,{}),false);});
+for(const field of ['guest_terminal_failure','guest_reboot_requested'])test(field+' is not progress',()=>assert.equal(acceptsProgress(good(),{[field]:true}),false));
+test('zero advancement and instruction errors are rejected',()=>{const r=good();r.advanced_instructions=0;assert.equal(acceptsProgress(r,{}),false);r.advanced_instructions=1;r.error='fault';assert.equal(acceptsProgress(r,{}),false);});
+test('unrelated source bytes never pass the authentic input gate',()=>assert.throws(()=>checkInputHashes(Buffer.alloc(128),Buffer.from('{}'),Buffer.from('{}'))));

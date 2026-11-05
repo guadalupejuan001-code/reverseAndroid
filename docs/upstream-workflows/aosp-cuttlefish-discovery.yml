@@ -1,0 +1,68 @@
+name: REVERSE official Cuttlefish ARM64 build discovery (metadata only)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/aosp-cuttlefish-discovery.yml'
+      - 'docs/AOSP_CUTTLEFISH_INTEGRATION.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fetch official public Android CI branch status (no images yet)
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          url='https://ci.android.com/builds/branches/aosp-android-latest-release/status.json'
+          curl --fail --location --silent --show-error --retry 2 --max-time 60 \
+            --max-filesize 8000000 --header 'Accept: application/json' \
+            "$url" -o evidence/android-ci-status.json
+          sha256sum evidence/android-ci-status.json > evidence/android-ci-status.sha256
+          jq -e 'type=="object" and (.targets|type)=="array"' evidence/android-ci-status.json >/dev/null
+          node --input-type=module <<'NODE' | tee evidence/build-discovery.json
+          import {readFileSync} from 'node:fs';
+          const root=JSON.parse(readFileSync('evidence/android-ci-status.json','utf8'));
+          const list=root.targets??[];
+          const matched=list.filter(v=>{
+            const name=String(v.ID??v.id??v.name??v.target??'');
+            return /cf_arm64/i.test(name);
+          }).map(v=>({
+            id:String(v.ID??v.id??v.name??v.target??''),
+            last_known_good_build:String(v.last_known_good_build??''),
+            last_build:String(v.last_build??v.last_build_id??'')
+          }));
+          const preferred=matched.find(v=>/aosp_cf_arm64_only_phone-userdebug/i.test(v.id))
+            ??matched.find(v=>/aosp_cf_arm64_only_phone.*userdebug/i.test(v.id))
+            ??null;
+          console.log(JSON.stringify({
+            source:'https://ci.android.com/builds/branches/aosp-android-latest-release/status.json',
+            branch:'aosp-android-latest-release',reported_targets:list.length,
+            matched_arm64:matched.slice(0,40),preferred,
+            exact_arm64_userdebug_build_available:!!preferred&&/^\d{6,12}$/.test(preferred.last_known_good_build),
+            selected_build_id:preferred&&/^\d{6,12}$/.test(preferred.last_known_good_build)
+              ?preferred.last_known_good_build:null,
+            android_guest_boot:false,android_init_observed:false,adb:false
+          },null,2));
+          NODE
+          jq -e '.exact_arm64_userdebug_build_available and (.selected_build_id|test("^[0-9]+$"))' evidence/build-discovery.json >/dev/null
+      - name: Document the exact candidate without downloading multi-GB system images
+        run: |
+          set -euo pipefail
+          jq '{branch,preferred,selected_build_id,android_guest_boot,android_init_observed}' \
+            evidence/build-discovery.json >> "$GITHUB_STEP_SUMMARY"
+          echo 'The official build is not assumed to match the previously tested GKI build 16707926.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Boot/init_boot/vendor_boot/super partitions have not yet been downloaded or executed.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aosp-cuttlefish-arm64-build-discovery
+          path: |
+            evidence/build-discovery.json
+            evidence/android-ci-status.sha256
+          retention-days: 7
