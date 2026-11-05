@@ -1,12 +1,5 @@
-name: Android C72 verified JIT scheduling and complete boot
+name: Android C72 recorded guest priority replay
 'on':
-  push:
-    branches:
-    - main
-    paths:
-    - .github/workflows/android-c72-boot-campaign.yml
-    - state/experiments/c72-plan.json
-    - tools/reverseandroid-campaign-stage.mjs
   workflow_dispatch: null
 permissions:
   contents: read

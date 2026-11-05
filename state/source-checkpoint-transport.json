@@ -5,17 +5,17 @@
     {
       "file": "checkpoint.part-000",
       "bytes": 209715200,
-      "sha256": "ad9c326aa6553432f6d5021154163f48ed3d00eac7fa793605ae3c95685d6e6c"
+      "sha256": "34d36a6476015e13c0c7c422111ae89a37aa8c04a3c1536291f03b0430b805d4"
     },
     {
       "file": "checkpoint.part-001",
       "bytes": 209715200,
-      "sha256": "514c2587e2d4e51866783622b046f7cc276c64183beb42dd8e4465301449ebdd"
+      "sha256": "66608796ec344a3f9b3baf995af586c44cb1d603ea94fb43ba87fad779d6de41"
     },
     {
       "file": "checkpoint.part-002",
-      "bytes": 175770820,
-      "sha256": "be740e937d63031e352c27db7ab361a5c95a91b705da2b1302c1c5fbc9212ce2"
+      "bytes": 182818018,
+      "sha256": "001d55d2a452f973b2f98a45c34ff42ca273bc00b4db3c28bffddfac902b4684"
     }
   ],
   "source_contract": {
@@ -23,15 +23,15 @@
     "root_checkpoint_sha256": "9db40b80214344583f855ccc777eb74963ece41ca5a1afab8de0737507f0e939",
     "source_commit": "a889a01a44c7dc7aed3600aa37cf4a3be9d049c9",
     "host_snapshot_transport_bytes": 2147483648,
-    "checkpoint_sha256": "0c0a0aed62131eb50dbaf092e1c27ef34af1a10b3dc08578b0d8fa4e306e8d51",
-    "report_sha256": "5dd3fc3962f98cec15c289fc4b98f64595a7802a6d9d1e0c45b8374d7718ebda",
-    "result_sha256": "fd212f96576f2f5ac33095a1e0afbf52408827e1f0169cdfe77ea825d457913f",
-    "process_sha256": "be079a356f22002a347b79a89bec6f5bd5267d284e5bf8c9d5497720f834b32e"
+    "checkpoint_sha256": "18a5147749f4d13c776fee9bbb313fc20422357c46a9da6deaf2d8b450e1084b",
+    "report_sha256": "cc1772a509960cc33f2bf74ee51f8cfcd778aef8d2c5ea202bcedfd11b1a07cb",
+    "result_sha256": "6e204e83aff613040bbcd1326706569652daa5c2711f0824cd4eb973ae7f286b",
+    "process_sha256": "e49621f0e38598181093f7968512618b764a50ee4ed5cd0edb8ca7a193654d5e"
   },
   "progress": {
     "schema": "reverse-c46-android-continuation-v1",
-    "checkpoint_sha256": "0c0a0aed62131eb50dbaf092e1c27ef34af1a10b3dc08578b0d8fa4e306e8d51",
-    "instructions": 68895950532,
+    "checkpoint_sha256": "18a5147749f4d13c776fee9bbb313fc20422357c46a9da6deaf2d8b450e1084b",
+    "instructions": 70895950532,
     "source_boundary_verified": true,
     "system_server_alive_verified": false,
     "android_boot_completed_verified": false,

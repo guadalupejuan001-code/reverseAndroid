@@ -18,5 +18,6 @@
     1000000000
   ],
   "original_model_modified": false,
-  "source_availability": "Full original local C46 source admission passed; freeze independently reproduced C72 stage6 artifact transport before enabling CI."
+  "source_availability": "Authenticated complete C72 stage6 own-repository transport, independently matching the full admitted local snapshot SHA256.",
+  "first_clean_boundary_sha256": "e184be38fb1710b43a8bc43ec9764812c6a2854c711d7509ef209dc5319c3abb"
 }

@@ -1,0 +1,46 @@
+{
+  "schema": "reverseandroid-bootstrap-artifacts-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "artifacts": {
+    "seed": {
+      "transport_manifest": "state/experiments/c72-stage-3-transport.json",
+      "pieces": [
+        {
+          "id": 13435125865,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "60a02b67ef961dfdf4c40042173db3ab328163f89f10704f9ed395d650cca796"
+        },
+        {
+          "id": 13433808758,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "cdba1c3ca0002d505c7a11dcf7798cc100ff6569764f2ea08936e4e860a5dcfc"
+        },
+        {
+          "id": 13433613811,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "0b0377f5a0e8166b679a260c95ee2e80a6ffef767ffb78cf26a73a0878edeacc"
+        }
+      ]
+    },
+    "media-manifest": {
+      "id": 13427116817,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d9cb8cb0448199a76840f02676ccde8cceb02934b4e340a9a218103757689c91"
+    },
+    "media-aa": {
+      "id": 13427701335,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "df9735902d27bad91cec9d93a1ac13980113bbd6fcaa33303366bf420bb79ac0"
+    },
+    "media-ab": {
+      "id": 13427181837,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7aa01e7a17ed14bf23c83425bfc26da7848f253641079427f1a4b6f44ecefff8"
+    },
+    "media-ac": {
+      "id": 13426962020,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ecf54e700e4a1c10a3c101a8fcd8e20aa7a63df7f5cd2456cb662c7117dee789"
+    }
+  }
+}

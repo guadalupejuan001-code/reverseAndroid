@@ -6,12 +6,12 @@
     "source_commit": "a889a01a44c7dc7aed3600aa37cf4a3be9d049c9",
     "run_id": 42062131978,
     "artifact_names": [
-      "reverseandroid-c72-stage-4-000",
-      "reverseandroid-c72-stage-4-001",
-      "reverseandroid-c72-stage-4-002"
+      "reverseandroid-c72-stage-6-000",
+      "reverseandroid-c72-stage-6-001",
+      "reverseandroid-c72-stage-6-002"
     ],
-    "checkpoint_sha256": "0c0a0aed62131eb50dbaf092e1c27ef34af1a10b3dc08578b0d8fa4e306e8d51",
-    "instructions": 68895950532,
+    "checkpoint_sha256": "18a5147749f4d13c776fee9bbb313fc20422357c46a9da6deaf2d8b450e1084b",
+    "instructions": 70895950532,
     "transport_manifest": "state/source-checkpoint-transport.json"
   },
   "instruction_budget": 1000000000,
