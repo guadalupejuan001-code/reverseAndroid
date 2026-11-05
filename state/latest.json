@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d",
-  "instructions": 76895950532,
+  "checkpoint_sha256": "a3d93b9a2a5665fc9bdbe09f5172cfbcd5314abdce82eb2cbb30557eb9442fd4",
+  "instructions": 82895950532,
   "source_boundary_verified": true,
   "system_server_alive_verified": true,
   "android_boot_completed_verified": false,
@@ -11,52 +11,58 @@
   "unresolved": [
     "live_sys_boot_completed_unverified"
   ],
-  "cycle": "C73",
+  "cycle": "C74",
   "source_repository": "guadalupejuan001-code/reverseAndroid",
-  "source_checkpoint_sha256": "b465f576385e1efa71bf1e296de064873ad64b898fe3480e5df0be12b759877c",
-  "source_instructions": 75895950532,
+  "source_checkpoint_sha256": "1302945b287d30f34a75da7eade02558a6d4078fc1150967882e4e8903e4cfaf",
+  "source_instructions": 81895950532,
   "advanced_instructions": 1000000000,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
-  "execution_commit": "311b3f9dae78f35be472b72acfcdd1e2a49b70c1",
+  "execution_commit": "309f4e6cc7a01eb99147f241c326eb86ac562302",
   "original_source_preserved": true,
   "original_engine_and_decoders_unchanged": true,
   "repository": "guadalupejuan001-code/reverseAndroid",
-  "run_id": 42077412765,
-  "run_url": "https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42077412765",
-  "engine_commit": "311b3f9dae78f35be472b72acfcdd1e2a49b70c1",
+  "run_id": 42088682642,
+  "run_url": "https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42088682642",
+  "engine_commit": "309f4e6cc7a01eb99147f241c326eb86ac562302",
   "clean_completed": true,
   "native_stop_reason": "instruction_budget",
   "transport_manifest": "state/source-checkpoint-transport.json",
-  "last_manual_visual_observation": "docs/evidence/c74/stage2-scanout-visual-observation.json",
-  "last_manual_visual_observation_checkpoint_sha256": "73b4af6cfd45a2c14f1e5b885245c592f27f9615ff9fe52fd5e50119fb0cb83c",
-  "active_investigation": "Actual SystemServer3340 independently verified. Continue C74 without new input until live Android boot completion and visible functional UI.",
+  "last_manual_visual_observation": "docs/evidence/c74/stage6-scanout-visual-observation.json",
+  "last_manual_visual_observation_checkpoint_sha256": "a3d93b9a2a5665fc9bdbe09f5172cfbcd5314abdce82eb2cbb30557eb9442fd4",
+  "active_investigation": "C75 continues from independently reproduced C74 stage6 without new UART until actual boot completion and functional visible UI.",
   "stage": 6,
   "recorded_guest_input_plan": "state/experiments/c72-plan.json",
   "independent_full_RVG_byte_equality": "docs/evidence/c72/independent-stage4-replay.json",
   "latest_local_admitted_boundary": {
-    "checkpoint_sha256": "b5e2b3fd6896e80113c4ddbb638a51a60d0367f532ca694e84d081f5ab428373",
-    "instructions": 80895950532,
+    "checkpoint_sha256": "a3d93b9a2a5665fc9bdbe09f5172cfbcd5314abdce82eb2cbb30557eb9442fd4",
+    "instructions": 82895950532,
     "source_boundary_verified": true,
     "system_server_alive_verified": true,
     "android_boot_completed_verified": false,
-    "evidence": "docs/evidence/c74/local-stage4-progress.json",
-    "read_only_threads": "docs/evidence/c74/stage4-threads-summary.json",
-    "transport_note": "C74 stage5 continues from admitted stage4; no new UART input."
+    "evidence": "docs/evidence/c74/local-stage6-progress.json"
   },
-  "independent_full_RVG_SHA256_equality": "docs/evidence/c73/independent-real-system-server.json",
+  "independent_full_RVG_SHA256_equality": "docs/evidence/c74/independent-final-boundaries.json",
   "original_priority_target_still_owned": false,
   "original_priority_target_scope_ended_at_instructions": 70895950532,
-  "latest_verified_zygote_child": {
+  "latest_verified_system_server": {
+    "pid": 3340,
+    "parent_pid": 567,
+    "comm": "system_server",
+    "thread_count": 48,
+    "evidence": "docs/evidence/c74/stage6-threads-summary.json"
+  },
+  "first_verified_zygote_child": {
     "pid": 3340,
     "parent_pid": 567,
     "comm": "main",
     "system_server_identity_verified": false,
     "evidence": "docs/evidence/c73/zygote-child-stage2.json"
   },
-  "latest_verified_system_server": {
+  "latest_verified_zygote_child": {
     "pid": 3340,
     "parent_pid": 567,
     "comm": "system_server",
-    "evidence": "docs/evidence/c73/real-system-server-stage6.json"
+    "system_server_identity_verified": true,
+    "evidence": "docs/evidence/c74/stage6-threads-summary.json"
   }
 }

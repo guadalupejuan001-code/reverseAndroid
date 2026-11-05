@@ -1,0 +1,56 @@
+{
+  "schema": "reverseandroid-bootstrap-artifacts-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "artifacts": {
+    "seed": {
+      "transport_manifest": "state/experiments/c74-stage-6-transport.json",
+      "pieces": [
+        {
+          "id": 13446404419,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "d23c75eabd8984cbef383e49ff8914bd12e8f6c3f95c0cf7d1b1ca569e055330"
+        },
+        {
+          "id": 13447732192,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "91cc302ea23edcb063ac28b6db421d25b077a383c7c00935277e5c88eb859c17"
+        },
+        {
+          "id": 13446504551,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "76e6bcff13ac4b0db59ecb9906c5147287336cbd273e558f4ce976a75b9a30ab"
+        },
+        {
+          "id": 13446859095,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "88aca562e3af5c945ac9a075b61c80c7a26bcf552616c21cfc76c937a37ae5e7"
+        }
+      ]
+    },
+    "media-manifest": {
+      "id": 13427116817,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d9cb8cb0448199a76840f02676ccde8cceb02934b4e340a9a218103757689c91"
+    },
+    "media-aa": {
+      "id": 13427701335,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "df9735902d27bad91cec9d93a1ac13980113bbd6fcaa33303366bf420bb79ac0"
+    },
+    "media-ab": {
+      "id": 13427181837,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7aa01e7a17ed14bf23c83425bfc26da7848f253641079427f1a4b6f44ecefff8"
+    },
+    "media-ac": {
+      "id": 13426962020,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ecf54e700e4a1c10a3c101a8fcd8e20aa7a63df7f5cd2456cb662c7117dee789"
+    },
+    "native-cache": {
+      "id": 13427524232,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "b9a1220fda051dca26930ac72b1812b1bb98c52ff8d96609297b0739ae2b54b1"
+    }
+  }
+}
