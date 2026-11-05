@@ -6,9 +6,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
-[C70](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42054712167) completó **1.000.000.000 instrucciones nuevas** desde C69, hasta **65.395.950.532**. El checkpoint limpio es `3811f9d7b3c79311318b415af958546712e31b78579ffb680cad595be4780bc4` y ya está conservado en tres piezas en reverseAndroid. El origen, los 870 archivos de la base, XI/Ether y los formatos originales se conservaron.
+[C72, etapa 4](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42062131978) quedó plenamente admitido en **68.895.950.532 instrucciones**, con checkpoint `0c0a0aed62131eb50dbaf092e1c27ef34af1a10b3dc08578b0d8fa4e306e8d51`. Está conservado en tres piezas en reverseAndroid. Sus **1.727.173.689 bytes** se compararon íntegramente con una ejecución independiente: fueron idénticos incluso usando distintas cadencias de guardado del host. La base, XI/Ether, los 870 archivos originales y sus formatos se conservaron. C70 sigue documentado como [referencia anterior](docs/evidence/c72/preserved-c70-before-c72.json).
 
-Zygote sigue esperando; `system_server` y el arranque completo continúan sin verificar. La lectura de los hilos reales de ART detectó que el comando de C71 devolvía éxito pero conservaba nice +19: en Toybox, `renice -n 0` suma cero. C71 se conserva como control. C72 corrige el comando a un incremento de −19, verifica primero la identidad y la prioridad reales del hilo JIT y conserva la entrada UART exacta. Las etapas solo continúan desde resultados plenamente admitidos y guardan cada checkpoint antes de avanzar.
+En el checkpoint completo de C72, etapa 4 (**68.895.950.532** instrucciones), la espera del recolector terminó: el hilo principal de Zygote volvió a ejecutar y HeapTaskDaemon volvió a dormir. La [observación de solo lectura](docs/evidence/c72/gc-wait-released-stage4.json) está ligada al estado original `0c0a0aed62131eb50dbaf092e1c27ef34af1a10b3dc08578b0d8fa4e306e8d51`. `system_server` y el arranque completo continúan sin verificar. La lectura de los hilos reales de ART detectó que el comando de C71 devolvía éxito pero conservaba nice +19: en Toybox, `renice -n 0` suma cero. C71 se conserva como control. C72 corrige el comando a un incremento de −19, verifica primero la identidad y la prioridad reales del hilo JIT y conserva la entrada UART exacta. Las etapas solo continúan desde resultados plenamente admitidos y guardan cada checkpoint antes de avanzar.
 
 El fotograma auténtico anterior de C69 mostró el **logo de inicio de Android en 800×600**. Se verificaron el ZIP, la pieza de transporte y el PPM original antes de inspeccionar la imagen. Esta observación no acredita el arranque completo.
 
@@ -26,7 +26,7 @@ El fotograma auténtico anterior de C69 mostró el **logo de inicio de Android e
 | `sys.boot_completed=1` | Pendiente de verificar |
 | Contenido Android visible | Pendiente de verificar |
 
-El trabajo continúa desde esa frontera, sin reiniciar el arranque. Los resultados posteriores se publican como artefactos y en el resumen de cada ejecución. Un check de migración correcto acredita integridad y avance; el arranque completo exige las comprobaciones originales de Android.
+C68 queda como respaldo. El trabajo continúa desde el último checkpoint plenamente admitido, sin reiniciar el arranque. Los resultados posteriores se publican como artefactos y en el resumen de cada ejecución. Un check de migración correcto acredita integridad y avance; el arranque completo exige las comprobaciones originales de Android.
 
 ## Compilar y comprobar
 
@@ -44,4 +44,4 @@ Con `execute_on_push: false`, guardar documentación o el nuevo checkpoint de re
 
 Para recuperar un checkpoint fuera de Actions, reunir las piezas y su `manifest.json` en un directorio y ejecutar `python3 scripts/unpack-reverseandroid-checkpoint.py piezas destino-nuevo`. El proceso verifica las piezas, restaura los bytes originales y comprueba el hash completo. La admisión original del emulador sigue siendo obligatoria antes de ejecutar el estado.
 
-Se preservan XI/Ether, fondo cero, RVG/MXIM/RFP, la RAM lógica, el disco, la semilla temporal, 64 instrucciones por tick, comprobación de IRQ y las condiciones originales de aceptación. Este ciclo de migración no introduce entradas UART ni cambios de prioridades en Android.
+Se preservan XI/Ether, fondo cero, RVG/MXIM/RFP, la RAM lógica, el disco, la semilla temporal, 64 instrucciones por tick, comprobación de IRQ y las condiciones originales de aceptación. La migración C69 no introdujo entradas UART ni cambios de prioridades. El experimento C72 registra explícitamente un único comando real de consola que cambia nice +19 a 0 para el hilo JIT identificado; su entrada exacta y la prioridad leída en el kernel están en `state/experiments/c72-plan.json` y `docs/evidence/c72/effective-priority-first-stage.json`. Las etapas posteriores continúan sin repetir esa entrada.

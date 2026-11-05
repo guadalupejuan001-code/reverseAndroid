@@ -1,17 +1,17 @@
 {
   "schema": "reverseandroid-continuation-plan-v1",
-  "cycle": "C71",
+  "cycle": "C73",
   "source": {
     "repository": "guadalupejuan001-code/reverseAndroid",
-    "source_commit": "1304ea3f6d7cf009f734097b66cd20e35da75a70",
-    "run_id": 42054712167,
+    "source_commit": "a889a01a44c7dc7aed3600aa37cf4a3be9d049c9",
+    "run_id": 42062131978,
     "artifact_names": [
-      "reverseandroid-current-checkpoint-000",
-      "reverseandroid-current-checkpoint-001",
-      "reverseandroid-current-checkpoint-002"
+      "reverseandroid-c72-stage-4-000",
+      "reverseandroid-c72-stage-4-001",
+      "reverseandroid-c72-stage-4-002"
     ],
-    "checkpoint_sha256": "3811f9d7b3c79311318b415af958546712e31b78579ffb680cad595be4780bc4",
-    "instructions": 65395950532,
+    "checkpoint_sha256": "0c0a0aed62131eb50dbaf092e1c27ef34af1a10b3dc08578b0d8fa4e306e8d51",
+    "instructions": 68895950532,
     "transport_manifest": "state/source-checkpoint-transport.json"
   },
   "instruction_budget": 1000000000,
@@ -21,5 +21,6 @@
   "uart_input": null,
   "guest_priority_changes": false,
   "retain_original_source": true,
-  "execute_on_push": false
+  "execute_on_push": false,
+  "inherited_guest_input_record": "state/experiments/c72-plan.json"
 }
