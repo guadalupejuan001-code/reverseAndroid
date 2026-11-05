@@ -1,0 +1,22 @@
+{
+  "schema": "reverseandroid-scanout-visual-observation-v1",
+  "checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+  "instructions": 64395950532,
+  "width": 800,
+  "height": 600,
+  "frame_counter": 68,
+  "source_rgb_sha256": "c209d246edfbb47b065a4b8f330c0bd2bd89957e328eb0263c05bf75ff648a64",
+  "source_ppm_sha256": "4e5bf0758a4a163cef93f0161d70b052d1d188a49f68028bad0c5e7015ef1fa6",
+  "lossless_png_sha256": "b6a98acbb8304abfa9354773b166db9a820ad3d8cc6495fe185b9ed0c051e858",
+  "png_path": "docs/evidence/c69-android-logo.png",
+  "source_archive_id": 13426374524,
+  "source_archive_sha256": "0d5c7cdf89be50aaf54fa5a4fecba752f46cd3e8a57e75411a6145b7bfea04d6",
+  "source_transport_piece_sha256": "6315692ccb4ae4c75ae858666009e5c452f296c87ffdf0f4c8011f491b6c8cbc",
+  "android_startup_logo_visually_observed": true,
+  "android_home_or_launcher_visually_observed": false,
+  "android_boot_completed_verified": false,
+  "original_runtime_display_gate_unchanged": true,
+  "cpu_instructions_executed_for_export": 0,
+  "original_snapshot_unchanged": true,
+  "observed_content": "White android startup logo on a black background, with no launcher or application UI."
+}

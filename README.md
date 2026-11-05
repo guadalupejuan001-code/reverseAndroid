@@ -10,6 +10,10 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 El nuevo estado, sus tres piezas verificadas y el disco original ya están guardados en este repositorio. `state/latest.json` registra el resultado y `state/continuation.json` prepara C70 desde esa frontera. Todos los pines de entrada activos apuntan a artefactos de reverseAndroid. Los 870 archivos de la base importada conservan sus hashes originales; la compilación, el decodificador y las 95 pruebas de admisión pasaron. `system_server`, el arranque completo y contenido Android visible siguen pendientes.
 
+El fotograma auténtico de C69 muestra el **logo de inicio de Android en 800×600**. Se verificaron el archivo ZIP, la pieza de transporte y el hash del PPM original antes de inspeccionar la imagen. Esta observación no cambia los controles originales de arranque completo.
+
+![Fotograma original de C69: logo de Android](docs/evidence/c69-android-logo.png)
+
 ## Frontera C68 conservada como respaldo
 
 | Comprobación | Resultado C68, etapa 12 |

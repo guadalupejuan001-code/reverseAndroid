@@ -21,5 +21,7 @@
   ],
   "clean_completed": true,
   "native_stop_reason": "instruction_budget",
-  "transport_manifest": "state/source-checkpoint-transport.json"
+  "transport_manifest": "state/source-checkpoint-transport.json",
+  "android_startup_logo_visually_observed": true,
+  "visual_observation": "docs/evidence/c69-migration/scanout-visual-observation.json"
 }
