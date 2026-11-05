@@ -1,0 +1,23 @@
+{
+  "schema": "reverseandroid-explicit-boot-epoch-plan-v1",
+  "cycle": "C76",
+  "parent_checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
+  "parent_instructions": 88895950532,
+  "parent_run_id": 42098763084,
+  "parent_artifacts": "state/experiments/c76-artifacts.json",
+  "root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
+  "profile": "docs/evidence/c76/boot-profile.json",
+  "epoch": "docs/evidence/c76/epoch.json",
+  "persistent_drive_comparison": "docs/evidence/c76/independent-drive-comparison.json",
+  "fresh_hardware_epoch": true,
+  "original_kernel_and_cpio_unchanged": true,
+  "persistent_disk_contents_unchanged": true,
+  "logical_ram_bytes": 2147483648,
+  "counter_instructions_per_tick": 64,
+  "counter_seed_preserved": true,
+  "live_property_injection": false,
+  "uart_input": null,
+  "instruction_budget": 2000000000,
+  "execute_on_push": false,
+  "android_boot_verified": false
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-boot-epoch-v1",
+  "cycle": "C76",
+  "parent_checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
+  "parent_instructions": 88895950532,
+  "root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
+  "power_cycle_proof_sha256": "9b8cd9dc6beb8cc7e7aadf184311e0de4ac9b3304b3ca9e4536cfac67de670b0",
+  "immutable_image_sha256": "dded70c4020cef2ccdadb9ac8bb885f3af206eef8c936798d6ec8ced0fde60fb",
+  "bootargs_sha256": "4ba3144cf672697172712c073c3f78a61a8855c1969285882d1bdd8580b77407",
+  "initrd_sha256": "63b5ac6ba9d7f1b1a50aead170299a67bae5deb17438fafe61329448f30b8331",
+  "original_disk_sha256": "4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e",
+  "persistent_drive_delta_sha256": "35f3722982251f49602d18bfdf03b96c6a4cfe28ea1086445bd74d8c37f7e9ef",
+  "live_android_properties_written": false,
+  "initialization_is_not_boot_acceptance": true
+}

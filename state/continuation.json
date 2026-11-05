@@ -1,27 +1,23 @@
 {
-  "schema": "reverseandroid-continuation-plan-v1",
-  "cycle": "C75",
-  "source": {
-    "repository": "guadalupejuan001-code/reverseAndroid",
-    "source_commit": "309f4e6cc7a01eb99147f241c326eb86ac562302",
-    "run_id": 42088682642,
-    "artifact_names": [
-      "reverseandroid-c74-stage-6-000",
-      "reverseandroid-c74-stage-6-001",
-      "reverseandroid-c74-stage-6-002",
-      "reverseandroid-c74-stage-6-003"
-    ],
-    "checkpoint_sha256": "a3d93b9a2a5665fc9bdbe09f5172cfbcd5314abdce82eb2cbb30557eb9442fd4",
-    "instructions": 82895950532,
-    "transport_manifest": "state/source-checkpoint-transport.json"
-  },
-  "instruction_budget": 1000000000,
+  "schema": "reverseandroid-explicit-boot-epoch-plan-v1",
+  "cycle": "C76",
+  "parent_checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
+  "parent_instructions": 88895950532,
+  "parent_run_id": 42098763084,
+  "parent_artifacts": "state/experiments/c76-artifacts.json",
+  "root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
+  "profile": "docs/evidence/c76/boot-profile.json",
+  "epoch": "docs/evidence/c76/epoch.json",
+  "persistent_drive_comparison": "docs/evidence/c76/independent-drive-comparison.json",
+  "fresh_hardware_epoch": true,
+  "original_kernel_and_cpio_unchanged": true,
+  "persistent_disk_contents_unchanged": true,
   "logical_ram_bytes": 2147483648,
   "counter_instructions_per_tick": 64,
-  "host_snapshot_transport_bytes": 2147483648,
+  "counter_seed_preserved": true,
+  "live_property_injection": false,
   "uart_input": null,
-  "guest_priority_changes": false,
-  "retain_original_source": true,
+  "instruction_budget": 2000000000,
   "execute_on_push": false,
-  "inherited_guest_input_record": "state/experiments/c72-plan.json"
+  "android_boot_verified": false
 }

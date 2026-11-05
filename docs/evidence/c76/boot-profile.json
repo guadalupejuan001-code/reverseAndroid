@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-lights-boot-profile-v1",
+  "source_initrd_sha256": "5278d736d20865d82be9783593690350496d1bcccb157769795316c5e527eefb",
+  "derived_initrd_sha256": "63b5ac6ba9d7f1b1a50aead170299a67bae5deb17438fafe61329448f30b8331",
+  "cpio_payload_sha256": "db0d340182b4e374159f1a9a5784d8b6ba9e7e32e63fed9ab4a9211ed3b2fc1e",
+  "source_cpio_payload_unchanged": true,
+  "source_bootconfig_preserved": true,
+  "added_bootconfig": {
+    "androidboot.vsock_lights_port": "6900"
+  },
+  "requires_hardware_power_cycle": true,
+  "live_android_properties_written": false,
+  "kernel_modified": false,
+  "avb_disabled": false
+}

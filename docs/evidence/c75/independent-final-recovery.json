@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-ci-boundary-recovery-v1",
+  "run_id": 42098763084,
+  "commit": "03176e72f7a73e24c8b080a3825bc88b1eb93ec1",
+  "checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
+  "instructions": 88895950532,
+  "source_boundary_verified": true,
+  "metadata_artifact_id": 13453129994,
+  "metadata_archive_sha256": "c5d610bdb2d4b4a3336b0579bc4abdfadaa8cbd7d1179daa3195e60150762356",
+  "all_four_transport_archives_verified": true,
+  "complete_recovered_snapshot_sha256_verified": true,
+  "original_C27_preflight_passed": true,
+  "local_CPU_replay_executed": false,
+  "android_boot_completed_verified": false
+}

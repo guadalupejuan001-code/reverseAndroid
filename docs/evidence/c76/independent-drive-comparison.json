@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-independent-persistent-drive-comparison-v1",
+  "parent": {
+    "sha256": "35f3722982251f49602d18bfdf03b96c6a4cfe28ea1086445bd74d8c37f7e9ef",
+    "pages": 35985,
+    "changed_bytes": 142384297,
+    "volatile_or_gpu_pages": 269901
+  },
+  "new_epoch": {
+    "sha256": "35f3722982251f49602d18bfdf03b96c6a4cfe28ea1086445bd74d8c37f7e9ef",
+    "pages": 35985,
+    "changed_bytes": 142384297,
+    "volatile_or_gpu_pages": 0
+  },
+  "persistent_drive_records_byte_identical": true,
+  "immutable_base_disk_unchanged": true
+}
