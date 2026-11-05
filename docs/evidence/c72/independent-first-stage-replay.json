@@ -1,0 +1,24 @@
+{
+  "schema": "reverseandroid-independent-c72-replay-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "run_id": 42062131978,
+  "execution_commit": "a889a01a44c7dc7aed3600aa37cf4a3be9d049c9",
+  "metadata_artifact_id": 13433285509,
+  "archive_sha256": "e49758a29fb5bb3fa9b896120299200433bd85c140c8f12969e47cd7deecb559",
+  "source_checkpoint_sha256": "3811f9d7b3c79311318b415af958546712e31b78579ffb680cad595be4780bc4",
+  "recorded_input": {
+    "schema": "reverse-modeled-uart-input-v1",
+    "instructions": 65395950532,
+    "counter_subtick": 7,
+    "bytes": 47,
+    "sha256": "ddfde805a5371ac2b713ec397ebea96a27f249d1b23aff239e697ffe06f20e35"
+  },
+  "complete_RVG_sha256": "9a3d38ab3757a49f2cb0a5906bb2dbf13c30a3c26ef9c74b223c2998cc265009",
+  "instructions": 65895950532,
+  "independent_native_full_RVG_identical": true,
+  "source_boundary_verified": true,
+  "snapshot_round_trip_verified": true,
+  "original_imported_files_unchanged": 870,
+  "android_boot_completed_verified": false,
+  "evidence_scope": "Authenticated first checkpoint transport part contains the original C46 admission report and full-native-snapshot digest; all three complete checkpoint parts are preserved in this run."
+}

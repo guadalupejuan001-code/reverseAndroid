@@ -1,0 +1,120 @@
+{
+  "schema": "reverseandroid-readonly-art-progress-v1",
+  "original_observer_and_870_imported_files_unchanged": true,
+  "source_checkpoint_sha256": "9a3d38ab3757a49f2cb0a5906bb2dbf13c30a3c26ef9c74b223c2998cc265009",
+  "source_instructions": 65895950532,
+  "checkpoint_sha256": "e4614a71b87090f6548f1a66188f49fde7f7f414cb92a82b47ce84f68b453f9f",
+  "instructions": 66895950532,
+  "snapshot_input_unchanged": true,
+  "system_server_alive_verified": false,
+  "android_boot_completed_verified": false,
+  "threads": [
+    {
+      "pid": 567,
+      "owner_pid": 567,
+      "name": "main",
+      "source_state": 8193,
+      "state": 8193,
+      "source_nice": -20,
+      "nice": -20,
+      "source_runtime_ns": "31307164000",
+      "runtime_ns": "31307164000",
+      "runtime_delta_ns": "0",
+      "live_user_pc": null,
+      "saved_user_pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "futex": {
+        "raw_tagged_address": "0xb400007146c0ec80",
+        "address": "0x7146c0ec80",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7146c0ec80",
+          "start": "0x7146c08000",
+          "end": "0x7146c48000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      }
+    },
+    {
+      "pid": 994,
+      "owner_pid": 567,
+      "name": "Jit thread pool",
+      "source_state": 0,
+      "state": 8193,
+      "source_nice": 0,
+      "nice": 0,
+      "source_runtime_ns": "787454000",
+      "runtime_ns": "1261954000",
+      "runtime_delta_ns": "474500000",
+      "live_user_pc": null,
+      "saved_user_pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "futex": {
+        "raw_tagged_address": "0xb400007226c11e28",
+        "address": "0x7226c11e28",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7226c11e28",
+          "start": "0x7226c0c000",
+          "end": "0x7226c4c000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      }
+    },
+    {
+      "pid": 997,
+      "owner_pid": 567,
+      "name": "HeapTaskDaemon",
+      "source_state": 8193,
+      "state": 0,
+      "source_nice": -8,
+      "nice": -8,
+      "source_runtime_ns": "9194000",
+      "runtime_ns": "302830000",
+      "runtime_delta_ns": "293636000",
+      "live_user_pc": null,
+      "saved_user_pc": {
+        "address": "0x70f4678c4c",
+        "start": "0x70f4600000",
+        "end": "0x70f4e5f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "2591820",
+        "dynamic_symbol": null
+      },
+      "futex": null
+    }
+  ]
+}
