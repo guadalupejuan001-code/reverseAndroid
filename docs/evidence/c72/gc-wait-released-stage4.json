@@ -1,0 +1,78 @@
+{
+  "schema": "reverseandroid-art-gc-wait-release-v1",
+  "source_checkpoint_sha256": "3f661c93aea70ca8e246431a46332e95cc4f7e238eee529fa95de6a453f41144",
+  "checkpoint_sha256": "0c0a0aed62131eb50dbaf092e1c27ef34af1a10b3dc08578b0d8fa4e306e8d51",
+  "instructions": 68895950532,
+  "original_C46_source_boundary_verified": true,
+  "read_only": true,
+  "input_unchanged": true,
+  "original_model_and_codecs_unchanged": true,
+  "main_zygote_owner_pid": 567,
+  "main_was_waiting": true,
+  "main_now_runnable": true,
+  "main_runtime_delta_ns": "468956000",
+  "heap_task_daemon_sleeping_again": true,
+  "current_jit_nice": 0,
+  "modeled_UART_event_record": "state/experiments/c72-plan.json",
+  "additional_UART_inputs": 0,
+  "system_server_alive_verified": false,
+  "android_boot_completed_verified": false,
+  "threads": [
+    {
+      "pid": 567,
+      "name": "main",
+      "state": 0,
+      "nice": -20,
+      "runtime_ns": "31776120000",
+      "pc": {
+        "address": "0x70f46f7540",
+        "start": "0x70f4600000",
+        "end": "0x70f4e5f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "3110208",
+        "dynamic_symbol": null
+      }
+    },
+    {
+      "pid": 994,
+      "name": "Jit thread pool",
+      "state": 8193,
+      "nice": 0,
+      "runtime_ns": "1261954000",
+      "pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      }
+    },
+    {
+      "pid": 997,
+      "name": "HeapTaskDaemon",
+      "state": 8193,
+      "nice": -8,
+      "runtime_ns": "2377901000",
+      "pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      }
+    }
+  ]
+}
