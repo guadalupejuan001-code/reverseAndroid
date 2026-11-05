@@ -1,0 +1,16 @@
+{
+  "schema": "reverseandroid-explicit-guest-priority-experiment-v1",
+  "source_checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+  "source_instructions": 64395950532,
+  "input_bytes": 225,
+  "input_sha256": "58220cf02fe9291a3a5967eceb96ed0c8f68d38764367cc4c86b4a6e021a51a3",
+  "command": "printf '\\nREVERSE_C71_SCHED_BEGIN\\n'; id; cat /proc/567/task/994/comm; su 0 /system/bin/toybox renice -n 0 -p 994; printf 'REVERSE_C71_RENICE_STATUS=%s\\n' \"$?\"; cat /proc/567/task/994/stat; printf 'REVERSE_C71_SCHED_END\\n'\n",
+  "target_thread": 994,
+  "expected_name": "Jit thread pool",
+  "requested_nice": 0,
+  "prior_observed_nice": 19,
+  "temporary": true,
+  "original_checkpoint_preserved": true,
+  "input_transport": "existing modeled PL011 UART; no host interpretation",
+  "experiment_status": "requested; guest execution and kernel readback pending"
+}

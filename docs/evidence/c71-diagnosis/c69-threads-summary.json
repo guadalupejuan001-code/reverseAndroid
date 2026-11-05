@@ -1,0 +1,343 @@
+{
+  "schema": "reverseandroid-thread-probe-v1",
+  "read_only": true,
+  "checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+  "instructions": 64395950532,
+  "input_unchanged": true,
+  "original_observer_file_unchanged": true,
+  "original_CPU_and_codecs_unchanged": true,
+  "groups": [
+    {
+      "pid": 567,
+      "name": "main",
+      "thread_count": 6,
+      "thread_list_verified": true
+    },
+    {
+      "pid": 672,
+      "name": "surfaceflinger",
+      "thread_count": 18,
+      "thread_list_verified": true
+    },
+    {
+      "pid": 858,
+      "name": "bootanimation",
+      "thread_count": 8,
+      "thread_list_verified": true
+    }
+  ],
+  "zygote_threads": [
+    {
+      "pid": 567,
+      "name": "main",
+      "state": 8193,
+      "priority": 100,
+      "accounting": {
+        "utime": "23554860000",
+        "stime": "7810294000",
+        "nvcsw": "1024",
+        "nivcsw": "11324",
+        "sum_exec_runtime": "31307164000",
+        "vruntime": "4485754521",
+        "exec_start": "773870275000"
+      },
+      "pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "futex": {
+        "raw_tagged_address": "0xb400007146c0ec80",
+        "address": "0x7146c0ec80",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7146c0ec80",
+          "start": "0x7146c08000",
+          "end": "0x7146c48000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      },
+      "stack_symbols": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "pid": 994,
+      "name": "Jit thread pool",
+      "state": 0,
+      "priority": 139,
+      "accounting": {
+        "utime": "795241000",
+        "stime": "19035000",
+        "nvcsw": "4",
+        "nivcsw": "253",
+        "sum_exec_runtime": "739760000",
+        "vruntime": "51854739649",
+        "exec_start": "994284215000"
+      },
+      "pc": {
+        "address": "0x70f48c9d1c",
+        "start": "0x70f4600000",
+        "end": "0x70f4e5f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "5020956",
+        "dynamic_symbol": null
+      },
+      "futex": null,
+      "stack_symbols": [
+        {
+          "name": "_ZN3art11ClassLinker20DoLookupResolvedTypeENS_3dex9TypeIndexENS_6ObjPtrINS_6mirror8DexCacheEEENS3_INS4_11ClassLoaderEEE",
+          "offset": "0xa4",
+          "range_verified": true
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "pid": 997,
+      "name": "HeapTaskDaemon",
+      "state": 8193,
+      "priority": 112,
+      "accounting": {
+        "utime": "11159000",
+        "stime": "3798000",
+        "nvcsw": "2",
+        "nivcsw": "3",
+        "sum_exec_runtime": "9194000",
+        "vruntime": "2272517073",
+        "exec_start": "576221090000"
+      },
+      "pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "futex": {
+        "raw_tagged_address": "0xb400007146c0e4d0",
+        "address": "0x7146c0e4d0",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7146c0e4d0",
+          "start": "0x7146c08000",
+          "end": "0x7146c48000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      },
+      "stack_symbols": [
+        {
+          "name": "_ZN3art7Barrier9IncrementILNS0_12LockHandlingE1EEEvPNS_6ThreadEi",
+          "offset": "0x58",
+          "range_verified": true
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "pid": 998,
+      "name": "ReferenceQueueD",
+      "state": 8193,
+      "priority": 112,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "1",
+        "nivcsw": "0",
+        "sum_exec_runtime": "1604000",
+        "vruntime": "1348626279",
+        "exec_start": "507253997000"
+      },
+      "pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "futex": {
+        "raw_tagged_address": "0xb400007146c0f910",
+        "address": "0x7146c0f910",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7146c0f910",
+          "start": "0x7146c08000",
+          "end": "0x7146c48000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      },
+      "stack_symbols": [
+        {
+          "name": "_ZN3art7Monitor4WaitEPNS_6ThreadENS_6ObjPtrINS_6mirror6ObjectEEElibNS_11ThreadStateE",
+          "offset": "0x16a8",
+          "range_verified": true
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "pid": 999,
+      "name": "FinalizerDaemon",
+      "state": 8193,
+      "priority": 112,
+      "accounting": {
+        "utime": "0",
+        "stime": "3850000",
+        "nvcsw": "1",
+        "nivcsw": "1",
+        "sum_exec_runtime": "1440000",
+        "vruntime": "1348571247",
+        "exec_start": "507282359000"
+      },
+      "pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "futex": {
+        "raw_tagged_address": "0xb400007146c0faf0",
+        "address": "0x7146c0faf0",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7146c0faf0",
+          "start": "0x7146c08000",
+          "end": "0x7146c48000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      },
+      "stack_symbols": [
+        {
+          "name": "_ZN3art7Monitor4WaitEPNS_6ThreadENS_6ObjPtrINS_6mirror6ObjectEEElibNS_11ThreadStateE",
+          "offset": "0x16a8",
+          "range_verified": true
+        },
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "pid": 1000,
+      "name": "FinalizerWatchd",
+      "state": 8193,
+      "priority": 112,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "1",
+        "nivcsw": "1",
+        "sum_exec_runtime": "1494000",
+        "vruntime": "1348383259",
+        "exec_start": "507297967000"
+      },
+      "pc": {
+        "address": "0x73b516af20",
+        "start": "0x73b511c000",
+        "end": "0x73b51c0000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "futex": {
+        "raw_tagged_address": "0xb400007146c0fbe0",
+        "address": "0x7146c0fbe0",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7146c0fbe0",
+          "start": "0x7146c08000",
+          "end": "0x7146c48000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      },
+      "stack_symbols": [
+        {
+          "name": "_ZN3art7Monitor4WaitEPNS_6ThreadENS_6ObjPtrINS_6mirror6ObjectEEElibNS_11ThreadStateE",
+          "offset": "0x16a8",
+          "range_verified": true
+        },
+        null,
+        null,
+        null
+      ]
+    }
+  ],
+  "full_evidence_gzip": "docs/evidence/c71-diagnosis/c69-threads-readonly.json.gz",
+  "full_evidence_sha256": "f84aa48656b9411ddbee8b33618bcb8ecd9c408ec74a66f3a87f5d73a3978f9e"
+}
