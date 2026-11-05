@@ -1,0 +1,20 @@
+{
+  "schema": "reverseandroid-admitted-local-c72-stage6-v1",
+  "checkpoint_sha256": "18a5147749f4d13c776fee9bbb313fc20422357c46a9da6deaf2d8b450e1084b",
+  "instructions": 70895950532,
+  "source_boundary_verified": true,
+  "system_server_alive_verified": false,
+  "android_boot_completed_verified": false,
+  "scanout_exported": true,
+  "ready_for_visual_review": false,
+  "android_display_content_verified": false,
+  "unresolved": [
+    "live_process_missing:system_server",
+    "live_sys_boot_completed_unverified"
+  ],
+  "cycle": "C72",
+  "stage": 6,
+  "source_checkpoint_sha256": "a08b90f2ab115359f7dd0828a6cee3e03b51d04245a9e48b47cc719fa1339596",
+  "original_model_and_codecs_unchanged": true,
+  "additional_UART_inputs": 0
+}
