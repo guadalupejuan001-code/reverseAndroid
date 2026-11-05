@@ -1,0 +1,23 @@
+{
+  "schema": "reverseandroid-c74-boot-campaign-v1",
+  "cycle": "C74",
+  "source_checkpoint_sha256": "a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d",
+  "source_instructions": 76895950532,
+  "input_file": null,
+  "input_bytes": 0,
+  "input_sha256": null,
+  "modeled_guest_adjustment": null,
+  "inherited_guest_input_record": "state/experiments/c72-plan.json",
+  "first_clean_boundary_instructions": 77895950532,
+  "stage_budgets": [
+    1000000000,
+    1000000000,
+    1000000000,
+    1000000000,
+    1000000000,
+    1000000000
+  ],
+  "original_model_modified": false,
+  "source_system_server_pid": 3340,
+  "source_availability": "Local source passed full original C46 admission with actual SystemServer alive; freeze independent C73 stage6 artifact transport before enabling CI."
+}

@@ -6,6 +6,7 @@ import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 import {enumerateMapleVmas,mountedFilePath,userMemoryReader} from './android_live_property.mjs';
 import {memoryElfSymbols} from './reverseandroid-elf-symbols.mjs';
+import {inspectTaskScheduling} from './reverseandroid-scheduler-group.mjs';
 
 const hx=x=>'0x'+x.toString(16), kernelPointer=x=>x>=0xffff000000000000n;
 export function enumerateThreadPointers({leader,read,task,signal}) {
@@ -26,7 +27,7 @@ export function enumerateThreadPointers({leader,read,task,signal}) {
   return out;
 }
 
-function inspectThreads(api) {
+function inspectThreads(api,options={}) {
   const {read,text,types,type,members,resolveType,kernel,tasks,task,currentTask,u,m,translate,physical,phys64,nearest}=api;
   const layout=name=>Object.fromEntries(Object.entries(members(type(name))).map(([k,v])=>{
     const t=resolveType(types[v.type]);return [k,{offset:v.offset,count:t.kind===3?kernel.readUInt32LE(t.at+20):null}];
@@ -71,6 +72,8 @@ function inspectThreads(api) {
           priority:Number(unsigned(p,'static_prio')),current,context_may_be_stale:current&&m(4)===0n,
           kernel_pc:nearest(pc),kernel_stack:[],accounting:{}};
         assert.equal(item.tgid,leaderItem.pid);
+        for(const key of ['policy','prio','normal_prio','rt_priority'])if(task[key])item[key]=Number(unsigned(p,key));
+        try{item.scheduling=inspectTaskScheduling(api,p);}catch(e){item.scheduling_unverified=e.message;}
         for(const k of ['utime','stime','nvcsw','nivcsw'])if(task[k])item.accounting[k]=unsigned(p,k,8).toString();
         const se=members(types[task.se.type]);
         for(const k of ['sum_exec_runtime','vruntime','exec_start'])if(se[k])item.accounting[k]=read(p+BigInt(task.se.offset+se[k].offset)).toString();
@@ -110,10 +113,29 @@ function inspectThreads(api) {
       group.thread_list_verified=true;group.thread_count=group.threads.length;group.user_vma_count=areas.length;
     } catch(e) {group.error=e.stack;}
   }
+  if(options.allScheduling){
+    result.all_thread_scheduling=[];
+    for(const leaderItem of tasks.filter(t=>t.pid>0&&t.exit_state===0)){
+      const group={pid:leaderItem.pid,name:leaderItem.name,threads:[]};result.all_thread_scheduling.push(group);
+      try{
+        const pointers=enumerateThreadPointers({leader:BigInt(leaderItem.task),read,task,signal:members(type('signal_struct'))});
+        for(const p of pointers){
+          const item={pid:Number(unsigned(p,'pid')),tgid:Number(unsigned(p,'tgid')),name:text(p+BigInt(task.comm.offset),16),
+            state:Number(unsigned(p,'__state')),on_rq:Number(unsigned(p,'on_rq')),on_cpu:Number(unsigned(p,'on_cpu')),accounting:{}};
+          for(const key of ['policy','prio','normal_prio','static_prio','rt_priority'])if(task[key])item[key]=Number(unsigned(p,key));
+          if(task.sched_class)item.sched_class_symbol_from_original_observer=nearest(unsigned(p,'sched_class',8));
+          const se=members(types[task.se.type]);
+          for(const key of ['sum_exec_runtime','vruntime'])if(se[key])item.accounting[key]=read(p+BigInt(task.se.offset+se[key].offset)).toString();
+          group.threads.push(item);
+        }
+        group.thread_list_verified=true;
+      }catch(e){group.error=e.message;}
+    }
+  }
   return result;
 }
 
-export async function probeThreads(path,sha) {
+export async function probeThreads(path,sha,options={}) {
   const originalUrl=new URL('./android_kernel_observer.mjs',import.meta.url),source=readFileSync(originalUrl,'utf8');
   const manifest=JSON.parse(readFileSync(new URL('../state/upstream-snapshot.json',import.meta.url)));
   const pin=manifest.files.find(x=>x.path==='tools/android_kernel_observer.mjs');assert.ok(pin);
@@ -125,13 +147,13 @@ export async function probeThreads(path,sha) {
   const {observeAndroidKernel}=await import('data:text/javascript;base64,'+Buffer.from(patched).toString('base64'));
   assert.ok(statSync(path).size<=2147483648);
   let threads;const bytes=readFileSync(path);
-  const proof=observeAndroidKernel(bytes,sha,{maxSnapshotBytes:2147483648,liveProperties:true,zygoteProbe:true,schedulerProbe:true,extraReadOnlyProbe:api=>{threads=inspectThreads(api);}});
+  const proof=observeAndroidKernel(bytes,sha,{maxSnapshotBytes:2147483648,liveProperties:true,zygoteProbe:true,schedulerProbe:true,extraReadOnlyProbe:api=>{threads=inspectThreads(api,options);}});
   assert.ok(threads);assert.equal(proof.input_unchanged,true);
   return {...threads,checkpoint_sha256:proof.checkpoint_sha256,instructions:proof.instructions,input_unchanged:true,
     observer_source_git_blob_sha1:blob,original_observer_file_unchanged:true,original_CPU_and_codecs_unchanged:true};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
-  const [path,sha,output]=process.argv.slice(2);assert.ok(path&&sha&&output);
-  const result=await probeThreads(path,sha);writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>x==='--all-scheduling'));
+  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling')});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
   console.log(JSON.stringify({instructions:result.instructions,groups:result.groups.map(x=>({pid:x.pid,name:x.name,thread_count:x.thread_count,error:x.error})),input_unchanged:true}));
 }

@@ -1,0 +1,27 @@
+{
+  "schema": "reverseandroid-real-system-server-milestone-v1",
+  "checkpoint_sha256": "a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d",
+  "instructions": 76895950532,
+  "read_only": true,
+  "original_input_unchanged": true,
+  "actual_system_server": {
+    "read_only": true,
+    "pid": 3340,
+    "comm": "system_server",
+    "exe_path": "/system/bin/app_process64",
+    "parent_pid": 567,
+    "argv": [
+      "system_server"
+    ],
+    "argv_verified": true,
+    "launch_signature_verified": false,
+    "state": 258,
+    "exit_state": 0,
+    "has_user_mm": true
+  },
+  "source_boundary_verified": true,
+  "selinux_enforcing_live": true,
+  "sys_boot_completed_live": false,
+  "actual_display_content_verified": false,
+  "additional_UART_events": 0
+}

@@ -32,6 +32,14 @@
     "4": {
       "instructions": 74895950532,
       "checkpoint_sha256": "4c990e84500617cb1e74e5a5ebe8e72f81aafadefd22d245314b74ab88a61d42"
+    },
+    "5": {
+      "instructions": 75895950532,
+      "checkpoint_sha256": "b465f576385e1efa71bf1e296de064873ad64b898fe3480e5df0be12b759877c"
+    },
+    "6": {
+      "instructions": 76895950532,
+      "checkpoint_sha256": "a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d"
     }
   }
 }

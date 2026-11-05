@@ -35,13 +35,13 @@
   "recorded_guest_input_plan": "state/experiments/c72-plan.json",
   "independent_full_RVG_byte_equality": "docs/evidence/c72/independent-stage4-replay.json",
   "latest_local_admitted_boundary": {
-    "checkpoint_sha256": "4c990e84500617cb1e74e5a5ebe8e72f81aafadefd22d245314b74ab88a61d42",
-    "instructions": 74895950532,
+    "checkpoint_sha256": "a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d",
+    "instructions": 76895950532,
     "source_boundary_verified": true,
-    "system_server_alive_verified": false,
+    "system_server_alive_verified": true,
     "android_boot_completed_verified": false,
-    "evidence": "docs/evidence/c73/local-stage4-progress.json",
-    "transport_note": "Frozen default is independently reproduced C73 stage1; local stage5 runs from fully admitted stage4."
+    "evidence": "docs/evidence/c73/local-stage6-progress.json",
+    "transport_note": "Default independently reproduced source remains C73 stage1; active local continuation moves to C74 from admitted C73 stage6."
   },
   "independent_full_RVG_SHA256_equality": "docs/evidence/c73/independent-first-stage.json",
   "original_priority_target_still_owned": false,
@@ -52,5 +52,11 @@
     "comm": "main",
     "system_server_identity_verified": false,
     "evidence": "docs/evidence/c73/zygote-child-stage2.json"
+  },
+  "latest_verified_system_server": {
+    "pid": 3340,
+    "parent_pid": 567,
+    "comm": "system_server",
+    "evidence": "docs/evidence/c73/real-system-server-stage6.json"
   }
 }

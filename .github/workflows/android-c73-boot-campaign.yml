@@ -36,7 +36,7 @@ jobs:
     - name: Authenticate the original model and authenticated input guards
       run: |
         python3 scripts/verify-reverseandroid-import.py
-        node --test tests/reverseandroid_thread_probe.test.mjs tests/reverseandroid_elf_symbols.test.mjs tests/reverseandroid_priority_proof.test.mjs tests/reverseandroid_campaign_input.test.mjs
+        node --test tests/reverseandroid_thread_probe.test.mjs tests/reverseandroid_elf_symbols.test.mjs tests/reverseandroid_priority_proof.test.mjs tests/reverseandroid_campaign_input.test.mjs tests/reverseandroid_scheduler_group.test.mjs
     - name: Recover the pinned tested native binary and fully admitted C72 stage6 source
       run: |
         python3 scripts/fetch-reverseandroid-artifact.py native-cache build/native state/experiments/c73-artifacts.json
