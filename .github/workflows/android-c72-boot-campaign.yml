@@ -35,7 +35,7 @@ jobs:
     - name: Authenticate the unchanged original model and supplemental diagnostics
       run: 'python3 scripts/verify-reverseandroid-import.py
 
-        node --test tests/reverseandroid_thread_probe.test.mjs tests/reverseandroid_elf_symbols.test.mjs
+        node --test tests/reverseandroid_thread_probe.test.mjs tests/reverseandroid_elf_symbols.test.mjs tests/reverseandroid_priority_proof.test.mjs
 
         '
     - name: Fetch the pinned tested native binary and the frozen C69 experiment state
@@ -131,6 +131,9 @@ jobs:
 
         cp evidence/c72-1/threads-readonly.json evidence/c72-reports/threads-1.json
 
+        node tools/reverseandroid-priority-proof.mjs evidence/c72-1/threads-readonly.json state/experiments/c72-plan.json
+        evidence/c72-1/output-contract.json evidence/c72-reports/effective-priority-1.json
+
         '
     - name: 'C72 stage 2: execute and fully admit the original Android state'
       id: s2
@@ -177,6 +180,9 @@ jobs:
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c72-2/current.rvg "$SHA" evidence/c72-2/threads-readonly.json
 
         cp evidence/c72-2/threads-readonly.json evidence/c72-reports/threads-2.json
+
+        node tools/reverseandroid-priority-proof.mjs evidence/c72-2/threads-readonly.json state/experiments/c72-plan.json
+        evidence/c72-2/output-contract.json evidence/c72-reports/effective-priority-2.json
 
         '
     - name: Release only previously uploaded temporary host copies
@@ -230,6 +236,9 @@ jobs:
 
         cp evidence/c72-3/threads-readonly.json evidence/c72-reports/threads-3.json
 
+        node tools/reverseandroid-priority-proof.mjs evidence/c72-3/threads-readonly.json state/experiments/c72-plan.json
+        evidence/c72-3/output-contract.json evidence/c72-reports/effective-priority-3.json
+
         '
     - name: Release only previously uploaded temporary host copies
       if: success() && steps.s3.outcome == 'success'
@@ -281,6 +290,9 @@ jobs:
         node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c72-4/current.rvg "$SHA" evidence/c72-4/threads-readonly.json
 
         cp evidence/c72-4/threads-readonly.json evidence/c72-reports/threads-4.json
+
+        node tools/reverseandroid-priority-proof.mjs evidence/c72-4/threads-readonly.json state/experiments/c72-plan.json
+        evidence/c72-4/output-contract.json evidence/c72-reports/effective-priority-4.json
 
         '
     - name: Release only previously uploaded temporary host copies
@@ -334,6 +346,9 @@ jobs:
 
         cp evidence/c72-5/threads-readonly.json evidence/c72-reports/threads-5.json
 
+        node tools/reverseandroid-priority-proof.mjs evidence/c72-5/threads-readonly.json state/experiments/c72-plan.json
+        evidence/c72-5/output-contract.json evidence/c72-reports/effective-priority-5.json
+
         '
     - name: Release only previously uploaded temporary host copies
       if: success() && steps.s5.outcome == 'success'
@@ -386,10 +401,25 @@ jobs:
 
         cp evidence/c72-6/threads-readonly.json evidence/c72-reports/threads-6.json
 
+        node tools/reverseandroid-priority-proof.mjs evidence/c72-6/threads-readonly.json state/experiments/c72-plan.json
+        evidence/c72-6/output-contract.json evidence/c72-reports/effective-priority-6.json
+
         '
     - name: Release only previously uploaded temporary host copies
       if: success() && steps.s6.outcome == 'success'
       run: 'rm -rf evidence/c72-5 build/c72-transport-5
+
+        '
+    - name: Require actual Android boot, not only completed instruction budgets
+      run: 'node --input-type=module <<''NODE''
+
+        import assert from ''node:assert/strict'';import {readdirSync,readFileSync} from ''node:fs'';
+
+        const reports=readdirSync(''evidence/c72-reports'').filter(x=>/^stage-[0-9]+[.]json$/.test(x)).sort().map(x=>JSON.parse(readFileSync(''evidence/c72-reports/''+x)));const
+        last=reports.at(-1);assert.ok(last);assert.equal(last.android_boot_completed_verified,true,''Verified checkpoints
+        preserved; complete Android boot remains pending'');assert.equal(last.system_server_alive_verified,true);assert.equal(last.ready_for_visual_review,true);
+
+        NODE
 
         '
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

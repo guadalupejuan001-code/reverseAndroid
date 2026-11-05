@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-effective-guest-priority-v1",
+  "checkpoint_sha256": "9a3d38ab3757a49f2cb0a5906bb2dbf13c30a3c26ef9c74b223c2998cc265009",
+  "instructions": 65895950532,
+  "target_pid": 994,
+  "owner_pid": 567,
+  "requested_nice": 0,
+  "source_nice": 19,
+  "read_only": true,
+  "input_unchanged": true,
+  "effective_priority_verified": true,
+  "android_boot_completed_verified": false,
+  "observed_nice": 0,
+  "observed_static_priority": 120,
+  "thread_runtime_ns": "787454000",
+  "reason": "actual_kernel_niceness_matches_request"
+}
