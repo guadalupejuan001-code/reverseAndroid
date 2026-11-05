@@ -91,14 +91,15 @@ function observe(command,args,path,allowed=[0]){
 }
 export async function runEpochStage(source,output,native,disk,frame,commit,budget=1000000000){
   assert.match(commit,/^[0-9a-f]{40}$/);assert.ok(Number.isSafeInteger(budget)&&budget>0&&budget<=2000000000);assert.ok(!existsSync(output));
-  const input=preflightEpoch(source);global.gc?.();mkdirSync(output);
+  const input=preflightEpoch(source);global.gc?.();mkdirSync(output);mkdirSync(join(output,'native'));
   copy(join(source,'epoch.json'),join(output,'epoch.json'));copy(join(source,'boot-profile.json'),join(output,'boot-profile.json'));
   save(join(output,'input-contract.json'),input.contract);
-  const c=input.contract,host=await superviseNativeCycle({command:native,args:[join(source,'current.rvg'),join(source,c.report_file),disk,join(output,'journal'),'900000',String(budget),c.checkpoint_sha256,c.report_sha256,input.epoch.root_checkpoint_sha256,String(c.epoch_original_init_verified)],
+  const journal=join(output,'native','journal');
+  const c=input.contract,host=await superviseNativeCycle({command:native,args:[join(source,'current.rvg'),join(source,c.report_file),disk,journal,'900000',String(budget),c.checkpoint_sha256,c.report_sha256,input.epoch.root_checkpoint_sha256,String(c.epoch_original_init_verified)],
     outputDirectory:output,initialInstructions:c.instructions,startupMs:600000,noProgressMs:90000,wallMs:1500000,graceMs:30000,
     onStatus:s=>process.stderr.write('EPOCH_SUPERVISOR '+JSON.stringify(s)+'\n')});
-  cleanHost(host);const pointer=json(join(output,'journal/latest.json'));assert.match(pointer.generation,/^generation-[1-9][0-9]*$/);
-  const generation=join(output,'journal',pointer.generation);linkSync(join(generation,'checkpoint.rvg'),join(output,'current.rvg'));copy(join(generation,'report.json'),join(output,'current.json'));
+  cleanHost(host);const pointer=json(join(journal,'latest.json'));assert.match(pointer.generation,/^generation-[1-9][0-9]*$/);
+  const generation=join(journal,pointer.generation);linkSync(join(generation,'checkpoint.rvg'),join(output,'current.rvg'));copy(join(generation,'report.json'),join(output,'current.json'));
   const r=json(join(output,'current.json')),v=r.provenance,digest=pointer.checkpoint_sha256;
   verifyEpochState(read(join(output,'current.rvg')),r,digest,input.epoch);global.gc?.();
   assert.equal(r.checkpoint_sha256,digest);assert.equal(r.initial_instructions,c.instructions);assert.equal(r.advanced_instructions,r.guest.instructions-c.instructions);assert.ok(r.advanced_instructions>0);

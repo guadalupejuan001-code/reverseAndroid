@@ -6,7 +6,11 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
-[C74, etapa 6](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42088682642) verificó **`system_server` vivo, PID 3340**, en **82.895.950.532 instrucciones**. El checkpoint `a3d93b9a2a5665fc9bdbe09f5172cfbcd5314abdce82eb2cbb30557eb9442fd4` está conservado íntegramente en cuatro piezas. Los [seis snapshots completos](docs/evidence/c74/independent-final-boundaries.json) coinciden por SHA-256 con la ejecución local; también pasó la [admisión original de recuperación](docs/evidence/c74/independent-stage6-recovery-admission.json). SELinux sigue activo. El arranque completo y la interfaz continúan pendientes de verificar; C75 avanza desde esta frontera sin entradas UART nuevas.
+[C75, etapa 6](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42098763084) conserva **`system_server` vivo, PID 3340**, a **88.895.950.532 instrucciones**, con checkpoint `7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec`. Pasó la [recuperación y admisión originales](docs/evidence/c75/independent-final-recovery.json). Android todavía no ha completado el arranque.
+
+[C76](docs/c76-lights-boot-profile.md) investiga un fallo concreto del servicio de luces: falta su puerto VSOCK y el proceso aborta con permiso denegado. La corrección añade el puerto de arranque `6900`. Declara una nueva época de CPU y conserva **todo el disco efectivo de C75**, comprobado independientemente; mantiene kernel, CPIO, RAM, semilla, reloj y los 870 archivos originales. La nueva época debe volver a verificar init, arranque real, interfaz y respuesta a una entrada. No escribe propiedades Android en vivo.
+
+[C74, etapa 6](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42088682642) verificó **`system_server` vivo, PID 3340**, en **82.895.950.532 instrucciones**. El checkpoint `a3d93b9a2a5665fc9bdbe09f5172cfbcd5314abdce82eb2cbb30557eb9442fd4` está conservado íntegramente en cuatro piezas. Los [seis snapshots completos](docs/evidence/c74/independent-final-boundaries.json) coinciden por SHA-256 con la ejecución local; también pasó la [admisión original de recuperación](docs/evidence/c74/independent-stage6-recovery-admission.json). SELinux sigue activo. El arranque completo y la interfaz continúan pendientes de verificar; C75 continuó desde esta frontera sin entradas UART nuevas.
 
 La [lectura de los hilos](docs/evidence/c74/stage6-threads-summary.json) confirma que SystemServer pasó de 12 a 38 y después a **48 hilos**: aparecen ActivityManager, android.ui, android.display y PowerManager. La [última captura auténtica inspeccionada](docs/evidence/c74/stage6-original-scanout.png) sigue mostrando la animación de inicio. C73 queda conservado como [referencia anterior](docs/evidence/c73/independent-real-system-server.json).
 
@@ -30,7 +34,7 @@ El fotograma auténtico anterior de C69 mostró el **logo de inicio de Android e
 | `sys.boot_completed=1` | Pendiente de verificar |
 | Contenido Android visible | Pendiente de verificar |
 
-C68 queda como respaldo. El trabajo continúa desde el último checkpoint plenamente admitido, sin reiniciar el arranque. Los resultados posteriores se publican como artefactos y en el resumen de cada ejecución. Un check de migración correcto acredita integridad y avance; el arranque completo exige las comprobaciones originales de Android.
+C68 queda como respaldo. El trabajo conserva el linaje del último checkpoint plenamente admitido. Los cambios de perfil que exigen otro arranque se declaran como nueva época y conservan íntegramente el disco efectivo. Los resultados posteriores se publican como artefactos y en el resumen de cada ejecución. Un check de migración correcto acredita integridad y avance; el arranque completo exige las comprobaciones originales de Android.
 
 ## Compilar y comprobar
 

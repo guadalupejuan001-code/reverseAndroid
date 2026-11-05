@@ -1,0 +1,281 @@
+name: Android C76 corrected lights boot epoch
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c76-lights-boot.yml
+    - state/experiments/c76-plan.json
+    - state/experiments/c76-artifacts.json
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c76-epoch
+  cancel-in-progress: false
+jobs:
+  c76-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        repository: guadalupejuan001-code/mundo-X
+        ref: e2778d962af22f6f1a0794058dd4685fc2573966
+        path: deps/mundo-x
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Build and validate original CPU and the explicit power-cycle helpers
+      run: 'bash scripts/build-reverseandroid.sh
+
+        bash scripts/build-reverseandroid-epoch.sh
+
+        mkdir -p evidence/c76-reports
+
+        '
+    - name: Recover the latest fully admitted C75 disk state and authenticate original media
+      run: 'python3 scripts/fetch-reverseandroid-artifact.py seed build/source state/experiments/c76-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c76-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c76-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c76-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c76-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw > evidence/c76-reports/disk.json
+
+        '
+    - name: Independently reproduce the exact new epoch with the unchanged persistent drive
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-prepare-epoch.mjs build/source build/media/android-c27.raw
+        build/reverseandroid/power-cycle evidence/c76-profile evidence/c76-root > evidence/c76-reports/root-admission.json
+
+        cp evidence/c76-root/power-cycle.json evidence/c76-reports/power-cycle.json
+
+        cp evidence/c76-root/epoch.json evidence/c76-reports/epoch.json
+
+        cp evidence/c76-profile/profile.json evidence/c76-reports/boot-profile.json
+
+        '
+    - name: Preserve initialized hardware root separately from accepted Android execution
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-c76-initialized-root
+        path: 'evidence/c76-root/current.rvg
+
+          evidence/c76-root/*.json
+
+          build/reverseandroid/*test*.json
+
+          build/reverseandroid/*tests.tap
+
+          build/reverseandroid/epoch-binaries-sha256.txt'
+        compression-level: 1
+        retention-days: 90
+        if-no-files-found: error
+    - name: Release recovered parent host copies after preserving its exact new-epoch derivation
+      run: 'rm -rf build/source
+
+        '
+    - name: 'C76 stage 1: execute and fully admit the explicit boot epoch'
+      id: s1
+      if: success()
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c76-root evidence/c76-1
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)" 2000000000
+        > evidence/c76-reports/stage-1.json
+
+        cp evidence/c76-1/kernel-observation.json evidence/c76-reports/kernel-1.json
+
+        cp evidence/c76-1/console-new.txt evidence/c76-reports/console-1.txt
+
+        rm -rf evidence/c76-1/native/journal
+
+        '
+    - name: 'C76 stage 1: preserve every complete original checkpoint piece'
+      if: success() && steps.s1.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c76-1
+        transport_path: build/c76-transport-1
+        artifact_prefix: reverseandroid-c76-stage-1
+    - name: 'C76 stage 2: execute and fully admit the explicit boot epoch'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c76-1 evidence/c76-2
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)" 1000000000
+        > evidence/c76-reports/stage-2.json
+
+        cp evidence/c76-2/kernel-observation.json evidence/c76-reports/kernel-2.json
+
+        cp evidence/c76-2/console-new.txt evidence/c76-reports/console-2.txt
+
+        rm -rf evidence/c76-2/native/journal
+
+        '
+    - name: 'C76 stage 2: preserve every complete original checkpoint piece'
+      if: success() && steps.s2.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c76-2
+        transport_path: build/c76-transport-2
+        artifact_prefix: reverseandroid-c76-stage-2
+    - name: Release only previous host copies after all current checkpoint pieces were uploaded
+      if: success() && steps.s2.outcome == 'success'
+      run: 'rm -rf evidence/c76-1 build/c76-transport-1
+
+        '
+    - name: 'C76 stage 3: execute and fully admit the explicit boot epoch'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c76-2 evidence/c76-3
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)" 1000000000
+        > evidence/c76-reports/stage-3.json
+
+        cp evidence/c76-3/kernel-observation.json evidence/c76-reports/kernel-3.json
+
+        cp evidence/c76-3/console-new.txt evidence/c76-reports/console-3.txt
+
+        rm -rf evidence/c76-3/native/journal
+
+        '
+    - name: 'C76 stage 3: preserve every complete original checkpoint piece'
+      if: success() && steps.s3.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c76-3
+        transport_path: build/c76-transport-3
+        artifact_prefix: reverseandroid-c76-stage-3
+    - name: Release only previous host copies after all current checkpoint pieces were uploaded
+      if: success() && steps.s3.outcome == 'success'
+      run: 'rm -rf evidence/c76-2 build/c76-transport-2
+
+        '
+    - name: 'C76 stage 4: execute and fully admit the explicit boot epoch'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c76-3 evidence/c76-4
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)" 1000000000
+        > evidence/c76-reports/stage-4.json
+
+        cp evidence/c76-4/kernel-observation.json evidence/c76-reports/kernel-4.json
+
+        cp evidence/c76-4/console-new.txt evidence/c76-reports/console-4.txt
+
+        rm -rf evidence/c76-4/native/journal
+
+        '
+    - name: 'C76 stage 4: preserve every complete original checkpoint piece'
+      if: success() && steps.s4.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c76-4
+        transport_path: build/c76-transport-4
+        artifact_prefix: reverseandroid-c76-stage-4
+    - name: Release only previous host copies after all current checkpoint pieces were uploaded
+      if: success() && steps.s4.outcome == 'success'
+      run: 'rm -rf evidence/c76-3 build/c76-transport-3
+
+        '
+    - name: 'C76 stage 5: execute and fully admit the explicit boot epoch'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c76-4 evidence/c76-5
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)" 1000000000
+        > evidence/c76-reports/stage-5.json
+
+        cp evidence/c76-5/kernel-observation.json evidence/c76-reports/kernel-5.json
+
+        cp evidence/c76-5/console-new.txt evidence/c76-reports/console-5.txt
+
+        rm -rf evidence/c76-5/native/journal
+
+        '
+    - name: 'C76 stage 5: preserve every complete original checkpoint piece'
+      if: success() && steps.s5.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c76-5
+        transport_path: build/c76-transport-5
+        artifact_prefix: reverseandroid-c76-stage-5
+    - name: Release only previous host copies after all current checkpoint pieces were uploaded
+      if: success() && steps.s5.outcome == 'success'
+      run: 'rm -rf evidence/c76-4 build/c76-transport-4
+
+        '
+    - name: 'C76 stage 6: execute and fully admit the explicit boot epoch'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c76-5 evidence/c76-6
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)" 1000000000
+        > evidence/c76-reports/stage-6.json
+
+        cp evidence/c76-6/kernel-observation.json evidence/c76-reports/kernel-6.json
+
+        cp evidence/c76-6/console-new.txt evidence/c76-reports/console-6.txt
+
+        rm -rf evidence/c76-6/native/journal
+
+        '
+    - name: 'C76 stage 6: preserve every complete original checkpoint piece'
+      if: success() && steps.s6.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c76-6
+        transport_path: build/c76-transport-6
+        artifact_prefix: reverseandroid-c76-stage-6
+    - name: Release only previous host copies after all current checkpoint pieces were uploaded
+      if: success() && steps.s6.outcome == 'success'
+      run: 'rm -rf evidence/c76-5 build/c76-transport-5
+
+        '
+    - name: Require original live Android boot acceptance
+      run: 'node --input-type=module <<''NODE''
+
+        import assert from ''node:assert/strict'';import {existsSync,readFileSync} from ''node:fs'';
+
+        const available=Array.from({length:6},(_,i)=>`evidence/c76-${i+1}`).filter(p=>existsSync(p+''/c46-progress.json''));assert.ok(available.length);
+
+        const last=available.at(-1),gate=JSON.parse(readFileSync(last+''/c46-progress.json'')),result=JSON.parse(readFileSync(last+''/result.json''));
+
+        assert.equal(result.epoch_original_init_verified,true);assert.equal(gate.android_boot_completed_verified,true,''Actual
+        Android boot remains pending; preserve the admitted frontier and continue debugging'');assert.equal(gate.ready_for_visual_review,true);
+
+        NODE
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-c76-boot-evidence
+        path: 'evidence/c76-reports
+
+          evidence/c76-profile/*.json
+
+          evidence/c76-profile/*.log
+
+          evidence/c76-*/*.json
+
+          evidence/c76-*/*.log
+
+          evidence/c76-*/*.txt
+
+          evidence/c76-*/*.ppm
+
+          build/reverseandroid/*.tap
+
+          build/reverseandroid/*test*.json
+
+          build/reverseandroid/epoch-binaries-sha256.txt'
+        retention-days: 90
+        if-no-files-found: error
