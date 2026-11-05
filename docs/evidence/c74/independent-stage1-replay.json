@@ -1,0 +1,20 @@
+{
+  "schema": "reverseandroid-independent-boundary-replay-v1",
+  "cycle": "C74",
+  "stage": 1,
+  "run_id": 42088682642,
+  "commit": "309f4e6cc7a01eb99147f241c326eb86ac562302",
+  "metadata_artifact_id": 13445585673,
+  "metadata_archive_sha256": "ae8c5539baa158d9920016217d7f58a9f6a94f0f122b654e7f264acd26a6dbfe",
+  "checkpoint_sha256": "72fd21be9f98dafb1af548e4d2b0ffc04a2b6dc19213843c0e41d71ed24a9e64",
+  "instructions": 77895950532,
+  "independent_complete_snapshot_SHA256_matches_local": true,
+  "source_boundary_verified": true,
+  "system_server_alive_verified": true,
+  "android_boot_completed_verified": false,
+  "all_four_transport_parts_preserved": true,
+  "transport_lock": "state/experiments/c74-stage-1-transport.json",
+  "artifact_lock": "state/experiments/c74-stage-1-artifacts.json",
+  "new_UART_events": 0,
+  "original_CPU_codecs_RAM_clock_and_IRQ_unchanged": true
+}

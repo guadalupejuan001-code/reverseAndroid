@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-visual-observation-v1",
+  "checkpoint_sha256": "73b4af6cfd45a2c14f1e5b885245c592f27f9615ff9fe52fd5e50119fb0cb83c",
+  "instructions": 78895950532,
+  "original_ppm_sha256": "9548822e59f36c3bd8c2852ce470e30dfb5d29e2aed5cd8562a85587b802cd25",
+  "png_sha256": "c54a6f6947bb0cad19ad5352ec3cf46959d46217d59aacd2689997d127197481",
+  "width": 800,
+  "height": 600,
+  "visually_inspected": true,
+  "observation": "Authentic Android startup wordmark on black background; boot animation, no launcher or interactive setup screen observed.",
+  "android_display_content_verified": false,
+  "android_boot_completed_verified": false,
+  "format_conversion_only": true,
+  "image": "docs/evidence/c74/stage2-original-scanout.png"
+}

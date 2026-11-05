@@ -1,0 +1,294 @@
+{
+  "checkpoint_sha256": "73b4af6cfd45a2c14f1e5b885245c592f27f9615ff9fe52fd5e50119fb0cb83c",
+  "instructions": 78895950532,
+  "input_unchanged": true,
+  "observer_source_git_blob_sha1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "original_observer_file_unchanged": true,
+  "original_CPU_and_codecs_unchanged": true,
+  "schema": "reverseandroid-thread-observation-summary-v1",
+  "read_only": true,
+  "system_server_pid": 3340,
+  "thread_count": 12,
+  "thread_list_verified": true,
+  "threads": [
+    {
+      "pid": 3340,
+      "tgid": 3340,
+      "name": "system_server",
+      "state": 0,
+      "exit_state": 0,
+      "priority": 118,
+      "cpu_runtime_ns": "5289915000",
+      "saved_user_pc_file": "/apex/com.android.runtime/bin/linker64",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "preempt_schedule_irq+0x4c",
+        "arm64_preempt_schedule_irq+0x30",
+        "el1_interrupt+0x48",
+        "el1h_64_irq_handler+0x18"
+      ]
+    },
+    {
+      "pid": 3525,
+      "tgid": 3340,
+      "name": "Signal Catcher",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 100,
+      "cpu_runtime_ns": "1719000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "schedule_hrtimeout_range_clock+0x2fc",
+        "schedule_hrtimeout_range+0x14",
+        "do_sigtimedwait+0x114"
+      ]
+    },
+    {
+      "pid": 3526,
+      "tgid": 3340,
+      "name": "perfetto_hprof_",
+      "state": 1,
+      "exit_state": 0,
+      "priority": 100,
+      "cpu_runtime_ns": "2511000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "pipe_read+0x1ec",
+        "ksys_read+0x1c8",
+        "__arm64_sys_read+0x1c"
+      ]
+    },
+    {
+      "pid": 3527,
+      "tgid": 3340,
+      "name": "socket_writer_q",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 100,
+      "cpu_runtime_ns": "1911000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "futex_wait+0x158",
+        "__arm64_sys_futex+0xfc",
+        "invoke_syscall+0x58"
+      ]
+    },
+    {
+      "pid": 3529,
+      "tgid": 3340,
+      "name": "Jit thread pool",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 129,
+      "cpu_runtime_ns": "2074000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "futex_wait+0x158",
+        "__arm64_sys_futex+0xfc",
+        "invoke_syscall+0x58"
+      ]
+    },
+    {
+      "pid": 3530,
+      "tgid": 3340,
+      "name": "HeapTaskDaemon",
+      "state": 0,
+      "exit_state": 0,
+      "priority": 124,
+      "cpu_runtime_ns": "248280000",
+      "saved_user_pc_file": "/apex/com.android.art/lib64/libart.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "do_notify_resume+0xcc",
+        "el0_interrupt+0x94",
+        "__el0_irq_handler_common+0x18"
+      ]
+    },
+    {
+      "pid": 3531,
+      "tgid": 3340,
+      "name": "ReferenceQueueD",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 124,
+      "cpu_runtime_ns": "2920000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "futex_wait+0x158",
+        "__arm64_sys_futex+0xfc",
+        "invoke_syscall+0x58"
+      ]
+    },
+    {
+      "pid": 3532,
+      "tgid": 3340,
+      "name": "FinalizerDaemon",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 124,
+      "cpu_runtime_ns": "3046000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "futex_wait+0x158",
+        "__arm64_sys_futex+0xfc",
+        "invoke_syscall+0x58"
+      ]
+    },
+    {
+      "pid": 3534,
+      "tgid": 3340,
+      "name": "FinalizerWatchd",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 124,
+      "cpu_runtime_ns": "2504000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "futex_wait+0x158",
+        "__arm64_sys_futex+0xfc",
+        "invoke_syscall+0x58"
+      ]
+    },
+    {
+      "pid": 3539,
+      "tgid": 3340,
+      "name": "binder:3340_1",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 120,
+      "cpu_runtime_ns": "1898000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "schedule_timeout+0x4c",
+        null,
+        null
+      ]
+    },
+    {
+      "pid": 3540,
+      "tgid": 3340,
+      "name": "TracingMuxer",
+      "state": 1,
+      "exit_state": 0,
+      "priority": 120,
+      "cpu_runtime_ns": "7258000",
+      "saved_user_pc_file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "schedule_hrtimeout_range_clock+0x2fc",
+        "schedule_hrtimeout_range+0x14",
+        "do_sys_poll+0x34c"
+      ]
+    },
+    {
+      "pid": 3551,
+      "tgid": 3340,
+      "name": "system-server-i",
+      "state": 0,
+      "exit_state": 0,
+      "priority": 118,
+      "cpu_runtime_ns": "1038689000",
+      "saved_user_pc_file": "/apex/com.android.art/lib64/libart.so",
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      },
+      "kernel_stack_symbols": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "do_notify_resume+0xcc",
+        "el0_interrupt+0x94",
+        "__el0_irq_handler_common+0x18"
+      ]
+    }
+  ],
+  "complete_probe_gzip": "docs/evidence/c74/stage2-threads-readonly.json.gz",
+  "complete_probe_sha256": "003d8a31ad3126b8db58c41f647a89fe91aa804d8d91bf2f4c7f3a58b6a542df",
+  "complete_probe_gzip_sha256": "ee434a4b4a29519235c0e9eb6e1ba08554dc57f78ca7f7425eba1fa0a56354d7"
+}
