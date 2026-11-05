@@ -13,6 +13,7 @@ import {analyzeGuestConsole} from './android_guest_outcome.mjs';
 import {evaluateFrameworkEvidence} from './android_framework_evidence.mjs';
 import {summarizeZygoteProgress} from './android_c42_zygote_progress.mjs';
 import {milestone} from './android_c46_continue.mjs';
+import {loadEpochInputPlan,verifyEpochInputEvent} from './reverseandroid-epoch-input.mjs';
 const KERNEL='f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8';
 const DISK='4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e';
 const INITRD='63b5ac6ba9d7f1b1a50aead170299a67bae5deb17438fafe61329448f30b8331';
@@ -89,14 +90,24 @@ function observe(command,args,path,allowed=[0]){
   try{r=spawnSync(command,args,{stdio:['ignore',out,err],timeout:600000});}finally{closeSync(out);closeSync(err);}
   assert.ifError(r.error);assert.ok(allowed.includes(r.status),`Observation failed: ${path} (${r.status})`);return r.status;
 }
-export async function runEpochStage(source,output,native,disk,frame,commit,budget=1000000000){
+export async function runEpochStage(source,output,native,disk,frame,commit,budget=1000000000,inputPlanFile=null,wallMs=900000){
   assert.match(commit,/^[0-9a-f]{40}$/);assert.ok(Number.isSafeInteger(budget)&&budget>0&&budget<=2000000000);assert.ok(!existsSync(output));
-  const input=preflightEpoch(source);global.gc?.();mkdirSync(output);mkdirSync(join(output,'native'));
+  assert.ok(Number.isSafeInteger(wallMs)&&wallMs>0&&wallMs<=900000,'Invalid explicit host wall budget');
+  const input=preflightEpoch(source);
+  const uart=loadEpochInputPlan(inputPlanFile,input.contract,{bootVerified:!input.contract.initialized_hardware_root&&json(join(source,'c46-progress.json')).android_boot_completed_verified===true,
+    frame:existsSync(join(source,'checkpoint-frame.json'))?json(join(source,'checkpoint-frame.json')):null});
+  global.gc?.();mkdirSync(output);mkdirSync(join(output,'native'));
   copy(join(source,'epoch.json'),join(output,'epoch.json'));copy(join(source,'boot-profile.json'),join(output,'boot-profile.json'));
   save(join(output,'input-contract.json'),input.contract);
+  assert.ok(statSync(native).isFile()&&statSync(native).size<=128*1024*1024,'Invalid native executable extent');
+  save(join(output,'host-policy.json'),{schema:'reverseandroid-epoch-host-policy-v1',controller_commit:commit,native_binary_sha256:hash(read(native)),instruction_budget:budget,host_wall_ms:wallMs,
+    logical_RAM_clock_seed_cadence_IRQ_and_codecs_modified:false,external_input_plan_present:uart!==null});
+  if(uart){write(join(output,'applied-input.bin'),uart.data,{flag:'wx'});save(join(output,'applied-input-plan.json'),{...uart.plan,input_file:'applied-input.bin'});}
   const journal=join(output,'native','journal');
-  const c=input.contract,host=await superviseNativeCycle({command:native,args:[join(source,'current.rvg'),join(source,c.report_file),disk,journal,'900000',String(budget),c.checkpoint_sha256,c.report_sha256,input.epoch.root_checkpoint_sha256,String(c.epoch_original_init_verified)],
-    outputDirectory:output,initialInstructions:c.instructions,startupMs:600000,noProgressMs:90000,wallMs:1500000,graceMs:30000,
+  const c=input.contract,args=[join(source,'current.rvg'),join(source,c.report_file),disk,journal,String(wallMs),String(budget),c.checkpoint_sha256,c.report_sha256,input.epoch.root_checkpoint_sha256,String(c.epoch_original_init_verified)];
+  if(uart)args.push(join(output,'applied-input.bin'),uart.plan.input_sha256);
+  const host=await superviseNativeCycle({command:native,args,
+    outputDirectory:output,initialInstructions:c.instructions,startupMs:600000,noProgressMs:90000,wallMs:wallMs+600000,graceMs:30000,
     onStatus:s=>process.stderr.write('EPOCH_SUPERVISOR '+JSON.stringify(s)+'\n')});
   cleanHost(host);const pointer=json(join(journal,'latest.json'));assert.match(pointer.generation,/^generation-[1-9][0-9]*$/);
   const generation=join(journal,pointer.generation);linkSync(join(generation,'checkpoint.rvg'),join(output,'current.rvg'));copy(join(generation,'report.json'),join(output,'current.json'));
@@ -106,10 +117,12 @@ export async function runEpochStage(source,output,native,disk,frame,commit,budge
   assert.ok(['instruction_budget','host_wall_budget'].includes(r.stop_reason));assert.equal(r.error,'');assert.equal(r.guest.waiting,false);
   assert.equal(v.experiment,'c76-lights-port-epoch');assert.equal(v.input_checkpoint_sha256,c.checkpoint_sha256);assert.equal(v.input_report_sha256,c.report_sha256);
   assert.equal(v.epoch_root_checkpoint_sha256,input.epoch.root_checkpoint_sha256);assert.equal(v.snapshot_round_trip_verified,true);assert.equal(v.source_epoch_init_verified,c.epoch_original_init_verified);
-  assert.equal(v.source_cpu_modified_before_resume,false);assert.equal(v.new_uart_input_bytes,0);assert.equal(v.live_android_properties_written,false);
+  assert.equal(v.source_cpu_modified_before_resume,false);assert.equal(v.new_uart_input_bytes,uart?.data.length??0);assert.equal(v.live_android_properties_written,false);
+  verifyEpochInputEvent(v.external_uart_input,uart,input.report.guest);
   const outcome=analyzeGuestConsole(r.console);assert.equal(outcome.guest_boot_failure,false);assert.equal(outcome.guest_reboot_requested,false);
   const result={schema:'reverseandroid-epoch-result-v1',checkpoint_sha256:digest,input_checkpoint_sha256:c.checkpoint_sha256,instructions:r.guest.instructions,advanced_instructions:r.advanced_instructions,
-    epoch_original_init_verified:r.first_user_instruction_verified||c.epoch_original_init_verified,execution_progress_accepted:true,...outcome};
+    epoch_original_init_verified:r.first_user_instruction_verified||c.epoch_original_init_verified,execution_progress_accepted:true,...outcome,
+    ...(uart?{external_uart_input:v.external_uart_input,input_purpose:uart.plan.purpose}:{})};
   save(join(output,'result.json'),result);
   const next={schema:c.schema,checkpoint_sha256:digest,report_file:'current.json',report_sha256:hash(read(join(output,'current.json'))),epoch_sha256:c.epoch_sha256,
     instructions:r.guest.instructions,epoch_original_init_verified:result.epoch_original_init_verified,initialized_hardware_root:false,
@@ -130,6 +143,6 @@ export async function runEpochStage(source,output,native,disk,frame,commit,budge
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){try{
   const [mode,...args]=process.argv.slice(2);
-  const result=mode==='finalize-root'?finalizeEpochRoot(...args):mode==='preflight'?preflightEpoch(...args):mode==='run'?await runEpochStage(...args.slice(0,6),args[6]===undefined?1000000000:Number(args[6])):assert.fail('Expected finalize-root, preflight or run');
+  const result=mode==='finalize-root'?finalizeEpochRoot(...args):mode==='preflight'?preflightEpoch(...args):mode==='run'?await runEpochStage(...args.slice(0,6),args[6]===undefined?1000000000:Number(args[6]),args[7]&&args[7]!=='-'?args[7]:null,args[8]===undefined?900000:Number(args[8])):assert.fail('Expected finalize-root, preflight or run');
   console.log(JSON.stringify(result,null,2));
 }catch(error){console.error(error.stack);process.exitCode=1;}}

@@ -1,0 +1,16 @@
+{
+  "schema": "reverseandroid-explicit-input-unit-validation-v1",
+  "source_byte_frame_binding_tests_passed": true,
+  "original_C46_boot_gate_tests_passed": true,
+  "total_JS_tests_passed": 14,
+  "native_receive_queue_only_fixture_passed": true,
+  "absent_event_original_snapshot_byte_identical": true,
+  "CPU_registers_RAM_quantum_state_and_clock_unchanged_by_event": true,
+  "original_snapshot_roundtrip_passed": true,
+  "all_870_original_files_integrity_passed": true,
+  "reference_native_binary_preserved_sha256": "717a0d905ebc5680c206222e48f0fd8abb96058ee15517d12a596ab46c696ced",
+  "explicit_input_native_binary_sha256": "2c9f9cb70125125d0c2ce806b2b83c5eb9c49d06c76d97353b12652d17f97767",
+  "production_guest_input_sent": false,
+  "actual_Android_UI_response_verified": false,
+  "actual_Android_boot_verified": false
+}

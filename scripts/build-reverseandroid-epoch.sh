@@ -13,4 +13,7 @@ g++ "${flags[@]}" -O3 tools/guest_reverseandroid_epoch.cpp build/softfloat/libre
 g++ "${flags[@]}" -O2 tests/reverseandroid_power_cycle_test.cpp build/softfloat/libreverse_softfloat.a -lcrypto -o build/reverseandroid/test-power-cycle
 build/reverseandroid/test-power-cycle > build/reverseandroid/power-cycle-test.json
 node --test tests/reverseandroid_lights_profile.test.mjs > build/reverseandroid/lights-profile-tests.tap
+g++ "${flags[@]}" -O2 tests/reverseandroid_console_event_test.cpp build/softfloat/libreverse_softfloat.a -lcrypto -o build/reverseandroid/test-console-event
+build/reverseandroid/test-console-event > build/reverseandroid/console-event-test.json
+node --test tests/reverseandroid_epoch_input.test.mjs > build/reverseandroid/epoch-input-tests.tap
 sha256sum build/reverseandroid/power-cycle build/reverseandroid/epoch > build/reverseandroid/epoch-binaries-sha256.txt

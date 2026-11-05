@@ -37,7 +37,9 @@ jobs:
           appendFileSync(process.env.GITHUB_OUTPUT,'continue_on_push='+String(p.execute_on_push!==false)+'\n');
           NODE
       - name: Verify all 870 source files and the original engine and admission tests
-        run: bash scripts/build-reverseandroid.sh
+        run: |
+          bash scripts/build-reverseandroid.sh
+          bash scripts/build-reverseandroid-epoch.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
@@ -48,6 +50,8 @@ jobs:
             build/reverseandroid/*.tap
             build/reverseandroid/native
             build/reverseandroid/frame
+            build/reverseandroid/epoch
+            build/reverseandroid/power-cycle
           if-no-files-found: error
           retention-days: 90
   authenticated-android-continuation:
