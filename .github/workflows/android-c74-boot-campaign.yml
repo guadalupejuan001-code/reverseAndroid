@@ -1,0 +1,219 @@
+name: Android C74 continued boot without new guest input
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c74-boot-campaign.yml
+    - state/experiments/c74-plan.json
+    - state/experiments/c74-artifacts.json
+    - state/experiments/c74-source-transport.json
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c74-campaign
+  cancel-in-progress: false
+jobs:
+  c74-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+      REVERSE_PC_C39_CHUNK: '1000000'
+      REVERSE_PC_C39_CHECKPOINT_MS: '180000'
+      REVERSE_PC_C39_CHECKPOINT_INSTRUCTIONS: '300000000'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate the original model and authenticated input guards
+      run: |
+        python3 scripts/verify-reverseandroid-import.py
+        node --test tests/reverseandroid_thread_probe.test.mjs tests/reverseandroid_elf_symbols.test.mjs tests/reverseandroid_priority_proof.test.mjs tests/reverseandroid_campaign_input.test.mjs tests/reverseandroid_scheduler_group.test.mjs
+    - name: Recover the pinned tested native binary and fully admitted C73 SystemServer source
+      run: |
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/native state/experiments/c74-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source state/experiments/c74-artifacts.json
+        chmod +x build/native/native build/native/frame
+        mkdir -p evidence/c74-reports
+    - name: Recover and authenticate the exact original disk
+      run: |
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c74-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c74-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c74-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c74-artifacts.json
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw > evidence/c74-reports/disk.json
+    - name: Verify source pixels with the original rebuilt decoder
+      run: |
+        build/native/frame build/source/current.rvg build/media/android-c27.raw a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d 4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e 10888413184 build/seed.ppm > evidence/c74-reports/seed-frame.json
+        node tools/reverseandroid-verify-frame.mjs build/source/checkpoint-frame.json evidence/c74-reports/seed-frame.json evidence/c74-reports/seed-frame-verified.json
+    - name: Verify the original live SystemServer identity in the frozen source
+      run: |
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs build/source/current.rvg a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d evidence/c74-reports/source-threads.json
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+        const source=JSON.parse(readFileSync('build/source/c42-progress.json'));assert.equal(source.system_server_alive_verified,true);assert.equal(source.system_server_pid,3340);
+        const x=JSON.parse(readFileSync('evidence/c74-reports/source-threads.json'));assert.equal(x.input_unchanged,true);
+        const g=x.groups.find(g=>g.pid===3340);assert.equal(g.thread_list_verified,true);assert.equal(g.name,'system_server');assert.ok(g.threads.some(t=>t.pid===3340&&t.tgid===3340&&t.exit_state===0));
+        NODE
+    - name: 'C74 stage 1: execute and fully admit the original Android state'
+      id: s1
+      if: success()
+      run: |
+        node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 1 build/source evidence/c74-1 build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" state/experiments/c74-plan.json > evidence/c74-reports/stage-1.json
+    - name: 'C74 stage 1: preserve every complete checkpoint piece'
+      if: success() && steps.s1.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c74-1
+        transport_path: build/c74-transport-1
+        artifact_prefix: reverseandroid-c74-stage-1
+    - name: 'C74 stage 1: inspect real runtime threads'
+      if: success() && steps.s1.outcome == 'success'
+      continue-on-error: true
+      run: |
+        SHA=$(python3 -c 'import json;print(json.load(open("evidence/c74-1/output-contract.json"))["checkpoint_sha256"])')
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c74-1/current.rvg "$SHA" evidence/c74-1/threads-readonly.json
+        cp evidence/c74-1/threads-readonly.json evidence/c74-reports/threads-1.json
+    - name: 'C74 stage 2: execute and fully admit the original Android state'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.ready != 'true'
+      run: |
+        node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 2 evidence/c74-1 evidence/c74-2 build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" state/experiments/c74-plan.json > evidence/c74-reports/stage-2.json
+    - name: 'C74 stage 2: preserve every complete checkpoint piece'
+      if: success() && steps.s2.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c74-2
+        transport_path: build/c74-transport-2
+        artifact_prefix: reverseandroid-c74-stage-2
+    - name: 'C74 stage 2: inspect real runtime threads'
+      if: success() && steps.s2.outcome == 'success'
+      continue-on-error: true
+      run: |
+        SHA=$(python3 -c 'import json;print(json.load(open("evidence/c74-2/output-contract.json"))["checkpoint_sha256"])')
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c74-2/current.rvg "$SHA" evidence/c74-2/threads-readonly.json
+        cp evidence/c74-2/threads-readonly.json evidence/c74-reports/threads-2.json
+    - name: Release only the previous checkpoint host copies after complete upload
+      if: success() && steps.s2.outcome == 'success'
+      run: |
+        rm -rf evidence/c74-1 build/c74-transport-1
+    - name: 'C74 stage 3: execute and fully admit the original Android state'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.ready != 'true'
+      run: |
+        node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 3 evidence/c74-2 evidence/c74-3 build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" state/experiments/c74-plan.json > evidence/c74-reports/stage-3.json
+    - name: 'C74 stage 3: preserve every complete checkpoint piece'
+      if: success() && steps.s3.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c74-3
+        transport_path: build/c74-transport-3
+        artifact_prefix: reverseandroid-c74-stage-3
+    - name: 'C74 stage 3: inspect real runtime threads'
+      if: success() && steps.s3.outcome == 'success'
+      continue-on-error: true
+      run: |
+        SHA=$(python3 -c 'import json;print(json.load(open("evidence/c74-3/output-contract.json"))["checkpoint_sha256"])')
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c74-3/current.rvg "$SHA" evidence/c74-3/threads-readonly.json
+        cp evidence/c74-3/threads-readonly.json evidence/c74-reports/threads-3.json
+    - name: Release only the previous checkpoint host copies after complete upload
+      if: success() && steps.s3.outcome == 'success'
+      run: |
+        rm -rf evidence/c74-2 build/c74-transport-2
+    - name: 'C74 stage 4: execute and fully admit the original Android state'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.ready != 'true'
+      run: |
+        node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 4 evidence/c74-3 evidence/c74-4 build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" state/experiments/c74-plan.json > evidence/c74-reports/stage-4.json
+    - name: 'C74 stage 4: preserve every complete checkpoint piece'
+      if: success() && steps.s4.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c74-4
+        transport_path: build/c74-transport-4
+        artifact_prefix: reverseandroid-c74-stage-4
+    - name: 'C74 stage 4: inspect real runtime threads'
+      if: success() && steps.s4.outcome == 'success'
+      continue-on-error: true
+      run: |
+        SHA=$(python3 -c 'import json;print(json.load(open("evidence/c74-4/output-contract.json"))["checkpoint_sha256"])')
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c74-4/current.rvg "$SHA" evidence/c74-4/threads-readonly.json
+        cp evidence/c74-4/threads-readonly.json evidence/c74-reports/threads-4.json
+    - name: Release only the previous checkpoint host copies after complete upload
+      if: success() && steps.s4.outcome == 'success'
+      run: |
+        rm -rf evidence/c74-3 build/c74-transport-3
+    - name: 'C74 stage 5: execute and fully admit the original Android state'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.ready != 'true'
+      run: |
+        node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 5 evidence/c74-4 evidence/c74-5 build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" state/experiments/c74-plan.json > evidence/c74-reports/stage-5.json
+    - name: 'C74 stage 5: preserve every complete checkpoint piece'
+      if: success() && steps.s5.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c74-5
+        transport_path: build/c74-transport-5
+        artifact_prefix: reverseandroid-c74-stage-5
+    - name: 'C74 stage 5: inspect real runtime threads'
+      if: success() && steps.s5.outcome == 'success'
+      continue-on-error: true
+      run: |
+        SHA=$(python3 -c 'import json;print(json.load(open("evidence/c74-5/output-contract.json"))["checkpoint_sha256"])')
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c74-5/current.rvg "$SHA" evidence/c74-5/threads-readonly.json
+        cp evidence/c74-5/threads-readonly.json evidence/c74-reports/threads-5.json
+    - name: Release only the previous checkpoint host copies after complete upload
+      if: success() && steps.s5.outcome == 'success'
+      run: |
+        rm -rf evidence/c74-4 build/c74-transport-4
+    - name: 'C74 stage 6: execute and fully admit the original Android state'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.ready != 'true'
+      run: |
+        node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 6 evidence/c74-5 evidence/c74-6 build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" state/experiments/c74-plan.json > evidence/c74-reports/stage-6.json
+    - name: 'C74 stage 6: preserve every complete checkpoint piece'
+      if: success() && steps.s6.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c74-6
+        transport_path: build/c74-transport-6
+        artifact_prefix: reverseandroid-c74-stage-6
+    - name: 'C74 stage 6: inspect real runtime threads'
+      if: success() && steps.s6.outcome == 'success'
+      continue-on-error: true
+      run: |
+        SHA=$(python3 -c 'import json;print(json.load(open("evidence/c74-6/output-contract.json"))["checkpoint_sha256"])')
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c74-6/current.rvg "$SHA" evidence/c74-6/threads-readonly.json
+        cp evidence/c74-6/threads-readonly.json evidence/c74-reports/threads-6.json
+    - name: Release only the previous checkpoint host copies after complete upload
+      if: success() && steps.s6.outcome == 'success'
+      run: |
+        rm -rf evidence/c74-5 build/c74-transport-5
+    - name: Require the original Android boot acceptance conditions
+      run: |
+        node --input-type=module <<'NODE'
+        import assert from 'node:assert/strict';import {readdirSync,readFileSync} from 'node:fs';
+        const reports=readdirSync('evidence/c74-reports').filter(x=>/^stage-[0-9]+[.]json$/.test(x)).sort().map(x=>JSON.parse(readFileSync('evidence/c74-reports/'+x)));
+        const last=reports.at(-1);assert.ok(last);assert.equal(last.android_boot_completed_verified,true,'Complete checkpoints preserved; Android boot remains pending');assert.equal(last.system_server_alive_verified,true);assert.equal(last.ready_for_visual_review,true);
+        NODE
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-c74-boot-evidence
+        path: |
+          evidence/c74-reports/
+          evidence/c74-*/*.json
+          evidence/c74-*/*.txt
+          evidence/c74-*/*.log
+          evidence/c74-*/native/*.json
+          evidence/c74-*/native/*.log
+        retention-days: 90
+        if-no-files-found: warn

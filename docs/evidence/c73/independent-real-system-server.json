@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-independent-real-system-server-v1",
+  "run_id": 42077412765,
+  "metadata_artifact_id": 13442987296,
+  "metadata_archive_sha256": "1540520e954393dd6da1871a6ad1eb1e5580ced4c541f042175ffbdf0e02393c",
+  "checkpoint_sha256": "a414430675f8d2e706c6e60a22599b60eab4a16956af9574dc7210b7814c798d",
+  "instructions": 76895950532,
+  "independent_complete_snapshot_SHA256_matches_local": true,
+  "source_boundary_verified": true,
+  "snapshot_roundtrip_verified": true,
+  "system_server_alive_verified": true,
+  "system_server_pid": 3340,
+  "live_sys_boot_completed_verified": false,
+  "all_four_transport_parts_preserved": true,
+  "original_CPU_codecs_RAM_clock_and_IRQ_unchanged": true,
+  "new_UART_events": 0
+}

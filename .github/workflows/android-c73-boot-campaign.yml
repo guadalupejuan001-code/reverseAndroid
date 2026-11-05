@@ -1,13 +1,5 @@
-name: Android C73 continued boot without new guest input
+name: Android C73 recorded SystemServer continuation replay
 'on':
-  push:
-    branches:
-    - main
-    paths:
-    - .github/workflows/android-c73-boot-campaign.yml
-    - state/experiments/c73-plan.json
-    - state/experiments/c73-artifacts.json
-    - state/experiments/c73-source-transport.json
   workflow_dispatch: null
 permissions:
   contents: read

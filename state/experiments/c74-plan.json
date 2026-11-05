@@ -19,5 +19,6 @@
   ],
   "original_model_modified": false,
   "source_system_server_pid": 3340,
-  "source_availability": "Local source passed full original C46 admission with actual SystemServer alive; freeze independent C73 stage6 artifact transport before enabling CI."
+  "source_availability": "Authenticated complete independent C73 stage6 source, all four own-repository transport parts preserved, actual SystemServer identity verified.",
+  "first_clean_boundary_sha256": "72fd21be9f98dafb1af548e4d2b0ffc04a2b6dc19213843c0e41d71ed24a9e64"
 }
