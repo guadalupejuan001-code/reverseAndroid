@@ -1,0 +1,52 @@
+{
+  "schema": "reverseandroid-isolated-host-build-comparison-v1",
+  "source_checkpoint_sha256": "8593a0533a13ab618f3234f17383d0440185f901c56732b0f5df218fc84e99c2",
+  "source_instructions": 4000000000,
+  "instructions_per_branch": 50000000,
+  "branches": [
+    {
+      "label": "reference-a",
+      "binary": "epoch",
+      "binary_sha256": "717a0d905ebc5680c206222e48f0fd8abb96058ee15517d12a596ab46c696ced",
+      "elapsed_native_ms": 18897,
+      "elapsed_process_ms": null,
+      "instructions": 4050000000,
+      "checkpoint_sha256": "499533c91e054e2b0f62e41a0fef8af62e738980a042bff961e26b5d32c2b1ac",
+      "final_snapshot": "/workspace/scratch/bf4ce496066e/evidence/c76-host-build-benchmark/reference-a/journal/generation-2/checkpoint.rvg"
+    },
+    {
+      "label": "candidate",
+      "binary": "epoch-v3",
+      "binary_sha256": "d82b2f49acdf62780a4731272e31fed84979553d903fe71c0d2c41c09803952f",
+      "elapsed_native_ms": 19664,
+      "elapsed_process_ms": 51909,
+      "instructions": 4050000000,
+      "checkpoint_sha256": "499533c91e054e2b0f62e41a0fef8af62e738980a042bff961e26b5d32c2b1ac",
+      "final_snapshot": "/workspace/scratch/bf4ce496066e/evidence/c76-host-build-benchmark/candidate/journal/generation-2/checkpoint.rvg"
+    },
+    {
+      "label": "reference-b",
+      "binary": "epoch",
+      "binary_sha256": "717a0d905ebc5680c206222e48f0fd8abb96058ee15517d12a596ab46c696ced",
+      "elapsed_native_ms": 19763,
+      "elapsed_process_ms": 51766,
+      "instructions": 4050000000,
+      "checkpoint_sha256": "499533c91e054e2b0f62e41a0fef8af62e738980a042bff961e26b5d32c2b1ac",
+      "final_snapshot": "/workspace/scratch/bf4ce496066e/evidence/c76-host-build-benchmark/reference-b/journal/generation-2/checkpoint.rvg"
+    }
+  ],
+  "all_complete_original_RVG_SHA256_equal": true,
+  "candidate_flags": [
+    "-O3",
+    "-flto",
+    "-march=x86-64-v3",
+    "-mtune=generic"
+  ],
+  "original_870_source_files_unchanged": true,
+  "guest_RAM_clock_seed_cadence_IRQ_and_codecs_unchanged": true,
+  "benchmark_state_is_not_promotion_authority": true,
+  "canonical_control_archive": "/workspace/scratch/bf4ce496066e/evidence/c76-host-build-benchmark/identical-control.rvg.gz",
+  "canonical_control_original_bytes": 580630869,
+  "full_decompressed_control_SHA256_and_CRC_verified": true,
+  "relative_native_elapsed": 1.0172788411795137
+}

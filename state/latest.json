@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "8a898e4c42a35099e0b35b41417a98b970451f2853fcefbc080965f6c5bf7d01",
-  "instructions": 2000000000,
+  "checkpoint_sha256": "f91e5cc63ec60791863d7726909b0c8a433665f910ca16aa7941f0426208092a",
+  "instructions": 5000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -16,9 +16,9 @@
   ],
   "cycle": "C76",
   "epoch": "C76-lights-port",
-  "stage": 1,
+  "stage": 4,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
-  "execution_commit": "2709f6ebb48fa7407b66b17a9b49a47509bb7b22",
+  "execution_commit": "32f9d441fc7b486da0b4d3f1c553fc25599cbe2a",
   "execution_location": "local",
   "epoch_root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
   "parent_epoch_checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
@@ -30,8 +30,8 @@
   "live_vsock_lights_port": "6900",
   "actual_port_evidence": "docs/evidence/c76/local-stage1-lights-readonly.json",
   "original_870_files_unchanged": true,
-  "canonical_local_source": "/workspace/scratch/bf4ce496066e/evidence/c76-stage1",
+  "canonical_local_source": "/workspace/scratch/bf4ce496066e/evidence/c76-stage4",
   "independent_reproduction_run_id": 42115913067,
-  "independent_reproduction_status": "running; original build and new helper tests passed; recovering authenticated parent/media",
-  "active_continuation": "C76 stage2 native executing from this fully admitted epoch boundary without UART/property injection"
+  "independent_reproduction_status": "Initialized root and first2B complete original snapshot match local SHA256; original CI stage2 executing.",
+  "active_continuation": "C76 stages5 and6 execute sequentially from admitted5B; APEX completed, now vendor BoringSSL self-test"
 }

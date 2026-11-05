@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-independent-hardware-epoch-replay-v1",
+  "run_id": 42115913067,
+  "commit": "32f9d441fc7b486da0b4d3f1c553fc25599cbe2a",
+  "artifact_id": 13456287562,
+  "archive_sha256": "53d49e4713506caa1e6b98b6491a54a450a85eed26284235b74f4949a8d35b08",
+  "complete_original_snapshot_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
+  "complete_snapshot_sha256_matches_local": true,
+  "power_cycle_proof_matches_local": true,
+  "initialized_hardware_instructions": 0,
+  "persistent_drive_unchanged": true,
+  "android_boot_completion_proved_by_initialization": false
+}
