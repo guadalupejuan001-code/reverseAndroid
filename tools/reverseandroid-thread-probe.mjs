@@ -35,7 +35,7 @@ function inspectThreads(api) {
   const contextOffset=task.thread.offset+members(types[task.thread.type]).cpu_context.offset;
   const pt=members(type('pt_regs')),ptSize=type('pt_regs').type,mmFields=members(type('mm_struct'));
   const unsigned=(p,key,n=4)=>read(p+BigInt(task[key].offset),n);
-  const selected=tasks.filter(t=>t.zygote_startup||/bootanim|surfaceflinger/.test(t.name));
+  const selected=tasks.filter(t=>t.zygote_startup||/bootanim|surfaceflinger|^(sh|su|printf|id|cat|toybox|renice)$/.test(t.name));
   const result={schema:'reverseandroid-thread-probe-v1',read_only:true,groups:[],kernel_layout_pinned:true};
   for(const leaderItem of selected) {
     const leader=BigInt(leaderItem.task),group={pid:leaderItem.pid,name:leaderItem.name,threads:[]};
@@ -88,7 +88,7 @@ function inspectThreads(api) {
             if((pstate&15n)!==0n||!pcMap||!(BigInt(pcMap.flags)&4n)||!spMap)continue;
             const regs=Array.from({length:31},(_,i)=>read(at+BigInt(pt.regs.offset+i*8)));
             const number=Number(read(at+BigInt(pt.syscallno.offset),4));
-            const saved={stack_bytes:stackBytes,syscall:number,pc:pcMap,sp:hx(userSp),fp:hx(regs[29]),lr:mapping(regs[30]),args:regs.slice(0,6).map(hx),pstate:hx(pstate),user_stack:[]};
+            const saved={stack_bytes:stackBytes,syscall:number,pc:pcMap,sp:hx(userSp),fp:hx(regs[29]),lr:mapping(regs[30]),args:regs.slice(0,6).map(hx),registers:regs.map(hx),pstate:hx(pstate),user_stack:[]};
             let userFrame=regs[29];const frames=new Set();
             for(let i=0;i<32&&userFrame>=userSp&&userFrame-userSp<1048576n&&(userFrame&7n)===0n&&!frames.has(userFrame.toString());i++) {
               try{frames.add(userFrame.toString());const b=memory.read(userFrame,16),prev=b.readBigUInt64LE(0),lr=b.readBigUInt64LE(8);saved.user_stack.push({fp:hx(userFrame),return_pc:mapping(lr)});if(prev<=userFrame)break;userFrame=prev;}catch(e){saved.unwind_stop=e.message;break;}

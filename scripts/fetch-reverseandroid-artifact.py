@@ -9,9 +9,12 @@ import sys
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
-name, target = sys.argv[1:]
+assert len(sys.argv) in (3, 4), 'Expected alias, target and optional explicit state lock'
+name, target = sys.argv[1:3]
 target = Path(target)
-lock = json.loads((root / 'state/bootstrap-artifacts.json').read_text())
+relative_lock = Path(sys.argv[3]) if len(sys.argv) == 4 else Path('state/bootstrap-artifacts.json')
+assert relative_lock.parts[0] == 'state' and '..' not in relative_lock.parts and not relative_lock.is_absolute()
+lock = json.loads((root / relative_lock).read_text())
 pin = lock['artifacts'][name]
 
 def fetch(item, label, destination):

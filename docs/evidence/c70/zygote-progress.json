@@ -1,0 +1,32 @@
+{
+  "schema": "reverse-c42-zygote-progress-v1",
+  "checkpoint_sha256": "3811f9d7b3c79311318b415af958546712e31b78579ffb680cad595be4780bc4",
+  "instructions": 65395950532,
+  "read_only": true,
+  "input_unchanged": true,
+  "stage": "zygote_main_thread_observed",
+  "progress_status": "zygote_sleeping",
+  "zygote_pid": 567,
+  "zygote_comm": "main",
+  "zygote_state": 8193,
+  "zygote_runtime_ns": "31307164000",
+  "zygote_runtime_delta_ns": "0",
+  "zygote_kernel_stack": [
+    "__schedule+0x1004",
+    "schedule+0x4c",
+    "futex_wait+0x158",
+    "__arm64_sys_futex+0xfc",
+    "invoke_syscall+0x58",
+    "do_el0_svc+0x8c",
+    "el0_svc+0x48",
+    "el0t_64_sync_handler+0x88",
+    "el0t_64_sync+0x1bc"
+  ],
+  "previous_checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+  "system_server_alive_verified": false,
+  "system_server_pid": null,
+  "system_server_parent_pid": null,
+  "system_server_candidate_pids": [],
+  "zygote_socket_responsive_verified": false,
+  "android_boot_completed_verified": false
+}

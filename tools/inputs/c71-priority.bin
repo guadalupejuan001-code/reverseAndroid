@@ -1,0 +1,2 @@
+
+printf '\nREVERSE_C71_SCHED_BEGIN\n'; id; cat /proc/567/task/994/comm; su 0 /system/bin/toybox renice -n 0 -p 994; printf 'REVERSE_C71_RENICE_STATUS=%s\n' "$?"; cat /proc/567/task/994/stat; printf 'REVERSE_C71_SCHED_END\n'

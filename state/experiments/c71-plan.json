@@ -1,0 +1,25 @@
+{
+  "schema": "reverseandroid-c71-boot-campaign-v1",
+  "source_checkpoint_sha256": "119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4",
+  "source_instructions": 64395950532,
+  "input_file": "tools/inputs/c71-priority.bin",
+  "input_bytes": 225,
+  "input_sha256": "58220cf02fe9291a3a5967eceb96ed0c8f68d38764367cc4c86b4a6e021a51a3",
+  "modeled_guest_adjustment": "temporary JIT thread 994 nice +19 to 0; query and command recorded as UART input",
+  "first_clean_boundary_instructions": 64645950532,
+  "first_clean_boundary_sha256": "18f10aa77c2ef6c375fbd0647084fba00495534b0e3f1be9fa768f427fefd581",
+  "stage_budgets": [
+    250000000,
+    1000000000,
+    1000000000,
+    1000000000,
+    1000000000,
+    1000000000
+  ],
+  "independent_stage_checks": {
+    "2": {
+      "instructions": 65645950532,
+      "checkpoint_sha256": "a0498051acfce5fa823da7f791aa491f73e99871eb0257d4eb688ac6a1036d94"
+    }
+  }
+}

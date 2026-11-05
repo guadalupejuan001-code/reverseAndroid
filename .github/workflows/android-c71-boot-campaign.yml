@@ -1,0 +1,380 @@
+name: Android C71 authenticated boot campaign
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c71-boot-campaign.yml
+    - state/experiments/c71-plan.json
+    - tools/reverseandroid-campaign-stage.mjs
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c71-campaign
+  cancel-in-progress: false
+jobs:
+  c71-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+      REVERSE_PC_C39_CHUNK: '1000000'
+      REVERSE_PC_C39_CHECKPOINT_MS: '120000'
+      REVERSE_PC_C39_CHECKPOINT_INSTRUCTIONS: '200000000'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate the unchanged original model and supplemental diagnostics
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        node --test tests/reverseandroid_thread_probe.test.mjs tests/reverseandroid_elf_symbols.test.mjs
+
+        '
+    - name: Fetch the pinned tested native binary and the frozen C69 experiment state
+      run: 'python3 scripts/fetch-reverseandroid-artifact.py native-cache build/native state/experiments/c71-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source state/experiments/c71-artifacts.json
+
+        chmod +x build/native/native build/native/frame
+
+        mkdir -p evidence/c71-reports
+
+        '
+    - name: Recover and authenticate the exact original disk
+      run: 'python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c71-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c71-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c71-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c71-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw > evidence/c71-reports/disk.json
+
+        '
+    - name: Verify the original rebuilt decoder against the authenticated source pixels
+      run: 'build/native/frame build/source/current.rvg build/media/android-c27.raw 119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4
+        4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e 10888413184 build/seed.ppm > evidence/c71-reports/seed-frame.json
+
+        node tools/reverseandroid-verify-frame.mjs build/source/checkpoint-frame.json evidence/c71-reports/seed-frame.json
+        evidence/c71-reports/seed-frame-verified.json
+
+        '
+    - name: 'C71 stage 1: execute and fully admit the original Android state'
+      id: s1
+      if: success()
+      run: 'node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 1 build/source evidence/c71-1
+        build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" > evidence/c71-reports/stage-1.json
+
+        '
+      env:
+        REVERSE_PC_UART_INPUT_FILE: tools/inputs/c71-priority.bin
+    - name: 'C71 stage 1: preserve its complete checkpoint in bounded pieces'
+      if: success() && steps.s1.outcome == 'success'
+      run: 'python3 scripts/pack-reverseandroid-checkpoint.py evidence/c71-1 build/c71-transport-1 > evidence/c71-reports/transport-1.json
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s1.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-1-000
+        path: build/c71-transport-1/checkpoint.part-000
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s1.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-1-001
+        path: build/c71-transport-1/checkpoint.part-001
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s1.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-1-002
+        path: build/c71-transport-1/checkpoint.part-002
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - name: 'C71 stage 1: inspect real runtime threads without changing the guest'
+      if: success() && steps.s1.outcome == 'success'
+      continue-on-error: true
+      run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-1/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-1/current.rvg "$SHA" evidence/c71-1/threads-readonly.json
+
+        '
+    - name: 'C71 stage 2: execute and fully admit the original Android state'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.ready != 'true'
+      run: 'node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 2 evidence/c71-1 evidence/c71-2
+        build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" > evidence/c71-reports/stage-2.json
+
+        '
+    - name: 'C71 stage 2: preserve its complete checkpoint in bounded pieces'
+      if: success() && steps.s2.outcome == 'success'
+      run: 'python3 scripts/pack-reverseandroid-checkpoint.py evidence/c71-2 build/c71-transport-2 > evidence/c71-reports/transport-2.json
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s2.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-2-000
+        path: build/c71-transport-2/checkpoint.part-000
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s2.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-2-001
+        path: build/c71-transport-2/checkpoint.part-001
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s2.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-2-002
+        path: build/c71-transport-2/checkpoint.part-002
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - name: 'C71 stage 2: inspect real runtime threads without changing the guest'
+      if: success() && steps.s2.outcome == 'success'
+      continue-on-error: true
+      run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-2/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-2/current.rvg "$SHA" evidence/c71-2/threads-readonly.json
+
+        '
+    - name: Release only previously uploaded temporary host copies
+      if: success() && steps.s2.outcome == 'success'
+      run: 'rm -rf evidence/c71-1 build/c71-transport-1
+
+        '
+    - name: 'C71 stage 3: execute and fully admit the original Android state'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.ready != 'true'
+      run: 'node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 3 evidence/c71-2 evidence/c71-3
+        build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" > evidence/c71-reports/stage-3.json
+
+        '
+    - name: 'C71 stage 3: preserve its complete checkpoint in bounded pieces'
+      if: success() && steps.s3.outcome == 'success'
+      run: 'python3 scripts/pack-reverseandroid-checkpoint.py evidence/c71-3 build/c71-transport-3 > evidence/c71-reports/transport-3.json
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s3.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-3-000
+        path: build/c71-transport-3/checkpoint.part-000
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s3.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-3-001
+        path: build/c71-transport-3/checkpoint.part-001
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s3.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-3-002
+        path: build/c71-transport-3/checkpoint.part-002
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - name: 'C71 stage 3: inspect real runtime threads without changing the guest'
+      if: success() && steps.s3.outcome == 'success'
+      continue-on-error: true
+      run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-3/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-3/current.rvg "$SHA" evidence/c71-3/threads-readonly.json
+
+        '
+    - name: Release only previously uploaded temporary host copies
+      if: success() && steps.s3.outcome == 'success'
+      run: 'rm -rf evidence/c71-2 build/c71-transport-2
+
+        '
+    - name: 'C71 stage 4: execute and fully admit the original Android state'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.ready != 'true'
+      run: 'node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 4 evidence/c71-3 evidence/c71-4
+        build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" > evidence/c71-reports/stage-4.json
+
+        '
+    - name: 'C71 stage 4: preserve its complete checkpoint in bounded pieces'
+      if: success() && steps.s4.outcome == 'success'
+      run: 'python3 scripts/pack-reverseandroid-checkpoint.py evidence/c71-4 build/c71-transport-4 > evidence/c71-reports/transport-4.json
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s4.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-4-000
+        path: build/c71-transport-4/checkpoint.part-000
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s4.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-4-001
+        path: build/c71-transport-4/checkpoint.part-001
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s4.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-4-002
+        path: build/c71-transport-4/checkpoint.part-002
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - name: 'C71 stage 4: inspect real runtime threads without changing the guest'
+      if: success() && steps.s4.outcome == 'success'
+      continue-on-error: true
+      run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-4/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-4/current.rvg "$SHA" evidence/c71-4/threads-readonly.json
+
+        '
+    - name: Release only previously uploaded temporary host copies
+      if: success() && steps.s4.outcome == 'success'
+      run: 'rm -rf evidence/c71-3 build/c71-transport-3
+
+        '
+    - name: 'C71 stage 5: execute and fully admit the original Android state'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.ready != 'true'
+      run: 'node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 5 evidence/c71-4 evidence/c71-5
+        build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" > evidence/c71-reports/stage-5.json
+
+        '
+    - name: 'C71 stage 5: preserve its complete checkpoint in bounded pieces'
+      if: success() && steps.s5.outcome == 'success'
+      run: 'python3 scripts/pack-reverseandroid-checkpoint.py evidence/c71-5 build/c71-transport-5 > evidence/c71-reports/transport-5.json
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s5.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-5-000
+        path: build/c71-transport-5/checkpoint.part-000
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s5.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-5-001
+        path: build/c71-transport-5/checkpoint.part-001
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s5.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-5-002
+        path: build/c71-transport-5/checkpoint.part-002
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - name: 'C71 stage 5: inspect real runtime threads without changing the guest'
+      if: success() && steps.s5.outcome == 'success'
+      continue-on-error: true
+      run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-5/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-5/current.rvg "$SHA" evidence/c71-5/threads-readonly.json
+
+        '
+    - name: Release only previously uploaded temporary host copies
+      if: success() && steps.s5.outcome == 'success'
+      run: 'rm -rf evidence/c71-4 build/c71-transport-4
+
+        '
+    - name: 'C71 stage 6: execute and fully admit the original Android state'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.ready != 'true'
+      run: 'node --max-old-space-size=5000 tools/reverseandroid-campaign-stage.mjs 6 evidence/c71-5 evidence/c71-6
+        build/native/native build/media/android-c27.raw build/native/frame "$(git rev-parse HEAD)" > evidence/c71-reports/stage-6.json
+
+        '
+    - name: 'C71 stage 6: preserve its complete checkpoint in bounded pieces'
+      if: success() && steps.s6.outcome == 'success'
+      run: 'python3 scripts/pack-reverseandroid-checkpoint.py evidence/c71-6 build/c71-transport-6 > evidence/c71-reports/transport-6.json
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s6.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-6-000
+        path: build/c71-transport-6/checkpoint.part-000
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: error
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s6.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-6-001
+        path: build/c71-transport-6/checkpoint.part-001
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: success() && steps.s6.outcome == 'success'
+      with:
+        name: reverseandroid-c71-stage-6-002
+        path: build/c71-transport-6/checkpoint.part-002
+        compression-level: 0
+        retention-days: 90
+        if-no-files-found: warn
+    - name: 'C71 stage 6: inspect real runtime threads without changing the guest'
+      if: success() && steps.s6.outcome == 'success'
+      continue-on-error: true
+      run: 'SHA=$(python3 -c ''import json;print(json.load(open("evidence/c71-6/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c71-6/current.rvg "$SHA" evidence/c71-6/threads-readonly.json
+
+        '
+    - name: Release only previously uploaded temporary host copies
+      if: success() && steps.s6.outcome == 'success'
+      run: 'rm -rf evidence/c71-5 build/c71-transport-5
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-c71-boot-evidence
+        path: 'evidence/c71-reports/
+
+          evidence/c71-*/*.json
+
+          evidence/c71-*/*.txt
+
+          evidence/c71-*/*.log
+
+          evidence/c71-*/native/*.json
+
+          evidence/c71-*/native/*.log
+
+          '
+        retention-days: 90
+        if-no-files-found: warn

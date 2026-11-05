@@ -6,11 +6,11 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
-[C69 ejecutado en reverseAndroid](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42050799049) completó **100.000.000 instrucciones nuevas** y dejó una frontera limpia en **64.395.950.532 instrucciones**. El checkpoint es `119be5c1aa583e7b6819f68157d94a0a6be0a44e6159d8e47005800e563ef6f4`.
+[C70](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42054712167) completó **1.000.000.000 instrucciones nuevas** desde C69, hasta **65.395.950.532**. El checkpoint limpio es `3811f9d7b3c79311318b415af958546712e31b78579ffb680cad595be4780bc4` y ya está conservado en tres piezas en reverseAndroid. El origen, los 870 archivos de la base, XI/Ether y los formatos originales se conservaron.
 
-El nuevo estado, sus tres piezas verificadas y el disco original ya están guardados en este repositorio. `state/latest.json` registra el resultado y `state/continuation.json` prepara C70 desde esa frontera. Todos los pines de entrada activos apuntan a artefactos de reverseAndroid. Los 870 archivos de la base importada conservan sus hashes originales; la compilación, el decodificador y las 95 pruebas de admisión pasaron. `system_server`, el arranque completo y contenido Android visible siguen pendientes.
+Zygote sigue esperando; `system_server` y el arranque completo continúan sin verificar. C71 investiga esa espera con lectura de los hilos reales de ART y una prueba separada de prioridad del hilo JIT mediante la consola modelada. El ajuste temporal solicitado y sus bytes están registrados; no se confunde la solicitud con su ejecución efectiva. Las etapas de esa prueba solo continúan desde resultados plenamente admitidos y guardan cada checkpoint antes de avanzar.
 
-El fotograma auténtico de C69 muestra el **logo de inicio de Android en 800×600**. Se verificaron el archivo ZIP, la pieza de transporte y el hash del PPM original antes de inspeccionar la imagen. Esta observación no cambia los controles originales de arranque completo.
+El fotograma auténtico anterior de C69 mostró el **logo de inicio de Android en 800×600**. Se verificaron el ZIP, la pieza de transporte y el PPM original antes de inspeccionar la imagen. Esta observación no acredita el arranque completo.
 
 ![Fotograma original de C69: logo de Android](docs/evidence/c69-android-logo.png)
 
