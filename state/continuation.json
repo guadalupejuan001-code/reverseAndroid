@@ -14,12 +14,12 @@
     "instructions": 64395950532,
     "transport_manifest": "state/source-checkpoint-transport.json"
   },
-  "instruction_budget": 100000000,
+  "instruction_budget": 1000000000,
   "logical_ram_bytes": 2147483648,
   "counter_instructions_per_tick": 64,
   "host_snapshot_transport_bytes": 2147483648,
   "uart_input": null,
   "guest_priority_changes": false,
   "retain_original_source": true,
-  "execute_on_push": false
+  "execute_on_push": true
 }
