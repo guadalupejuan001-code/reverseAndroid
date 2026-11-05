@@ -1,0 +1,29 @@
+{
+  "schema": "reverseandroid-live-zygote-child-io-stage3-v1",
+  "checkpoint_sha256": "c52fa65a3e6f1505f9b0ddf90358030ede7e81727ed43b0ed7638091a51dcfd1",
+  "instructions": 73895950532,
+  "read_only": true,
+  "input_unchanged": true,
+  "child_pid": 3340,
+  "thread_list_verified": true,
+  "child_thread_count": 1,
+  "child_runtime_ns": "1281145000",
+  "child_state": 0,
+  "child_nice": -20,
+  "current_kernel_symbol_from_original_observer": "blk_mq_dispatch_rq_list+0xa4",
+  "kernel_stack_symbols_from_original_observer": [
+    "blk_mq_sched_dispatch_requests+0x234",
+    "blk_mq_flush_plug_list.cold+0x1d8",
+    "blk_finish_plug+0x58",
+    "do_madvise+0x204",
+    "__arm64_sys_madvise+0x20",
+    "invoke_syscall+0x58",
+    "do_el0_svc+0x8c",
+    "el0_svc+0x48",
+    "el0t_64_sync_handler+0x88",
+    "el0t_64_sync+0x1bc",
+    null
+  ],
+  "system_server_identity_verified": false,
+  "android_boot_completed_verified": false
+}

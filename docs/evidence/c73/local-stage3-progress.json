@@ -1,0 +1,26 @@
+{
+  "schema": "reverseandroid-boot-campaign-stage-v1",
+  "checkpoint_sha256": "c52fa65a3e6f1505f9b0ddf90358030ede7e81727ed43b0ed7638091a51dcfd1",
+  "instructions": 73895950532,
+  "source_boundary_verified": true,
+  "system_server_alive_verified": false,
+  "android_boot_completed_verified": false,
+  "scanout_exported": true,
+  "ready_for_visual_review": false,
+  "android_display_content_verified": false,
+  "unresolved": [
+    "live_process_missing:system_server",
+    "live_sys_boot_completed_unverified"
+  ],
+  "cycle": "C73",
+  "stage": 3,
+  "root_source_checkpoint_sha256": "18a5147749f4d13c776fee9bbb313fc20422357c46a9da6deaf2d8b450e1084b",
+  "input_checkpoint_sha256": "c688c10f6a391b0f40e78d3dd3561a359db0b232bc9b64e1b82d011cc3d5cc81",
+  "recorded_input_sha256": null,
+  "original_engine_and_codecs_unchanged": true,
+  "guest_input_repeated": false,
+  "source_commit": "afa2f9ed382ce5fbd044b929e5378fa41f312ac9",
+  "temporary_guest_priority_experiment": false,
+  "guest_adjustment_executed_verified": false,
+  "independent_whole_RVG_reference_verified": false
+}

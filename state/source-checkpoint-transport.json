@@ -5,33 +5,33 @@
     {
       "file": "checkpoint.part-000",
       "bytes": 209715200,
-      "sha256": "34d36a6476015e13c0c7c422111ae89a37aa8c04a3c1536291f03b0430b805d4"
+      "sha256": "2cb5917b7937b091d5f538b91e83e7edd6f926f75e228a3f570ec10e71412e60"
     },
     {
       "file": "checkpoint.part-001",
       "bytes": 209715200,
-      "sha256": "66608796ec344a3f9b3baf995af586c44cb1d603ea94fb43ba87fad779d6de41"
+      "sha256": "b0458425d3ef9cc2c575f2f24ea1d5754d1b592607d3f20dc673e1b2dd9748cd"
     },
     {
       "file": "checkpoint.part-002",
-      "bytes": 182818018,
-      "sha256": "001d55d2a452f973b2f98a45c34ff42ca273bc00b4db3c28bffddfac902b4684"
+      "bytes": 182120841,
+      "sha256": "a7fc0b1001cb93db03506af1cf528af71d251b5b53a0c7e9ca5a1812efd56d2f"
     }
   ],
   "source_contract": {
     "schema": "reverse-c27-profile-resume-contract-v1",
     "root_checkpoint_sha256": "9db40b80214344583f855ccc777eb74963ece41ca5a1afab8de0737507f0e939",
-    "source_commit": "a889a01a44c7dc7aed3600aa37cf4a3be9d049c9",
+    "source_commit": "311b3f9dae78f35be472b72acfcdd1e2a49b70c1",
     "host_snapshot_transport_bytes": 2147483648,
-    "checkpoint_sha256": "18a5147749f4d13c776fee9bbb313fc20422357c46a9da6deaf2d8b450e1084b",
-    "report_sha256": "cc1772a509960cc33f2bf74ee51f8cfcd778aef8d2c5ea202bcedfd11b1a07cb",
-    "result_sha256": "6e204e83aff613040bbcd1326706569652daa5c2711f0824cd4eb973ae7f286b",
-    "process_sha256": "e49621f0e38598181093f7968512618b764a50ee4ed5cd0edb8ca7a193654d5e"
+    "checkpoint_sha256": "e184be38fb1710b43a8bc43ec9764812c6a2854c711d7509ef209dc5319c3abb",
+    "report_sha256": "4cc2861e73a806e5d74674ccfe1328950c1d05cbd7ca42f5a0cb255b5ac7d1ae",
+    "result_sha256": "d5cfe85ed3775f2cc1a158ba54cfdb4c2409264acb05408844b690565f9330d8",
+    "process_sha256": "2694a1e6bebb01295665bf395c9e73f4d1a07c9a4367a8a2fe7767eac71acefe"
   },
   "progress": {
     "schema": "reverse-c46-android-continuation-v1",
-    "checkpoint_sha256": "18a5147749f4d13c776fee9bbb313fc20422357c46a9da6deaf2d8b450e1084b",
-    "instructions": 70895950532,
+    "checkpoint_sha256": "e184be38fb1710b43a8bc43ec9764812c6a2854c711d7509ef209dc5319c3abb",
+    "instructions": 71895950532,
     "source_boundary_verified": true,
     "system_server_alive_verified": false,
     "android_boot_completed_verified": false,

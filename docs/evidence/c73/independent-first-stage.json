@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-independent-c73-first-replay-v1",
+  "run_id": 42077412765,
+  "metadata_artifact_id": 13438429140,
+  "metadata_archive_sha256": "1dd9fd26cfd9d00b01e746be3560763cbffd3612770b2c4be524b923e8234370",
+  "checkpoint_sha256": "e184be38fb1710b43a8bc43ec9764812c6a2854c711d7509ef209dc5319c3abb",
+  "instructions": 71895950532,
+  "independent_complete_native_snapshot_SHA256_matches_local": true,
+  "independent_reference_gate_passed": true,
+  "original_snapshot_roundtrip_verified": true,
+  "source_boundary_verified": true,
+  "new_UART_input_events": 0,
+  "transport_parts": 3,
+  "all_transport_parts_and_metadata_uploaded": true,
+  "system_server_alive_verified": false,
+  "android_boot_completed_verified": false
+}

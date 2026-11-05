@@ -1,0 +1,12 @@
+{
+  "schema": "reverseandroid-migration-admission-v1",
+  "source_repository": "guadalupejuan001-code/reverseAndroid",
+  "source_commit": "311b3f9dae78f35be472b72acfcdd1e2a49b70c1",
+  "checkpoint_sha256": "e184be38fb1710b43a8bc43ec9764812c6a2854c711d7509ef209dc5319c3abb",
+  "instructions": 71895950532,
+  "full_original_admission_passed": true,
+  "source_state_modified": false,
+  "system_server_alive_verified": false,
+  "android_boot_completed_verified": false,
+  "android_display_content_verified": false
+}
