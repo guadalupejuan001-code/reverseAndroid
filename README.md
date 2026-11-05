@@ -8,7 +8,7 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 [C70](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42054712167) completó **1.000.000.000 instrucciones nuevas** desde C69, hasta **65.395.950.532**. El checkpoint limpio es `3811f9d7b3c79311318b415af958546712e31b78579ffb680cad595be4780bc4` y ya está conservado en tres piezas en reverseAndroid. El origen, los 870 archivos de la base, XI/Ether y los formatos originales se conservaron.
 
-Zygote sigue esperando; `system_server` y el arranque completo continúan sin verificar. C71 investiga esa espera con lectura de los hilos reales de ART y una prueba separada de prioridad del hilo JIT mediante la consola modelada. El ajuste temporal solicitado y sus bytes están registrados; no se confunde la solicitud con su ejecución efectiva. Las etapas de esa prueba solo continúan desde resultados plenamente admitidos y guardan cada checkpoint antes de avanzar.
+Zygote sigue esperando; `system_server` y el arranque completo continúan sin verificar. La lectura de los hilos reales de ART detectó que el comando de C71 devolvía éxito pero conservaba nice +19: en Toybox, `renice -n 0` suma cero. C71 se conserva como control. C72 corrige el comando a un incremento de −19, verifica primero la identidad y la prioridad reales del hilo JIT y conserva la entrada UART exacta. Las etapas solo continúan desde resultados plenamente admitidos y guardan cada checkpoint antes de avanzar.
 
 El fotograma auténtico anterior de C69 mostró el **logo de inicio de Android en 800×600**. Se verificaron el ZIP, la pieza de transporte y el PPM original antes de inspeccionar la imagen. Esta observación no acredita el arranque completo.
 

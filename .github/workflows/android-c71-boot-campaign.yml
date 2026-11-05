@@ -1,12 +1,5 @@
-name: Android C71 authenticated boot campaign
+name: Android C71 recorded UART control reproduction
 'on':
-  push:
-    branches:
-    - main
-    paths:
-    - .github/workflows/android-c71-boot-campaign.yml
-    - state/experiments/c71-plan.json
-    - tools/reverseandroid-campaign-stage.mjs
   workflow_dispatch: null
 permissions:
   contents: read

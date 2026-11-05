@@ -1,0 +1,28 @@
+{
+  "schema": "reverseandroid-c72-boot-campaign-v1",
+  "cycle": "C72",
+  "source_checkpoint_sha256": "3811f9d7b3c79311318b415af958546712e31b78579ffb680cad595be4780bc4",
+  "source_instructions": 65395950532,
+  "input_file": "tools/inputs/c72-priority.bin",
+  "input_bytes": 47,
+  "input_sha256": "ddfde805a5371ac2b713ec397ebea96a27f249d1b23aff239e697ffe06f20e35",
+  "modeled_guest_adjustment": "temporary JIT thread 994 nice +19 to 0, by Toybox relative increment -19",
+  "expected_target": {
+    "pid": 994,
+    "leader": 567,
+    "name": "Jit thread pool",
+    "nice_before": 19,
+    "nice_after": 0
+  },
+  "first_clean_boundary_instructions": 65895950532,
+  "stage_budgets": [
+    500000000,
+    1000000000,
+    1000000000,
+    1000000000,
+    1000000000,
+    1000000000
+  ],
+  "input_semantics_reference": "https://landley.net/toybox/help.html#renice",
+  "original_model_modified": false
+}

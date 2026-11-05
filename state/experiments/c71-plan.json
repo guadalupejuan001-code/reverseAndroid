@@ -21,5 +21,6 @@
       "instructions": 65645950532,
       "checkpoint_sha256": "a0498051acfce5fa823da7f791aa491f73e99871eb0257d4eb688ac6a1036d94"
     }
-  }
+  },
+  "observed_outcome": "CONTROL: Toybox renice -n 0 adds zero; kernel niceness remained +19 despite exit status 0. No priority improvement is claimed."
 }
