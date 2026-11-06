@@ -1,0 +1,1 @@
+su 0 sh -c 'set -e; printf '"'"'\nREVERSE_%s\n'"'"' PTS_SS_DIAG_BEGIN; logcat -b all -d -v threadtime --pid=3386; logcat -b crash -d -v threadtime --pid=4062; logcat -b crash -d -v threadtime --pid=4158'; r=$?; printf '\nREVERSE_%s RC_%s\n' PTS_SS_DIAG "$r"

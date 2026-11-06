@@ -1,0 +1,262 @@
+name: Read actual SystemServer diagnostic logs from the original79B stopped state
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c81-systemserver-diagnostic.yml
+    - state/experiments/c81-systemserver-diagnostic-plan.json
+    - state/experiments/c81-systemserver-diagnostic-artifacts.json
+    - state/experiments/c81-systemserver-diagnostic-input.txt
+    - scripts/run-c81-systemserver-diagnostic-stage.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c81-systemserver-diagnostic
+  cancel-in-progress: false
+jobs:
+  systemserver-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate unchanged sources, exact seed, original disk and already-tested runner
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        node --test tests/reverseandroid_console_proof.test.mjs tests/reverseandroid_diagnostic_console.test.mjs
+        tests/reverseandroid_epoch_input.test.mjs
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/c81-systemserver-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source-ssdiag state/experiments/c81-systemserver-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c81-systemserver-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c81-systemserver-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c81-systemserver-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c81-systemserver-diagnostic-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        chmod +x build/reverseandroid/epoch build/reverseandroid/frame
+
+        mkdir -p evidence/c81-systemserver-diagnostic-reports
+
+        python3 - <<''PYCACHE''
+
+        import pathlib,json,hashlib
+
+        p=pathlib.Path(''build/reverseandroid'')
+
+        assert hashlib.file_digest((p/''epoch'').open(''rb''),''sha256'').hexdigest()==''72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa''
+
+        fixture=json.loads((p/''console-event-test.json'').read_text());assert len(fixture)==5 and all(v is True
+        for v in fixture.values())
+
+        PYCACHE
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-ssdiag
+        > evidence/c81-systemserver-diagnostic-reports/source-admission.json
+
+
+        python3 - <<''PYSOURCE''
+
+        import pathlib,json
+
+        p=pathlib.Path(''build/source-ssdiag'');c=json.loads((p/''output-contract.json'').read_text());g=json.loads((p/''c46-progress.json'').read_text());assert
+        c[''checkpoint_sha256'']==''44ab1e22d2e21243003d764dcb42c6e041d1fc76c344329b44140d7115f37773'' and c[''instructions'']==79000000000;assert
+        g[''source_boundary_verified''] and not g[''system_server_alive_verified'']
+
+        PYSOURCE
+
+        '
+    - name: 'SystemServer diagnostic 1: preserve original execution and send the read request at most once'
+      id: r1
+      if: success()
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 1
+
+        '
+    - name: 'SystemServer diagnostic 1: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-1
+        transport_path: build/c81-systemserver-diagnostic-transport-1
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-1
+    - name: 'SystemServer diagnostic 1: release only previous host duplicates after preservation'
+      if: success() && steps.r1.outcome == 'success'
+      run: 'rm -rf build/source-ssdiag
+
+        '
+    - name: 'SystemServer diagnostic 2: preserve original execution and send the read request at most once'
+      id: r2
+      if: success() && steps.r1.outputs.complete != 'true'
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 2
+
+        '
+    - name: 'SystemServer diagnostic 2: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-2
+        transport_path: build/c81-systemserver-diagnostic-transport-2
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-2
+    - name: 'SystemServer diagnostic 2: release only previous host duplicates after preservation'
+      if: success() && steps.r2.outcome == 'success'
+      run: 'rm -rf evidence/c81-systemserver-diagnostic-1 build/c81-systemserver-diagnostic-transport-1
+
+        '
+    - name: 'SystemServer diagnostic 3: preserve original execution and send the read request at most once'
+      id: r3
+      if: success() && steps.r2.outputs.complete != 'true'
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 3
+
+        '
+    - name: 'SystemServer diagnostic 3: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-3
+        transport_path: build/c81-systemserver-diagnostic-transport-3
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-3
+    - name: 'SystemServer diagnostic 3: release only previous host duplicates after preservation'
+      if: success() && steps.r3.outcome == 'success'
+      run: 'rm -rf evidence/c81-systemserver-diagnostic-2 build/c81-systemserver-diagnostic-transport-2
+
+        '
+    - name: 'SystemServer diagnostic 4: preserve original execution and send the read request at most once'
+      id: r4
+      if: success() && steps.r3.outputs.complete != 'true'
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 4
+
+        '
+    - name: 'SystemServer diagnostic 4: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-4
+        transport_path: build/c81-systemserver-diagnostic-transport-4
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-4
+    - name: 'SystemServer diagnostic 4: release only previous host duplicates after preservation'
+      if: success() && steps.r4.outcome == 'success'
+      run: 'rm -rf evidence/c81-systemserver-diagnostic-3 build/c81-systemserver-diagnostic-transport-3
+
+        '
+    - name: 'SystemServer diagnostic 5: preserve original execution and send the read request at most once'
+      id: r5
+      if: success() && steps.r4.outputs.complete != 'true'
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 5
+
+        '
+    - name: 'SystemServer diagnostic 5: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-5
+        transport_path: build/c81-systemserver-diagnostic-transport-5
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-5
+    - name: 'SystemServer diagnostic 5: release only previous host duplicates after preservation'
+      if: success() && steps.r5.outcome == 'success'
+      run: 'rm -rf evidence/c81-systemserver-diagnostic-4 build/c81-systemserver-diagnostic-transport-4
+
+        '
+    - name: 'SystemServer diagnostic 6: preserve original execution and send the read request at most once'
+      id: r6
+      if: success() && steps.r5.outputs.complete != 'true'
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 6
+
+        '
+    - name: 'SystemServer diagnostic 6: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-6
+        transport_path: build/c81-systemserver-diagnostic-transport-6
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-6
+    - name: 'SystemServer diagnostic 6: release only previous host duplicates after preservation'
+      if: success() && steps.r6.outcome == 'success'
+      run: 'rm -rf evidence/c81-systemserver-diagnostic-5 build/c81-systemserver-diagnostic-transport-5
+
+        '
+    - name: 'SystemServer diagnostic 7: preserve original execution and send the read request at most once'
+      id: r7
+      if: success() && steps.r6.outputs.complete != 'true'
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 7
+
+        '
+    - name: 'SystemServer diagnostic 7: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-7
+        transport_path: build/c81-systemserver-diagnostic-transport-7
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-7
+    - name: 'SystemServer diagnostic 7: release only previous host duplicates after preservation'
+      if: success() && steps.r7.outcome == 'success'
+      run: 'rm -rf evidence/c81-systemserver-diagnostic-6 build/c81-systemserver-diagnostic-transport-6
+
+        '
+    - name: 'SystemServer diagnostic 8: preserve original execution and send the read request at most once'
+      id: r8
+      if: success() && steps.r7.outputs.complete != 'true'
+      run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 8
+
+        '
+    - name: 'SystemServer diagnostic 8: preserve every admitted original checkpoint piece'
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-systemserver-diagnostic-8
+        transport_path: build/c81-systemserver-diagnostic-transport-8
+        artifact_prefix: reverseandroid-c81-systemserver-diagnostic-8
+    - name: 'SystemServer diagnostic 8: release only previous host duplicates after preservation'
+      if: success() && steps.r8.outcome == 'success'
+      run: 'rm -rf evidence/c81-systemserver-diagnostic-7 build/c81-systemserver-diagnostic-transport-7
+
+        '
+    - name: Require actual completed read without claiming Android boot or UI
+      if: success()
+      run: 'python3 - <<''PYFINAL''
+
+        import pathlib,json
+
+        s=json.loads(pathlib.Path(''evidence/c81-systemserver-diagnostic-reports/control-state.json'').read_text());assert
+        s[''complete''] and not s[''failed''];assert len(s[''events''])==1;assert s[''actual_diagnostic_observation''][''diagnostic_completed'']
+        and not s[''actual_diagnostic_observation''][''boot_or_UI_completion_claimed''];print(json.dumps({''actual_log_read_completed'':True,''original_primary_modified'':False,''boot_or_UI_completion_claimed'':False}))
+
+        PYFINAL
+
+        '
+    - name: Preserve all raw diagnostic responses, input and original reports
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-c81-systemserver-diagnostic-evidence
+        path: 'evidence/c81-systemserver-diagnostic-reports
+
+          evidence/c81-systemserver-diagnostic-*/*.json
+
+          evidence/c81-systemserver-diagnostic-*/*.log
+
+          evidence/c81-systemserver-diagnostic-*/*.txt
+
+          state/experiments/c81-systemserver-diagnostic-plan.json
+
+          state/experiments/c81-systemserver-diagnostic-input.txt
+
+          '
+        retention-days: 90
+        if-no-files-found: error

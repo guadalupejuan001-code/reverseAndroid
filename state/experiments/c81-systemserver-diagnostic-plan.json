@@ -1,0 +1,25 @@
+{
+  "schema": "reverseandroid-isolated-original-SystemServer-log-read-v1",
+  "source_checkpoint_sha256": "44ab1e22d2e21243003d764dcb42c6e041d1fc76c344329b44140d7115f37773",
+  "source_instructions": 79000000000,
+  "source_stage": 11,
+  "source_original_SystemServer_state": 8,
+  "source_original_SystemServer_alive_gate": false,
+  "source_artifact_lock": "state/experiments/c81-systemserver-diagnostic-artifacts.json",
+  "source_run_id": 42169590905,
+  "source_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
+  "max_stages": 8,
+  "phases": [
+    {
+      "input_file": "state/experiments/c81-systemserver-diagnostic-input.txt",
+      "input_bytes": 258,
+      "input_sha256": "05422a10d56c7830cbd9897b20dd462354fabec0dbd6c0607f3002257070b48b",
+      "response_marker": "REVERSE_PTS_SS_DIAG",
+      "instruction_budget": 1000000000,
+      "effect": "Read existing SystemServer and two observed crash-dump-process log records only. No signal, priority, service, policy, property, RAM, timing or native-core edit."
+    }
+  ],
+  "control_is_promotion_authority": false,
+  "main_C81_modified": false,
+  "execute_on_push": false
+}

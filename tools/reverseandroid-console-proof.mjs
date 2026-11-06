@@ -8,15 +8,20 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
-export function observeMultiplexedConsole(bytes,expectedSHA,guestPath){
+export function normalizeMultiplexedConsole(bytes){
   assert.ok(Buffer.isBuffer(bytes)&&bytes.length<=64*1024*1024);
-  assert.match(expectedSHA,/^[0-9a-f]{64}$/);
-  assert.match(guestPath,/^\/data\/local\/tmp\/reverseandroid-peer-(?:e11a|abi2|abi3)\.elf$/);
   const before=hash(bytes),raw=bytes.toString('latin1');
   const kernel=/\[\s*[0-9]+\.[0-9]{1,9}\]\[\s*[TC]\s*[0-9]+\][^\r\n]{0,8192}(?:\r+\n|\n)/g;
   let removed=0;
   const stdout=raw.replace(kernel,()=>{removed++;return '';});
   const lines=stdout.split(/[\r\n]+/).map(line=>line.trim());
+  assert.equal(hash(bytes),before);
+  return {before,stdout,lines,removed};
+}
+export function observeMultiplexedConsole(bytes,expectedSHA,guestPath){
+  assert.match(expectedSHA,/^[0-9a-f]{64}$/);
+  assert.match(guestPath,/^\/data\/local\/tmp\/reverseandroid-peer-(?:e11a|abi2|abi3)\.elf$/);
+  const {before,stdout,lines,removed}=normalizeMultiplexedConsole(bytes);
   const wanted=expectedSHA+'  '+guestPath;
   const responseCodes={};
   for(const line of lines){
