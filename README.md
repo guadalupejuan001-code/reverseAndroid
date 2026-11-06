@@ -7,9 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C87, etapa 10: **119.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo del snapshot y todas las piezas de transporte conservadas y fijadas por SHA-256. Las etapas 1 a 4 coinciden byte por byte con ejecuciones locales independientes; no se atribuye una repetición local a la frontera actual.
+C87, etapa 11: **120.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo del snapshot y todas las piezas de transporte conservadas y fijadas por SHA-256. Las etapas 1 a 4 coinciden byte por byte con ejecuciones locales independientes; no se atribuye una repetición local a la frontera actual.
 Zygote sigue vivo y ejecutable. La lectura aislada de la etapa 8 comprobó su espera real al hijo idmap2; esa espera terminó de forma natural en la etapa 9. SELinux y los tres canales de periféricos siguen verificados. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
-[Admisión original y conservación actual](docs/evidence/c87/stage10-original-CI-authority.json); [hijo real y liberación de la espera](docs/evidence/c87/stage8-original-child-wait-and-natural-release.json); [estado actual](state/latest.json).
+[Admisión original y conservación actual](docs/evidence/c87/stage11-original-CI-authority.json); [hijo real y liberación de la espera](docs/evidence/c87/stage8-original-child-wait-and-natural-release.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado
