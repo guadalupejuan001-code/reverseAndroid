@@ -30,7 +30,7 @@
   "original_870_files_unchanged": true,
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42146302356,
-  "independent_reproduction_status": "Original-input complete RVG states independently match through43B; later C80 outputs remain the unchanged reference after the explicit C81 fork.",
+  "independent_reproduction_status": "Original-input complete RVG states independently match at every shared odd boundary from33B through53B. C80 continues as unchanged reference after the explicit C81 fork at57B. No fresh local whole recovery/replay is claimed.",
   "active_continuation": "C81: same latest57B state, one explicitly authenticated guarded JIT scheduling input, selected after actual ART foreground recovery in isolated control; C80 continues as original-input reference.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
