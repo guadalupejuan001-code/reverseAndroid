@@ -32,7 +32,9 @@ jobs:
 
         python3 tests/android_settings_ui_test.py
 
-        node --test tests/android_settings_identity_test.mjs'
+        node --test tests/android_settings_identity_test.mjs
+
+        python3 tests/settings_ui_source_gate_test.py'
     - name: Recover the authenticated Settings source, original native and immutable media
       run: 'mkdir -p build
 

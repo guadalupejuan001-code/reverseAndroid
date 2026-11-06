@@ -47,3 +47,27 @@ Local tests exercise the exact nested request under sh and bash, failure
 short-circuiting, echoed-command rejection, incomplete/timed-out replies
 and process-identity false positives. Actual Android execution and visual
 inspection remain required.
+
+After the foreground controller produces a complete original boot boundary
+and both groups have actually returned to1024, prepare the separate source
+recipe from its authenticated metadata ZIP and connected-GitHub artifact
+listing:
+
+```
+python3 scripts/prepare-settings-ui-source.py METADATA.zip ARTIFACTS.json \
+  --expected-run 42278648862 \
+  --execution-commit 5404979900ac710f1b992061c6cea2212c4ec08d \
+  --bootstrap-lock state/experiments/topapp-shares-artifacts.json \
+  --output NEW_OUTPUT_DIRECTORY
+```
+
+The preparation authenticates the outer ZIP, producer, whole-state binding,
+original completed-boot gate, actual UID1000, original1024 group weights,
+clean process outcome, enforcing security and authentic before frame. It
+requires every complete source transport piece. Commit its three generated
+JSON files under state/experiments on experiment/android-settings-ui-20261106
+to trigger the prepared original-boot-gated UI workflow. The workflow
+recovers and hashes the complete original source before sending any input.
+The recipe itself claims no new guest execution. Synthetic archive tests
+check that an optimistic completion flag cannot override an original failed
+gate, wrong producer, UID, enforcing policy or unrestored weight.
