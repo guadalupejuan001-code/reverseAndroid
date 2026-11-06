@@ -1,0 +1,48 @@
+{
+  "schema": "reverseandroid-local-gpu-resource-observer-validation-v1",
+  "source_base_commit": "1f2221897a23b4e0eca7785db34b4207dfa02df6",
+  "original_baseline_build_passed": true,
+  "original_import_files_verified": 870,
+  "fixture": {
+    "schema": "reverseandroid-original-gpu-lifecycle-fixture-v1",
+    "original_whole_RVG_and_report_identical": true,
+    "original_snapshot_sha256": "2cb1e1df3b4d3fe2474d90548353060a485048280cbc525ea677957a2df0975a",
+    "trace_events": 39,
+    "expected_invalid_resource_responses": 7,
+    "create_transfer_scanout_flush_unref_reuse_restore_reset_verified": true,
+    "original_decoder_unchanged": true,
+    "guest_behavior_changed": false,
+    "protocol_fixture_only": true,
+    "Android_boot_verified": false
+  },
+  "actual_protocol_fixture": {
+    "protocol_fixture_only": true,
+    "checks": 38,
+    "checkpoint_sha256": "2cb1e1df3b4d3fe2474d90548353060a485048280cbc525ea677957a2df0975a",
+    "original_decoder_roundtrip": true,
+    "unknown_and_retired_ID_rejections": 7,
+    "android_boot_verified": false
+  },
+  "original_PCI_regression": {
+    "checks": 3259,
+    "pci_ecam": true,
+    "virtio_block_read_write": true,
+    "immutable_disk_sha256": "ef8e658fd8b98c096ddfdad7aca166bb33a2f4dd91f16d5681e395113105d42e",
+    "gpu_2d_pixels_verified": true,
+    "cpu_graphics_program": true,
+    "quantum_display_alias": true,
+    "width": 128,
+    "height": 96,
+    "state_authority": "original XI/Ether",
+    "android_boot": false,
+    "android_games": false
+  },
+  "original_guest_codecs_unchanged": true,
+  "trace_header_sha256": "b3f31358bbce5e382189e51b3eccbe78e96149651ed1ab69938964ac530c64bf",
+  "new_guest_input": false,
+  "emulator_GPU_or_QSSD_integration_claimed": false,
+  "actual_Android_replay": "passed in run42279660027; see gpu-resource-c88-controlled.json",
+  "independent_Linux_UAPI_ABI_checks": 8,
+  "Linux_UAPI_ABI_checks_passed": true,
+  "trace_header_revision": "historical observer executed at fbe73368b98d5899ad5f71c713a0fe0dd4f8012e"
+}

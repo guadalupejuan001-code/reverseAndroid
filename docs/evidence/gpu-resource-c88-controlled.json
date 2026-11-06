@@ -1,0 +1,179 @@
+{
+  "schema": "reverseandroid-original-native-gpu-trace-comparison-v1",
+  "source_checkpoint_sha256": "8867798e0c98f554c4b7af0bf521ff5a3f39eb44914f759301e0e6e534b0f7d1",
+  "source_instructions": 124147727998,
+  "source_artifact_lock": "state/experiments/c88-stage-1-artifacts.json",
+  "source_snapshot_unchanged": true,
+  "budget_per_run": 50000000,
+  "final_checkpoint_sha256": "f70c2eed518ac0f7b00bc974f1b18778167a87a6addb79e454c5e44f058986de",
+  "final_instructions": 124197727998,
+  "whole_original_RVG_identical": true,
+  "whole_original_new_console_identical": true,
+  "original_admission_passed_both": true,
+  "zero_new_UART_input": true,
+  "source_resource_ids": [
+    0,
+    4,
+    5,
+    6
+  ],
+  "trace_events": 7,
+  "response_counts": [
+    {
+      "command": 259,
+      "response": 4611,
+      "count": 1
+    },
+    {
+      "command": 260,
+      "response": 4611,
+      "count": 1
+    },
+    {
+      "command": 261,
+      "response": 4611,
+      "count": 1
+    }
+  ],
+  "invalid_resource_events": [
+    {
+      "event": "response",
+      "candidate": true,
+      "sequence": 2,
+      "instructions": 124159230067,
+      "queue": 0,
+      "command": 261,
+      "resource_id_present": true,
+      "resource_id": 8,
+      "response": 4611,
+      "scanout": 6,
+      "flushes": 322,
+      "resource_ids": [
+        0,
+        4,
+        5,
+        6
+      ],
+      "resource_extents": [
+        [
+          0,
+          0
+        ],
+        [
+          832,
+          640
+        ],
+        [
+          832,
+          640
+        ],
+        [
+          832,
+          640
+        ]
+      ]
+    },
+    {
+      "event": "response",
+      "candidate": true,
+      "sequence": 4,
+      "instructions": 124159230067,
+      "queue": 0,
+      "command": 259,
+      "resource_id_present": true,
+      "resource_id": 8,
+      "response": 4611,
+      "scanout": 6,
+      "flushes": 322,
+      "resource_ids": [
+        0,
+        4,
+        5,
+        6
+      ],
+      "resource_extents": [
+        [
+          0,
+          0
+        ],
+        [
+          832,
+          640
+        ],
+        [
+          832,
+          640
+        ],
+        [
+          832,
+          640
+        ]
+      ]
+    },
+    {
+      "event": "response",
+      "candidate": true,
+      "sequence": 6,
+      "instructions": 124159230067,
+      "queue": 0,
+      "command": 260,
+      "resource_id_present": true,
+      "resource_id": 8,
+      "response": 4611,
+      "scanout": 6,
+      "flushes": 322,
+      "resource_ids": [
+        0,
+        4,
+        5,
+        6
+      ],
+      "resource_extents": [
+        [
+          0,
+          0
+        ],
+        [
+          832,
+          640
+        ],
+        [
+          832,
+          640
+        ],
+        [
+          832,
+          640
+        ]
+      ]
+    }
+  ],
+  "original_final_boot_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "f70c2eed518ac0f7b00bc974f1b18778167a87a6addb79e454c5e44f058986de",
+    "instructions": 124197727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": false,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "observer_is_not_a_GPU_fix": true,
+  "primary_continuation_modified": false,
+  "futex_owner_or_graphics_causality_established": false,
+  "execution_run_id": 42279660027,
+  "execution_commit": "fbe73368b98d5899ad5f71c713a0fe0dd4f8012e",
+  "execution_conclusion": "success",
+  "evidence_artifact_id": 13535113852,
+  "evidence_archive_sha256": "5e10fa80c47f275275eea16d2455ccab953f9b78bf56eb8cf8754427c8d18bfd",
+  "downloaded_archive_sha256_and_CRC_verified": true,
+  "both_complete_host_logs_independently_verified": true,
+  "whole_PPM_bytes_independently_verified_identical": true,
+  "frame_sha256": "4fea1efa1fbbd26d6c05251a604f85304eb1cc397a07c51ae2e82ef3c79cb2c2",
+  "source_is_fixed_diagnostic_reference_not_current_primary": true
+}
