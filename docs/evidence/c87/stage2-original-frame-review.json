@@ -1,0 +1,27 @@
+{
+  "schema": "reverseandroid-original-frame-review-v1",
+  "checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
+  "instructions": 111147727998,
+  "original_frame": {
+    "schema": "reverse-snapshot-scanout-v1",
+    "status": "scanout_exported",
+    "source_checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
+    "instructions": 111147727998,
+    "pc": "0xffffffc0800b7cd8",
+    "frame_counter": 296,
+    "width": 800,
+    "height": 600,
+    "rgb_sha256": "8b663326876f3e41d2f4143e6e70f54bf35f302f8eb3802af991c13614835d51",
+    "ppm_sha256": "70614e417361dd768d5a79ec815f35583ce657755c579f8ebbead115cd31ab7c",
+    "cpu_instructions_executed": 0,
+    "original_snapshot_unchanged": true,
+    "android_boot_verified": false,
+    "android_display_verified": false
+  },
+  "lossless_png_conversion_RGB_equality_verified": true,
+  "actual_frame_visually_reviewed": true,
+  "observed": "White and gray android wordmark centered on a black 800x600 boot animation frame.",
+  "usable_Android_UI_verified": false,
+  "actual_UI_gesture_performed": false,
+  "original_snapshot_or_pixels_modified": false
+}

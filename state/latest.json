@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
-  "instructions": 111147727998,
+  "checkpoint_sha256": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
+  "instructions": 112147727998,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -14,7 +14,7 @@
   ],
   "cycle": "C87",
   "epoch": "C76-lights-port",
-  "stage": 2,
+  "stage": 3,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
   "execution_location": "independent-CI-original-admitted-complete-transport-recovered-locally",
@@ -28,16 +28,16 @@
   "live_vsock_lights_port": "6900",
   "actual_port_evidence": "docs/evidence/c76/local-stage1-lights-readonly.json",
   "original_870_files_unchanged": true,
-  "canonical_local_source": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c87-2",
+  "canonical_local_source": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c87-3",
   "independent_reproduction_run_id": 42146302356,
   "independent_reproduction_status": "Full original RVG and entire console exactly match independent CI and local execution. Every transport archive is pinned. No separate local download of CI pieces is claimed.",
-  "active_continuation": "C87 stage2 fully admitted locally. Phase7, waiting=False, events=7, failed=False. BOOT=False; usable UI and actual response remain separate.",
+  "active_continuation": "C87 stage3 fully admitted locally. Phase7, waiting=False, events=7, failed=False. BOOT=False; usable UI and actual response remain separate.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c87-stage-2-artifacts.json",
+  "source_artifact_lock": "state/experiments/c87-stage-3-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c85-1",
     "checkpoint_sha256": "92779fe84d3213ed233e39f6be3cb54764a188aa4846790d1ae23a9a8c1e9cb1",
@@ -46,16 +46,16 @@
     "proof": "docs/evidence/c85/stage1-independent-local-CI-match.json"
   },
   "last_durable_transport_source": {
-    "instructions": 111147727998,
-    "checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
-    "source_artifact_lock": "state/experiments/c87-stage-2-artifacts.json",
-    "independent_local_native_match": "docs/evidence/c87/stage2-independent-local-CI-match.json"
+    "instructions": 112147727998,
+    "checkpoint_sha256": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
+    "source_artifact_lock": "state/experiments/c87-stage-3-artifacts.json",
+    "independent_local_native_match": "docs/evidence/c87/stage3-independent-local-CI-match.json"
   },
   "visual_review_result": "The authentic C83 post-CLZ frame at85,047,727,998 shows the original Android wordmark boot animation. Usable UI and actual input response are still pending.",
   "visual_review_evidence": "docs/evidence/c83/after-one-actual-frame-review.json",
   "active_continuation_run_id": 42247589579,
   "independent_engine_validation_run_id": 42202570186,
-  "latest_boundary_evidence": "docs/evidence/c87/stage2-local-original-admission.json",
+  "latest_boundary_evidence": "docs/evidence/c87/stage3-local-original-admission.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c87-plan.json",
@@ -169,7 +169,7 @@
   "prior_actual_C83_failed_activation_preserved": true,
   "new_corrective_input_events": 1,
   "fresh_local_whole_transport_recovery_or_native_replay_current_boundary": true,
-  "historical_independent_snapshot_and_console_match": "docs/evidence/c87/stage1-independent-local-CI-match.json",
+  "historical_independent_snapshot_and_console_match": "docs/evidence/c87/stage2-independent-local-CI-match.json",
   "reference_C84_run_id": 42213153593,
   "C84_is_reference_after_explicit_C85_native_correction": true,
   "validated_next_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
@@ -189,13 +189,13 @@
   "actual_cleanup_nice0_reply_verified": true,
   "independent_CI_run_id": 42247589579,
   "independent_CI_execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
-  "latest_independently_matched_CI_stage": 2,
-  "latest_independent_match": "docs/evidence/c87/stage2-independent-local-CI-match.json",
+  "latest_independently_matched_CI_stage": 3,
+  "latest_independent_match": "docs/evidence/c87/stage3-independent-local-CI-match.json",
   "actual_zygote_PID": 5629,
   "original_init_zygote_recovery_verified": true,
   "original_init_recovery_evidence": "docs/evidence/c86/original-init-Zygote-recovery.json",
   "last_original_PID1_zygote_observation": {
-    "checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
+    "checkpoint_sha256": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
     "observations": [
       {
         "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
@@ -224,5 +224,5 @@
   "fresh_local_whole_transport_recovery_current_boundary": true,
   "current_zero_UART_bounded_campaign": true,
   "actual_C87_new_events": 0,
-  "independent_primary_full_snapshot_and_console_match": "docs/evidence/c87/stage2-independent-local-CI-match.json"
+  "independent_primary_full_snapshot_and_console_match": "docs/evidence/c87/stage3-independent-local-CI-match.json"
 }
