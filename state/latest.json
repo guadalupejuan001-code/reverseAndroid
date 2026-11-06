@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "393e8612db20d7f6dcfa466b50d4e362526e65fa648ae5abeed870aa6db3c247",
-  "instructions": 28000000000,
+  "checkpoint_sha256": "d6dac69ed45885396c06c06c9ddb516085b5b1f0384d41f5b2315daebb40ac19",
+  "instructions": 30000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -14,7 +14,7 @@
   ],
   "cycle": "C78",
   "epoch": "C76-lights-port",
-  "stage": 5,
+  "stage": 7,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "6c4fe6d4bf7840b5de89dfdfd820e01ea0e64387",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
@@ -30,29 +30,35 @@
   "original_870_files_unchanged": true,
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42137711600,
-  "independent_reproduction_status": "El snapshot completo de 24 mil millones coincide con la ejecución local por SHA-256. Los límites originales posteriores hasta 28 mil millones están admitidos por el productor y conservan todas sus piezas; su recuperación local completa todavía no se afirma.",
-  "active_continuation": "C78 continúa desde este límite completo, sin reinicio ni entrada UART nueva.",
+  "independent_reproduction_status": "El snapshot completo de 24 mil millones coincide por SHA-256 con la ejecución local. Los límites originales posteriores hasta30 mil millones están admitidos por el productor y tienen todas sus piezas fijadas. Su recuperación local completa no se afirma.",
+  "active_continuation": "C79 reanuda desde este límite completo de C78, conservando la época, sin reinicio ni entrada UART nueva.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c78-stage-5-artifacts.json",
+  "source_artifact_lock": "state/experiments/c78-stage-7-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
     "checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
-    "instructions": 24000000000
+    "instructions": 24000000000,
+    "archive_evidence": "docs/evidence/c78/local24-lossless-archive.json",
+    "raw_current_rvg_archived_losslessly": true
   },
   "last_durable_transport_source": {
-    "instructions": 28000000000,
-    "checkpoint_sha256": "393e8612db20d7f6dcfa466b50d4e362526e65fa648ae5abeed870aa6db3c247",
-    "source_artifact_lock": "state/experiments/c78-stage-5-artifacts.json"
+    "instructions": 30000000000,
+    "checkpoint_sha256": "d6dac69ed45885396c06c06c9ddb516085b5b1f0384d41f5b2315daebb40ac19",
+    "source_artifact_lock": "state/experiments/c78-stage-7-artifacts.json"
   },
   "visual_review_result": "El PPM original sigue siendo idéntico por SHA-256 al fotograma negro de 800×600 inspeccionado en 24 mil millones; no acredita interfaz ni arranque completo.",
   "visual_review_evidence": "docs/evidence/c78/local24-original-frame.json",
-  "active_continuation_run_id": 42137711600,
+  "active_continuation_run_id": null,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c78/stage5-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c78/stage7-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
-  "host_compiler_candidate_is_primary": false
+  "host_compiler_candidate_is_primary": false,
+  "active_continuation_plan": "state/experiments/c79-plan.json",
+  "host_interruption_evidence": "docs/evidence/c78/stage8-host-interruption.json",
+  "isolated_crash_log_control_plan": "state/experiments/thread-diagnostic-plan.json",
+  "host_compiler_evaluation_run_id": 42144708264
 }

@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-lossless-local-checkpoint-archive-v1",
+  "source_directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
+  "original_checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
+  "uncompressed_bytes": 1301061124,
+  "archive": "/workspace/scratch/bf4ce496066e/evidence/archived-checkpoints/c76-stage18-retry1.rvg.gz",
+  "archive_bytes": 474924159,
+  "archive_sha256": "53aa9fc46b8d5ad1069789ebb18071f927e8e4efbe8b2eb40dec6768e8fca93b",
+  "full_decompressed_SHA256_and_CRC_verified": true,
+  "independent_whole_snapshot_match_evidence": "docs/evidence/c78/independent-stage1-replay.json",
+  "independent_all_transport_pieces": "state/experiments/c78-stage-1-artifacts.json",
+  "no_guest_execution_modified": true
+}

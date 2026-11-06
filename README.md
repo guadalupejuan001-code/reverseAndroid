@@ -6,11 +6,11 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
-La época corregida C76/C77/C78 ha admitido **28.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. Los límites completos de C78 están admitidos por el productor y conservan todas sus piezas. El snapshot completo de 24 mil millones coincide por SHA-256 con la ejecución local independiente. La recuperación local de los límites posteriores sigue pendiente; [estado y piezas](state/latest.json).
+La época corregida C76/C77/C78 ha admitido **30.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. Los límites completos de C78 están admitidos por el productor y conservan todas sus piezas. El snapshot completo de 24 mil millones coincide por SHA-256 con la ejecución local independiente. La recuperación local de los límites posteriores sigue pendiente; [estado y piezas](state/latest.json).
 
 El servicio de luces **PID 652 está vivo y escucha realmente en el puerto VSOCK 6900**: se comprobaron su descriptor, los enlaces del socket y el estado `TCP_LISTEN` con el BTF del kernel original. [Evidencia auténtica](docs/evidence/c76/stage16-lights-vsock-readonly.json). SurfaceFlinger PID 669 está ejecutándose, SELinux permanece activo y el proceso PID 858 ya ejecuta `bootanimation`. La [lectura de los hilos en 27 mil millones](docs/evidence/c78/stage4-threads-summary.json) conserva sus identidades y estados reales.
 
-El arranque completo y la interfaz siguen pendientes: todavía no aparece `system_server` y el fotograma auténtico de 800×600 sigue completamente negro. El [PPM original y su conversión PNG sin pérdida](docs/evidence/c78/local24-original-frame.json) están ligados por hash; los fotogramas hasta 28 mil millones son idénticos. Una [prueba aislada de consola](docs/evidence/c76/actual-console-response-control.json) recibió una respuesta generada por Android sin modificar el checkpoint principal. [C78 continúa la misma época](.github/workflows/android-c78-continued-epoch.yml), sin reiniciar la CPU.
+El arranque completo y la interfaz siguen pendientes: todavía no aparece `system_server` y el fotograma auténtico de 800×600 sigue completamente negro. El [PPM original y su conversión PNG sin pérdida](docs/evidence/c78/local24-original-frame.json) están ligados por hash; los fotogramas hasta 30 mil millones son idénticos. Una [prueba aislada de consola](docs/evidence/c76/actual-console-response-control.json) recibió una respuesta generada por Android sin modificar el checkpoint principal. [C79 reanuda la misma época](.github/workflows/android-c79-continued-epoch.yml) desde el último checkpoint completo, tras la interrupción del host durante el siguiente tramo de C78.
 
 El [ensayo aislado del compilador](.github/workflows/android-host-pgo-eval.yml) mide una compilación con perfil real desde una fuente fija: exige snapshots originales completos idénticos y una mejora repetida de al menos el 10 %. La candidata no es el ejecutable principal y sus estados no son autoridad de continuación.
 
@@ -55,7 +55,7 @@ bash scripts/build-reverseandroid.sh
 bash scripts/build-reverseandroid-epoch.sh
 ```
 
-`state/latest.json` registra el último resultado verificado. `state/continuation.json` identifica la época, el origen y el presupuesto. `reverseandroid.yml` conserva la validación del motor importado; el flujo de continuación de la época actual es `android-c78-continued-epoch.yml`. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza.
+`state/latest.json` registra el último resultado verificado. `state/continuation.json` identifica la época, el origen y el presupuesto. `reverseandroid.yml` conserva la validación del motor importado; el flujo de continuación de la época actual es `android-c79-continued-epoch.yml`. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza.
 
 Con `execute_on_push: false`, el flujo genérico no continúa el antiguo perfil C27. La continuación actual se ejecuta en su flujo específico, que recupera los artefactos fijados por hash y usa `build/reverseandroid/epoch`. El ejecutable histórico `native` conserva sus comprobaciones del perfil anterior. Los cambios de documentación no reinician el invitado.
 

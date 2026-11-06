@@ -1,0 +1,470 @@
+{
+  "schema": "reverseandroid-original-kernel-runtime-observation-summary-v1",
+  "records": [
+    {
+      "stage": 4,
+      "instructions": 27000000000,
+      "checkpoint_sha256": "3a0bc07566f82dcae1ee58bb308fb6a3124a7e3bca5ade1ad5b8199c68b0b724",
+      "original_kernel_observation_sha256": "e55c3bf7a513d48c9ceb550647f674f51c3f462043857dfb7c53ac4e28441215",
+      "all_original_observation_bytes_preserved_in_pinned_metadata": true,
+      "global_free_bytes": 1292439552,
+      "per_cpu_vmstat_batches_may_lag": true,
+      "selected_tasks": [
+        {
+          "pid": 1,
+          "name": "init",
+          "state": 0,
+          "sum_exec_runtime_ns": 40718832000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "preempt_schedule_irq+0x4c",
+            "arm64_preempt_schedule_irq+0x30",
+            "el1_interrupt+0x48",
+            "el1h_64_irq_handler+0x18",
+            "el1h_64_irq+0x7c",
+            "__vma_start_write+0x0",
+            "kernel_clone+0x80",
+            "__arm64_sys_clone+0x60",
+            "invoke_syscall+0x58"
+          ]
+        },
+        {
+          "pid": 41,
+          "name": "kworker/0:1H",
+          "state": 1026,
+          "sum_exec_runtime_ns": 142705457000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "worker_thread+0x2b8",
+            "kthread+0x11c",
+            "ret_from_fork+0x10",
+            null
+          ]
+        },
+        {
+          "pid": 562,
+          "name": "zygote64",
+          "state": 258,
+          "sum_exec_runtime_ns": 9386550000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "io_schedule+0x30",
+            "folio_wait_bit_common+0x19c",
+            "filemap_fault+0x3b4",
+            "do_pte_missing+0x2d8",
+            "handle_mm_fault+0x218",
+            "do_page_fault+0x118",
+            "do_translation_fault+0x38",
+            "do_mem_abort+0x54"
+          ]
+        },
+        {
+          "pid": 669,
+          "name": "surfaceflinger",
+          "state": 1,
+          "sum_exec_runtime_ns": 1699373000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "schedule_hrtimeout_range_clock+0x2fc",
+            "schedule_hrtimeout_range+0x14",
+            "do_epoll_wait+0x25c",
+            "__arm64_sys_epoll_pwait+0x7c",
+            "invoke_syscall+0x58",
+            "do_el0_svc+0x8c",
+            "el0_svc+0x48",
+            "el0t_64_sync_handler+0x88"
+          ]
+        },
+        {
+          "pid": 858,
+          "name": "bootanimation",
+          "state": 0,
+          "sum_exec_runtime_ns": 651321000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "preempt_schedule_irq+0x4c",
+            "arm64_preempt_schedule_irq+0x30",
+            "el1_interrupt+0x48",
+            "el1h_64_irq_handler+0x18",
+            "el1h_64_irq+0x7c",
+            "security_inode_permission+0x2c",
+            "link_path_walk+0x170",
+            "path_openat+0x194",
+            "do_filp_open+0xac"
+          ]
+        },
+        {
+          "pid": 936,
+          "name": "kworker/0:2H",
+          "state": 0,
+          "sum_exec_runtime_ns": 8079319000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "worker_thread+0x2b8",
+            "kthread+0x11c",
+            "ret_from_fork+0x10",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "stage": 5,
+      "instructions": 28000000000,
+      "checkpoint_sha256": "393e8612db20d7f6dcfa466b50d4e362526e65fa648ae5abeed870aa6db3c247",
+      "original_kernel_observation_sha256": "8cd45265efc8593987fed8295531d88275025540351702e95a689b44c8765588",
+      "all_original_observation_bytes_preserved_in_pinned_metadata": true,
+      "global_free_bytes": 1275813888,
+      "per_cpu_vmstat_batches_may_lag": true,
+      "selected_tasks": [
+        {
+          "pid": 1,
+          "name": "init",
+          "state": 0,
+          "sum_exec_runtime_ns": 41712516000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "preempt_schedule_irq+0x4c",
+            "arm64_preempt_schedule_irq+0x30",
+            "el1_interrupt+0x48",
+            "el1h_64_irq_handler+0x18",
+            "el1h_64_irq+0x7c",
+            "__audit_syscall_exit+0x13c",
+            "syscall_trace_exit+0x78",
+            "do_el0_svc+0x94",
+            "el0_svc+0x48"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 993684000
+        },
+        {
+          "pid": 41,
+          "name": "kworker/0:1H",
+          "state": 1026,
+          "sum_exec_runtime_ns": 142705457000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "worker_thread+0x2b8",
+            "kthread+0x11c",
+            "ret_from_fork+0x10",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 0
+        },
+        {
+          "pid": 562,
+          "name": "main",
+          "state": 0,
+          "sum_exec_runtime_ns": 9575564000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "preempt_schedule+0x60",
+            "_raw_spin_unlock_irq+0x48",
+            "loop_queue_rq+0xec",
+            "blk_mq_plug_issue_direct+0x140",
+            "blk_mq_flush_plug_list+0x494",
+            "blk_finish_plug+0x58",
+            "page_cache_ra_unbounded+0x4c0",
+            "do_page_cache_ra+0x40",
+            "page_cache_ra_order+0xa8"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 189014000
+        },
+        {
+          "pid": 669,
+          "name": "surfaceflinger",
+          "state": 1,
+          "sum_exec_runtime_ns": 1699373000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "schedule_hrtimeout_range_clock+0x2fc",
+            "schedule_hrtimeout_range+0x14",
+            "do_epoll_wait+0x25c",
+            "__arm64_sys_epoll_pwait+0x7c",
+            "invoke_syscall+0x58",
+            "do_el0_svc+0x8c",
+            "el0_svc+0x48",
+            "el0t_64_sync_handler+0x88"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 0
+        },
+        {
+          "pid": 858,
+          "name": "bootanimation",
+          "state": 0,
+          "sum_exec_runtime_ns": 1149814000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "do_notify_resume+0xcc",
+            "el0_interrupt+0x94",
+            "__el0_irq_handler_common+0x18",
+            "el0t_64_irq_handler+0x10",
+            "el0t_64_irq+0x1bc",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 498493000
+        },
+        {
+          "pid": 936,
+          "name": "kworker/0:2H",
+          "state": 0,
+          "sum_exec_runtime_ns": 11135313000,
+          "kernel_stack": [
+            "sha256_update_neon+0x17c",
+            "sha256_finup_neon+0x1f4",
+            "crypto_shash_finup_mb+0xd0",
+            "verity_verify_io+0x300",
+            "verity_work+0x20",
+            "process_scheduled_works+0x1b8",
+            "worker_thread+0x1b0",
+            "kthread+0x11c",
+            "ret_from_fork+0x10",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 3055994000
+        }
+      ]
+    },
+    {
+      "stage": 6,
+      "instructions": 29000000000,
+      "checkpoint_sha256": "9b4d91aa5e9e2cce5e6c234fb6e5034d1479d7e422f107a4617d2d73e36d9dca",
+      "original_kernel_observation_sha256": "c675980e878af20cc6ffc66cc0873fbcc0eab4008645e5ec73b580920d7c3dd3",
+      "all_original_observation_bytes_preserved_in_pinned_metadata": true,
+      "global_free_bytes": 1259401216,
+      "per_cpu_vmstat_batches_may_lag": true,
+      "selected_tasks": [
+        {
+          "pid": 1,
+          "name": "init",
+          "state": 0,
+          "sum_exec_runtime_ns": 42620499000,
+          "kernel_stack": [
+            "get_page_from_freelist+0x4e0",
+            "get_free_pages_noprof+0x194",
+            "selinux_d_instantiate+0x1c0",
+            "security_d_instantiate+0x98",
+            "d_splice_alias+0x44",
+            "kernfs_iop_lookup+0x94",
+            "__lookup_slow+0xa4",
+            "path_lookupat+0x674",
+            "user_path_at+0x124",
+            "do_fchownat+0x74"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 907983000
+        },
+        {
+          "pid": 41,
+          "name": "kworker/0:1H",
+          "state": 1026,
+          "sum_exec_runtime_ns": 142705457000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "worker_thread+0x2b8",
+            "kthread+0x11c",
+            "ret_from_fork+0x10",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 0
+        },
+        {
+          "pid": 562,
+          "name": "main",
+          "state": 0,
+          "sum_exec_runtime_ns": 10482090000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "do_notify_resume+0xcc",
+            "el0_interrupt+0x94",
+            "__el0_irq_handler_common+0x18",
+            "el0t_64_irq_handler+0x10",
+            "el0t_64_irq+0x1bc",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 906526000
+        },
+        {
+          "pid": 669,
+          "name": "surfaceflinger",
+          "state": 1,
+          "sum_exec_runtime_ns": 1699373000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "schedule_hrtimeout_range_clock+0x2fc",
+            "schedule_hrtimeout_range+0x14",
+            "do_epoll_wait+0x25c",
+            "__arm64_sys_epoll_pwait+0x7c",
+            "invoke_syscall+0x58",
+            "do_el0_svc+0x8c",
+            "el0_svc+0x48",
+            "el0t_64_sync_handler+0x88"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 0
+        },
+        {
+          "pid": 858,
+          "name": "bootanimation",
+          "state": 0,
+          "sum_exec_runtime_ns": 1225639000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "do_notify_resume+0xcc",
+            "el0_interrupt+0x94",
+            "__el0_irq_handler_common+0x18",
+            "el0t_64_irq_handler+0x10",
+            "el0t_64_irq+0x1bc",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 75825000
+        },
+        {
+          "pid": 936,
+          "name": "kworker/0:2H",
+          "state": 1026,
+          "sum_exec_runtime_ns": 16227108000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "worker_thread+0x2b8",
+            "kthread+0x11c",
+            "ret_from_fork+0x10",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 5091795000
+        }
+      ]
+    },
+    {
+      "stage": 7,
+      "instructions": 30000000000,
+      "checkpoint_sha256": "d6dac69ed45885396c06c06c9ddb516085b5b1f0384d41f5b2315daebb40ac19",
+      "original_kernel_observation_sha256": "074e42f8d4b2c6a9c2615d9cc3f211839fe71d59405846b42e639776ff24d3b7",
+      "all_original_observation_bytes_preserved_in_pinned_metadata": true,
+      "global_free_bytes": 1241620480,
+      "per_cpu_vmstat_batches_may_lag": true,
+      "selected_tasks": [
+        {
+          "pid": 1,
+          "name": "init",
+          "state": 0,
+          "sum_exec_runtime_ns": 43441686000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "preempt_schedule+0x60",
+            "down_read+0x198",
+            "kernfs_iop_permission+0x3c",
+            "link_path_walk+0x53c",
+            "path_lookupat+0x1f0",
+            "user_path_at+0x124",
+            "do_fchownat+0x74",
+            "__arm64_sys_fchownat+0x28",
+            "invoke_syscall+0x58"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 821187000
+        },
+        {
+          "pid": 41,
+          "name": "kworker/0:1H",
+          "state": 1026,
+          "sum_exec_runtime_ns": 142705457000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "worker_thread+0x2b8",
+            "kthread+0x11c",
+            "ret_from_fork+0x10",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 0
+        },
+        {
+          "pid": 562,
+          "name": "main",
+          "state": 0,
+          "sum_exec_runtime_ns": 11181651000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "preempt_schedule_irq+0x4c",
+            "arm64_preempt_schedule_irq+0x30",
+            "el1_interrupt+0x48",
+            "el1h_64_irq_handler+0x18",
+            "el1h_64_irq+0x7c",
+            null,
+            null,
+            "virtqueue_notify+0x3c",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 699561000
+        },
+        {
+          "pid": 669,
+          "name": "surfaceflinger",
+          "state": 1,
+          "sum_exec_runtime_ns": 1699373000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "schedule_hrtimeout_range_clock+0x2fc",
+            "schedule_hrtimeout_range+0x14",
+            "do_epoll_wait+0x25c",
+            "__arm64_sys_epoll_pwait+0x7c",
+            "invoke_syscall+0x58",
+            "do_el0_svc+0x8c",
+            "el0_svc+0x48",
+            "el0t_64_sync_handler+0x88"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 0
+        },
+        {
+          "pid": 858,
+          "name": "bootanimation",
+          "state": 0,
+          "sum_exec_runtime_ns": 1278891000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "schedule+0x4c",
+            "do_notify_resume+0xcc",
+            "el0_interrupt+0x94",
+            "__el0_irq_handler_common+0x18",
+            "el0t_64_irq_handler+0x10",
+            "el0t_64_irq+0x1bc",
+            null
+          ],
+          "runtime_delta_from_previous_boundary_ns": 53252000
+        },
+        {
+          "pid": 936,
+          "name": "kworker/0:2H",
+          "state": 0,
+          "sum_exec_runtime_ns": 22881431000,
+          "kernel_stack": [
+            "__schedule+0x1004",
+            "preempt_schedule_irq+0x4c",
+            "arm64_preempt_schedule_irq+0x30",
+            "el1_interrupt+0x48",
+            "el1h_64_irq_handler+0x18",
+            "el1h_64_irq+0x7c",
+            "sha256_block_neon+0x118",
+            "sha256_update_neon+0x17c",
+            "sha256_finup_neon+0x1f4",
+            "crypto_shash_finup_mb+0xd0"
+          ],
+          "runtime_delta_from_previous_boundary_ns": 6654323000
+        }
+      ]
+    }
+  ],
+  "inference": "The integrity-verification worker is an important observed CPU consumer. At28B its original stack contains sha256_update_neon and verity_verify_io. This does not prove every intervening instruction ran in that routine. More than1.2GiB is globally free in these observations, subject to normal VM-stat batching. No RAM or guest scheduling change is justified by these readings.",
+  "original_CPU_clock_seed_cadence_IRQ_and_codecs_unchanged": true,
+  "new_guest_input_events": 0
+}

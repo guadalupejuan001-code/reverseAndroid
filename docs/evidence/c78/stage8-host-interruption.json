@@ -1,0 +1,22 @@
+{
+  "schema": "reverseandroid-host-cancelled-tail-not-admitted-v1",
+  "run_id": 42137711600,
+  "job_id": 127629968430,
+  "execution_commit": "6c4fe6d4bf7840b5de89dfdfd820e01ea0e64387",
+  "last_fully_admitted_stage": 7,
+  "last_fully_admitted_instructions": 30000000000,
+  "last_fully_admitted_checkpoint_sha256": "d6dac69ed45885396c06c06c9ddb516085b5b1f0384d41f5b2315daebb40ac19",
+  "all_latest_complete_transport_pieces_preserved_and_pinned": true,
+  "interrupted_stage": 8,
+  "workflow_step_conclusion": "cancelled",
+  "last_native_heartbeat_instructions": 30580000000,
+  "last_native_heartbeat_elapsed_ms": 190683,
+  "stage8_original_clean_process_outcome_absent": true,
+  "stage8_original_C46_admission_absent": true,
+  "unadmitted_tail_is_promotion_authority": false,
+  "final_evidence_artifact_id": 13470061784,
+  "final_evidence_ZIP_SHA256": "70d489166ded34057a2a387505510664963c666f444b74aa60a0f776e5c3d7de",
+  "final_evidence_SHA256_and_CRC_verified": true,
+  "host_cancellation_root_cause_not_established": true,
+  "safe_continuation_source": "state/experiments/c78-stage-7-artifacts.json"
+}
