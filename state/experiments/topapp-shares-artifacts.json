@@ -1,0 +1,72 @@
+{
+  "schema": "reverseandroid-bootstrap-artifacts-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "artifacts": {
+    "seed": {
+      "transport_manifest": "state/experiments/topapp-shares-source-transport.json",
+      "pieces": [
+        {
+          "id": 13524609265,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "3c5100b938e78be8e0072dac6c8030334bb87c2fd33fe7035f9db7541b8513b1"
+        },
+        {
+          "id": 13525531143,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "bfd3ac47db6959c105730937e758e6f215296d80769b9dee184dc1bd3f63c976"
+        },
+        {
+          "id": 13525601126,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "088c5d44607e96f4ba5e79a6e2708f88a36657601cda46d5969816584831b79e"
+        },
+        {
+          "id": 13524644104,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "107099ba541aca8f4d22a4f709ea3673eb328548787de52ad3b4c641c9fdfcf1"
+        }
+      ]
+    },
+    "media-manifest": {
+      "id": 13427116817,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d9cb8cb0448199a76840f02676ccde8cceb02934b4e340a9a218103757689c91"
+    },
+    "media-aa": {
+      "id": 13427701335,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "df9735902d27bad91cec9d93a1ac13980113bbd6fcaa33303366bf420bb79ac0"
+    },
+    "media-ab": {
+      "id": 13427181837,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7aa01e7a17ed14bf23c83425bfc26da7848f253641079427f1a4b6f44ecefff8"
+    },
+    "media-ac": {
+      "id": 13426962020,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ecf54e700e4a1c10a3c101a8fcd8e20aa7a63df7f5cd2456cb662c7117dee789"
+    },
+    "native-cache": {
+      "id": 13466524323,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "c2b848df200cf49b3992b77ef5b3b95589096b38e7a334740400de59780062f9"
+    },
+    "ic-native": {
+      "id": 13504365235,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "03e432b4bdf383c9e76a3b3a62a3db3f232204ad56e0d7c02464cca587cdc7cf"
+    }
+  },
+  "epoch_native_build_required": false,
+  "legacy_native_cache_is_not_the_C76_runner": false,
+  "epoch_native_filename": "epoch-clz-ic",
+  "epoch_native_validation_run": 42221035217,
+  "epoch_native_validation_commit": "dd052d474e5256fbbf4743078b6ec1bc24a56cb8",
+  "original_native_binary_used_as_reference_only": true,
+  "original_engine_binary_unchanged": false,
+  "explicit_IC_IVAU_correction": true,
+  "explicit_source_JIT_control_run": 42259037815,
+  "explicit_source_JIT_control_stage": 3,
+  "source_complete_original_RVG_independently_reproduced_locally": true
+}
