@@ -1,12 +1,12 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 5,
-  "source_checkpoint_sha256": "92c372d4e050e0eeb777a979e5c654ae5d4f1d13d5ec6ef80d4198e8a756f80f",
-  "instructions": 128147727998,
-  "source_artifact_lock": "state/experiments/c88-stage-5-artifacts.json",
+  "source_stage": 9,
+  "source_checkpoint_sha256": "fea4cdb5903d8d6f5c2395a0d2d30f0c4e493096216b8b83155114363e94c62b",
+  "instructions": 132147727998,
+  "source_artifact_lock": "state/experiments/c88-stage-9-artifacts.json",
   "source_execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
   "source_CI_run_id": 42274580377,
-  "source_proof_SHA256": "02d8f03ac7d113661207a889f0ea33bf0f889aafaf20193e3dfb5ceec8b236bd",
+  "source_proof_SHA256": "dda4fea886219c67348b7e257c5f236e6634fb3af7f3acfad14dfdfcd4f6174c",
   "zygote_PID": 5629,
   "target_JIT_TID": 5922,
   "expected_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
@@ -102,5 +102,5 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Measure actual JIT5922 lookup progress and original Zygote futex after real guarded nice0; read-only original source admission in an isolated CI host."
+  "purpose": "Identify actual current original Zygote startup code after main futex release and verify thread progress. Isolated read-only original source admission; zero guest execution and no new input."
 }
