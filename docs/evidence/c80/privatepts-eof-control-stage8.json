@@ -1,0 +1,58 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "peripheral-privatepts-eof-control",
+  "stage": 8,
+  "run_id": 42184815321,
+  "execution_commit": "b5199e17c001f2fffa44485be93df819800dc3d1",
+  "checkpoint_sha256": "042649faeb32d6d69aea98a6a4f579945243c137db772bd8064aa0d244a4bc55",
+  "instructions": 75000000000,
+  "metadata_artifact_id": 13490490834,
+  "metadata_archive_sha256": "c8461d0bfa871caae6b293e0e83b76c6ef9977ce70e906418d01f19e867d72da",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": false,
+  "transport_lock": "state/experiments/peripheral-privatepts-eof-control-stage8-transport.json",
+  "artifact_lock": "state/experiments/peripheral-privatepts-eof-control-stage8-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/peripheral-privatepts-eof-control-8",
+    "phase": 1,
+    "waiting": false,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/peripheral-privatepts-eof-control-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 67000000000,
+          "counter_subtick": 28,
+          "bytes": 1562,
+          "sha256": "20977832b21232b06ad2c3646e7dad8b6c3cf279972a2649ee707b74794fb4c6"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "last_admitted_sha256": "042649faeb32d6d69aea98a6a4f579945243c137db772bd8064aa0d244a4bc55",
+    "last_admitted_instructions": 75000000000,
+    "combined_original_console_bytes_sha256": "301803f36716582a95297aed373bf29234c4ca61c62a4c4da6f49dc35c89c266",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": false,
+      "android.hardware.sensors.ISensors/default": false
+    },
+    "actual_AArch64_peer_ready_line_seen": true,
+    "actual_guest_ELF_hash_line_seen": true,
+    "actual_private_device_filesystem_mount_seen": true,
+    "actual_loaded_policy_unchanged_hashes": [
+      "e7dc888c8a4c5ae6f48a175ace91e63ab262e64d4d6f6799a015fed5b4c32f97"
+    ],
+    "console_observation": "evidence/peripheral-privatepts-eof-control-8/console-observation.json",
+    "prior_completed_transfer_repeated": false,
+    "admitted_parent_control": "docs/evidence/c80/privatepts-control-stage6.json",
+    "control_is_promotion_authority": false,
+    "ELF_SHA256_expected": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+    "all_event_phases_unique": true,
+    "main_C81_modified": false
+  }
+}

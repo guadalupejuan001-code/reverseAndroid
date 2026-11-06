@@ -63,7 +63,7 @@
   "host_compiler_evaluation_outcome": "Four complete measured RVG hashes match. Speedup 1.050821 is below the required 1.10; candidate not adopted.",
   "hardware_probe_plan": "state/experiments/hardware-probe-plan.json",
   "isolated_crash_console_response_evidence": "docs/evidence/c78/actual-crash-console-response.json",
-  "peripheral_peer_status": "Isolated private PTY activation returned1 before any mount/peer proof. The bare shell read wrongly treated the newline-free enforcing byte as EOF failure; a separate continuation from its admitted67B state catches and prints the actual read result, checks the complete value and rechecks the full guest ELF before activation. No canonical peer adopted.",
+  "peripheral_peer_status": "Isolated ABI3 control has the exact guest ELF, a real private devpts mount, all three original HAL channels connected, actual READY, enforcing1 and identical loaded-policy SHA before/after. Activation returnedRC0 at75B. The final original Binder registration query is running; no canonical peer has been adopted.",
   "isolated_JIT_control_evidence": "docs/evidence/c80/jit1156-direct-success.json",
   "main_priority_input_events": 1,
   "isolated_JIT_wait_control_plan": "state/experiments/jit1156-wait-control-plan.json",

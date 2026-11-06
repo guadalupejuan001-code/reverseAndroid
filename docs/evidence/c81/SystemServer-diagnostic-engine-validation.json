@@ -1,0 +1,14 @@
+{
+  "schema": "reverseandroid-independent-original-engine-validation-v1",
+  "run_id": 42190629919,
+  "execution_commit": "5e8d91ec5e95ef7cd71969cfa3cc353493e954a4",
+  "original_engine_validation_job_id": 127801465636,
+  "original_engine_validation_conclusion": "success",
+  "historical_continuation_job_id": 127803352250,
+  "historical_continuation_job_conclusion": "skipped by explicit execute_on_push:false",
+  "original_870_files_unchanged": true,
+  "diagnostic_readonly_console_and_source_input_tests": 12,
+  "independent_CI_diagnostic_bootstrap_tests_passed": true,
+  "refactored_console_normalization_reproduces_immutable_CI_observation_exactly": true,
+  "no_boot_or_UI_claim": true
+}
