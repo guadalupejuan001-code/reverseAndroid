@@ -38,21 +38,22 @@ function inspectThreads(api,options={}) {
   const pt=members(type('pt_regs')),ptSize=type('pt_regs').type,mmFields=members(type('mm_struct'));
   const unsigned=(p,key,n=4)=>read(p+BigInt(task[key].offset),n);
   const selected=tasks.filter(t=>t.zygote_startup||/bootanim|surfaceflinger|^(sh|su|printf|id|cat|toybox|renice)$/.test(t.name)
-    ||options.diagnosticProcesses&&/^(crash_dump64|tombstoned|logd|logcat|debuggerd)$/.test(t.name));
+    ||options.diagnosticProcesses&&/^(init|main|crash_dump64|tombstoned|logd|logcat|debuggerd)$/.test(t.name));
   const result={schema:'reverseandroid-thread-probe-v1',read_only:true,groups:[],kernel_layout_pinned:true};
   for(const leaderItem of selected) {
     const leader=BigInt(leaderItem.task),group={pid:leaderItem.pid,name:leaderItem.name,threads:[]};
     result.groups.push(group);
     try {
       const pointers=enumerateThreadPointers({leader,read,task,signal:members(type('signal_struct'))});
-      const mm=unsigned(leader,'mm',8),pgd=read(mm+BigInt(mmFields.pgd.offset));
-      const memory=userMemoryReader({pgdPhysical:translate(pgd),userAddressBits:64-Number(m(11)&63n),physicalByte:physical,physical64:phys64});
-      if(options.diagnosticProcesses&&mmFields.arg_start&&mmFields.arg_end)try{
+      const mm=unsigned(leader,'mm',8);
+      const memory=mm?userMemoryReader({pgdPhysical:translate(read(mm+BigInt(mmFields.pgd.offset))),userAddressBits:64-Number(m(11)&63n),physicalByte:physical,physical64:phys64}):null;
+      if(!mm)group.leader_has_no_user_mm=true;
+      if(mm&&options.diagnosticProcesses&&mmFields.arg_start&&mmFields.arg_end)try{
         const first=read(mm+BigInt(mmFields.arg_start.offset)),last=read(mm+BigInt(mmFields.arg_end.offset));
         assert.ok(last>=first&&last-first<=65536n,'Invalid bounded command-line extent');
         group.actual_command_line=memory.read(first,Number(last-first)).toString('utf8').split('\0').filter(Boolean);
       }catch(e){group.command_line_unverified=e.message;}
-      const areas=enumerateMapleVmas({mm,read,layout});
+      const areas=mm?enumerateMapleVmas({mm,read,layout}):[];
       const paths=new Map(),symbolCache=new Map();
       const pathFor=pointer=>{const key=pointer.toString();if(!paths.has(key)){try{paths.set(key,mountedFilePath(pointer,{read,layout}));}catch(e){paths.set(key,null);}}return paths.get(key);};
       const mapping=address=>{

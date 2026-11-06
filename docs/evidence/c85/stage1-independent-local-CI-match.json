@@ -1,0 +1,18 @@
+{
+  "schema": "reverseandroid-independent-complete-source-and-console-match-v1",
+  "stage": 1,
+  "CI_run_id": 42223223966,
+  "CI_execution_commit": "d0b432631011e8c6789345ecdf0ae04155b303a2",
+  "metadata_artifact_id": 13503674427,
+  "metadata_archive_SHA256": "5e952c8d0bc47981193a6da2401f9ac6d5fc3f325e805795e249d95a47ea8a03",
+  "whole_RVG_SHA256": "92779fe84d3213ed233e39f6be3cb54764a188aa4846790d1ae23a9a8c1e9cb1",
+  "whole_RVG_bytes": 1992171610,
+  "instructions": 99647727998,
+  "entire_original_console_SHA256": "70d20072530b1739813b32639c8f675102f6411bc8094408de8bed137585c9ea",
+  "actual_native_input": null,
+  "all_original_admission_clean_outcome_and_piece_pins_verified": true,
+  "fresh_local_recovery_of_CI_transport_claimed": false,
+  "all_native_event_phases_unique": true,
+  "boot_completed": false,
+  "usable_UI_or_input_response_claimed": false
+}

@@ -7,11 +7,11 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-
-C85 now selects this same admitted C84 state with the independently validated IC IVAU correction. The original SystemServer JIT SIGILL, exact instruction, complete source recovery and real ARM cache/JIT validation are recorded in [C85](docs/c85-el0-ic-ivau.md). C84 continuation is retained as a reference after this explicit engine correction; actual boot and usable UI are still pending.
-
-La etapa4 todavía no verifica a SystemServer activo. El arranque completo, la interfaz utilizable y su respuesta real siguen pendientes.
+C85, etapa 1: **99.647.727.998 instrucciones** admitidas con la corrección IC IVAU validada en ARM real. SystemServer todavía no está activo. El arranque completo, la interfaz utilizable y su respuesta real siguen pendientes.
+SELinux permanece activo. [Estado y piezas](state/latest.json); [corrección y validación ARM](docs/c85-el0-ic-ivau.md). [La ejecución local y CI coinciden íntegramente](docs/evidence/c85/stage1-independent-local-CI-match.json).
 <!-- /current-runtime -->
+
+### Historial conservado
 
 La época corregida C76 ha admitido **92.547.727.998 instrucciones** en C83, con todas sus piezas conservadas. Las ejecuciones independientes C79 y C80 producen snapshots completos idénticos en 33, 35, 37, 39, 41, 43, 45, 47, 49, 51 y 53 mil millones, con tramos de 1 y 2 mil millones respectivamente. Se conservan la referencia original, el disco efectivo, XI/Ether y el reloj; C83 declara y valida la extensión CLZ descrita abajo. [Estado y piezas](state/latest.json); [comparación de estados completos](docs/evidence/c80/independent-partition-matches-through53B.json). Los dos estados C83 de antes y después de CLZ también cuentan con una comparación local íntegra; la recuperación de piezas de CI se identifica por separado.
 
@@ -71,11 +71,12 @@ git -C deps/mundo-x checkout --detach e2778d962af22f6f1a0794058dd4685fc2573966
 bash scripts/build-reverseandroid.sh
 bash scripts/build-reverseandroid-epoch.sh
 bash scripts/build-reverseandroid-clz.sh
+bash scripts/build-reverseandroid-ic-ivau.sh
 ```
 
-`state/latest.json` registra el último resultado verificado. `state/continuation.json` apunta a la última continuación y conserva desactivado el flujo histórico. `reverseandroid.yml` conserva la validación del motor importado; el flujo de corrección actual es `android-c84-corrected-guest-shell.yml`. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza.
+`state/latest.json` registra el último resultado verificado. `state/continuation.json` apunta a la última continuación y conserva desactivado el flujo histórico. `reverseandroid.yml` conserva la validación del motor importado; el flujo de corrección actual es `android-c85-ic-ivau-continuation.yml`. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza.
 
-Con `execute_on_push: false`, el flujo genérico no continúa el antiguo perfil C27. La continuación C83 recupera los artefactos fijados por hash y usa el binario validado `epoch-clz`. La compilación local lo deja en `build/reverseandroid-clz/epoch-clz`; `epoch` conserva el motor de referencia. El ejecutable histórico `native` conserva sus comprobaciones del perfil anterior. Los cambios de documentación no reinician el invitado.
+Con `execute_on_push: false`, el flujo genérico no continúa el antiguo perfil C27. C85 recupera el último estado seleccionado y usa el binario validado `epoch-clz-ic`; su compilación local queda en `build/reverseandroid-ic-ivau/epoch-clz-ic`. La continuación histórica C83 usó `epoch-clz`. La compilación local lo deja en `build/reverseandroid-clz/epoch-clz`; `epoch` conserva el motor de referencia. El ejecutable histórico `native` conserva sus comprobaciones del perfil anterior. Los cambios de documentación no reinician el invitado.
 
 Para recuperar un checkpoint fuera de Actions, reunir las piezas y su `manifest.json` en un directorio y ejecutar `python3 scripts/unpack-reverseandroid-checkpoint.py piezas destino-nuevo`. El proceso verifica las piezas, restaura los bytes originales y comprueba el hash completo. La admisión original del emulador sigue siendo obligatoria antes de ejecutar el estado.
 

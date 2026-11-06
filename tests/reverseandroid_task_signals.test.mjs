@@ -15,7 +15,7 @@ function fixture(){
     group_stop_count:{offset:8,type:u32},shared_pending:{offset:16,type:pending}});
   const info=struct(128,{si_signo:{offset:0,type:u32},si_errno:{offset:4,type:u32},si_code:{offset:8,type:u32}});
   const task={pid:{offset:0,type:u32},tgid:{offset:4,type:u32},comm:{offset:8,type:u64},
-    ptrace:{offset:24,type:u32},jobctl:{offset:32,type:u64},exit_code:{offset:40,type:u32},
+    ptrace:{offset:24,type:u32},jobctl:{offset:32,type:u64},exit_code:{offset:40,type:u32},exit_signal:{offset:44,type:u32},
     parent:{offset:48,type:pointer(0)},real_parent:{offset:56,type:pointer(0)},
     blocked:{offset:64,type:sigset},pending:{offset:72,type:pending},
     signal:{offset:80,type:pointer(signal)},last_siginfo:{offset:88,type:pointer(info)}};
@@ -23,7 +23,7 @@ function fixture(){
   const write=(at,value,n=8)=>{for(let i=0;i<n;i++)bytes.set((at+BigInt(i)).toString(),Number(value>>BigInt(i*8)&255n));};
   for(const at of [leader,tracer,owner,siginfo])for(let i=0;i<128;i++)write(at+BigInt(i),0n,1);
   write(leader,3386n,4);write(leader+4n,3386n,4);write(tracer,4111n,4);write(tracer+4n,4111n,4);
-  write(leader+24n,1n,4);write(leader+32n,0x8000000000000000n);
+  write(leader+24n,1n,4);write(leader+32n,0x8000000000000000n);write(leader+44n,17n,4);
   write(leader+48n,tracer);write(leader+56n,leader);write(leader+64n,0x8000000000000001n);
   write(leader+72n,0x100n);write(leader+80n,owner);write(leader+88n,siginfo);
   write(owner+16n,0x200n);write(siginfo,35n,4);write(siginfo+8n,0xfffffffan,4);
@@ -36,6 +36,7 @@ test('BTF widths preserve high bits and identify actual tracer and signal masks'
   const f=fixture(),r=inspectTaskSignals(f.api,f.leader);
   assert.equal(r.parent.pid,4111);assert.equal(r.parent.name,'crash_dump64');assert.equal(r.real_parent.pid,3386);
   assert.equal(r.jobctl_raw,'9223372036854775808');
+  assert.equal(r.exit_signal_raw,'17');
   assert.deepEqual(r.blocked_words,['0x8000000000000001']);assert.deepEqual(r.pending_words,['0x100']);assert.deepEqual(r.shared_pending_words,['0x200']);
   assert.equal(r.last_siginfo.si_signo,35);assert.equal(r.last_siginfo.si_code,-6);assert.equal(r.last_siginfo.bytes_le_hex.length,256);
   assert.equal(f.api.read(f.leader+48n),f.tracer,'Observation did not write memory');

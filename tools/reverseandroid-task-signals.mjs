@@ -37,7 +37,7 @@ export function inspectTaskSignals(api,pointer){
     return Array.from({length:count},(_,i)=>hex(read(base+BigInt(field.offset+array.offset+i*element.type),element.type)));
   };
   const result={read_only:true,kernel_BTF_layout_verified:true};
-  for(const key of ['ptrace','jobctl','exit_code'])if(task[key])result[key+'_raw']=integer(pointer,task,key);
+  for(const key of ['ptrace','jobctl','exit_code','exit_signal'])if(task[key])result[key+'_raw']=integer(pointer,task,key);
   for(const key of ['parent','real_parent'])if(task[key])result[key]=identity(ptr(pointer,task,key));
   for(const key of ['blocked','real_blocked','saved_sigmask'])if(task[key])result[key+'_words']=mask(pointer,task,key);
   if(task.pending){const f=descriptor(task,'pending');result.pending_words=mask(pointer+BigInt(f.offset),members(f.resolved),'signal');}

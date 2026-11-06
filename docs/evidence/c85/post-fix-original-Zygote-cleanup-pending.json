@@ -1,0 +1,575 @@
+{
+  "schema": "reverseandroid-readonly-post-IC-correction-Zygote-cleanup-v1",
+  "before_checkpoint_SHA256": "a940acfa14acb48ae58669f258aaba8b0ae1a58da93556f0caf63c9b0a20d94c",
+  "before_instructions": 99547727998,
+  "after_checkpoint_SHA256": "92779fe84d3213ed233e39f6be3cb54764a188aa4846790d1ae23a9a8c1e9cb1",
+  "after_instructions": 99647727998,
+  "after_whole_source_and_entire_console_independently_matched_CI": true,
+  "original_observer_git_blob_SHA1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "both_original_inputs_unchanged": true,
+  "both_complete_thread_lists_and_backlinks_verified": true,
+  "remaining_Zygote_group_members": 2,
+  "actual_Zygote_leader": {
+    "pid": 562,
+    "tgid": 562,
+    "name": "main",
+    "task": "0xffffff800685d100",
+    "state": 128,
+    "exit_state": 32,
+    "on_rq": 0,
+    "on_cpu": 0,
+    "priority": 120,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [],
+    "accounting": {
+      "utime": "30651616000",
+      "stime": "8663255000",
+      "nvcsw": "1037",
+      "nivcsw": "13764",
+      "sum_exec_runtime": "38735613000",
+      "vruntime": "56210035543",
+      "exec_start": "1449254673000"
+    },
+    "policy": 0,
+    "prio": 120,
+    "normal_prio": 120,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      }
+    },
+    "signals": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "ptrace_raw": "0",
+      "jobctl_raw": "0",
+      "exit_code_raw": "9",
+      "exit_signal_raw": "17",
+      "parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "real_parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "blocked_words": [
+        "0x80011204"
+      ],
+      "real_blocked_words": [
+        "0x0"
+      ],
+      "saved_sigmask_words": [
+        "0x0"
+      ],
+      "pending_words": [
+        "0x0"
+      ],
+      "signal_owner": "0xffffff800d5fcd80",
+      "flags_raw": "4",
+      "group_exit_code_raw": "9",
+      "group_stop_count_raw": "0",
+      "notify_count_raw": "0",
+      "shared_pending_words": [
+        "0x100"
+      ],
+      "last_siginfo_pointer": "0x0"
+    },
+    "kernel_unwind_stop": "Android observer: unmapped virtual address",
+    "saved_user_frame_unverified": {
+      "candidate_count": 0
+    }
+  },
+  "actual_remaining_thread_before": {
+    "pid": 3387,
+    "tgid": 562,
+    "name": "Jit thread pool",
+    "task": "0xffffff802dba0000",
+    "state": 0,
+    "exit_state": 0,
+    "on_rq": 1,
+    "on_cpu": 0,
+    "priority": 139,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [
+      {
+        "fp": "0xffffffc086a2b3d0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc086a2b490",
+        "lr": "0xffffffc0812a47a4",
+        "symbol": "preempt_schedule+0x60"
+      },
+      {
+        "fp": "0xffffffc086a2b4f0",
+        "lr": "0xffffffc080119184",
+        "symbol": "free_unref_folios+0x460"
+      },
+      {
+        "fp": "0xffffffc086a2b570",
+        "lr": "0xffffffc080162ab0",
+        "symbol": "folios_put_refs+0x234"
+      },
+      {
+        "fp": "0xffffffc086a2b620",
+        "lr": "0xffffffc0801624c4",
+        "symbol": "free_pages_and_swap_cache+0x108"
+      },
+      {
+        "fp": "0xffffffc086a2b810",
+        "lr": "0xffffffc08006bb78",
+        "symbol": "tlb_flush_mmu+0x204"
+      },
+      {
+        "fp": "0xffffffc086a2b870",
+        "lr": "0xffffffc0801652c4",
+        "symbol": "unmap_page_range+0xf30"
+      },
+      {
+        "fp": "0xffffffc086a2b950",
+        "lr": "0xffffffc08015ffcc",
+        "symbol": "unmap_vmas+0xc8"
+      },
+      {
+        "fp": "0xffffffc086a2b9f0",
+        "lr": "0xffffffc08016c398",
+        "symbol": "exit_mmap+0xc8"
+      },
+      {
+        "fp": "0xffffffc086a2bb10",
+        "lr": "0xffffffc080341234",
+        "symbol": "__mmput+0x34"
+      },
+      {
+        "fp": "0xffffffc086a2bb60",
+        "lr": "0xffffffc080126ac0",
+        "symbol": "mmput+0x54"
+      },
+      {
+        "fp": "0xffffffc086a2bb90",
+        "lr": "0xffffffc0801916cc",
+        "symbol": "do_exit+0x1b8"
+      },
+      {
+        "fp": "0xffffffc086a2bbd0",
+        "lr": "0xffffffc0802b8af8",
+        "symbol": "do_group_exit+0x98"
+      },
+      {
+        "fp": "0xffffffc086a2bc00",
+        "lr": "0xffffffc0801ba8b4",
+        "symbol": "get_signal+0x5cc"
+      },
+      {
+        "fp": "0xffffffc086a2bc50",
+        "lr": "0xffffffc0801b7cb0",
+        "symbol": "do_signal+0x820"
+      },
+      {
+        "fp": "0xffffffc086a2bdb0",
+        "lr": "0xffffffc0800bceb0",
+        "symbol": "do_notify_resume+0xe0"
+      },
+      {
+        "fp": "0xffffffc086a2be30",
+        "lr": "0xffffffc08129eaa8",
+        "symbol": "el0_svc+0x80"
+      },
+      {
+        "fp": "0xffffffc086a2be80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc086a2bea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc086a2bfe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "accounting": {
+      "utime": "0",
+      "stime": "69481000",
+      "nvcsw": "3",
+      "nivcsw": "38",
+      "sum_exec_runtime": "69084000",
+      "vruntime": "60714383022",
+      "exec_start": "1549401202000"
+    },
+    "policy": 0,
+    "prio": 139,
+    "normal_prio": 139,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      }
+    },
+    "signals": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "ptrace_raw": "0",
+      "jobctl_raw": "0",
+      "exit_code_raw": "9",
+      "exit_signal_raw": "4294967295",
+      "parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "real_parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "blocked_words": [
+        "0x80001204"
+      ],
+      "real_blocked_words": [
+        "0x0"
+      ],
+      "saved_sigmask_words": [
+        "0x0"
+      ],
+      "pending_words": [
+        "0x0"
+      ],
+      "signal_owner": "0xffffff800d5fcd80",
+      "flags_raw": "4",
+      "group_exit_code_raw": "9",
+      "group_stop_count_raw": "0",
+      "notify_count_raw": "0",
+      "shared_pending_words": [
+        "0x100"
+      ],
+      "last_siginfo_pointer": "0x0"
+    },
+    "saved_frame_read_errors": [
+      {
+        "stack_bytes": 32768,
+        "error": "Android observer: unmapped virtual address"
+      },
+      {
+        "stack_bytes": 65536,
+        "error": "Android observer: unmapped virtual address"
+      }
+    ],
+    "saved_user_frame_unverified": {
+      "candidate_count": 0
+    }
+  },
+  "actual_remaining_thread_after": {
+    "pid": 3387,
+    "tgid": 562,
+    "name": "Jit thread pool",
+    "task": "0xffffff802dba0000",
+    "state": 0,
+    "exit_state": 0,
+    "on_rq": 1,
+    "on_cpu": 0,
+    "priority": 139,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [
+      {
+        "fp": "0xffffffc086a2b3d0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc086a2b490",
+        "lr": "0xffffffc0812a47a4",
+        "symbol": "preempt_schedule+0x60"
+      },
+      {
+        "fp": "0xffffffc086a2b4f0",
+        "lr": "0xffffffc080119184",
+        "symbol": "free_unref_folios+0x460"
+      },
+      {
+        "fp": "0xffffffc086a2b570",
+        "lr": "0xffffffc080162ab0",
+        "symbol": "folios_put_refs+0x234"
+      },
+      {
+        "fp": "0xffffffc086a2b620",
+        "lr": "0xffffffc0801624c4",
+        "symbol": "free_pages_and_swap_cache+0x108"
+      },
+      {
+        "fp": "0xffffffc086a2b810",
+        "lr": "0xffffffc08006bb78",
+        "symbol": "tlb_flush_mmu+0x204"
+      },
+      {
+        "fp": "0xffffffc086a2b870",
+        "lr": "0xffffffc0801652c4",
+        "symbol": "unmap_page_range+0xf30"
+      },
+      {
+        "fp": "0xffffffc086a2b950",
+        "lr": "0xffffffc08015ffcc",
+        "symbol": "unmap_vmas+0xc8"
+      },
+      {
+        "fp": "0xffffffc086a2b9f0",
+        "lr": "0xffffffc08016c398",
+        "symbol": "exit_mmap+0xc8"
+      },
+      {
+        "fp": "0xffffffc086a2bb10",
+        "lr": "0xffffffc080341234",
+        "symbol": "__mmput+0x34"
+      },
+      {
+        "fp": "0xffffffc086a2bb60",
+        "lr": "0xffffffc080126ac0",
+        "symbol": "mmput+0x54"
+      },
+      {
+        "fp": "0xffffffc086a2bb90",
+        "lr": "0xffffffc0801916cc",
+        "symbol": "do_exit+0x1b8"
+      },
+      {
+        "fp": "0xffffffc086a2bbd0",
+        "lr": "0xffffffc0802b8af8",
+        "symbol": "do_group_exit+0x98"
+      },
+      {
+        "fp": "0xffffffc086a2bc00",
+        "lr": "0xffffffc0801ba8b4",
+        "symbol": "get_signal+0x5cc"
+      },
+      {
+        "fp": "0xffffffc086a2bc50",
+        "lr": "0xffffffc0801b7cb0",
+        "symbol": "do_signal+0x820"
+      },
+      {
+        "fp": "0xffffffc086a2bdb0",
+        "lr": "0xffffffc0800bceb0",
+        "symbol": "do_notify_resume+0xe0"
+      },
+      {
+        "fp": "0xffffffc086a2be30",
+        "lr": "0xffffffc08129eaa8",
+        "symbol": "el0_svc+0x80"
+      },
+      {
+        "fp": "0xffffffc086a2be80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc086a2bea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc086a2bfe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "accounting": {
+      "utime": "0",
+      "stime": "69481000",
+      "nvcsw": "3",
+      "nivcsw": "38",
+      "sum_exec_runtime": "69084000",
+      "vruntime": "60714383022",
+      "exec_start": "1549401202000"
+    },
+    "policy": 0,
+    "prio": 139,
+    "normal_prio": 139,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      }
+    },
+    "signals": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "ptrace_raw": "0",
+      "jobctl_raw": "0",
+      "exit_code_raw": "9",
+      "exit_signal_raw": "4294967295",
+      "parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "real_parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "blocked_words": [
+        "0x80001204"
+      ],
+      "real_blocked_words": [
+        "0x0"
+      ],
+      "saved_sigmask_words": [
+        "0x0"
+      ],
+      "pending_words": [
+        "0x0"
+      ],
+      "signal_owner": "0xffffff800d5fcd80",
+      "flags_raw": "4",
+      "group_exit_code_raw": "9",
+      "group_stop_count_raw": "0",
+      "notify_count_raw": "0",
+      "shared_pending_words": [
+        "0x100"
+      ],
+      "last_siginfo_pointer": "0x0"
+    },
+    "saved_frame_read_errors": [
+      {
+        "stack_bytes": 32768,
+        "error": "Android observer: unmapped virtual address"
+      },
+      {
+        "stack_bytes": 65536,
+        "error": "Android observer: unmapped virtual address"
+      }
+    ],
+    "saved_user_frame_unverified": {
+      "candidate_count": 0
+    }
+  },
+  "actual_Pid1_Zygote_properties": [
+    {
+      "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+      "vma": "0x7cfe0e0000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc_debug_pid.zygote",
+      "value": "562",
+      "serial": 50331648,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:init_service_status_prop:s0",
+      "vma": "0x7cfe120000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc.zygote",
+      "value": "running",
+      "serial": 117440512,
+      "boot_completed_property_in_ram": false
+    }
+  ],
+  "observed_remaining_thread_is_runnable_during_original_exit_mmap": true,
+  "same_thread_CPU_accounting_across_100M_interval": true,
+  "actual_static_priority": 139,
+  "normal_nice": 19,
+  "fresh_UID_verified": {
+    "uid": "0",
+    "euid": "0",
+    "gid": "0",
+    "egid": "0"
+  },
+  "service_property_alone_is_not_process_liveness": true,
+  "no_new_guest_input_priority_service_or_property_change_made": true,
+  "new_zygote_or_boot_completion_not_claimed": true
+}
