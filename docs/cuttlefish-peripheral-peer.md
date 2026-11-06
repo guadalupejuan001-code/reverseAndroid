@@ -63,3 +63,11 @@ verified ELF was recovered in a host PTY/POSIX-shell test;
 variant has not been executed in Android. It requires five new source-bound
 events, handling `REVERSE_PEER_CAPTURE` failures, and the prior successful actual
 HAL control. It must not alter or restart the currently running four-phase test.
+
+AArch64 portability correction: Linux arm64 retains ARM32 assignments for
+`O_DIRECTORY` (16384) and `O_NOFOLLOW` (32768). The first prototype used x86
+values, which select `O_DIRECT` and `O_LARGEFILE` on arm64. The corrected peer
+uses explicit arm64 definitions and host-test binaries use their system headers.
+An unmodified official Linux v6.12 arm64 UAPI fixture independently checks all
+eight open flags at compile time. The former build and guest control remain
+preserved. The corrected ARM64 executable needs another actual guest test.

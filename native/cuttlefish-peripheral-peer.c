@@ -3,12 +3,14 @@
  * registration, snapshot edits, property writes, SELinux relaxation or clocks
  * from the emulator host. AArch64 build is static and libc independent. */
 #include "cuttlefish-peripheral-protocol.h"
+#include "cuttlefish-peripheral-linux-abi.h"
 #if defined(RA_HOST_TEST)
 #define _GNU_SOURCE 1
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <fcntl.h>
 typedef struct stat ra_stat;
 #define NR_openat SYS_openat
 #define NR_close SYS_close
@@ -88,15 +90,19 @@ static long call(long n,long a,long b,long c,long d,long e,long f) {
 #define C2(n,a,b) call(NR_##n,(long)(a),(long)(b),0,0,0,0)
 #define C3(n,a,b,c) call(NR_##n,(long)(a),(long)(b),(long)(c),0,0,0)
 #define C4(n,a,b,c,d) call(NR_##n,(long)(a),(long)(b),(long)(c),(long)(d),0,0)
+#ifndef AT_FDCWD
 #define AT_FDCWD (-100)
-#define O_RDWR 2
-#define O_CREAT 64
-#define O_EXCL 128
-#define O_NOCTTY 256
-#define O_NONBLOCK 2048
-#define O_DIRECTORY 65536
-#define O_NOFOLLOW 131072
-#define O_CLOEXEC 524288
+#endif
+#if !defined(RA_HOST_TEST)
+#define O_RDWR RA_ARM64_O_RDWR
+#define O_CREAT RA_ARM64_O_CREAT
+#define O_EXCL RA_ARM64_O_EXCL
+#define O_NOCTTY RA_ARM64_O_NOCTTY
+#define O_NONBLOCK RA_ARM64_O_NONBLOCK
+#define O_DIRECTORY RA_ARM64_O_DIRECTORY
+#define O_NOFOLLOW RA_ARM64_O_NOFOLLOW
+#define O_CLOEXEC RA_ARM64_O_CLOEXEC
+#endif
 #define EAGAIN 11
 #define EINTR 4
 #define ENOENT 2
@@ -136,6 +142,7 @@ static int label_fd(int fd,const char *label) {
   if(r<0){numberlog("SELINUX_SET_FD_ERRNO ",r);return -1;}
   long k=C4(fgetxattr,fd,PTR(key),PTR(b),sizeof(b));
   if(k<0)numberlog("SELINUX_GET_FD_ERRNO ",k);
+  if(k!=(long)n)numberlog("SELINUX_FD_CONTEXT_BYTES ",k);
   return k==(long)n&&equal(b,label)?0:-1;
 }
 static int label_alias(const char *path) {
@@ -143,6 +150,7 @@ static int label_alias(const char *path) {
   long r=C4(lsetxattr,PTR(path),PTR(key),PTR(label),n);
   if(r<0){numberlog("SELINUX_SET_ALIAS_ERRNO ",r);return -1;}
   long k=C4(lgetxattr,PTR(path),PTR(key),PTR(b),sizeof(b));
+  if(k!=(long)n)numberlog("SELINUX_ALIAS_CONTEXT_BYTES ",k);
   return k==(long)n&&equal(b,label)?0:-1;
 }
 static int provision(unsigned i) {
@@ -193,7 +201,8 @@ static int open_state(int dir,const char *name,unsigned uid) {
 static int guest_state(void) {
   const char *path="/data/local/tmp/reverseandroid-peripherals";
   long k=C3(mkdirat,AT_FDCWD,PTR(path),0700);if(k<0&&k!=-EEXIST)return -1;
-  int dir=(int)C4(openat,AT_FDCWD,PTR(path),O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC,0);if(dir<0)return -1;
+  int dir=(int)C4(openat,AT_FDCWD,PTR(path),O_DIRECTORY|O_NOFOLLOW|O_CLOEXEC,0);
+  if(dir<0){numberlog("STATE_DIRECTORY_OPEN_ERRNO ",dir);return -1;}
   ra_stat st;k=C2(fstat,dir,PTR(&st));
   int ok=k>=0&&st.st_uid==0&&(st.st_mode&0177777u)==0040700u;
   int r=ok?open_state(dir,"oemlock-state",0):-1;C1(close,dir);return r;

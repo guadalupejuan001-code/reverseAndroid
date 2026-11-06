@@ -4,6 +4,8 @@ task_root=$(cd "$(dirname "$0")/.." && pwd)
 task_build=${1:-"$task_root/build/cuttlefish-peripheral-peer"}
 mkdir -p "$task_build"
 cd "$task_root"
+cc -std=c11 -O2 -Wall -Wextra -Werror tests/cuttlefish-peripheral-arm64-abi-test.c -o "$task_build/arm64-abi-test"
+"$task_build/arm64-abi-test" > "$task_build/arm64-abi-test.json"
 cc -std=c11 -O2 -Wall -Wextra -Werror tests/cuttlefish-peripheral-protocol-test.c -o "$task_build/protocol-test"
 "$task_build/protocol-test" > "$task_build/protocol-test.json"
 cc -std=c11 -O2 -Wall -Wextra -Werror -Wno-misleading-indentation -DRA_HOST_TEST native/cuttlefish-peripheral-peer.c -o "$task_build/host-peer"
@@ -22,8 +24,8 @@ assert struct.unpack_from('<H',b,16)[0]==2
 phoff=struct.unpack_from('<Q',b,32)[0]; phsize,phnum=struct.unpack_from('<HH',b,54)
 assert not any(struct.unpack_from('<I',b,phoff+i*phsize)[0] in (2,3) for i in range(phnum)), 'No dynamic loader or dynamic sections permitted'
 c=gzip.compress(b,compresslevel=9,mtime=0);(p/'peer-aarch64.gz').write_bytes(c)
-inputs=['native/cuttlefish-peripheral-protocol.h','native/cuttlefish-peripheral-peer.c','tests/cuttlefish-peripheral-protocol-test.c','tests/cuttlefish-peripheral-pty-test.py','scripts/build-cuttlefish-peripheral-peer.sh']
-manifest={'schema':'reverseandroid-peripheral-peer-build-v1','source_sha256':{x:hashlib.sha256(pathlib.Path(x).read_bytes()).hexdigest() for x in inputs},'ELF_SHA256':hashlib.sha256(b).hexdigest(),'ELF_bytes':len(b),'gzip_SHA256':hashlib.sha256(c).hexdigest(),'gzip_bytes':len(c),'static_AArch64_ELF_verified':True,'original_CPU_and_codecs_modified':False,'Android_HAL_integration_claimed':False,'host_tests':['protocol-test.json','pty-test.json']}
+inputs=['native/cuttlefish-peripheral-protocol.h','native/cuttlefish-peripheral-linux-abi.h','native/cuttlefish-peripheral-peer.c','tests/cuttlefish-peripheral-arm64-abi-test.c','tests/fixtures/linux-v6.12-arm64-fcntl.h','tests/cuttlefish-peripheral-protocol-test.c','tests/cuttlefish-peripheral-pty-test.py','scripts/build-cuttlefish-peripheral-peer.sh']
+manifest={'schema':'reverseandroid-peripheral-peer-build-v1','source_sha256':{x:hashlib.sha256(pathlib.Path(x).read_bytes()).hexdigest() for x in inputs},'ELF_SHA256':hashlib.sha256(b).hexdigest(),'ELF_bytes':len(b),'gzip_SHA256':hashlib.sha256(c).hexdigest(),'gzip_bytes':len(c),'static_AArch64_ELF_verified':True,'original_CPU_and_codecs_modified':False,'Android_HAL_integration_claimed':False,'host_tests':['arm64-abi-test.json','protocol-test.json','pty-test.json']}
 (p/'build-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps(manifest))
 PY
 fi

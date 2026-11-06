@@ -1,0 +1,19 @@
+{
+  "schema": "reverseandroid-peripheral-AArch64-UAPI-portability-fix-v1",
+  "primary_source_URL": "https://github.com/torvalds/linux/blob/v6.12/arch/arm64/include/uapi/asm/fcntl.h",
+  "official_source_Git_blob_SHA1": "f8db34f2622d3cdd4e2d638334e3b061c2948af9",
+  "fixture_unmodified": true,
+  "old_x86_O_DIRECTORY": 65536,
+  "old_x86_O_NOFOLLOW": 131072,
+  "correct_AArch64_O_DIRECTORY": 16384,
+  "correct_AArch64_O_NOFOLLOW": 32768,
+  "old_flags_on_AArch64_mean": [
+    "O_DIRECT",
+    "O_LARGEFILE"
+  ],
+  "independent_primary_header_compile_time_assertions_passed": true,
+  "host_wire_and_real_PTY_tests_passed": true,
+  "actual_Android_retest_pending": true,
+  "old_build20110632_preserved_as_reference": true,
+  "original_870_files_CPU_codecs_clock_seed_RAM_or_media_modified": false
+}
