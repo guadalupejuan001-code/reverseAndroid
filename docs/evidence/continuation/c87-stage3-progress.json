@@ -1,0 +1,46 @@
+{
+  "schema": "reverseandroid-bound-progress-audit-v1",
+  "read_only": true,
+  "original_admission_replaced": false,
+  "guest_execution_performed": false,
+  "boundaries": [
+    {
+      "checkpoint_sha256": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
+      "instructions": 112147727998,
+      "parent_checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
+      "whole_snapshot_sha256_verified_locally": true,
+      "whole_snapshot_bytes": 1996623188,
+      "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+      "native_sha256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+      "original_source_boundary_verified": true,
+      "new_UART_bytes": 0,
+      "inherited_events": 7,
+      "zygote": {
+        "pid": 5629,
+        "task": "0xffffff802db95100",
+        "exe_path": "/system/bin/app_process64",
+        "argv": [
+          "zygote64"
+        ],
+        "parent_pid": 1,
+        "state": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "accounting": {
+          "utime": 10176673000,
+          "stime": 3784329000,
+          "sum_exec_runtime": 12924691000,
+          "nvcsw": 9,
+          "nivcsw": 4208
+        }
+      },
+      "system_server_candidates": [],
+      "original_system_server_verified": false,
+      "original_boot_completed_verified": false,
+      "live_peripherals_verified": true,
+      "usable_UI_verified_by_this_tool": false,
+      "host_elapsed_ms": 462004
+    }
+  ],
+  "transitions": []
+}

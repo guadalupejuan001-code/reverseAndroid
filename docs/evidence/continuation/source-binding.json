@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-continuation-source-binding-v1",
+  "canonical_run_id": 42247589579,
+  "canonical_execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
+  "remote_stage4_metadata_artifact_id": 13522490641,
+  "remote_stage4_metadata_ZIP_SHA256": "c1422b2edf79c19ed2aa1713a5df8d35e0dc8cf330835c166b2b42cd710f8571",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "local_stage3_whole_snapshot_SHA256_verified": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
+  "through_stage4_audit": "docs/evidence/continuation/c87-through-remote-stage4.json",
+  "local_whole_snapshot_audit": "docs/evidence/continuation/c87-stage3-progress.json",
+  "guest_execution_launched_by_this_audit": false,
+  "ongoing_original_local_and_CI_campaign_reused": true,
+  "new_guest_inputs": 0,
+  "completed_boot_or_usable_UI_claimed": false
+}

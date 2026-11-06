@@ -1,0 +1,20 @@
+name: Android continuation evidence regression checks
+on:
+  pull_request:
+    paths:
+      - scripts/audit-android-continuation.py
+      - tests/android_continuation_progress_test.py
+      - .github/workflows/android-continuation-progress-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  progress-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Reject false progress, recycled task identities and modified native evidence
+        run: python3 tests/android_continuation_progress_test.py
