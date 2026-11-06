@@ -1,0 +1,163 @@
+{
+  "schema": "reverseandroid-actual-original-graphics-thread-progress-v1",
+  "source_checkpoint_sha256": "965513c9b6c7bac3b382272fb30b1d3f042afa50ac3795f15350aac483e27bf9",
+  "instructions": 49000000000,
+  "metadata_artifact_id": 13476813642,
+  "metadata_ZIP_SHA256": "e10c9c1a2aca84fdfc496ae263003cb87d4b2bbe551de66d9076332f5fde293f",
+  "read_only": true,
+  "original_snapshot_input_unchanged": true,
+  "SurfaceFlinger_original_thread_count": 18,
+  "bootanimation_PID": 858,
+  "bootanimation_original_thread_count": 8,
+  "thread_summary": [
+    {
+      "pid": 858,
+      "name": "bootanimation",
+      "state": 8193,
+      "priority": 116,
+      "accounting": {
+        "utime": "3098151000",
+        "stime": "1634838000",
+        "nvcsw": "27",
+        "nivcsw": "1437",
+        "sum_exec_runtime": "4231740000",
+        "vruntime": "14309466267",
+        "exec_start": "758507038000"
+      }
+    },
+    {
+      "pid": 2206,
+      "name": "binder:858_1",
+      "state": 8193,
+      "priority": 116,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "1",
+        "nivcsw": "1",
+        "sum_exec_runtime": "1013000",
+        "vruntime": "6852990779",
+        "exec_start": "728916111000"
+      }
+    },
+    {
+      "pid": 2208,
+      "name": "BootAnimation",
+      "state": 8193,
+      "priority": 116,
+      "accounting": {
+        "utime": "1968778000",
+        "stime": "815846000",
+        "nvcsw": "34",
+        "nivcsw": "914",
+        "sum_exec_runtime": "2605128000",
+        "vruntime": "14313786820",
+        "exec_start": "758606737000"
+      }
+    },
+    {
+      "pid": 2257,
+      "name": "Thread<00>",
+      "state": 8193,
+      "priority": 116,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "1",
+        "nivcsw": "0",
+        "sum_exec_runtime": "847000",
+        "vruntime": "7722342331",
+        "exec_start": "740520515000"
+      }
+    },
+    {
+      "pid": 2258,
+      "name": "BootAnimation",
+      "state": 258,
+      "priority": 116,
+      "accounting": {
+        "utime": "268483000",
+        "stime": "199633000",
+        "nvcsw": "23",
+        "nivcsw": "158",
+        "sum_exec_runtime": "422446000",
+        "vruntime": "16655361279",
+        "exec_start": "763711773000"
+      }
+    },
+    {
+      "pid": 2270,
+      "name": "ANGLE-GC",
+      "state": 8193,
+      "priority": 116,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "2",
+        "nivcsw": "0",
+        "sum_exec_runtime": "772000",
+        "vruntime": "14313467971",
+        "exec_start": "758606882000"
+      }
+    },
+    {
+      "pid": 2290,
+      "name": "ANGLE-Worker",
+      "state": 8193,
+      "priority": 116,
+      "accounting": {
+        "utime": "773653000",
+        "stime": "34248000",
+        "nvcsw": "7",
+        "nivcsw": "243",
+        "sum_exec_runtime": "744077000",
+        "vruntime": "14349736541",
+        "exec_start": "760545868000"
+      }
+    },
+    {
+      "pid": 2333,
+      "name": "BootAnimation",
+      "state": 8193,
+      "priority": 116,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "1",
+        "nivcsw": "0",
+        "sum_exec_runtime": "808000",
+        "vruntime": "14310350218",
+        "exec_start": "758469448000"
+      }
+    }
+  ],
+  "actual_vulkan_executable_page_fault_PID2258": {
+    "kernel_stack": [
+      "__schedule+0x1004",
+      "schedule+0x4c",
+      "io_schedule+0x30",
+      "folio_wait_bit_common+0x19c",
+      "filemap_fault+0x3b4",
+      "do_pte_missing+0x2d8",
+      "handle_mm_fault+0x218",
+      "do_page_fault+0x118",
+      "do_translation_fault+0x38",
+      "do_mem_abort+0x54",
+      "el0_ia+0x74",
+      "el0t_64_sync_handler+0x64",
+      "el0t_64_sync+0x1bc",
+      null
+    ],
+    "user_PC": {
+      "address": "0x6cfd8561e0",
+      "start": "0x6cfd35e000",
+      "end": "0x6cfe5f2000",
+      "flags": "0x1800000000000075",
+      "file": "/apex/com.google.cf.vulkan/lib64/hw/vulkan.pastel.so",
+      "file_offset": "12878304",
+      "dynamic_symbol": null
+    }
+  },
+  "frame_remains_original_black_RGB_SHA256": "eda525bab6d74d439bd683b578242e87fd3146fc4d631b7c81d9f76dd4d47a2d",
+  "boot_or_UI_completion_claimed": false
+}

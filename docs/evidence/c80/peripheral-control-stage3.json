@@ -1,0 +1,58 @@
+{
+  "schema": "reverseandroid-isolated-authenticated-peripheral-control-boundary-v1",
+  "stage": 3,
+  "run_id": 42158822304,
+  "execution_commit": "145f4550086c109ae780d21f8225c29c62f48886",
+  "checkpoint_sha256": "5fc57061099a0b77a7b1c3078b7a821fc5bae066346a4769ab8a7d6647297a38",
+  "instructions": 49000000000,
+  "metadata_artifact_id": 13478091313,
+  "metadata_archive_sha256": "14151825aa38c9acc582d049576faae2646dc93e5c7fc4c5b542c40be8b0038f",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_source_boundary_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": false,
+  "main_C79_C80_modified": false,
+  "actual_experiment_state": {
+    "source": "evidence/peripheral-peer-control-3",
+    "phase": 2,
+    "waiting": false,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/peripheral-peer-control-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 43000000000,
+          "counter_subtick": 28,
+          "bytes": 3241,
+          "sha256": "2cfe2879564409bee09e9a2e542a04564c00c20fa22f128bc1476960d2443c71"
+        }
+      },
+      {
+        "phase": 1,
+        "input_plan": "evidence/peripheral-peer-control-reports/stage-3-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 47000000000,
+          "counter_subtick": 28,
+          "bytes": 3247,
+          "sha256": "005eb45ff153d3bef9f112437b0848ea6fd95796189e53ebe7c7b450a77c80a8"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "last_admitted_sha256": "5fc57061099a0b77a7b1c3078b7a821fc5bae066346a4769ab8a7d6647297a38",
+    "last_admitted_instructions": 49000000000,
+    "combined_original_console_bytes_sha256": "f2e7cedf1813af760c2fd1c3f2a270ae5d02297f6968b0757f98d091f43bea30",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": false,
+      "android.hardware.sensors.ISensors/default": false
+    },
+    "actual_AArch64_peer_ready_line_seen": false,
+    "actual_guest_ELF_hash_line_seen": false,
+    "control_is_promotion_authority": false,
+    "main_C79_C80_modified": false
+  }
+}
