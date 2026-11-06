@@ -1,0 +1,1 @@
+su 0 sh -c 'id; cat /data/local/tmp/reverseandroid-peer-e11a.log; ls -lZ /dev/hvc10 /dev/hvc18 /dev/hvc19; service check android.hardware.oemlock.IOemLock/default; service check android.hardware.sensors.ISensors/default; ps -A -o PID,UID,NAME,ARGS | grep -E "oemlock|sensors|reverseandroid-peer"; true'; r=$?; printf '\nREVERSE_%s_%s RC_%s\n' PEER INSPECT "$r"

@@ -1,0 +1,48 @@
+{
+  "schema": "reverseandroid-authenticated-static-peripheral-peer-build-v1",
+  "run_id": 42157990392,
+  "job_id": 127696616003,
+  "execution_commit": "e11a4b86cdb9f79f8d553f67a09bf74afddd9cbe",
+  "artifact_id": 13474593732,
+  "artifact_archive_SHA256": "b9e9ef36df3367b6b274250c8c9fce0175aa37d4dce5787b024d045e721877bb",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "host_literal_wire_tests": {
+    "literal_wire_vectors": true,
+    "fragmented_and_coalesced_requests": true,
+    "state_truth_table": true,
+    "bounded_malformed_input": true,
+    "separate_sensor_contract": true
+  },
+  "host_real_PTY_tests": {
+    "real_PTY_binary_roundtrip": true,
+    "OEM_state_persisted_before_response": true,
+    "OEM_state_survives_process_restart": true,
+    "separate_sensor_control_and_data": true,
+    "initial_and_periodic_stationary_sensor_reports": true,
+    "invalid_request_rejected_without_state_change": true,
+    "host_device_provisioning_attempted": false,
+    "Android_HAL_integration_claimed": false
+  },
+  "build_manifest": {
+    "schema": "reverseandroid-peripheral-peer-build-v1",
+    "source_sha256": {
+      "native/cuttlefish-peripheral-protocol.h": "f8f6c60f2711c25e0cc6af45b15332a4962369ec412b09e9954d11a857604c3e",
+      "native/cuttlefish-peripheral-peer.c": "40828657ea82c7cf37c7c0363edfa948def06b97a1fdd11c42fc1758722fa743",
+      "tests/cuttlefish-peripheral-protocol-test.c": "172842be0912271d3a33cccc6939099520962e8e3ef45f3c6e9349994f4e9499",
+      "tests/cuttlefish-peripheral-pty-test.py": "0b96faec5374102f115b98f7b7ceea0cfe99e7739a3605f1a10a46ea09e0a87d",
+      "scripts/build-cuttlefish-peripheral-peer.sh": "f719caaec9b9d44ed6bb1c3c6f31d9043f542654d48c82a21c54f53e03dcccd0"
+    },
+    "ELF_SHA256": "20110632e38c9fa662d0b813250ca16da0481251be0daacbc43dee84479a7efb",
+    "ELF_bytes": 8040,
+    "gzip_SHA256": "2646fcd488bccea5b2e3ef9ea1b3e6b0218410dad393e17886fe7c3b6c6c1632",
+    "gzip_bytes": 4314,
+    "static_AArch64_ELF_verified": true,
+    "original_CPU_and_codecs_modified": false,
+    "Android_HAL_integration_claimed": false,
+    "host_tests": [
+      "protocol-test.json",
+      "pty-test.json"
+    ]
+  },
+  "guest_integration_claimed": false
+}

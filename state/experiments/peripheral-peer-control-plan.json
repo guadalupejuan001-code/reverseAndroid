@@ -1,0 +1,48 @@
+{
+  "schema": "reverseandroid-explicit-isolated-peripheral-control-v1",
+  "source_checkpoint_sha256": "a72a0f03fb7e47f07a8a720b129340e8f06f8dfa2c1acc9a52ba4c502cba6c28",
+  "source_instructions": 43000000000,
+  "source_C80_stage": 6,
+  "ELF_SHA256": "20110632e38c9fa662d0b813250ca16da0481251be0daacbc43dee84479a7efb",
+  "gzip_SHA256": "2646fcd488bccea5b2e3ef9ea1b3e6b0218410dad393e17886fe7c3b6c6c1632",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-e11a.elf",
+  "guest_log_path": "/data/local/tmp/reverseandroid-peer-e11a.log",
+  "phase_count": 4,
+  "max_stages": 12,
+  "stage_budget": 2000000000,
+  "input_event_max_once_per_phase": true,
+  "main_C79_C80_modified": false,
+  "control_is_promotion_authority": false,
+  "boot_property_writes": false,
+  "SELinux_policy_or_enforcement_changes": false,
+  "phases": [
+    {
+      "input_file": "state/experiments/peripheral-peer-control-input-0.txt",
+      "input_bytes": 3241,
+      "input_sha256": "2cfe2879564409bee09e9a2e542a04564c00c20fa22f128bc1476960d2443c71",
+      "response_marker": "REVERSE_PEER_FRAGMENT_0",
+      "effect": "Create first owner-only base64 fragment in isolated guest through real root shell"
+    },
+    {
+      "input_file": "state/experiments/peripheral-peer-control-input-1.txt",
+      "input_bytes": 3247,
+      "input_sha256": "005eb45ff153d3bef9f112437b0848ea6fd95796189e53ebe7c7b450a77c80a8",
+      "response_marker": "REVERSE_PEER_FRAGMENT_1",
+      "effect": "Append second fragment only after actual previous file SHA256 matches"
+    },
+    {
+      "input_file": "state/experiments/peripheral-peer-control-input-2.txt",
+      "input_bytes": 1148,
+      "input_sha256": "4f19e72114a322250780ca68d8cf482110e93c4a09424ccac26e990f8d724e61",
+      "response_marker": "REVERSE_PEER_ACTIVATION",
+      "effect": "Verify gzip decode and actual guest ELF SHA256, then launch real PTY peer with enforcing SELinux"
+    },
+    {
+      "input_file": "state/experiments/peripheral-peer-control-input-3.txt",
+      "input_bytes": 361,
+      "input_sha256": "eca4f974ce6bd36d79d5e8aac6eb33a82ffe7c9bdb39614f5925af8085a6d628",
+      "response_marker": "REVERSE_PEER_INSPECT",
+      "effect": "Read actual peer traffic, original device labels, original Binder service checks and process argv"
+    }
+  ]
+}

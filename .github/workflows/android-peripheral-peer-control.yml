@@ -1,0 +1,430 @@
+name: Actual Android original HAL integration with authenticated PTY peripheral peer
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-peripheral-peer-control.yml
+    - state/experiments/peripheral-peer-control-plan.json
+    - state/experiments/peripheral-peer-control-artifacts.json
+    - state/experiments/peripheral-peer-control-input-*.txt
+    - scripts/run-peripheral-peer-control-stage.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-peripheral-peer-isolated-control
+  cancel-in-progress: false
+jobs:
+  peripheral-peer-control:
+    runs-on: ubuntu-latest
+    timeout-minutes: 230
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate original source, exact native, immutable media and verified AArch64 peer
+      run: "python3 scripts/verify-reverseandroid-import.py\npython3 scripts/fetch-reverseandroid-artifact.py native-cache\
+        \ build/reverseandroid state/experiments/peripheral-peer-control-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ seed build/source-peripheral state/experiments/peripheral-peer-control-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ peripheral-peer build/peripheral-peer state/experiments/peripheral-peer-control-artifacts.json\npython3\
+        \ scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/peripheral-peer-control-artifacts.json\n\
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/peripheral-peer-control-artifacts.json\n\
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/peripheral-peer-control-artifacts.json\n\
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/peripheral-peer-control-artifacts.json\n\
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw\nchmod +x\
+        \ build/reverseandroid/epoch build/reverseandroid/frame\nmkdir -p evidence/peripheral-peer-control-reports\n\
+        python3 - <<'PYAUDIT'\nimport pathlib,json,hashlib,gzip\np=pathlib.Path('build/reverseandroid');h=lambda\
+        \ f:hashlib.file_digest(f.open('rb'),'sha256').hexdigest()\nassert h(p/'epoch')=='72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa'\n\
+        f=json.loads((p/'console-event-test.json').read_text());assert len(f)==5 and all(v is True for v in f.values())\n\
+        p=pathlib.Path('build/peripheral-peer');m=json.loads((p/'build-manifest.json').read_text());e=json.loads(pathlib.Path('state/experiments/peripheral-peer-control-plan.json').read_text())\n\
+        assert (p/'execution-commit.txt').read_text().strip()=='e11a4b86cdb9f79f8d553f67a09bf74afddd9cbe'\nassert\
+        \ h(p/'cuttlefish-peripheral-peer-aarch64')==m['ELF_SHA256']==e['ELF_SHA256']\nassert h(p/'peer-aarch64.gz')==m['gzip_SHA256']==e['gzip_SHA256']\n\
+        assert gzip.decompress((p/'peer-aarch64.gz').read_bytes())==(p/'cuttlefish-peripheral-peer-aarch64').read_bytes()\n\
+        assert all(json.loads((p/'protocol-test.json').read_text()).values())\nt=json.loads((p/'pty-test.json').read_text());assert\
+        \ not t.pop('host_device_provisioning_attempted') and not t.pop('Android_HAL_integration_claimed');assert\
+        \ all(t.values())\nfor phase in e['phases']:\n f=pathlib.Path(phase['input_file']);assert f.stat().st_size==phase['input_bytes']<=4096\
+        \ and h(f)==phase['input_sha256']\nPYAUDIT\nnode --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs\
+        \ preflight build/source-peripheral > evidence/peripheral-peer-control-reports/source-admission.json\n"
+    - name: 'Control stage 1: deliver at most one authenticated fragment and fully admit original execution'
+      id: r1
+      if: success()
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 1
+
+        '
+    - name: 'Control stage 1: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r1.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-1/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-1/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-1/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 1: preserve every full original checkpoint piece'
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-1
+        transport_path: build/peripheral-peer-control-transport-1
+        artifact_prefix: reverseandroid-peripheral-peer-control-1
+    - name: 'Control stage 1: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r1.outcome == 'success'
+      run: 'rm -rf build/source-peripheral
+
+        '
+    - name: 'Control stage 2: deliver at most one authenticated fragment and fully admit original execution'
+      id: r2
+      if: success() && steps.r1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 2
+
+        '
+    - name: 'Control stage 2: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r2.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-2/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-2/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-2/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 2: preserve every full original checkpoint piece'
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-2
+        transport_path: build/peripheral-peer-control-transport-2
+        artifact_prefix: reverseandroid-peripheral-peer-control-2
+    - name: 'Control stage 2: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r2.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-1 build/peripheral-peer-control-transport-1
+
+        '
+    - name: 'Control stage 3: deliver at most one authenticated fragment and fully admit original execution'
+      id: r3
+      if: success() && steps.r2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 3
+
+        '
+    - name: 'Control stage 3: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r3.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-3/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-3/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-3/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 3: preserve every full original checkpoint piece'
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-3
+        transport_path: build/peripheral-peer-control-transport-3
+        artifact_prefix: reverseandroid-peripheral-peer-control-3
+    - name: 'Control stage 3: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r3.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-2 build/peripheral-peer-control-transport-2
+
+        '
+    - name: 'Control stage 4: deliver at most one authenticated fragment and fully admit original execution'
+      id: r4
+      if: success() && steps.r3.outcome == 'success' && steps.r3.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 4
+
+        '
+    - name: 'Control stage 4: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r4.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-4/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-4/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-4/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 4: preserve every full original checkpoint piece'
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-4
+        transport_path: build/peripheral-peer-control-transport-4
+        artifact_prefix: reverseandroid-peripheral-peer-control-4
+    - name: 'Control stage 4: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r4.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-3 build/peripheral-peer-control-transport-3
+
+        '
+    - name: 'Control stage 5: deliver at most one authenticated fragment and fully admit original execution'
+      id: r5
+      if: success() && steps.r4.outcome == 'success' && steps.r4.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 5
+
+        '
+    - name: 'Control stage 5: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r5.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-5/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-5/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-5/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 5: preserve every full original checkpoint piece'
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-5
+        transport_path: build/peripheral-peer-control-transport-5
+        artifact_prefix: reverseandroid-peripheral-peer-control-5
+    - name: 'Control stage 5: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r5.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-4 build/peripheral-peer-control-transport-4
+
+        '
+    - name: 'Control stage 6: deliver at most one authenticated fragment and fully admit original execution'
+      id: r6
+      if: success() && steps.r5.outcome == 'success' && steps.r5.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 6
+
+        '
+    - name: 'Control stage 6: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r6.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-6/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-6/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-6/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 6: preserve every full original checkpoint piece'
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-6
+        transport_path: build/peripheral-peer-control-transport-6
+        artifact_prefix: reverseandroid-peripheral-peer-control-6
+    - name: 'Control stage 6: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r6.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-5 build/peripheral-peer-control-transport-5
+
+        '
+    - name: 'Control stage 7: deliver at most one authenticated fragment and fully admit original execution'
+      id: r7
+      if: success() && steps.r6.outcome == 'success' && steps.r6.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 7
+
+        '
+    - name: 'Control stage 7: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r7.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-7/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-7/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-7/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 7: preserve every full original checkpoint piece'
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-7
+        transport_path: build/peripheral-peer-control-transport-7
+        artifact_prefix: reverseandroid-peripheral-peer-control-7
+    - name: 'Control stage 7: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r7.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-6 build/peripheral-peer-control-transport-6
+
+        '
+    - name: 'Control stage 8: deliver at most one authenticated fragment and fully admit original execution'
+      id: r8
+      if: success() && steps.r7.outcome == 'success' && steps.r7.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 8
+
+        '
+    - name: 'Control stage 8: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r8.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-8/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-8/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-8/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 8: preserve every full original checkpoint piece'
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-8
+        transport_path: build/peripheral-peer-control-transport-8
+        artifact_prefix: reverseandroid-peripheral-peer-control-8
+    - name: 'Control stage 8: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r8.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-7 build/peripheral-peer-control-transport-7
+
+        '
+    - name: 'Control stage 9: deliver at most one authenticated fragment and fully admit original execution'
+      id: r9
+      if: success() && steps.r8.outcome == 'success' && steps.r8.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 9
+
+        '
+    - name: 'Control stage 9: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r9.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-9/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-9/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-9/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 9: preserve every full original checkpoint piece'
+      if: always() && (steps.r9.outcome == 'success' || steps.r9.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-9
+        transport_path: build/peripheral-peer-control-transport-9
+        artifact_prefix: reverseandroid-peripheral-peer-control-9
+    - name: 'Control stage 9: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r9.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-8 build/peripheral-peer-control-transport-8
+
+        '
+    - name: 'Control stage 10: deliver at most one authenticated fragment and fully admit original execution'
+      id: r10
+      if: success() && steps.r9.outcome == 'success' && steps.r9.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 10
+
+        '
+    - name: 'Control stage 10: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r10.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-10/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-10/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-10/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 10: preserve every full original checkpoint piece'
+      if: always() && (steps.r10.outcome == 'success' || steps.r10.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-10
+        transport_path: build/peripheral-peer-control-transport-10
+        artifact_prefix: reverseandroid-peripheral-peer-control-10
+    - name: 'Control stage 10: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r10.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-9 build/peripheral-peer-control-transport-9
+
+        '
+    - name: 'Control stage 11: deliver at most one authenticated fragment and fully admit original execution'
+      id: r11
+      if: success() && steps.r10.outcome == 'success' && steps.r10.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 11
+
+        '
+    - name: 'Control stage 11: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r11.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-11/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-11/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-11/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 11: preserve every full original checkpoint piece'
+      if: always() && (steps.r11.outcome == 'success' || steps.r11.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-11
+        transport_path: build/peripheral-peer-control-transport-11
+        artifact_prefix: reverseandroid-peripheral-peer-control-11
+    - name: 'Control stage 11: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r11.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-10 build/peripheral-peer-control-transport-10
+
+        '
+    - name: 'Control stage 12: deliver at most one authenticated fragment and fully admit original execution'
+      id: r12
+      if: success() && steps.r11.outcome == 'success' && steps.r11.outputs.complete != 'true'
+      run: 'python3 scripts/run-peripheral-peer-control-stage.py 12
+
+        '
+    - name: 'Control stage 12: inspect original HALs and actual kernel PTY backlinks without mutations'
+      if: success() && steps.r12.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_PEER_SHA=$(python3 -c ''import json;print(json.load(open("evidence/peripheral-peer-control-12/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/peripheral-peer-control-12/current.rvg
+        "$TASK_PEER_SHA" evidence/peripheral-peer-control-12/peripherals-readonly.json
+
+        '
+    - name: 'Control stage 12: preserve every full original checkpoint piece'
+      if: always() && (steps.r12.outcome == 'success' || steps.r12.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/peripheral-peer-control-12
+        transport_path: build/peripheral-peer-control-transport-12
+        artifact_prefix: reverseandroid-peripheral-peer-control-12
+    - name: 'Control stage 12: release only earlier host duplicates after all pieces are preserved'
+      if: success() && steps.r12.outcome == 'success'
+      run: 'rm -rf evidence/peripheral-peer-control-11 build/peripheral-peer-control-transport-11
+
+        '
+    - name: Require actual guest ELF hash, original HAL executables, three real PTY pairs and Binder registrations
+      run: 'python3 - <<''PYFINAL''
+
+        import json,pathlib
+
+        s=json.loads(pathlib.Path(''evidence/peripheral-peer-control-reports/control-state.json'').read_text())
+
+        assert s[''complete''] and not s[''failed''], ''The actual guest command has not completed successfully''
+
+        assert len(s[''events''])==4 and len({x[''phase''] for x in s[''events'']})==4
+
+        assert s[''actual_guest_ELF_hash_line_seen''] and s[''actual_AArch64_peer_ready_line_seen'']
+
+        p=pathlib.Path(s[''source'']);g=json.loads((p/''c46-progress.json'').read_text());k=json.loads((p/''kernel-observation.json'').read_text());o=json.loads((p/''peripherals-readonly.json'').read_text())
+
+        assert g[''source_boundary_verified''] and k[''live_kernel_security''][''selinux_enforcing'']
+
+        assert o[''checkpoint_sha256'']==g[''checkpoint_sha256''] and o[''input_unchanged'']
+
+        assert o[''real_AArch64_peer_alive''] and o[''original_oemlock_executable_alive''] and o[''original_sensors_executable_alive'']
+
+        assert o[''OEM_channel_connected_to_actual_peer''] and o[''two_separate_sensor_channels_connected_to_actual_peer'']
+
+        assert all(s[''original_HAL_registration_seen_in_actual_console''].values()), ''Require actual original
+        Binder registrations''
+
+        print(json.dumps({''original_HALs_connected'':True,''original_HALs_registered'':True,''boot_or_UI_completion_claimed'':False,''primary_modified'':False}))
+
+        PYFINAL
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-peripheral-peer-control-evidence
+        path: 'evidence/peripheral-peer-control-reports
+
+          evidence/peripheral-peer-control-*/*.json
+
+          evidence/peripheral-peer-control-*/*.log
+
+          evidence/peripheral-peer-control-*/*.txt
+
+          state/experiments/peripheral-peer-control-plan.json
+
+          state/experiments/peripheral-peer-control-input-*.txt
+
+          '
+        retention-days: 90
+        if-no-files-found: error
