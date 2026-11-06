@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "12e7d8a0775259a0aa839f4d7173cdd0bcd52c0820cb86fff7d40f8e6f1ad60b",
-  "instructions": 120147727998,
+  "checkpoint_sha256": "77a43d489062634841a5b2fbca751e371102d92b403e0f30fc0438da75dfea0d",
+  "instructions": 121147727998,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -14,7 +14,7 @@
   ],
   "cycle": "C87",
   "epoch": "C76-lights-port",
-  "stage": 11,
+  "stage": 12,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
   "execution_location": "original-native-CI-full-original-admission-and-complete-pinned-transport",
@@ -31,13 +31,13 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42247589579,
   "independent_reproduction_status": "Stages 1 through 4 independently reproduce every original RVG byte and the entire console. This current CI boundary is fully recovered and original-preflight admitted locally; no independent local native replay of this boundary is claimed.",
-  "active_continuation": "C87 stage 11: original native execution, whole snapshot roundtrip and original C46 admission completed in CI. Every full transport piece is pinned. Current original RVG is not claimed to have been downloaded or independently executed locally. BOOT=False; usable UI and actual response remain separate.",
+  "active_continuation": "C87 stage 12: original native execution, whole snapshot roundtrip and original C46 admission completed in CI. Every full transport piece is pinned. Current original RVG is not claimed to have been downloaded or independently executed locally. BOOT=False; usable UI and actual response remain separate.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c87-stage-11-artifacts.json",
+  "source_artifact_lock": "state/experiments/c87-stage-12-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c87-4",
     "checkpoint_sha256": "bb07089e157a6ad116fa8a0dc3a269293346857af3d15ddabc54f9200e664af2",
@@ -48,17 +48,17 @@
     "archived_original_CI_transport_lock": "state/experiments/c87-stage-4-artifacts.json"
   },
   "last_durable_transport_source": {
-    "instructions": 120147727998,
-    "checkpoint_sha256": "12e7d8a0775259a0aa839f4d7173cdd0bcd52c0820cb86fff7d40f8e6f1ad60b",
-    "source_artifact_lock": "state/experiments/c87-stage-11-artifacts.json",
-    "original_CI_admission_and_transport_proof": "docs/evidence/c87/stage11-original-CI-authority.json",
+    "instructions": 121147727998,
+    "checkpoint_sha256": "77a43d489062634841a5b2fbca751e371102d92b403e0f30fc0438da75dfea0d",
+    "source_artifact_lock": "state/experiments/c87-stage-12-artifacts.json",
+    "original_CI_admission_and_transport_proof": "docs/evidence/c87/stage12-original-CI-authority.json",
     "independent_local_native_match": null
   },
   "visual_review_result": "The authentic C83 post-CLZ frame at85,047,727,998 shows the original Android wordmark boot animation. Usable UI and actual input response are still pending.",
   "visual_review_evidence": "docs/evidence/c83/after-one-actual-frame-review.json",
   "active_continuation_run_id": 42247589579,
   "independent_engine_validation_run_id": 42202570186,
-  "latest_boundary_evidence": "docs/evidence/c87/stage11-original-CI-authority.json",
+  "latest_boundary_evidence": "docs/evidence/c87/stage12-original-CI-authority.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c87-plan.json",
@@ -198,7 +198,7 @@
   "original_init_zygote_recovery_verified": true,
   "original_init_recovery_evidence": "docs/evidence/c86/original-init-Zygote-recovery.json",
   "last_original_PID1_zygote_observation": {
-    "checkpoint_sha256": "12e7d8a0775259a0aa839f4d7173cdd0bcd52c0820cb86fff7d40f8e6f1ad60b",
+    "checkpoint_sha256": "77a43d489062634841a5b2fbca751e371102d92b403e0f30fc0438da75dfea0d",
     "observations": [
       {
         "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",

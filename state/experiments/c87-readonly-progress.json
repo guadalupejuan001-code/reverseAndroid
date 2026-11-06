@@ -1,9 +1,9 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 11,
-  "source_checkpoint_sha256": "12e7d8a0775259a0aa839f4d7173cdd0bcd52c0820cb86fff7d40f8e6f1ad60b",
-  "instructions": 120147727998,
-  "source_artifact_lock": "state/experiments/c87-stage-11-artifacts.json",
+  "source_stage": 12,
+  "source_checkpoint_sha256": "77a43d489062634841a5b2fbca751e371102d92b403e0f30fc0438da75dfea0d",
+  "instructions": 121147727998,
+  "source_artifact_lock": "state/experiments/c87-stage-12-artifacts.json",
   "source_execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
   "source_CI_run_id": 42247589579,
   "zygote_PID": 5629,
@@ -89,5 +89,5 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Identify the current original Zygote startup code and any actual wait in a separate read-only CI host. No guest execution or state change."
+  "purpose": "Identify the actual original Zygote5629 futex wait and the state, code, priority and identity of its real threads; read-only inspection on a separate CI host."
 }
