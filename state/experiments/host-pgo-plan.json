@@ -1,0 +1,11 @@
+{
+  "schema": "reverseandroid-isolated-host-pgo-plan-v1",
+  "source_checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
+  "source_instructions": 24000000000,
+  "source_artifact_lock": "state/experiments/host-pgo-artifacts.json",
+  "training_instructions": 20000000,
+  "measured_instructions": 50000000,
+  "minimum_required_speedup": 1.1,
+  "scope": "Isolated host compiler evaluation. Every control uses the original epoch admission. No primary checkpoint, guest code, scheduling, clock, seed, RAM, IRQ, property or UART input changes. Equal control states share exact original RVG bytes; all reports and bindings remain distinct.",
+  "candidate_is_primary": false
+}

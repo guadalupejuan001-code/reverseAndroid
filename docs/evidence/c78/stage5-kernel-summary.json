@@ -1,0 +1,730 @@
+{
+  "zygote_launch": {
+    "schema": "reverse-c40-zygote-argv-v1",
+    "read_only": true,
+    "source_checkpoint_sha256": "393e8612db20d7f6dcfa466b50d4e362526e65fa648ae5abeed870aa6db3c247",
+    "processes": [
+      {
+        "read_only": true,
+        "pid": 562,
+        "comm": "main",
+        "exe_path": "/system/bin/app_process64",
+        "parent_pid": 1,
+        "argv": [
+          "zygote64"
+        ],
+        "argv_verified": true,
+        "launch_signature_verified": false,
+        "state": 0,
+        "exit_state": 0,
+        "has_user_mm": true
+      },
+      {
+        "read_only": true,
+        "pid": 669,
+        "comm": "surfaceflinger",
+        "exe_path": "/system/bin/surfaceflinger",
+        "parent_pid": 1,
+        "argv": [
+          "/system/bin/surfaceflinger"
+        ],
+        "argv_verified": true,
+        "launch_signature_verified": false,
+        "state": 1,
+        "exit_state": 0,
+        "has_user_mm": true
+      }
+    ],
+    "live_process_count": 279
+  },
+  "live_boot_property": {
+    "schema": "reverse-live-pid1-property-v1",
+    "read_only": true,
+    "live_property_mapping_verified": false,
+    "boot_completed_property_live": false,
+    "observations": [],
+    "boot_chain_property_observations": [
+      {
+        "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+        "vma": "0x7cfdb60000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "odsign.key.done",
+        "value": "1",
+        "serial": 16777218,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+        "vma": "0x7cfdb60000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "odsign.verification.done",
+        "value": "1",
+        "serial": 16777216,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+        "vma": "0x7cfe0e0000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc_debug_pid.zygote",
+        "value": "562",
+        "serial": 50331648,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_prop:s0",
+        "vma": "0x7cfe120000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.zygote",
+        "value": "running",
+        "serial": 117440512,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+        "vma": "0x7cfe140000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.odsign",
+        "value": "stopped",
+        "serial": 117440516,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+        "vma": "0x7cfe140000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.keystore2",
+        "value": "running",
+        "serial": 117440512,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:apexd_prop:s0",
+        "vma": "0x7f91525000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "apexd.status",
+        "value": "ready",
+        "serial": 83886086,
+        "boot_completed_property_in_ram": false
+      }
+    ],
+    "boot_chain_property_status_counts": {
+      "odsign.key.done": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "odsign.verification.done": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.odsign": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.keystore2": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.android.hardware.security.keymint-service": {
+        "property_not_found": 393
+      },
+      "init.svc.zygote": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc_debug_pid.zygote": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.zygote_secondary": {
+        "property_not_found": 393
+      },
+      "apexd.status": {
+        "property_not_found": 392,
+        "property_observed": 1
+      }
+    },
+    "android_framework_verified": false,
+    "android_display_verified": false,
+    "pid": 1,
+    "task": "0xffffff8002d19440",
+    "mm": "0xffffff80042b5900",
+    "vma_count": 1100,
+    "property_mappings": 393,
+    "status_counts": {
+      "property_not_found": 393
+    },
+    "ambiguous_property_values": false
+  },
+  "live_kernel_security": {
+    "read_only": true,
+    "btf_layout_verified": true,
+    "selinux_initialized": true,
+    "selinux_enforcing": true,
+    "policy_present": true,
+    "address": "0xffffffc082877898"
+  },
+  "status": "read_only_kernel_observation",
+  "checkpoint_sha256": "393e8612db20d7f6dcfa466b50d4e362526e65fa648ae5abeed870aa6db3c247",
+  "kernel_sha256": "f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8",
+  "instructions": 28000000000,
+  "pc": "0xffffffc080497900",
+  "pc_symbol": "sha256_block_neon+0x670",
+  "ticks": "456501911",
+  "exceptions": "1105705",
+  "current_task": "0xffffff8028c95100",
+  "current_pid": 936,
+  "current_task_details": {
+    "pid": 936,
+    "name": "kworker/0:2H",
+    "task": "0xffffff8028c95100",
+    "verification": "process_list",
+    "live_exception_level": 1,
+    "live_pc": "0xffffffc080497900"
+  },
+  "task_count": 279,
+  "process_leader_count": 279,
+  "all_threads_enumerated": false,
+  "android_init_observed": false,
+  "android_boot": false,
+  "input_unchanged": true,
+  "schema": "reverseandroid-authenticated-producer-kernel-summary-v1",
+  "original_observation_SHA256": "8cd45265efc8593987fed8295531d88275025540351702e95a689b44c8765588",
+  "complete_original_observation_preserved_in_metadata_artifact": 13469485595,
+  "metadata_ZIP_SHA256": "19910b1ad3bdb2fcf6cf514db124bacf404849659c814eb6ee91315a457a4824",
+  "selected_tasks": [
+    {
+      "pid": 1,
+      "name": "init",
+      "task": "0xffffff8002d19440",
+      "state": 0,
+      "running_on_cpu": false,
+      "context_pc": "0xffffffc0812a70fc",
+      "context_sp": "0xffffffc0828fbae0",
+      "context_kind": "saved_kernel_context",
+      "saved_context_may_be_stale": false,
+      "live_user_pc": null,
+      "stack": [
+        {
+          "fp": "0xffffffc0828fbae0",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc0828fbba0",
+          "lr": "0xffffffc0812a6e34",
+          "symbol": "preempt_schedule_irq+0x4c"
+        },
+        {
+          "fp": "0xffffffc0828fbc00",
+          "lr": "0xffffffc0812a9478",
+          "symbol": "arm64_preempt_schedule_irq+0x30"
+        },
+        {
+          "fp": "0xffffffc0828fbc20",
+          "lr": "0xffffffc08129e770",
+          "symbol": "el1_interrupt+0x48"
+        },
+        {
+          "fp": "0xffffffc0828fbc30",
+          "lr": "0xffffffc08129e71c",
+          "symbol": "el1h_64_irq_handler+0x18"
+        },
+        {
+          "fp": "0xffffffc0828fbc50",
+          "lr": "0xffffffc080011b90",
+          "symbol": "el1h_64_irq+0x7c",
+          "interrupted_pc": "0xffffffc080310700",
+          "interrupted_symbol": "__audit_syscall_exit+0x13c",
+          "interrupted_registers": [
+            "0x1",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0xffffff801e759640",
+            "0xff2d787368717462",
+            "0x0",
+            "0x1",
+            "0xffffff8002d19440",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x1b80",
+            "0xf450",
+            "0xce5d7b53",
+            "0xce5d7b53",
+            "0xffffffc0828d3028",
+            "0xffffff8002cb8000",
+            "0xffffff8002d19440",
+            "0xffffffff",
+            "0x7f90ba5e48",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0xffffff8002d19440",
+            "0xffffffc0828fbdc0",
+            "0xffffffc0800bb40c"
+          ]
+        },
+        {
+          "fp": "0xffffffc0828fbd90",
+          "lr": "0xffffffc080310700",
+          "symbol": "__audit_syscall_exit+0x13c"
+        },
+        {
+          "fp": "0xffffffc0828fbdc0",
+          "lr": "0xffffffc0800bb40c",
+          "symbol": "syscall_trace_exit+0x78"
+        },
+        {
+          "fp": "0xffffffc0828fbe30",
+          "lr": "0xffffffc0800bb258",
+          "symbol": "do_el0_svc+0x94"
+        },
+        {
+          "fp": "0xffffffc0828fbe40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc0828fbe80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc0828fbea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc0828fbfe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "exit_state": 0,
+      "has_user_mm": true,
+      "on_rq": 1,
+      "on_cpu": 0,
+      "accounting": {
+        "nvcsw": "1875",
+        "nivcsw": "9786",
+        "utime": "9095798000",
+        "stime": "33403764000",
+        "sum_exec_runtime": "41712516000",
+        "vruntime": "79732854961",
+        "exec_start": "436269609000"
+      }
+    },
+    {
+      "pid": 562,
+      "name": "main",
+      "task": "0xffffff800685d100",
+      "state": 0,
+      "running_on_cpu": false,
+      "context_pc": "0xffffffc0812a70fc",
+      "context_sp": "0xffffffc086bbb650",
+      "context_kind": "saved_kernel_context",
+      "saved_context_may_be_stale": false,
+      "live_user_pc": null,
+      "stack": [
+        {
+          "fp": "0xffffffc086bbb650",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc086bbb710",
+          "lr": "0xffffffc0812a47a4",
+          "symbol": "preempt_schedule+0x60"
+        },
+        {
+          "fp": "0xffffffc086bbb770",
+          "lr": "0xffffffc0812af9d0",
+          "symbol": "_raw_spin_unlock_irq+0x48"
+        },
+        {
+          "fp": "0xffffffc086bbb790",
+          "lr": "0xffffffc0803bda64",
+          "symbol": "loop_queue_rq+0xec"
+        },
+        {
+          "fp": "0xffffffc086bbb7a0",
+          "lr": "0xffffffc08034fa8c",
+          "symbol": "blk_mq_plug_issue_direct+0x140"
+        },
+        {
+          "fp": "0xffffffc086bbb820",
+          "lr": "0xffffffc080120a10",
+          "symbol": "blk_mq_flush_plug_list+0x494"
+        },
+        {
+          "fp": "0xffffffc086bbb890",
+          "lr": "0xffffffc0801211c8",
+          "symbol": "blk_finish_plug+0x58"
+        },
+        {
+          "fp": "0xffffffc086bbb910",
+          "lr": "0xffffffc080111c44",
+          "symbol": "page_cache_ra_unbounded+0x4c0"
+        },
+        {
+          "fp": "0xffffffc086bbb9b0",
+          "lr": "0xffffffc080258804",
+          "symbol": "do_page_cache_ra+0x40"
+        },
+        {
+          "fp": "0xffffffc086bbba10",
+          "lr": "0xffffffc080111fbc",
+          "symbol": "page_cache_ra_order+0xa8"
+        },
+        {
+          "fp": "0xffffffc086bbbac0",
+          "lr": "0xffffffc080149c78",
+          "symbol": "filemap_fault+0x2ac"
+        },
+        {
+          "fp": "0xffffffc086bbbb90",
+          "lr": "0xffffffc0800aaaf4",
+          "symbol": "do_pte_missing+0x2d8"
+        },
+        {
+          "fp": "0xffffffc086bbbc30",
+          "lr": "0xffffffc0800b78ec",
+          "symbol": "handle_mm_fault+0x218"
+        },
+        {
+          "fp": "0xffffffc086bbbd20",
+          "lr": "0xffffffc0812b0cac",
+          "symbol": "do_page_fault+0x118"
+        },
+        {
+          "fp": "0xffffffc086bbbdb0",
+          "lr": "0xffffffc0812b0b78",
+          "symbol": "do_translation_fault+0x38"
+        },
+        {
+          "fp": "0xffffffc086bbbe10",
+          "lr": "0xffffffc0800bccf8",
+          "symbol": "do_mem_abort+0x54"
+        },
+        {
+          "fp": "0xffffffc086bbbe20",
+          "lr": "0xffffffc08129eb4c",
+          "symbol": "el0_da+0x54"
+        },
+        {
+          "fp": "0xffffffc086bbbe70",
+          "lr": "0xffffffc08129e954",
+          "symbol": "el0t_64_sync_handler+0x20"
+        },
+        {
+          "fp": "0xffffffc086bbbea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc086bbbfe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "exit_state": 0,
+      "has_user_mm": true,
+      "zygote_startup": {
+        "read_only": true,
+        "pid": 562,
+        "comm": "main",
+        "exe_path": "/system/bin/app_process64",
+        "parent_pid": 1,
+        "argv": [
+          "zygote64"
+        ],
+        "argv_verified": true,
+        "launch_signature_verified": false
+      },
+      "on_rq": 1,
+      "on_cpu": 0,
+      "accounting": {
+        "nvcsw": "470",
+        "nivcsw": "3408",
+        "utime": "5147974000",
+        "stime": "4206862000",
+        "sum_exec_runtime": "9575564000",
+        "vruntime": "1228896393",
+        "exec_start": "436257283000"
+      }
+    },
+    {
+      "pid": 652,
+      "name": "android.hardwar",
+      "task": "0xffffff801c239440",
+      "state": 8193,
+      "running_on_cpu": false,
+      "context_pc": "0xffffffc0812a70fc",
+      "context_sp": "0xffffffc084a93940",
+      "context_kind": "saved_kernel_context",
+      "saved_context_may_be_stale": false,
+      "live_user_pc": null,
+      "stack": [
+        {
+          "fp": "0xffffffc084a93940",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc084a93a00",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc084a93a60",
+          "lr": "0xffffffc0812a2cb4",
+          "symbol": "schedule_timeout+0x4c"
+        },
+        {
+          "fp": "0xffffffc084a93ad0",
+          "lr": "0xffffffc07aff9840",
+          "symbol": null
+        },
+        {
+          "fp": "0xffffffc084a93b80",
+          "lr": "0xffffffc07afdb098",
+          "symbol": null
+        },
+        {
+          "fp": "0xffffffc084a93d50",
+          "lr": "0xffffffc080238418",
+          "symbol": "__arm64_sys_ioctl+0x164"
+        },
+        {
+          "fp": "0xffffffc084a93de0",
+          "lr": "0xffffffc0800bb2fc",
+          "symbol": "invoke_syscall+0x58"
+        },
+        {
+          "fp": "0xffffffc084a93e20",
+          "lr": "0xffffffc0800bb250",
+          "symbol": "do_el0_svc+0x8c"
+        },
+        {
+          "fp": "0xffffffc084a93e40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc084a93e80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc084a93ea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc084a93fe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "exit_state": 0,
+      "has_user_mm": true,
+      "on_rq": 0,
+      "on_cpu": 0,
+      "accounting": {
+        "nvcsw": "9",
+        "nivcsw": "93",
+        "utime": "123669000",
+        "stime": "168942000",
+        "sum_exec_runtime": "303498000",
+        "vruntime": "70564548568",
+        "exec_start": "275985961000"
+      }
+    },
+    {
+      "pid": 669,
+      "name": "surfaceflinger",
+      "task": "0xffffff80192d0000",
+      "state": 1,
+      "running_on_cpu": false,
+      "context_pc": "0xffffffc0812a70fc",
+      "context_sp": "0xffffffc084ad3a90",
+      "context_kind": "saved_kernel_context",
+      "saved_context_may_be_stale": false,
+      "live_user_pc": null,
+      "stack": [
+        {
+          "fp": "0xffffffc084ad3a90",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc084ad3b50",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc084ad3bb0",
+          "lr": "0xffffffc0812ac530",
+          "symbol": "schedule_hrtimeout_range_clock+0x2fc"
+        },
+        {
+          "fp": "0xffffffc084ad3c30",
+          "lr": "0xffffffc0812acd8c",
+          "symbol": "schedule_hrtimeout_range+0x14"
+        },
+        {
+          "fp": "0xffffffc084ad3c90",
+          "lr": "0xffffffc080142da8",
+          "symbol": "do_epoll_wait+0x25c"
+        },
+        {
+          "fp": "0xffffffc084ad3d40",
+          "lr": "0xffffffc0801eeff4",
+          "symbol": "__arm64_sys_epoll_pwait+0x7c"
+        },
+        {
+          "fp": "0xffffffc084ad3dd0",
+          "lr": "0xffffffc0800bb2fc",
+          "symbol": "invoke_syscall+0x58"
+        },
+        {
+          "fp": "0xffffffc084ad3e20",
+          "lr": "0xffffffc0800bb250",
+          "symbol": "do_el0_svc+0x8c"
+        },
+        {
+          "fp": "0xffffffc084ad3e40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc084ad3e80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc084ad3ea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc084ad3fe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "exit_state": 0,
+      "has_user_mm": true,
+      "zygote_startup": {
+        "read_only": true,
+        "pid": 669,
+        "comm": "surfaceflinger",
+        "exe_path": "/system/bin/surfaceflinger",
+        "parent_pid": 1,
+        "argv": [
+          "/system/bin/surfaceflinger"
+        ],
+        "argv_verified": true,
+        "launch_signature_verified": false
+      },
+      "on_rq": 0,
+      "on_cpu": 0,
+      "accounting": {
+        "nvcsw": "79",
+        "nivcsw": "558",
+        "utime": "1043914000",
+        "stime": "646647000",
+        "sum_exec_runtime": "1699373000",
+        "vruntime": "4958507951",
+        "exec_start": "361808937000"
+      }
+    },
+    {
+      "pid": 858,
+      "name": "bootanimation",
+      "task": "0xffffff80224c9440",
+      "state": 0,
+      "running_on_cpu": false,
+      "context_pc": "0xffffffc0812a70fc",
+      "context_sp": "0xffffffc0845e3cb0",
+      "context_kind": "saved_kernel_context",
+      "saved_context_may_be_stale": false,
+      "live_user_pc": null,
+      "stack": [
+        {
+          "fp": "0xffffffc0845e3cb0",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc0845e3d70",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc0845e3dd0",
+          "lr": "0xffffffc0800bce9c",
+          "symbol": "do_notify_resume+0xcc"
+        },
+        {
+          "fp": "0xffffffc0845e3e10",
+          "lr": "0xffffffc08129fcf0",
+          "symbol": "el0_interrupt+0x94"
+        },
+        {
+          "fp": "0xffffffc0845e3e60",
+          "lr": "0xffffffc08129f728",
+          "symbol": "__el0_irq_handler_common+0x18"
+        },
+        {
+          "fp": "0xffffffc0845e3e90",
+          "lr": "0xffffffc08129f704",
+          "symbol": "el0t_64_irq_handler+0x10"
+        },
+        {
+          "fp": "0xffffffc0845e3ea0",
+          "lr": "0xffffffc080012010",
+          "symbol": "el0t_64_irq+0x1bc"
+        },
+        {
+          "fp": "0xffffffc0845e3fe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "exit_state": 0,
+      "has_user_mm": true,
+      "on_rq": 1,
+      "on_cpu": 0,
+      "accounting": {
+        "nvcsw": "14",
+        "nivcsw": "380",
+        "utime": "321361000",
+        "stime": "921574000",
+        "sum_exec_runtime": "1149814000",
+        "vruntime": "1231755352",
+        "exec_start": "436173481000"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-unpromoted-host-storage-tail-v1",
+  "source_checkpoint_sha256": "e6beaed954011ff958b2bf9c9a4b4463bc3ee7b9fea2560e6a812d20497926fc",
+  "source_instructions": 23000000000,
+  "last_reported_instructions": 23294000000,
+  "failed_directory": "c76-stage18",
+  "error": "ENOSPC while writing an incomplete checkpoint component and host outcome",
+  "tail_is_promotion_authority": false,
+  "source_remains_fully_verified": true,
+  "canonical_valid_checkpoints_deleted": 0,
+  "cleanup": "664 inactive incomplete RVG temporary files older than five minutes, excluding open file descriptors; C71 complete canonical gzip reverified by full SHA256 and CRC before cleanup.",
+  "audit": "maintenance/obsolete-c71-incomplete-temp-cleanup.json"
+}

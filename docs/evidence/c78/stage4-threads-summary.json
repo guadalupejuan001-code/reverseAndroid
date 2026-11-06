@@ -1,0 +1,1560 @@
+{
+  "schema": "reverseandroid-authenticated-producer-owned-threads-summary-v1",
+  "read_only": true,
+  "kernel_layout_pinned": true,
+  "checkpoint_sha256": "3a0bc07566f82dcae1ee58bb308fb6a3124a7e3bca5ade1ad5b8199c68b0b724",
+  "instructions": 27000000000,
+  "input_unchanged": true,
+  "observer_source_git_blob_sha1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "original_observer_file_unchanged": true,
+  "original_CPU_and_codecs_unchanged": true,
+  "original_observation_SHA256": "16aea1ce4fe61208087de84aa57489b93e319cf7a5565c905101488698cacb38",
+  "complete_original_observation_preserved_in_metadata_artifact": 13468700705,
+  "metadata_ZIP_SHA256": "db3efbb69081dae4f61b31378952435b3ceb43bc938696983b9c04dfb5fc4e38",
+  "groups": [
+    {
+      "pid": 379,
+      "name": "sh",
+      "thread_list_verified": true,
+      "thread_count": 1,
+      "user_vma_count": 140,
+      "threads": [
+        {
+          "pid": 379,
+          "tgid": 379,
+          "name": "sh",
+          "state": 1,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 120,
+          "prio": 120,
+          "normal_prio": 120,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "115416000",
+            "stime": "170043000",
+            "nvcsw": "5",
+            "nivcsw": "80",
+            "sum_exec_runtime": "272505000",
+            "vruntime": "31243292467",
+            "exec_start": "88888104000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "2000",
+              "euid": "2000",
+              "gid": "2000",
+              "egid": "2000"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x77e20ecfc8",
+            "start": "0x77e205f000",
+            "end": "0x77e2103000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "958408",
+            "dynamic_symbol": {
+              "name": "read",
+              "offset": "0x8",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x643b2cff88",
+            "start": "0x643b2a0000",
+            "end": "0x643b2de000",
+            "flags": "0x75",
+            "file": "/system/bin/sh",
+            "file_offset": "245640",
+            "dynamic_symbol": null
+          }
+        }
+      ]
+    },
+    {
+      "pid": 562,
+      "name": "zygote64",
+      "thread_list_verified": true,
+      "thread_count": 1,
+      "user_vma_count": 1615,
+      "threads": [
+        {
+          "pid": 562,
+          "tgid": 562,
+          "name": "zygote64",
+          "state": 258,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 100,
+          "prio": 100,
+          "normal_prio": 100,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "4990047000",
+            "stime": "4183578000",
+            "nvcsw": "463",
+            "nivcsw": "3346",
+            "sum_exec_runtime": "9386550000",
+            "vruntime": "683297013",
+            "exec_start": "418984917000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e000",
+                "cgroup": "0xffffff8009ed7000",
+                "path": "/top-app",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "0",
+              "euid": "0",
+              "gid": "0",
+              "egid": "0"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7284424c10",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "8539152",
+            "dynamic_symbol": {
+              "name": "_ZNK3art5Mutex9GetSelfIdEPKNS_6ThreadE",
+              "offset": "0x0",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7283e02438",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2106424",
+            "dynamic_symbol": {
+              "name": "_ZN3art5Mutex13ExclusiveLockEPNS_6ThreadE",
+              "offset": "0x298",
+              "range_verified": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pid": 669,
+      "name": "surfaceflinger",
+      "thread_list_verified": true,
+      "thread_count": 17,
+      "user_vma_count": 797,
+      "threads": [
+        {
+          "pid": 669,
+          "tgid": 669,
+          "name": "surfaceflinger",
+          "state": 1,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "1043914000",
+            "stime": "646647000",
+            "nvcsw": "79",
+            "nivcsw": "558",
+            "sum_exec_runtime": "1699373000",
+            "vruntime": "4958507951",
+            "exec_start": "361808937000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53164648",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "968264",
+            "dynamic_symbol": null
+          },
+          "saved_user_lr": {
+            "address": "0x7f563ddd84",
+            "start": "0x7f563d7000",
+            "end": "0x7f563eb000",
+            "flags": "0x1000000000000075",
+            "file": "/system/lib64/libutils.so",
+            "file_offset": "93572",
+            "dynamic_symbol": {
+              "name": "_ZN7android6Looper8pollOnceEiPiS1_PPv",
+              "offset": "0x104",
+              "range_verified": true
+            }
+          }
+        },
+        {
+          "pid": 789,
+          "tgid": 669,
+          "name": "binder:669_1",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 120,
+          "prio": 120,
+          "normal_prio": 120,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "4",
+            "nivcsw": "1",
+            "sum_exec_runtime": "4676000",
+            "vruntime": "4959673344",
+            "exec_start": "361808626000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53162608",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "960008",
+            "dynamic_symbol": null
+          },
+          "saved_user_lr": {
+            "address": "0x7f53104ac4",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "576196",
+            "dynamic_symbol": {
+              "name": "ioctl",
+              "offset": "0xa4",
+              "range_verified": true
+            }
+          }
+        },
+        {
+          "pid": 790,
+          "tgid": 669,
+          "name": "TracingMuxer",
+          "state": 1,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 120,
+          "prio": 120,
+          "normal_prio": 120,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "14219000",
+            "nvcsw": "19",
+            "nivcsw": "8",
+            "sum_exec_runtime": "33668000",
+            "vruntime": "5383569067",
+            "exec_start": "370994581000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53164888",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "968840",
+            "dynamic_symbol": null
+          },
+          "saved_user_lr": {
+            "address": "0x7f53107ac4",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "588484",
+            "dynamic_symbol": {
+              "name": "poll",
+              "offset": "0x64",
+              "range_verified": true
+            }
+          }
+        },
+        {
+          "pid": 792,
+          "tgid": 669,
+          "name": "surfaceflinger",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 120,
+          "prio": 120,
+          "normal_prio": 120,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "1",
+            "sum_exec_runtime": "3058000",
+            "vruntime": "4403053025",
+            "exec_start": "335253278000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 798,
+          "tgid": 669,
+          "name": "RenderEngine",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "1606322000",
+            "stime": "1174310000",
+            "nvcsw": "831",
+            "nivcsw": "2",
+            "sum_exec_runtime": "2889460000",
+            "vruntime": "4427963613",
+            "exec_start": "361655395000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 813,
+          "tgid": 669,
+          "name": "Thread<00>",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "791000",
+            "vruntime": "0",
+            "exec_start": "352943745000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 814,
+          "tgid": 669,
+          "name": "surfaceflinger",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "3679000",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "768000",
+            "vruntime": "0",
+            "exec_start": "352944513000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 815,
+          "tgid": 669,
+          "name": "ANGLE-GC",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "586000",
+            "vruntime": "0",
+            "exec_start": "352945099000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 838,
+          "tgid": 669,
+          "name": "HwcAsyncWorker",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 120,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "1",
+            "sum_exec_runtime": "1568000",
+            "vruntime": "4956516415",
+            "exec_start": "361467873000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 840,
+          "tgid": 669,
+          "name": "TimerDispatch",
+          "state": 1,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "2",
+            "nivcsw": "0",
+            "sum_exec_runtime": "1230000",
+            "vruntime": "4956405530",
+            "exec_start": "361754040000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53164648",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "968264",
+            "dynamic_symbol": null
+          },
+          "saved_user_lr": {
+            "address": "0x5959cf6b98",
+            "start": "0x5959ae0000",
+            "end": "0x595a170000",
+            "flags": "0x75",
+            "file": "/system/bin/surfaceflinger",
+            "file_offset": "4336536",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 841,
+          "tgid": 669,
+          "name": "app",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "4",
+            "nivcsw": "0",
+            "sum_exec_runtime": "1104000",
+            "vruntime": "4956538084",
+            "exec_start": "361479380000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 842,
+          "tgid": 669,
+          "name": "RegionSampling",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 112,
+          "normal_prio": 112,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "2",
+            "nivcsw": "0",
+            "sum_exec_runtime": "762000",
+            "vruntime": "4957429707",
+            "exec_start": "361602512000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 843,
+          "tgid": 669,
+          "name": "RegSampIdle",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 112,
+          "normal_prio": 112,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "0",
+            "sum_exec_runtime": "763000",
+            "vruntime": "4958353062",
+            "exec_start": "361721606000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 845,
+          "tgid": 669,
+          "name": "TouchTimer",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 112,
+          "normal_prio": 112,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "0",
+            "sum_exec_runtime": "1225000",
+            "vruntime": "4963348254",
+            "exec_start": "361944244000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 847,
+          "tgid": 669,
+          "name": "surfaceflinger",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 112,
+          "normal_prio": 112,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "2",
+            "sum_exec_runtime": "1278000",
+            "vruntime": "4960307500",
+            "exec_start": "361809042000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 850,
+          "tgid": 669,
+          "name": "BckgrndExec HP",
+          "state": 8193,
+          "exit_state": 0,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 112,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "2",
+            "nivcsw": "0",
+            "sum_exec_runtime": "1457000",
+            "vruntime": "0",
+            "exec_start": "361789314000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x7f53122f20",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "saved_user_lr": {
+            "address": "0x7f530f8b98",
+            "start": "0x7f530d4000",
+            "end": "0x7f53178000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "527256",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "pid": 851,
+          "tgid": 669,
+          "name": "binder:669_2",
+          "state": 0,
+          "exit_state": 0,
+          "on_rq": 1,
+          "on_cpu": 1,
+          "priority": 120,
+          "prio": 97,
+          "normal_prio": 97,
+          "policy": 1,
+          "rt_priority": 2,
+          "current": true,
+          "context_may_be_stale": false,
+          "kernel_pc": "security_capable+0x110",
+          "accounting": {
+            "utime": "420094000",
+            "stime": "342214000",
+            "nvcsw": "1243",
+            "nivcsw": "2086",
+            "sum_exec_runtime": "1756254000",
+            "vruntime": "7354870502",
+            "exec_start": "420728958000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e840",
+                "cgroup": "0xffffff8009ad1800",
+                "path": "/foreground",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1000",
+              "euid": "1000",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": null,
+          "saved_user_lr": null
+        }
+      ]
+    },
+    {
+      "pid": 858,
+      "name": "bootanimation",
+      "thread_list_verified": true,
+      "thread_count": 1,
+      "user_vma_count": 1049,
+      "threads": [
+        {
+          "pid": 858,
+          "tgid": 858,
+          "name": "bootanimation",
+          "state": 0,
+          "exit_state": 0,
+          "on_rq": 1,
+          "on_cpu": 0,
+          "priority": 120,
+          "prio": 120,
+          "normal_prio": 120,
+          "policy": 0,
+          "rt_priority": 0,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "accounting": {
+            "utime": "218827000",
+            "stime": "469634000",
+            "nvcsw": "14",
+            "nivcsw": "215",
+            "sum_exec_runtime": "651321000",
+            "vruntime": "733262352",
+            "exec_start": "420709655000"
+          },
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e000",
+                "cgroup": "0xffffff8009ed7000",
+                "path": "/top-app",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "1003",
+              "euid": "1003",
+              "gid": "1003",
+              "egid": "1003"
+            }
+          },
+          "saved_user_pc": {
+            "address": "0x6fd5ae8a48",
+            "start": "0x6fd5add000",
+            "end": "0x6fd5c49000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "375368",
+            "dynamic_symbol": null
+          },
+          "saved_user_lr": {
+            "address": "0x6fd5b01e14",
+            "start": "0x6fd5add000",
+            "end": "0x6fd5c49000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "478740",
+            "dynamic_symbol": null
+          }
+        }
+      ]
+    }
+  ]
+}

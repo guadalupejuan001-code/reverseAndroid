@@ -1,0 +1,21 @@
+{
+  "schema": "reverseandroid-authenticated-tested-epoch-native-cache-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "workflow_run_id": 42137711600,
+  "artifact_id": 13466524323,
+  "artifact_archive_sha256": "c2b848df200cf49b3992b77ef5b3b95589096b38e7a334740400de59780062f9",
+  "source_commit": "6c4fe6d4bf7840b5de89dfdfd820e01ea0e64387",
+  "epoch_filename": "epoch",
+  "epoch_binary_sha256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "console_event_test": {
+    "absent_input_byte_identical": true,
+    "explicit_receive_queue_only": true,
+    "RAM_properties_and_quantum_state_unchanged": true,
+    "CPU_execution_not_fabricated": true,
+    "original_snapshot_roundtrip": true
+  },
+  "independent_original_engine_validation_run": 42137711614,
+  "independent_original_engine_validation_conclusion": "success",
+  "execute_this_CI_binary_locally_not_assumed": true
+}

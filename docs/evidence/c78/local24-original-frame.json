@@ -1,0 +1,20 @@
+{
+  "schema": "reverse-snapshot-scanout-v1",
+  "status": "scanout_exported",
+  "source_checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
+  "instructions": 24000000000,
+  "pc": "0xffffffc080113a18",
+  "frame_counter": 4,
+  "width": 800,
+  "height": 600,
+  "rgb_sha256": "eda525bab6d74d439bd683b578242e87fd3146fc4d631b7c81d9f76dd4d47a2d",
+  "ppm_sha256": "c3b3d73f6bbb08ab3fa3dfa65d01f89916ba25d37a4f5fbd8cd2202edaa58077",
+  "cpu_instructions_executed": 0,
+  "original_snapshot_unchanged": true,
+  "android_boot_verified": false,
+  "android_display_verified": false,
+  "PNG_is_lossless_format_conversion_only": true,
+  "PNG_sha256": "0e78e1e00e1b64efefcadff280b26c47573f6b85aa1a36b6d7773abfbc2088f9",
+  "source_original_C46_passed": true,
+  "boot_completion_not_claimed": true
+}

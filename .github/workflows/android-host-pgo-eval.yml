@@ -1,0 +1,129 @@
+name: Isolated original Android host PGO evaluation
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-host-pgo-eval.yml
+    - scripts/build-reverseandroid-epoch-pgo.sh
+    - tools/reverseandroid-host-pgo-eval.mjs
+    - state/experiments/host-pgo-plan.json
+    - state/experiments/host-pgo-artifacts.json
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-host-pgo-evaluation
+  cancel-in-progress: false
+jobs:
+  host-pgo-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        repository: guadalupejuan001-code/mundo-X
+        ref: e2778d962af22f6f1a0794058dd4685fc2573966
+        path: deps/mundo-x
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Build and validate the unchanged engine and explicit epoch runner
+      run: 'bash scripts/build-reverseandroid.sh
+
+        bash scripts/build-reverseandroid-epoch.sh
+
+        '
+    - name: Recover the exact admitted isolated benchmark source and original disk
+      run: 'python3 scripts/fetch-reverseandroid-artifact.py seed build/source-pgo state/experiments/host-pgo-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/host-pgo-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/host-pgo-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/host-pgo-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/host-pgo-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-pgo > build/source-pgo-original-preflight.json
+
+        '
+    - name: Train, compare exact fixed-instruction states and measure native elapsed time
+      id: evaluate
+      run: node --expose-gc --max-old-space-size=5000 tools/reverseandroid-host-pgo-eval.mjs build/source-pgo evidence/host-pgo
+        build/media/android-c27.raw "$(git rev-parse HEAD)"
+    - name: 'Preserve distinct original control bytes: train'
+      if: always() && hashFiles('evidence/host-pgo/train/c46-progress.json') != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/host-pgo/train
+        transport_path: build/host-pgo-transport-train
+        artifact_prefix: reverseandroid-host-pgo-train
+    - name: 'Preserve distinct original control bytes: baseline-a'
+      if: always() && hashFiles('evidence/host-pgo/baseline-a/c46-progress.json') != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/host-pgo/baseline-a
+        transport_path: build/host-pgo-transport-baseline-a
+        artifact_prefix: reverseandroid-host-pgo-baseline-a
+    - name: 'Preserve distinct original control bytes: candidate-a'
+      if: always() && hashFiles('evidence/host-pgo/candidate-a/c46-progress.json') != '' && steps.evaluate.outputs.preserve_candidate_a
+        == 'true'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/host-pgo/candidate-a
+        transport_path: build/host-pgo-transport-candidate-a
+        artifact_prefix: reverseandroid-host-pgo-candidate-a
+    - name: 'Preserve distinct original control bytes: baseline-b'
+      if: always() && hashFiles('evidence/host-pgo/baseline-b/c46-progress.json') != '' && steps.evaluate.outputs.preserve_baseline_b
+        == 'true'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/host-pgo/baseline-b
+        transport_path: build/host-pgo-transport-baseline-b
+        artifact_prefix: reverseandroid-host-pgo-baseline-b
+    - name: 'Preserve distinct original control bytes: candidate-b'
+      if: always() && hashFiles('evidence/host-pgo/candidate-b/c46-progress.json') != '' && steps.evaluate.outputs.preserve_candidate_b
+        == 'true'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/host-pgo/candidate-b
+        transport_path: build/host-pgo-transport-candidate-b
+        artifact_prefix: reverseandroid-host-pgo-candidate-b
+    - name: Preserve every original report and the tested compiler outputs
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-host-pgo-evaluation
+        path: 'evidence/host-pgo/**/*.json
+
+          evidence/host-pgo/**/*.txt
+
+          evidence/host-pgo/**/*.log
+
+          evidence/host-pgo/**/*.ppm
+
+          build/reverseandroid/pgo-eval/epoch-pgo
+
+          build/reverseandroid/pgo-eval/epoch-pgo-instrumented
+
+          build/reverseandroid/*.json
+
+          build/reverseandroid/*.tap
+
+          build/reverseandroid/*sha256*.txt
+
+          build/source-pgo-original-preflight.json'
+        retention-days: 90
+        if-no-files-found: warn
