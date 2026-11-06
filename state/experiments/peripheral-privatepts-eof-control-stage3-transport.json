@@ -1,0 +1,49 @@
+{
+  "schema": "reverseandroid-checkpoint-transport-v1",
+  "compression": "tar+gzip",
+  "parts": [
+    {
+      "file": "checkpoint.part-000",
+      "bytes": 209715200,
+      "sha256": "db368b511115674ff59f1db0f942ce0ce9d04b3b3deeeb0c673f438860d33424"
+    },
+    {
+      "file": "checkpoint.part-001",
+      "bytes": 209715200,
+      "sha256": "656efd507b7b8509a5135659743ca8e5631142e5669df81721f527254af577d8"
+    },
+    {
+      "file": "checkpoint.part-002",
+      "bytes": 198565185,
+      "sha256": "866c149fd1ecbf3c79eea8a5a12ecee434f0d1fd22b1a4b2b074d3a1afaa58da"
+    }
+  ],
+  "source_contract": {
+    "schema": "reverseandroid-epoch-source-v1",
+    "checkpoint_sha256": "f39d320d132ab7ca95892c39e94fadbbb1bc5f9b4fd768c9aab43ba980974e06",
+    "report_file": "current.json",
+    "report_sha256": "d3e528d2ba8d0d99d4ce3af351fb349eac4469c6b0482e38f3c29aa8c8b6fc0e",
+    "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+    "instructions": 70000000000,
+    "epoch_original_init_verified": true,
+    "initialized_hardware_root": false,
+    "result_sha256": "29e2f1e1f6e7d834a3a314be60482f8777634a84a89b2f9a96a5b70da65396b7",
+    "process_sha256": "33fefa8ca824149af2a4427265b0a16e830245e21d212427a09d7aaef7089068",
+    "source_commit": "b5199e17c001f2fffa44485be93df819800dc3d1"
+  },
+  "progress": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "f39d320d132ab7ca95892c39e94fadbbb1bc5f9b4fd768c9aab43ba980974e06",
+    "instructions": 70000000000,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": false,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  }
+}

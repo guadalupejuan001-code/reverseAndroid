@@ -1,0 +1,570 @@
+{
+  "schema": "reverseandroid-original-SystemServer-service-thread-progress-v1",
+  "checkpoint_SHA256": "d7b48f2e89baa59c7845c3928a6788a6f89d0d20fc861dc83e1d9be32db66043",
+  "instructions": 77000000000,
+  "SystemServer_PID": 3386,
+  "SystemServer_UID": 1000,
+  "thread_count": 52,
+  "actual_original_process": {
+    "read_only": true,
+    "pid": 3386,
+    "comm": "system_server",
+    "exe_path": "/system/bin/app_process64",
+    "parent_pid": 562,
+    "argv": [
+      "system_server"
+    ],
+    "argv_verified": true,
+    "launch_signature_verified": false,
+    "state": 8193,
+    "exit_state": 0,
+    "has_user_mm": true
+  },
+  "actual_main_thread": {
+    "pid": 3386,
+    "tgid": 3386,
+    "name": "system_server",
+    "task": "0xffffff80224a2880",
+    "state": 8193,
+    "exit_state": 0,
+    "on_rq": 0,
+    "on_cpu": 0,
+    "priority": 118,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [
+      {
+        "fp": "0xffffffc0869f3b20",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc0869f3be0",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc0869f3c40",
+        "lr": "0xffffffc08010d478",
+        "symbol": "futex_wait+0x158"
+      },
+      {
+        "fp": "0xffffffc0869f3d40",
+        "lr": "0xffffffc080230c28",
+        "symbol": "__arm64_sys_futex+0xfc"
+      },
+      {
+        "fp": "0xffffffc0869f3dd0",
+        "lr": "0xffffffc0800bb2fc",
+        "symbol": "invoke_syscall+0x58"
+      },
+      {
+        "fp": "0xffffffc0869f3e20",
+        "lr": "0xffffffc0800bb250",
+        "symbol": "do_el0_svc+0x8c"
+      },
+      {
+        "fp": "0xffffffc0869f3e40",
+        "lr": "0xffffffc08129ea70",
+        "symbol": "el0_svc+0x48"
+      },
+      {
+        "fp": "0xffffffc0869f3e80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc0869f3ea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc0869f3fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "accounting": {
+      "utime": "3425872000",
+      "stime": "3867792000",
+      "nvcsw": "384",
+      "nivcsw": "3372",
+      "sum_exec_runtime": "7392840000",
+      "vruntime": "18158578388",
+      "exec_start": "1200820565000"
+    },
+    "policy": 0,
+    "prio": 118,
+    "normal_prio": 118,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e840",
+          "cgroup": "0xffffff8009ad1800",
+          "path": "/foreground",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      }
+    },
+    "saved_frame_read_errors": [
+      {
+        "stack_bytes": 32768,
+        "error": "Android observer: unmapped virtual address"
+      },
+      {
+        "stack_bytes": 65536,
+        "error": "Android observer: unmapped virtual address"
+      }
+    ],
+    "saved_user_frame": {
+      "stack_bytes": 16384,
+      "syscall": 98,
+      "pc": {
+        "address": "0x754647a820",
+        "start": "0x75463d8000",
+        "end": "0x7546544000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/bin/linker64",
+        "file_offset": "993312",
+        "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+      },
+      "sp": "0x754637f7d0",
+      "fp": "0x754637fd40",
+      "lr": {
+        "address": "0x754649b998",
+        "start": "0x75463d8000",
+        "end": "0x7546544000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/bin/linker64",
+        "file_offset": "1128856",
+        "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+      },
+      "args": [
+        "0x754637faf4",
+        "0x0",
+        "0xffffffff",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "registers": [
+        "0x754637faf4",
+        "0x0",
+        "0xffffffff",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x7f7f7f7f7f7f7f7f",
+        "0x62",
+        "0x5f82e8d8e2f67ac5",
+        "0x754637f720",
+        "0x3b9ac9ff",
+        "0x7fffffff",
+        "0x98582",
+        "0x8000000000000300",
+        "0x7d000000",
+        "0x754654d888",
+        "0x7546466e00",
+        "0x75458dc000",
+        "0x7546561350",
+        "0x754637fda0",
+        "0x0",
+        "0xffffffff",
+        "0xfd3",
+        "0x754637faf0",
+        "0x75451cf300",
+        "0x754637faf0",
+        "0x6e",
+        "0x0",
+        "0x754637fd40",
+        "0x754649b998"
+      ],
+      "pstate": "0x0",
+      "user_stack": [
+        {
+          "fp": "0x754637fd40",
+          "return_pc": {
+            "address": "0x7546386874",
+            "start": "0x7546386000",
+            "end": "0x7546388000",
+            "flags": "0x40075",
+            "file": null,
+            "file_offset": null
+          }
+        },
+        {
+          "fp": "0x7546380ff0",
+          "return_pc": {
+            "address": "0x7283e02694",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2107028",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        }
+      ],
+      "futex": {
+        "raw_tagged_address": "0x754637faf4",
+        "address": "0x754637faf4",
+        "TBI0_enabled": true,
+        "operation": 0,
+        "expected": 4294967295,
+        "observed": 4051,
+        "mapping": {
+          "address": "0x754637faf4",
+          "start": "0x7546379000",
+          "end": "0x7546381000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      },
+      "pc_code_le_hex": "1ffc3fb162b3f654c0035fd600000000000000000000000000000000000000002400028b0500028b5f0002f1a80700545f8000f1e80300545f4000f1c3000054"
+    }
+  },
+  "service_threads": [
+    {
+      "pid": 3386,
+      "name": "system_server",
+      "state": 8193,
+      "priority": 118
+    },
+    {
+      "pid": 3580,
+      "name": "Signal Catcher",
+      "state": 8193,
+      "priority": 100
+    },
+    {
+      "pid": 3581,
+      "name": "perfetto_hprof_",
+      "state": 1,
+      "priority": 100
+    },
+    {
+      "pid": 3583,
+      "name": "Jit thread pool",
+      "state": 8193,
+      "priority": 129
+    },
+    {
+      "pid": 3584,
+      "name": "HeapTaskDaemon",
+      "state": 0,
+      "priority": 124
+    },
+    {
+      "pid": 3585,
+      "name": "ReferenceQueueD",
+      "state": 8193,
+      "priority": 124
+    },
+    {
+      "pid": 3587,
+      "name": "FinalizerDaemon",
+      "state": 8193,
+      "priority": 124
+    },
+    {
+      "pid": 3588,
+      "name": "FinalizerWatchd",
+      "state": 8193,
+      "priority": 124
+    },
+    {
+      "pid": 3591,
+      "name": "binder:3386_1",
+      "state": 8193,
+      "priority": 120
+    },
+    {
+      "pid": 3593,
+      "name": "TracingMuxer",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3595,
+      "name": "system-server-i",
+      "state": 8193,
+      "priority": 118
+    },
+    {
+      "pid": 3762,
+      "name": "Thread-2",
+      "state": 8193,
+      "priority": 120
+    },
+    {
+      "pid": 3764,
+      "name": "socket_writer_q",
+      "state": 8193,
+      "priority": 120
+    },
+    {
+      "pid": 3767,
+      "name": "atchdog.monitor",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3768,
+      "name": "android.fg",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3769,
+      "name": "android.ui",
+      "state": 1,
+      "priority": 118
+    },
+    {
+      "pid": 3771,
+      "name": "android.io",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3772,
+      "name": "android.display",
+      "state": 1,
+      "priority": 117
+    },
+    {
+      "pid": 3773,
+      "name": "android.anim",
+      "state": 1,
+      "priority": 116
+    },
+    {
+      "pid": 3774,
+      "name": "android.anim.lf",
+      "state": 1,
+      "priority": 116
+    },
+    {
+      "pid": 3776,
+      "name": "watchdog",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3806,
+      "name": "PowerStatsServi",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3808,
+      "name": "android.bg",
+      "state": 1,
+      "priority": 130
+    },
+    {
+      "pid": 3810,
+      "name": "ActivityManager",
+      "state": 1,
+      "priority": 118
+    },
+    {
+      "pid": 3812,
+      "name": "ActivityManager",
+      "state": 1,
+      "priority": 118
+    },
+    {
+      "pid": 3814,
+      "name": "ActivityManager",
+      "state": 1,
+      "priority": 130
+    },
+    {
+      "pid": 3818,
+      "name": "ActivityManager",
+      "state": 1,
+      "priority": 130
+    },
+    {
+      "pid": 3819,
+      "name": "ActivityManager",
+      "state": 1,
+      "priority": 130
+    },
+    {
+      "pid": 3821,
+      "name": "LowMemThread",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3822,
+      "name": "OomAdjuster",
+      "state": 1,
+      "priority": 110
+    },
+    {
+      "pid": 3825,
+      "name": "AnrTimerService",
+      "state": 1,
+      "priority": 118
+    },
+    {
+      "pid": 3826,
+      "name": "ackgroundThread",
+      "state": 1,
+      "priority": 130
+    },
+    {
+      "pid": 3836,
+      "name": "batterystats-ha",
+      "state": 8193,
+      "priority": 120
+    },
+    {
+      "pid": 3840,
+      "name": "AppOpHistoryHel",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3841,
+      "name": "AppOpHistoryHel",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3843,
+      "name": "bgres-controlle",
+      "state": 1,
+      "priority": 130
+    },
+    {
+      "pid": 3845,
+      "name": "FileObserver",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3849,
+      "name": "binder:3386_2",
+      "state": 0,
+      "priority": 120
+    },
+    {
+      "pid": 3850,
+      "name": "CpuTracker",
+      "state": 8193,
+      "priority": 120
+    },
+    {
+      "pid": 3851,
+      "name": "CriticalEventLo",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3852,
+      "name": "DataLoaderManag",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3854,
+      "name": "Thread-4",
+      "state": 8193,
+      "priority": 118
+    },
+    {
+      "pid": 3855,
+      "name": "Thread-5",
+      "state": 8193,
+      "priority": 118
+    },
+    {
+      "pid": 3857,
+      "name": "Thread-6",
+      "state": 8193,
+      "priority": 118
+    },
+    {
+      "pid": 3858,
+      "name": "Thread-7",
+      "state": 1,
+      "priority": 118
+    },
+    {
+      "pid": 3863,
+      "name": "PowerManagerSer",
+      "state": 1,
+      "priority": 116
+    },
+    {
+      "pid": 3871,
+      "name": "BatteryStats_wa",
+      "state": 8193,
+      "priority": 118
+    },
+    {
+      "pid": 3900,
+      "name": "PackageManagerB",
+      "state": 0,
+      "priority": 130
+    },
+    {
+      "pid": 3942,
+      "name": "DefaultPermGran",
+      "state": 0,
+      "priority": 130
+    },
+    {
+      "pid": 3956,
+      "name": "PackageManager",
+      "state": 1,
+      "priority": 120
+    },
+    {
+      "pid": 3967,
+      "name": "PermissionServi",
+      "state": 1,
+      "priority": 130
+    },
+    {
+      "pid": 4051,
+      "name": "system_server",
+      "state": 0,
+      "priority": 118
+    }
+  ],
+  "original_full_C46_and_all_parts": "docs/evidence/c81/stage10-producer-boundary.json",
+  "boot_completed": false,
+  "SELinux_enforcing": true,
+  "usable_UI_or_input_response_claimed": false,
+  "new_UART_events_this_stage": 0,
+  "metadata_artifact_id": 13487863847,
+  "metadata_ZIP_SHA256": "04ea0aab053ba1f3a992d5ee2f84609913791049ea9d5284e30fb389606c8ee0"
+}
