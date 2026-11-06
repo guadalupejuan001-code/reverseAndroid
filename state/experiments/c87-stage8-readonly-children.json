@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-original-readonly-child-inspection-plan-v1",
+  "source_checkpoint_sha256": "f64b98e77cbcca9f8ac93007778b9006c515cc103389cae3faef1b9986ed1c54",
+  "instructions": 117147727998,
+  "source_artifact_lock": "state/experiments/c87-stage-8-artifacts.json",
+  "source_execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
+  "source_CI_run_id": 42247589579,
+  "guest_execution": false,
+  "new_UART_input": false,
+  "original_guest_state_or_priorities_modified": false,
+  "extra_readonly_process_selection": "idmap2 under --diagnostic-processes",
+  "purpose": "Identify the original child waited for by Zygote5629 and inspect actual wait arguments and verified kernel parent links in a separate CI host."
+}

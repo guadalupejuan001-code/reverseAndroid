@@ -1,0 +1,48 @@
+name: C87 stage8 original read-only child process inspection
+
+'on':
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/c87-stage8-readonly-children.yml
+      - state/experiments/c87-stage8-readonly-children.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Authenticate all original checkpoint pieces and preserve the original 870 source files
+        run: |
+          python3 scripts/verify-reverseandroid-import.py
+          node --check tools/reverseandroid-thread-probe.mjs
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-stage8 state/experiments/c87-stage-8-artifacts.json
+          mkdir -p evidence/c87-stage8-readonly-children
+      - name: Admit the full original source without executing guest instructions
+        run: |
+          node --max-old-space-size=3500 tools/reverseandroid-epoch.mjs preflight build/source-stage8 > evidence/c87-stage8-readonly-children/original-preflight.json
+      - name: Inspect original wait arguments, thread groups and actual child parent identities
+        run: |
+          node --max-old-space-size=3500 tools/reverseandroid-thread-probe.mjs build/source-stage8/current.rvg f64b98e77cbcca9f8ac93007778b9006c515cc103389cae3faef1b9986ed1c54 evidence/c87-stage8-readonly-children/threads.json --all-scheduling --diagnostic-processes > evidence/c87-stage8-readonly-children/observer-summary.json
+          python3 scripts/report-c87-stage8-readonly-children.py build/source-stage8 evidence/c87-stage8-readonly-children
+          python3 scripts/verify-reverseandroid-import.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-c87-stage8-readonly-children
+          path: evidence/c87-stage8-readonly-children
+          if-no-files-found: error
+          retention-days: 90
