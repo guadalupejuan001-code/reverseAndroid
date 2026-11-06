@@ -1,0 +1,52 @@
+name: C89 current original read-only startup inspection
+
+'on':
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/c89-current-readonly-progress.yml
+      - state/experiments/c89-readonly-progress.json
+      - scripts/report-c89-readonly-progress.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Authenticate the selected original-admitted checkpoint and all original source files
+        id: source
+        run: |
+          mkdir -p build evidence/c89-current-readonly-progress
+          python3 scripts/verify-reverseandroid-import.py
+          node --check tools/reverseandroid-thread-probe.mjs
+          python3 scripts/report-c89-readonly-progress.py --prepare
+      - name: Admit the full original checkpoint without executing guest instructions
+        run: |
+          node --max-old-space-size=3500 tools/reverseandroid-epoch.mjs preflight build/source-current-readonly > evidence/c89-current-readonly-progress/original-preflight.json
+      - name: Inspect original live processes, wait arguments and actual thread identities
+        env:
+          TASK_READONLY_SHA: ${{ steps.source.outputs.sha }}
+        run: |
+          node --max-old-space-size=3500 tools/reverseandroid-thread-probe.mjs build/source-current-readonly/current.rvg "$TASK_READONLY_SHA" evidence/c89-current-readonly-progress/threads.json --all-scheduling --diagnostic-processes > evidence/c89-current-readonly-progress/observer-summary.json
+          python3 scripts/report-c89-readonly-progress.py --report
+          python3 scripts/verify-reverseandroid-import.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-c89-current-readonly-progress
+          path: evidence/c89-current-readonly-progress
+          if-no-files-found: error
+          retention-days: 90

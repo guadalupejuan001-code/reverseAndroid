@@ -1,0 +1,107 @@
+{
+  "schema": "reverseandroid-original-readonly-startup-plan-v1",
+  "source_stage": 1,
+  "source_checkpoint_sha256": "57341b07ee757d3faee0ac669434024bafc4562f040800181dc87265ad022a22",
+  "instructions": 140147727998,
+  "source_artifact_lock": "state/experiments/c89-stage-1-artifacts.json",
+  "source_execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
+  "source_CI_run_id": 42299162841,
+  "source_proof_SHA256": "36e67623df56a539f98be3feebd3608bc32a7c5ae604d0b5405906185732caec",
+  "zygote_PID": 5629,
+  "target_JIT_TID": 5922,
+  "system_server_PID": 7354,
+  "expected_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "inherited_source_events": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    },
+    {
+      "phase": 2,
+      "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 87047727998,
+        "counter_subtick": 26,
+        "bytes": 2837,
+        "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+      }
+    },
+    {
+      "phase": 3,
+      "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 89547727998,
+        "counter_subtick": 26,
+        "bytes": 2103,
+        "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+      }
+    },
+    {
+      "phase": 4,
+      "input_plan": "evidence/c84-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 92547727998,
+        "counter_subtick": 26,
+        "bytes": 2097,
+        "sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7"
+      }
+    },
+    {
+      "phase": 5,
+      "input_plan": "evidence/c86-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 101647727998,
+        "counter_subtick": 26,
+        "bytes": 1000,
+        "sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096"
+      }
+    },
+    {
+      "phase": 6,
+      "input_plan": "evidence/c86-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 104147727998,
+        "counter_subtick": 26,
+        "bytes": 932,
+        "sha256": "8d47dc63c80f12d0eab0e866355225e82bc6a842aeef9a8086d1e5b6da1d86e3"
+      }
+    },
+    {
+      "phase": 7,
+      "input_plan": "evidence/c88-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 123147727998,
+        "counter_subtick": 26,
+        "bytes": 596,
+        "sha256": "70523e6019776b099cb44df08db7042b9cb46fcd154b7b6ac7af4c342369a1e5"
+      }
+    }
+  ],
+  "guest_execution": false,
+  "new_UART_input": false,
+  "purpose": "Read the exact original SystemServer7354 wait and transient exec7825 without changing the conservative original role gate. Verify chosen PID7354 actual credentials/parent and preserve unverified original C46 status. Zero guest execution, zero UART."
+}
