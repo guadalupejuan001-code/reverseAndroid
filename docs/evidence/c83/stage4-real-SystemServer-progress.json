@@ -1,0 +1,92 @@
+{
+  "schema": "reverseandroid-actual-canonical-SystemServer-progress-v1",
+  "checkpoint_SHA256": "4cb993c148e0cee784d17728b793867bc389d376aedc45c191cf9a56dad01101",
+  "instructions": 87547727998,
+  "CI_run_id": 42202570182,
+  "metadata_artifact_id": 13495963659,
+  "metadata_archive_SHA256": "4e63607bea415c13f99219db2ab98dc3797c44c62940a683cb480c71002b3a3b",
+  "actual_task": {
+    "pid": 3386,
+    "name": "system_server",
+    "task": "0xffffff80224a2880",
+    "state": 0,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc0869f3cb0",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc0869f3cb0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc0869f3d70",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc0869f3dd0",
+        "lr": "0xffffffc0800bce9c",
+        "symbol": "do_notify_resume+0xcc"
+      },
+      {
+        "fp": "0xffffffc0869f3e10",
+        "lr": "0xffffffc08129fcf0",
+        "symbol": "el0_interrupt+0x94"
+      },
+      {
+        "fp": "0xffffffc0869f3e60",
+        "lr": "0xffffffc08129f728",
+        "symbol": "__el0_irq_handler_common+0x18"
+      },
+      {
+        "fp": "0xffffffc0869f3e90",
+        "lr": "0xffffffc08129f704",
+        "symbol": "el0t_64_irq_handler+0x10"
+      },
+      {
+        "fp": "0xffffffc0869f3ea0",
+        "lr": "0xffffffc080012010",
+        "symbol": "el0t_64_irq+0x1bc"
+      },
+      {
+        "fp": "0xffffffc0869f3fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 3386,
+      "comm": "system_server",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 562,
+      "argv": [
+        "system_server"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": false
+    },
+    "on_rq": 1,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "771",
+      "nivcsw": "4545",
+      "utime": "5947660000",
+      "stime": "5432176000",
+      "sum_exec_runtime": "10359764000",
+      "vruntime": "25576792388",
+      "exec_start": "1365680814000"
+    }
+  },
+  "all_threads_enumerated": false,
+  "runnable_and_queued_for_CPU": true,
+  "fresh_UID_read_claimed": false,
+  "package_worker_absence_or_completion_claimed": false,
+  "BOOT_or_usable_UI_claimed": false
+}
