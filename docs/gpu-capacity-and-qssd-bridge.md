@@ -12,7 +12,7 @@ have SHA-256 `f70c2eed518ac0f7b00bc974f1b18778167a87a6addb79e454c5e44f058986de`,
 and all new console and frame bytes match. The absent ID 8 was already absent at
 the source; the 50-million-instruction window contains no CREATE, UNREF or reset.
 That trace alone cannot establish its earlier lifetime. The earlier console
-does not print the failed IDs, so the historical replay must identify them.
+does not print the failed IDs; the historical replay below identifies them.
 
 ## Device correction
 
@@ -43,8 +43,8 @@ use the expanded native. It is not eligible for the primary four-slot
 continuation merely because its epoch admission checks pass.
 
 The native protocol fixture reproduces the exact observed original table:
-create IDs1,4,5,6, fail7/8, retire1, then reject all requests for8. With the
-expanded profile,7/8 are successfully created and8 receives the exact original
+create IDs 1,4,5,6, fail 7/8, retire 1, then reject all requests for 8. With the
+expanded profile, 7/8 are successfully created and 8 receives the exact original
 pixel and alpha bits, including after a whole-state restore. All 16 slots and
 the scanout plane are checked for overlap; the 17th resource remains refused.
 These are protocol fixtures, not Android screenshots or boot proof.
@@ -108,3 +108,44 @@ The generated capacity and control source directories must be fresh. Native
 fixture reports, original PCI checks, original QSSD concurrency checks and
 profile manifests are written under `build/gpu-capacity`. The independent
 workflow retains the authenticated actual-Android comparison separately.
+
+## Verified actual-Android result
+
+Run [42287095161](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42287095161)
+passed at code commit `ab01b7fc5d4cba099133b250d5cca36e130ad0de`.
+Both runs completed their 1 billion instructions at 48 billion, with complete
+native logs, original epoch admission and unchanged source. The control's whole
+RVG hash equals the independent original C79 stage18 producer exactly.
+
+| Actual Android operation | Original 4-slot device | Expanded 16-slot device |
+| --- | --- | --- |
+| CREATE resource 7 | `0x1201` | `0x1100` |
+| CREATE resource 8 | `0x1201` | `0x1100` |
+| ATTACH resources 7/8 | `0x1203` | `0x1100` |
+| Resources retained at final checkpoint | 2,4,5,6 | 2,4,5,6,7,8 |
+| Live `system_server` at this historical boundary | Not observed | Not observed |
+| Live `sys.boot_completed=1` | Unverified | Unverified |
+| Actual exported screen | Uniformly black | Uniformly black |
+
+The first failed CREATE and its repair occur at the same original instruction,
+47,903,491,866, with the same four occupied original slots. This identifies an
+actual device capacity error, not a fabricated resource or a guessed lifetime.
+The candidate also accepts both real backing attachments. This short window
+does not yet include an actual Android TRANSFER/FLUSH for resources 7/8; that
+presentation lifecycle is verified by the separate native protocol fixture.
+No usable interface or complete Android boot is established by this run.
+
+Both complete checkpoints are preserved in three authenticated pieces each.
+The appropriate device profile and exact native/frame binary hashes are bound
+to their metadata. Recovery locks are
+`state/experiments/gpu-capacity-control-artifacts.json` and
+`state/experiments/gpu-capacity-candidate-artifacts.json`; both are explicitly
+diagnostic and have no primary promotion authority. Full evidence, artifact IDs,
+ZIP hashes and independently checked metadata bindings are in
+`docs/evidence/gpu-capacity-actual-android.json`.
+
+The independent primary C88 stage 10 boundary at 133,147,727,998 instructions
+verifies live `system_server` PID 7354, while BOOT and usable UI remain
+unverified. Its metadata was downloaded and checked separately. This primary
+progress is independent of this experimental GPU candidate and does not
+authorize replacing its checkpoint with the historical diagnostic result.
