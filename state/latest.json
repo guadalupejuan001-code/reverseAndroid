@@ -47,10 +47,10 @@
     "proof": "docs/evidence/c85/stage1-independent-local-CI-match.json"
   },
   "last_durable_transport_source": {
-    "instructions": 102147727998,
-    "checkpoint_sha256": "0a3b708e0abf7586c55a85423b51f21318ab50286bd624846e07ce5e84c6c3e8",
-    "source_artifact_lock": "state/experiments/c86-stage-1-artifacts.json",
-    "independent_local_native_match": "docs/evidence/c86/stage1-independent-local-CI-match.json"
+    "instructions": 103147727998,
+    "checkpoint_sha256": "2cfdb0369bd12191d499e1013405d309c6f7ffd7c773e8f4357dc7b3e9dc688b",
+    "source_artifact_lock": "state/experiments/c86-stage-2-artifacts.json",
+    "independent_local_native_match": "docs/evidence/c86/stage2-independent-local-CI-match.json"
   },
   "visual_review_result": "The authentic C83 post-CLZ frame at85,047,727,998 shows the original Android wordmark boot animation. Usable UI and actual input response are still pending.",
   "visual_review_evidence": "docs/evidence/c83/after-one-actual-frame-review.json",
@@ -190,6 +190,9 @@
   "actual_cleanup_nice0_reply_verified": true,
   "independent_CI_run_id": 42231109648,
   "independent_CI_execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
-  "latest_independently_matched_CI_stage": 1,
-  "latest_independent_match": "docs/evidence/c86/stage1-independent-local-CI-match.json"
+  "latest_independently_matched_CI_stage": 2,
+  "latest_independent_match": "docs/evidence/c86/stage2-independent-local-CI-match.json",
+  "actual_zygote_PID": 5629,
+  "original_init_zygote_recovery_verified": true,
+  "original_init_recovery_evidence": "docs/evidence/c86/original-init-Zygote-recovery.json"
 }

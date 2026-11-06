@@ -42,10 +42,10 @@
   "current_source_local_directory": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c86-3",
   "remote_transport_current_boundary_pending": true,
   "last_durable_transport_source": {
-    "instructions": 102147727998,
-    "checkpoint_sha256": "0a3b708e0abf7586c55a85423b51f21318ab50286bd624846e07ce5e84c6c3e8",
-    "source_artifact_lock": "state/experiments/c86-stage-1-artifacts.json",
-    "independent_local_native_match": "docs/evidence/c86/stage1-independent-local-CI-match.json"
+    "instructions": 103147727998,
+    "checkpoint_sha256": "2cfdb0369bd12191d499e1013405d309c6f7ffd7c773e8f4357dc7b3e9dc688b",
+    "source_artifact_lock": "state/experiments/c86-stage-2-artifacts.json",
+    "independent_local_native_match": "docs/evidence/c86/stage2-independent-local-CI-match.json"
   },
   "independent_CI_run_id": 42231109648
 }
