@@ -1,0 +1,225 @@
+{
+  "schema": "reverseandroid-original-init-Zygote-recovery-v1",
+  "stage": 3,
+  "checkpoint_SHA256": "baf78c55637e59a9345848533108d9972bc4b786c564b0b73057c7dedeb20945",
+  "instructions": 104147727998,
+  "full_original_C46_admission_and_clean_native_exit_verified": true,
+  "old_leader_PID562_absent_from_actual_kernel_task_list": true,
+  "new_actual_zygote_task": {
+    "pid": 5629,
+    "name": "app_process64",
+    "task": "0xffffff802db95100",
+    "state": 0,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc087733a30",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc087733a30",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc087733af0",
+        "lr": "0xffffffc0812a6e34",
+        "symbol": "preempt_schedule_irq+0x4c"
+      },
+      {
+        "fp": "0xffffffc087733b50",
+        "lr": "0xffffffc0812a9478",
+        "symbol": "arm64_preempt_schedule_irq+0x30"
+      },
+      {
+        "fp": "0xffffffc087733b70",
+        "lr": "0xffffffc08129e770",
+        "symbol": "el1_interrupt+0x48"
+      },
+      {
+        "fp": "0xffffffc087733b80",
+        "lr": "0xffffffc08129e71c",
+        "symbol": "el1h_64_irq_handler+0x18"
+      },
+      {
+        "fp": "0xffffffc087733ba0",
+        "lr": "0xffffffc080011b90",
+        "symbol": "el1h_64_irq+0x7c",
+        "interrupted_pc": "0xffffffc0800c64b4",
+        "interrupted_symbol": "up_write+0x20",
+        "interrupted_registers": [
+          "0xffffff802ae61488",
+          "0x60000000000fc3",
+          "0x4",
+          "0x200000",
+          "0x76a58c7",
+          "0x1ff",
+          "0x76a58ddfff",
+          "0x76a58defff",
+          "0xd8f9c074f2032800",
+          "0xd8f9c074f2032800",
+          "0xffffff8e",
+          "0x60000000000fcb",
+          "0x76a58db",
+          "0xfffffffffffff000",
+          "0x1000",
+          "0x1",
+          "0xffffffffffffffff",
+          "0x3f",
+          "0xffffffc084105040",
+          "0x2",
+          "0x1",
+          "0xffffff802f161d00",
+          "0x76a58db000",
+          "0xffffff802ae61400",
+          "0xd90",
+          "0x0",
+          "0xffffff802db95100",
+          "0x0",
+          "0xffffff802db95100",
+          "0xffffffc087733d20",
+          "0xffffffc0800c7ed8"
+        ]
+      },
+      {
+        "fp": "0xffffffc087733ce0",
+        "lr": "0xffffffc0800c64b4",
+        "symbol": "up_write+0x20"
+      },
+      {
+        "fp": "0xffffffc087733d20",
+        "lr": "0xffffffc0800c7ed8",
+        "symbol": "vm_mmap_pgoff+0xe4"
+      },
+      {
+        "fp": "0xffffffc087733d80",
+        "lr": "0xffffffc0800c7d90",
+        "symbol": "ksys_mmap_pgoff+0x6c"
+      },
+      {
+        "fp": "0xffffffc087733dd0",
+        "lr": "0xffffffc0802100c0",
+        "symbol": "__arm64_sys_mmap+0x2c"
+      },
+      {
+        "fp": "0xffffffc087733e10",
+        "lr": "0xffffffc0800bb2fc",
+        "symbol": "invoke_syscall+0x58"
+      },
+      {
+        "fp": "0xffffffc087733e20",
+        "lr": "0xffffffc0800bb250",
+        "symbol": "do_el0_svc+0x8c"
+      },
+      {
+        "fp": "0xffffffc087733e40",
+        "lr": "0xffffffc08129ea70",
+        "symbol": "el0_svc+0x48"
+      },
+      {
+        "fp": "0xffffffc087733e80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc087733ea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc087733fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 5629,
+      "comm": "app_process64",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 1,
+      "argv": [
+        "/system/bin/app_process64",
+        "-Xzygote",
+        "/system/bin",
+        "--zygote",
+        "--start-system-server",
+        "--socket-name=zygote"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": true
+    },
+    "on_rq": 1,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "2",
+      "nivcsw": "85",
+      "utime": "92156000",
+      "stime": "176411000",
+      "sum_exec_runtime": "257614000",
+      "vruntime": "63876195934",
+      "exec_start": "1625308222000"
+    }
+  },
+  "live_PID1_property_observations": [
+    {
+      "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+      "vma": "0x7cfe0e0000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc_debug_pid.zygote",
+      "value": "5629",
+      "serial": 67108866,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:init_service_status_prop:s0",
+      "vma": "0x7cfe120000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc.zygote",
+      "value": "running",
+      "serial": 117440516,
+      "boot_completed_property_in_ram": false
+    }
+  ],
+  "actual_command_and_original_init_console_lines": [
+    "REVERSE_PTS_C86_CLEANUP RC_0",
+    "[ 1686.518017][    T1] init: Service 'zygote' (pid 562) received SIGKILL",
+    "[ 1686.518017][    T1] init: Service 'zygote' (pid 562) received SIGKILL",
+    "[ 1686.518719][    T1] init: Sending SIGKILL to service 'zygote' (pid 562) process group...",
+    "[ 1686.518719][    T1] init: Sending SIGKILL to service 'zygote' (pid 562) process group...",
+    "[ 1688.099286][    T1] init: Command 'exec_background - system system -- /system/bin/vdc volume abort_fuse' action=onrestart (<Service 'zygote' onrestart>:1) took 351ms and succeeded",
+    "[ 1688.099286][    T1] init: Command 'exec_background - system system -- /system/bin/vdc volume abort_fuse' action=onrestart (<Service 'zygote' onrestart>:1) took 351ms and succeeded",
+    "[ 1688.142884][    T1] init: Command 'write /sys/power/state on' action=onrestart (<Service 'zygote' onrestart>:2) took 22ms and failed: Unable to write to file '/sys/power/state': Unable to write file contents: Invalid argument",
+    "[ 1688.142884][    T1] init: Command 'write /sys/power/state on' action=onrestart (<Service 'zygote' onrestart>:2) took 22ms and failed: Unable to write to file '/sys/power/state': Unable to write file contents: Invalid argument",
+    "[ 1688.830614][    T1] init: Command 'restart audioserver' action=onrestart (<Service 'zygote' onrestart>:4) took 644ms and succeeded",
+    "[ 1688.830614][    T1] init: Command 'restart audioserver' action=onrestart (<Service 'zygote' onrestart>:4) took 644ms and succeeded",
+    "[ 1690.332531][    T1] init: Command 'restart cameraserver' action=onrestart (<Service 'zygote' onrestart>:5) took 1500ms and succeeded",
+    "[ 1690.332531][    T1] init: Command 'restart cameraserver' action=onrestart (<Service 'zygote' onrestart>:5) took 1500ms and succeeded",
+    "[ 1690.695628][    T1] init: Command 'restart media' action=onrestart (<Service 'zygote' onrestart>:6) took 361ms and succeeded",
+    "[ 1690.695628][    T1] init: Command 'restart media' action=onrestart (<Service 'zygote' onrestart>:6) took 361ms and succeeded",
+    "[ 1690.701048][    T1] init: Command 'restart --only-if-running media.tuner' action=onrestart (<Service 'zygote' onrestart>:7) took 0ms and failed: service media.tuner not found",
+    "[ 1690.701048][    T1] init: Command 'restart --only-if-running media.tuner' action=onrestart (<Service 'zygote' onrestart>:7) took 0ms and failed: service media.tuner not found",
+    "[ 1690.951268][    T1] init: Command 'restart netd' action=onrestart (<Service 'zygote' onrestart>:8) took 248ms and succeeded",
+    "[ 1690.951268][    T1] init: Command 'restart netd' action=onrestart (<Service 'zygote' onrestart>:8) took 248ms and succeeded",
+    "[ 1690.960742][    T1] init: Command 'restart wificond' action=onrestart (<Service 'zygote' onrestart>:9) took 0ms and failed: service wificond not found",
+    "[ 1690.960742][    T1] init: Command 'restart wificond' action=onrestart (<Service 'zygote' onrestart>:9) took 0ms and failed: service wificond not found",
+    "[ 1692.357861][    T1] init: starting service 'zygote'...",
+    "[ 1692.357861][    T1] init: starting service 'zygote'...",
+    "[ 1692.664510][    T1] init: ... started service 'zygote' has pid 5629",
+    "[ 1692.664510][    T1] init: ... started service 'zygote' has pid 5629"
+  ],
+  "guarded_normal_OS_input_delivered_once": true,
+  "only_original_init_started_new_Zygote": true,
+  "new_init_service_command_or_property_injected": false,
+  "SELinux_enforcing": true,
+  "system_server_alive": false,
+  "boot_completed": false,
+  "usable_UI_and_response_claimed": false
+}

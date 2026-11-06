@@ -7,8 +7,8 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C86, etapa 2: **103.147.727.998 instrucciones** admitidas localmente. SystemServer sigue pendiente. El arranque completo y la interfaz utilizable siguen pendientes. SELinux permanece activo.
-La etapa 1 coincide íntegramente entre la ejecución local y CI y tiene todas sus piezas conservadas. [Prueba](docs/evidence/c86/stage1-independent-local-CI-match.json); [estado actual](state/latest.json).
+C86, etapa 3: **104.147.727.998 instrucciones** admitidas. El `init` original recogió el Zygote anterior y arrancó el nuevo PID 5629 con `--start-system-server`; las propiedades reales de PID 1 coinciden con ese proceso. SystemServer, el arranque completo y la interfaz siguen pendientes. SELinux permanece activo.
+[Recuperación original de Zygote](docs/evidence/c86/original-init-Zygote-recovery.json). La primera etapa coincide íntegramente entre la ejecución local y CI y tiene todas sus piezas conservadas. [Prueba independiente](docs/evidence/c86/stage1-independent-local-CI-match.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado
