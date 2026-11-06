@@ -1,0 +1,350 @@
+{
+  "schema": "reverseandroid-actual-ART-foreground-progress-v1",
+  "checkpoint_SHA256": "e71366061b4684d015466cb3a847f1d8bd48117258cb02d08e393892a6363087",
+  "instructions": 65000000000,
+  "actual_main": {
+    "pid": 562,
+    "tgid": 562,
+    "name": "main",
+    "task": "0xffffff800685d100",
+    "state": 0,
+    "exit_state": 0,
+    "on_rq": 1,
+    "on_cpu": 0,
+    "priority": 100,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [
+      {
+        "fp": "0xffffffc086bbba20",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc086bbbae0",
+        "lr": "0xffffffc0812a6e34",
+        "symbol": "preempt_schedule_irq+0x4c"
+      },
+      {
+        "fp": "0xffffffc086bbbb40",
+        "lr": "0xffffffc0812a9478",
+        "symbol": "arm64_preempt_schedule_irq+0x30"
+      },
+      {
+        "fp": "0xffffffc086bbbb60",
+        "lr": "0xffffffc08129e770",
+        "symbol": "el1_interrupt+0x48"
+      },
+      {
+        "fp": "0xffffffc086bbbb70",
+        "lr": "0xffffffc08129e71c",
+        "symbol": "el1h_64_irq_handler+0x18"
+      },
+      {
+        "fp": "0xffffffc086bbbb90",
+        "lr": "0xffffffc080011b90",
+        "symbol": "el1h_64_irq+0x7c"
+      },
+      {
+        "fp": "0xffffffc086bbbcd0",
+        "lr": "0xffffffc0800b63bc",
+        "symbol": "mas_walk+0x88"
+      },
+      {
+        "fp": "0xffffffc086bbbd50",
+        "lr": "0xffffffc0812b0c7c",
+        "symbol": "do_page_fault+0xe8"
+      },
+      {
+        "fp": "0xffffffc086bbbdb0",
+        "lr": "0xffffffc0812b0b78",
+        "symbol": "do_translation_fault+0x38"
+      },
+      {
+        "fp": "0xffffffc086bbbe10",
+        "lr": "0xffffffc0800bccf8",
+        "symbol": "do_mem_abort+0x54"
+      },
+      {
+        "fp": "0xffffffc086bbbe20",
+        "lr": "0xffffffc08129eb4c",
+        "symbol": "el0_da+0x54"
+      },
+      {
+        "fp": "0xffffffc086bbbe70",
+        "lr": "0xffffffc08129e954",
+        "symbol": "el0t_64_sync_handler+0x20"
+      },
+      {
+        "fp": "0xffffffc086bbbea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc086bbbfe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "accounting": {
+      "utime": "30256024000",
+      "stime": "8451723000",
+      "nvcsw": "1032",
+      "nivcsw": "13583",
+      "sum_exec_runtime": "38175501000",
+      "vruntime": "41223704003",
+      "exec_start": "1013767784000"
+    },
+    "policy": 0,
+    "prio": 100,
+    "normal_prio": 100,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      }
+    },
+    "saved_frame_read_errors": [
+      {
+        "stack_bytes": 32768,
+        "error": "Android observer: unmapped virtual address"
+      },
+      {
+        "stack_bytes": 65536,
+        "error": "Android observer: unmapped virtual address"
+      }
+    ],
+    "saved_user_frame": {
+      "stack_bytes": 16384,
+      "syscall": 4294967295,
+      "pc": {
+        "address": "0x751a4fdaf0",
+        "start": "0x751a4e9000",
+        "end": "0x751a58d000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "461552",
+        "dynamic_symbol": null
+      },
+      "sp": "0x7ffe191b70",
+      "fp": "0x7ffe191b90",
+      "lr": {
+        "address": "0x7284470df4",
+        "start": "0x7283e00000",
+        "end": "0x728465f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "8850932",
+        "dynamic_symbol": null
+      },
+      "args": [
+        "0x739bc000",
+        "0x25cd128",
+        "0x18",
+        "0x7ffe191b78",
+        "0x25cd140",
+        "0x739bc018"
+      ],
+      "registers": [
+        "0x739bc000",
+        "0x25cd128",
+        "0x18",
+        "0x7ffe191b78",
+        "0x25cd140",
+        "0x739bc018",
+        "0x70f545d0",
+        "0x7fffffff00000000",
+        "0x727f5c0000",
+        "0x2cc0",
+        "0x1",
+        "0x1",
+        "0x1",
+        "0x800000000",
+        "0x1",
+        "0x0",
+        "0x72848319d8",
+        "0x751a4fdac0",
+        "0x75458dc000",
+        "0x25cd128",
+        "0x18",
+        "0x739bc000",
+        "0x7ffe1921c0",
+        "0x18",
+        "0xb400007335e0f010",
+        "0x75451cf300",
+        "0xb400007475e09618",
+        "0xb400007475e09618",
+        "0x8",
+        "0x7ffe191b90",
+        "0x7284470df4"
+      ],
+      "pstate": "0x20000000",
+      "user_stack": [
+        {
+          "fp": "0x7ffe191b90",
+          "return_pc": {
+            "address": "0x72840db6b0",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "5093040",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe191c00",
+          "return_pc": {
+            "address": "0x72840da8b0",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "5089456",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe191c80",
+          "return_pc": {
+            "address": "0x7284256618",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "6645272",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe191cd0",
+          "return_pc": {
+            "address": "0x72844699f8",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "8821240",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe191d10",
+          "return_pc": {
+            "address": "0x7284469334",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "8819508",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe191d80",
+          "return_pc": {
+            "address": "0x7284468c24",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "8817700",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe191df0",
+          "return_pc": {
+            "address": "0x728405c37c",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "4572028",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe191e80",
+          "return_pc": {
+            "address": "0x72842337d8",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "6502360",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe1925a0",
+          "return_pc": {
+            "address": "0x7283fe5188",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "4084104",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe192840",
+          "return_pc": {
+            "address": "0x728427443c",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "6767676",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7ffe1928c0",
+          "return_pc": {
+            "address": "0x7280236c",
+            "start": "0x727cc000",
+            "end": "0x72808000",
+            "flags": "0x75",
+            "file": "/system/framework/arm64/boot-core-libart.oat",
+            "file_offset": "287596",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        }
+      ],
+      "pc_code_le_hex": "0000803da1009f3cc0035fd61f2003d5200440ad820c7fad5f0001f128020054000400ada20c3fadc0035fd61f2003d5c2001836260040f987805ff8060000f9"
+    }
+  },
+  "main_user_gain_ns_from_wait": 6725132000,
+  "one_input_at57B_not_repeated": true,
+  "original_C46_and_transport": "docs/evidence/c81/stage4-producer-boundary.json",
+  "boot_completed": false,
+  "SystemServer": false,
+  "UI_response": false
+}

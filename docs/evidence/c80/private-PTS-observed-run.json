@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-observed-isolated-private-PTY-control-start-v1",
+  "run_id": 42177363469,
+  "job_id": 127758792720,
+  "execution_commit": "ab3d319e1dd185c5a1a408492c785225612e8768",
+  "source_control_checkpoint_SHA256": "8a8c7de17bc9d5adb0370f619fb82a180854abd3f95998794a9c937fcf20b7a9",
+  "source_instructions": 61000000000,
+  "input_sizes": [
+    704,
+    2656,
+    1353,
+    645
+  ],
+  "source_is_failed_ABI2_control_with_authenticated_old_ELF": true,
+  "canonical_main_not_modified": true,
+  "guest_test_completion_not_yet_claimed": true
+}
