@@ -37,6 +37,7 @@ for name,engine in [('control',str(native)),('trace','build/gpu-resource-trace-t
                         'build/reverseandroid/frame',args.commit,str(args.budget),'-'],stdout=log,check=True)
     host=read(target/'process-outcome.json');report=read(target/'current.json')
     assert host['status']=='process_completed' and host['exit_code']==0 and not host['forced_kill']
+    assert all(not host['logs'][stream]['truncated'] for stream in ('stdout','stderr')),'Incomplete native log capture'
     assert report['stop_reason']=='instruction_budget' and not report['error']
     assert report['guest']['instructions']==contract['instructions']+args.budget
     assert report['provenance']['new_uart_input_bytes']==0
@@ -46,6 +47,9 @@ assert digest(source/'current.rvg')==contract['checkpoint_sha256']
 assert outputs['control']['checkpoint_sha256']==outputs['trace']['checkpoint_sha256']
 assert digest(out/'control/current.rvg')==digest(out/'trace/current.rvg')==outputs['control']['checkpoint_sha256']
 assert (out/'control/console-new.txt').read_bytes()==(out/'trace/console-new.txt').read_bytes()
+assert (out/'control/checkpoint-frame.ppm').exists()==(out/'trace/checkpoint-frame.ppm').exists()
+if (out/'control/checkpoint-frame.ppm').exists():
+    assert digest(out/'control/checkpoint-frame.ppm')==digest(out/'trace/checkpoint-frame.ppm')
 events=[];prefix='REVERSE_GPU_TRACE '
 for line in (out/'trace/progress.log').read_text().splitlines():
     if line.startswith(prefix):events.append(json.loads(line[len(prefix):]))
@@ -62,6 +66,7 @@ summary={'schema':'reverseandroid-original-native-gpu-trace-comparison-v1',
          'budget_per_run':args.budget,'final_checkpoint_sha256':outputs['control']['checkpoint_sha256'],
          'final_instructions':outputs['control']['instructions'],
          'whole_original_RVG_identical':True,'whole_original_new_console_identical':True,
+         'complete_native_logs_retained':True,'original_frame_bytes_identical':True,
          'original_admission_passed_both':True,'zero_new_UART_input':True,
          'source_resource_ids':events[0]['resource_ids'],'trace_events':len(events),
          'response_counts':[{'command':cmd,'response':response,'count':count} for (cmd,response),count in sorted(counts.items())],

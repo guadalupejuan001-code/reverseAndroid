@@ -26,18 +26,19 @@ inline void gpu_resource_trace(const char* phase, std::uint64_t instructions,
   const bool present = offset && input.size() >= offset + 4;
   std::uint32_t id = 0;
   if (present) for (unsigned i = 0; i < 4; ++i) id |= std::uint32_t(input[offset+i]) << (8*i);
-  // The existing RVG device profile has exactly four resource slots. This
-  // observer neither changes that budget nor assigns or recreates IDs.
+  // Observe the declared device profile without assigning or recreating IDs.
   const auto& r = pci.resources;
   std::fprintf(stderr,
     "REVERSE_GPU_TRACE {\"event\":\"%s\",\"candidate\":true,\"sequence\":%llu,"
     "\"instructions\":%llu,\"queue\":%u,\"command\":%u,\"resource_id_present\":%s,"
     "\"resource_id\":%u,\"response\":%u,\"scanout\":%u,\"flushes\":%llu,"
-    "\"resource_ids\":[%u,%u,%u,%u],\"resource_extents\":[[%u,%u],[%u,%u],[%u,%u],[%u,%u]]}\n",
+    "\"resource_ids\":[",
     phase, static_cast<unsigned long long>(seq), static_cast<unsigned long long>(instructions),
     queue, type, present ? "true" : "false", id, response, pci.scanout,
-    static_cast<unsigned long long>(pci.flushes), r[0].id, r[1].id, r[2].id, r[3].id,
-    r[0].width, r[0].height, r[1].width, r[1].height,
-    r[2].width, r[2].height, r[3].width, r[3].height);
+    static_cast<unsigned long long>(pci.flushes));
+  for(unsigned i=0;i<r.size();++i)std::fprintf(stderr,"%s%u",i?",":"",r[i].id);
+  std::fputs("],\"resource_extents\":[",stderr);
+  for(unsigned i=0;i<r.size();++i)std::fprintf(stderr,"%s[%u,%u]",i?",":"",r[i].width,r[i].height);
+  std::fputs("]}\n",stderr);
 }
 } // namespace reverse_pc::guest

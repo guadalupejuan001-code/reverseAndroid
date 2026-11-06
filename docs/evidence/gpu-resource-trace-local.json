@@ -41,5 +41,8 @@
   "trace_header_sha256": "b3f31358bbce5e382189e51b3eccbe78e96149651ed1ab69938964ac530c64bf",
   "new_guest_input": false,
   "emulator_GPU_or_QSSD_integration_claimed": false,
-  "actual_Android_replay": "pending independent controlled workflow"
+  "actual_Android_replay": "passed in run42279660027; see gpu-resource-c88-controlled.json",
+  "independent_Linux_UAPI_ABI_checks": 8,
+  "Linux_UAPI_ABI_checks_passed": true,
+  "trace_header_revision": "historical observer executed at fbe73368b98d5899ad5f71c713a0fe0dd4f8012e"
 }

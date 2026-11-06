@@ -1,0 +1,61 @@
+{
+  "schema": "reverseandroid-observed-gpu-resource-lifetimes-v1",
+  "native_log_sha256": "4e9f144ffe46b2074f320dc791eb373035c2727e6033d00da020b08ca3153613",
+  "events": 7,
+  "source_resource_ids": [
+    0,
+    4,
+    5,
+    6
+  ],
+  "missing_id_counts": [
+    {
+      "resource_id": 8,
+      "resource_id_hex": "0x8",
+      "last_observed_lifetime": "not_present_or_created_in_observed_window",
+      "count": 3
+    }
+  ],
+  "invalid_resource_events": [
+    {
+      "instructions": 124159230067,
+      "command": "0x105",
+      "resource_id": 8,
+      "resource_id_hex": "0x8",
+      "active_ids": [
+        4,
+        5,
+        6
+      ],
+      "last_observed_lifetime": "not_present_or_created_in_observed_window"
+    },
+    {
+      "instructions": 124159230067,
+      "command": "0x103",
+      "resource_id": 8,
+      "resource_id_hex": "0x8",
+      "active_ids": [
+        4,
+        5,
+        6
+      ],
+      "last_observed_lifetime": "not_present_or_created_in_observed_window"
+    },
+    {
+      "instructions": 124159230067,
+      "command": "0x104",
+      "resource_id": 8,
+      "resource_id_hex": "0x8",
+      "active_ids": [
+        4,
+        5,
+        6
+      ],
+      "last_observed_lifetime": "not_present_or_created_in_observed_window"
+    }
+  ],
+  "table_transition_anomalies": [],
+  "events_require_separate_original_native_admission": true,
+  "historical_creation_before_selected_source_not_inferred": true,
+  "GPU_cause_of_Android_boot_wait_established": false
+}

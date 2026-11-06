@@ -15,7 +15,7 @@ request/response. Each record includes:
 
 - Original instruction boundary, queue and command.
 - Requested resource ID, presence of that field and actual response.
-- All four current resource IDs, their extents, scanout ID and flush counter.
+- All current resource IDs, their extents, scanout ID and flush counter.
 
 No IDs or guest fields are created, repaired or relabelled by the observer. It
 does not add UART input or modify the device's semantics, limits, RAM, disk,
@@ -73,3 +73,10 @@ The running primary C88 workflow, `state/latest.json` and
 GPU caused Zygote's futex wait, that QSSD repairs resource IDs, or that Android
 has booted. Its output supplies the IDs and lifecycle evidence needed to choose
 an actual device correction or an explicit GPU adapter next.
+
+The controlled Android replay passed in run42279660027. The actual missing ID
+is8, already absent at the selected source; all full checkpoint, console and
+frame bytes match the uninstrumented original. See
+`docs/evidence/gpu-resource-c88-controlled.json`. Historical allocation failure
+and the separate16-slot device candidate are documented in
+`docs/gpu-capacity-and-qssd-bridge.md`.

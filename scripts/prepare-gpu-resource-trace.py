@@ -8,7 +8,10 @@ import sys
 
 root = pathlib.Path(__file__).resolve().parents[1]
 out = pathlib.Path(sys.argv[1]).resolve()
-subprocess.run([sys.executable, str(root/'scripts/prepare-ic-ivau-extension.py'), str(out)], check=True)
+if len(sys.argv)==2:
+    subprocess.run([sys.executable, str(root/'scripts/prepare-ic-ivau-extension.py'), str(out)], check=True)
+else:
+    assert sys.argv[2:]==['--prepared'] and (out/'extension-manifest.json').is_file()
 h = lambda data: hashlib.sha256(data).hexdigest()
 prior = json.loads((out/'extension-manifest.json').read_text())
 
@@ -56,5 +59,7 @@ manifest = {
     'events_provisional_until_original_admission': True,
     'trace_capacity': 16384,
 }
+if (out/'gpu-capacity-manifest.json').exists():
+    manifest['retained_explicit_GPU_capacity_profile']=json.loads((out/'gpu-capacity-manifest.json').read_text())
 (out/'gpu-trace-manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
 print(json.dumps(manifest))
