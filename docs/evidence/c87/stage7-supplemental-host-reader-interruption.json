@@ -1,0 +1,14 @@
+{
+  "schema": "reverseandroid-supplemental-read-only-host-diagnostic-interruption-v1",
+  "source_checkpoint_sha256": "c9f3e2b52fe9a620e7affc59f6cce006a8af2ebe4fe94d82009fdbb0e3b8a28a",
+  "source_instructions": 116147727998,
+  "supplemental_thread_reader_exit_code": 137,
+  "shared_host_memory_limit_bytes": 8589934592,
+  "another_emulator_native_was_running_in_shared_host": true,
+  "legacy_ZIP_bytes_relocated_from_tmpfs_with_unchanged_hashes": 1386926589,
+  "original_full_CI_admission_and_local_transport_preflight_already_passed": true,
+  "whole_original_RVG_SHA256_reverified_after_interruption": true,
+  "canonical_guest_execution_failure_claimed": false,
+  "completed_supplemental_thread_probe_claimed": false,
+  "future_full_host_readers_wait_for_other_native_or_readers": true
+}

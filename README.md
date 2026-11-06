@@ -7,9 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C87, etapa 6: **115.147.727.998 instrucciones** admitidas en CI. Se recuperó el snapshot completo y pasó el preflight original local. Las etapas 1 a 4 coinciden byte por byte entre ejecuciones independientes.
-Zygote sigue ejecutable y acumulando tiempo de CPU. SELinux y los tres canales de periféricos siguen verificados. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
-[Recuperación íntegra y admisión original](docs/evidence/c87/stage6-complete-transport-and-original-preflight.json); [estado real de Zygote](docs/evidence/c87/stage6-original-Zygote-accounting.json); [estado actual](state/latest.json).
+C87, etapa 7: **116.147.727.998 instrucciones** admitidas en CI. Se recuperó el snapshot completo y pasó el preflight original local. Las etapas 1 a 4 coinciden byte por byte entre ejecuciones independientes.
+Zygote sigue vivo y ejecutable. SELinux y los tres canales de periféricos siguen verificados. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
+[Recuperación íntegra y admisión original](docs/evidence/c87/stage7-complete-transport-and-original-preflight.json); [estado real de Zygote](docs/evidence/c87/stage7-original-Zygote-accounting.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado

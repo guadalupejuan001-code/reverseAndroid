@@ -1,0 +1,178 @@
+{
+  "schema": "reverseandroid-original-kernel-persistent-thread-runtime-comparison-v1",
+  "source_A": {
+    "checkpoint_sha256": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
+    "instructions": 112147727998
+  },
+  "source_B": {
+    "checkpoint_sha256": "5e8ddb757fee6cbc030230f2dfc532dfb2e08648c9e00f4020335f7b28ff109c",
+    "instructions": 114147727998
+  },
+  "original_kernel_thread_lists_verified": true,
+  "only_threads_present_at_both_boundaries_included": true,
+  "terminated_or_new_threads_not_accounted_here": true,
+  "top_persistent_thread_runtime_deltas": [
+    {
+      "pid": 5629,
+      "tgid": 5629,
+      "name": "main",
+      "state": 0,
+      "static_priority": 100,
+      "delta_CPU_ns": 3643123000
+    },
+    {
+      "pid": 1,
+      "tgid": 1,
+      "name": "init",
+      "state": 0,
+      "static_priority": 120,
+      "delta_CPU_ns": 2700497000
+    },
+    {
+      "pid": 2279,
+      "tgid": 669,
+      "name": "binder:669_3",
+      "state": 8193,
+      "static_priority": 120,
+      "delta_CPU_ns": 1160270000
+    },
+    {
+      "pid": 834,
+      "tgid": 594,
+      "name": "android.hardwar",
+      "state": 8193,
+      "static_priority": 120,
+      "delta_CPU_ns": 804830000
+    },
+    {
+      "pid": 424,
+      "tgid": 374,
+      "name": "logd.klogd",
+      "state": 0,
+      "static_priority": 130,
+      "delta_CPU_ns": 330050000
+    },
+    {
+      "pid": 20,
+      "tgid": 20,
+      "name": "rcuop/0",
+      "state": 1,
+      "static_priority": 120,
+      "delta_CPU_ns": 290267000
+    },
+    {
+      "pid": 5923,
+      "tgid": 5629,
+      "name": "HeapTaskDaemon",
+      "state": 0,
+      "static_priority": 112,
+      "delta_CPU_ns": 284928000
+    },
+    {
+      "pid": 43,
+      "tgid": 43,
+      "name": "kworker/u4:4",
+      "state": 1026,
+      "static_priority": 120,
+      "delta_CPU_ns": 261157000
+    },
+    {
+      "pid": 430,
+      "tgid": 430,
+      "name": "jbd2/dm-17-8",
+      "state": 1,
+      "static_priority": 120,
+      "delta_CPU_ns": 243742000
+    },
+    {
+      "pid": 88,
+      "tgid": 1,
+      "name": "init",
+      "state": 1,
+      "static_priority": 100,
+      "delta_CPU_ns": 226876000
+    },
+    {
+      "pid": 14,
+      "tgid": 14,
+      "name": "kworker/u4:1",
+      "state": 1026,
+      "static_priority": 120,
+      "delta_CPU_ns": 175813000
+    },
+    {
+      "pid": 6001,
+      "tgid": 6001,
+      "name": "kworker/0:4",
+      "state": 2,
+      "static_priority": 120,
+      "delta_CPU_ns": 150246000
+    },
+    {
+      "pid": 377,
+      "tgid": 377,
+      "name": "servicemanager",
+      "state": 1,
+      "static_priority": 120,
+      "delta_CPU_ns": 120060000
+    },
+    {
+      "pid": 2257,
+      "tgid": 858,
+      "name": "Thread<00>",
+      "state": 0,
+      "static_priority": 116,
+      "delta_CPU_ns": 102805000
+    },
+    {
+      "pid": 405,
+      "tgid": 374,
+      "name": "logd.writer",
+      "state": 1,
+      "static_priority": 130,
+      "delta_CPU_ns": 50391000
+    },
+    {
+      "pid": 5633,
+      "tgid": 5633,
+      "name": "cameraserver",
+      "state": 0,
+      "static_priority": 120,
+      "delta_CPU_ns": 48307000
+    },
+    {
+      "pid": 19,
+      "tgid": 19,
+      "name": "rcuog/0",
+      "state": 1,
+      "static_priority": 120,
+      "delta_CPU_ns": 42031000
+    },
+    {
+      "pid": 18,
+      "tgid": 18,
+      "name": "rcu_preempt",
+      "state": 1026,
+      "static_priority": 120,
+      "delta_CPU_ns": 41528000
+    },
+    {
+      "pid": 438,
+      "tgid": 438,
+      "name": "tombstoned",
+      "state": 1,
+      "static_priority": 120,
+      "delta_CPU_ns": 40239000
+    },
+    {
+      "pid": 5309,
+      "tgid": 5291,
+      "name": "android.hardwar",
+      "state": 1,
+      "static_priority": 120,
+      "delta_CPU_ns": 34237000
+    }
+  ],
+  "main_Zygote_largest_persistent_thread_CPU_delta": true,
+  "guest_state_or_priorities_modified": false
+}
