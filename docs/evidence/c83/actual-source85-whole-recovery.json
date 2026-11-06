@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-independent-whole-recovery-v1",
+  "source_lock": "state/experiments/c82-stage-3-artifacts.json",
+  "instructions": 85000000000,
+  "checkpoint_SHA256": "73bdb15f90ce9b03efff6794c38e11f561f102246cd31ab21ae25ae54ffea85c",
+  "all_four_outer_ZIP_SHA256_and_CRC_verified": true,
+  "all_four_inner_part_sizes_and_SHA256_verified": true,
+  "safe_archive_paths_only": true,
+  "whole_RVG_SHA256_verified": true,
+  "original_full_epoch_preflight_passed": true,
+  "fresh_CPU_execution_claimed": false,
+  "original_full_console_SHA256": "ccab34ab478f4bc3738961a700fede998ed97bf3ec3158bfe2f32edd39217b62",
+  "actual_input_events_retained": 2,
+  "next_phase": 1,
+  "waiting_for_current_phase_ack": true,
+  "new_UART_on_resume": 0
+}

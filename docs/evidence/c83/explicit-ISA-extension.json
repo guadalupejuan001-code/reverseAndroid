@@ -1,0 +1,15 @@
+{
+  "schema": "reverseandroid-explicit-ISA-extension-v1",
+  "original_source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+  "all_870_imported_files_unchanged": true,
+  "original_engine_binary_unchanged_claimed": false,
+  "extension": "AArch64 AdvSIMD CLZ (vector), all six allocated forms",
+  "observed_blocking_opcode": "0x6ea04800",
+  "baseline_decoder_SHA256": "7fd5378bacd59543d03b453467e6abc44c4a5bc6389fde827f9bf0aa6f377790",
+  "extended_decoder_SHA256": "1a1a0a3adc386b0be7f76292ec4531a5b144cea758cdeffd1db7aea91de897d5",
+  "extension_SHA256": "1fd924cfab3278faf6550bc8ed54793c426ea3662d97499c0d0e07f6682ea1a4",
+  "changed_original_build_copy_files": [
+    "minimal_guest_simd.inc"
+  ],
+  "snapshot_codecs_RAM_disk_clock_seed_and_cadence_unchanged": true
+}
