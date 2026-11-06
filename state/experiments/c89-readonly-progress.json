@@ -1,12 +1,12 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 6,
-  "source_checkpoint_sha256": "6e9b4a431736c99c29b7f12ca2db4b4a50660d7ed8e75f13cf4dc0831658964e",
-  "instructions": 145147727998,
-  "source_artifact_lock": "state/experiments/c89-stage-6-artifacts.json",
+  "source_stage": 7,
+  "source_checkpoint_sha256": "f1f6b245cd42c10369dd21379a8f1321f5dda8340fb9970e8e01655a30edea5b",
+  "instructions": 146147727998,
+  "source_artifact_lock": "state/experiments/c89-stage-7-artifacts.json",
   "source_execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
   "source_CI_run_id": 42299162841,
-  "source_proof_SHA256": "73f64c197544f849fc5470c428a874a5632cb9e29e8dca02118849c9fc932c54",
+  "source_proof_SHA256": "bb4b36e10136820dc496e76c830f797200a03dbd2931631787662d0d473b7565",
   "zygote_PID": 5629,
   "target_JIT_TID": 5922,
   "system_server_PID": 7354,
@@ -103,7 +103,8 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Inspect the exact current SystemServer7354 main wait and complete thread list after genuine ioctl/futex transitions. Decode bounded debuggerd candidate only if its independent layout constraints still match; otherwise retain an explicit unverified result. Zero guest execution and UART.",
+  "purpose": "Inspect current source7 SystemServer7354 thread progress and BTF-derived mmap semaphore words/waiters, comparing with the original source6 four package-parser write-lock waits. Reader ownership flags are hints only; do not select a scheduler change from a hint. Zero guest execution/UART.",
   "read_only_debuggerd_context_PID": 7354,
-  "debuggerd_candidate_module_SHA256": "5d4edd7dcd4f394b2f9ba84c4a697a05b621d072ad3b34ee3ba16afb171469cd"
+  "debuggerd_candidate_module_SHA256": "5d4edd7dcd4f394b2f9ba84c4a697a05b621d072ad3b34ee3ba16afb171469cd",
+  "mmap_lock_module_SHA256": "6aaa5ace7d9f0f72bd3dc96865eb9d618d805d8034e73a3bc596edb4228c6563"
 }

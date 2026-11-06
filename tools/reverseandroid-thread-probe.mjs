@@ -9,6 +9,7 @@ import {memoryElfSymbols} from './reverseandroid-elf-symbols.mjs';
 import {inspectTaskScheduling} from './reverseandroid-scheduler-group.mjs';
 import {inspectTaskSignals} from './reverseandroid-task-signals.mjs';
 import {readDebuggerdSignalCandidate} from './reverseandroid-debuggerd-context.mjs';
+import {inspectMmapLock} from './reverseandroid-mmap-lock.mjs';
 
 const hx=x=>'0x'+x.toString(16), kernelPointer=x=>x>=0xffff000000000000n;
 export function enumerateThreadPointers({leader,read,task,signal}) {
@@ -49,6 +50,7 @@ function inspectThreads(api,options={}) {
       const mm=unsigned(leader,'mm',8);
       const memory=mm?userMemoryReader({pgdPhysical:translate(read(mm+BigInt(mmFields.pgd.offset))),userAddressBits:64-Number(m(11)&63n),physicalByte:physical,physical64:phys64}):null;
       if(!mm)group.leader_has_no_user_mm=true;
+      if(mm&&options.diagnosticProcesses)try{group.mmap_lock=inspectMmapLock(api,mm);}catch(e){group.mmap_lock_unverified=e.message;}
       if(mm&&options.diagnosticProcesses&&mmFields.arg_start&&mmFields.arg_end)try{
         const first=read(mm+BigInt(mmFields.arg_start.offset)),last=read(mm+BigInt(mmFields.arg_end.offset));
         assert.ok(last>=first&&last-first<=65536n,'Invalid bounded command-line extent');

@@ -7,6 +7,7 @@ digest=lambda p:hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
 plan=read(root/'state/experiments/c89-readonly-progress.json')
 assert plan['guest_execution'] is False and plan['new_UART_input'] is False
 assert digest(root/'tools/reverseandroid-debuggerd-context.mjs')==plan['debuggerd_candidate_module_SHA256']
+assert digest(root/'tools/reverseandroid-mmap-lock.mjs')==plan['mmap_lock_module_SHA256']
 assert plan['read_only_debuggerd_context_PID']==plan['system_server_PID']
 assert re.fullmatch(r'[0-9a-f]{64}',plan['source_checkpoint_sha256'])
 assert type(plan['source_stage']) is int and 1<=plan['source_stage']<=16

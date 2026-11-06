@@ -32,7 +32,7 @@ jobs:
           mkdir -p build evidence/c89-current-readonly-progress
           python3 scripts/verify-reverseandroid-import.py
           node --check tools/reverseandroid-thread-probe.mjs
-          node --test tests/reverseandroid_debuggerd_context.test.mjs
+          node --test tests/reverseandroid_debuggerd_context.test.mjs tests/reverseandroid_mmap_lock.test.mjs
           python3 scripts/report-c89-readonly-progress.py --prepare
       - name: Admit the full original checkpoint without executing guest instructions
         run: |
