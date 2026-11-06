@@ -7,8 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C87, etapa 1: **110.147.727.998 instrucciones** admitidas. ART ya ejecuta código Java original de boot.oat; Zygote tiene seis hilos. Los siete eventos anteriores y los tres canales reales permanecen verificados, con SELinux activo y cero nuevas entradas de consola. SystemServer, el arranque completo y una interfaz utilizable siguen pendientes.
-[Java real en ejecución](docs/evidence/c87/stage1-original-Java-execution.json); [coincidencia íntegra entre ejecución local y CI](docs/evidence/c87/stage1-independent-local-CI-match.json); [estado actual](state/latest.json).
+C87, etapa 2: **111.147.727.998 instrucciones** admitidas localmente. SystemServer sigue pendiente. El arranque completo y la interfaz utilizable siguen pendientes. SELinux permanece activo.
+El `init` original recuperó Zygote; [prueba del nuevo arranque](docs/evidence/c86/original-init-Zygote-recovery.json).
+La etapa 2 coincide íntegramente entre la ejecución local y CI y tiene todas sus piezas conservadas. [Prueba](docs/evidence/c87/stage2-independent-local-CI-match.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado

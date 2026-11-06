@@ -45,9 +45,10 @@
   "system_server_alive": false,
   "boot_completed": false,
   "SELinux_enforcing": true,
-  "actual_nice0_reply_observed": false,
+  "actual_nice0_reply_observed": true,
   "outer_cleanup_ACK_verified": true,
   "independent_CI_match_not_yet_claimed": true,
   "remote_transport_not_yet_pinned": true,
-  "actual_UI_response_claimed": false
+  "actual_UI_response_claimed": false,
+  "historical_cleanup_reply_cycle": "C86"
 }
