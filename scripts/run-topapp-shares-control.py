@@ -176,8 +176,10 @@ def main():
     probe = fresh_probe(runtime,output,gate['checkpoint_sha256'],output/'threads-readonly.json')
     observed = group_observation(probe,plan)
     state['actual_boosted_group_verified'] = observed['shares_raw'] == plan['kernel_shares_raw_trial']
-    state['actual_original_shares_restored'] = observed['shares_raw'] == plan['kernel_shares_raw_before']
-    assert state['actual_boosted_group_verified'] or state['actual_original_shares_restored']
+    state['actual_original_shares_verified'] = observed['shares_raw'] == plan['kernel_shares_raw_before']
+    state['actual_original_shares_restored'] = (state['restore_issued'] and state['restore_reply']['success']
+                                                and state['actual_original_shares_verified'])
+    assert state['actual_boosted_group_verified'] or state['actual_original_shares_verified']
     subprocess.run(['node',str(runtime/'tools/reverseandroid-console-proof.mjs'),str(reports/'console-all.bin'),
                     '548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b',
                     '/data/local/tmp/reverseandroid-peer-abi3.elf',str(output/'console-observation.json')],check=True)

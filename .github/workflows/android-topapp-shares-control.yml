@@ -29,10 +29,6 @@ jobs:
     - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
       with:
         node-version: 24.22.1
-    - name: Verify original import and the guarded priority regression checks
-      run: 'python3 scripts/verify-reverseandroid-import.py
-
-        python3 tests/jit5922_priority_control_test.py'
     - name: Verify original import and real-shell boost/restore guards
       run: 'python3 scripts/verify-reverseandroid-import.py
 
@@ -40,10 +36,28 @@ jobs:
 
         python3 tests/topapp_shares_shell_test.py'
     - name: Recover exact admitted JIT stage3, original native and immutable media
-      id: s1
-      if: success()
-      run: python3 scripts/run-jit5922-control.py 1 --source build/topapp-source --output-root evidence/jit5922
-        --commit "$GITHUB_SHA"
+      run: 'mkdir -p build
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/topapp-source state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/topapp-shares-artifacts.json
+
+        chmod +x build/reverseandroid/frame build/ic-native/epoch-clz-ic
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/topapp-source
+        > build/topapp-source-preflight.json'
     - name: 'Top-app stage 1: original bounded execution and guarded reversible group scheduling'
       id: s1
       if: success()
