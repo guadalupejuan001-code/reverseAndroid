@@ -1,0 +1,12 @@
+{
+  "schema": "reverseandroid-independent-original-engine-validation-v1",
+  "run_id": 42184815379,
+  "execution_commit": "b5199e17c001f2fffa44485be93df819800dc3d1",
+  "original_engine_validation_job_id": 127782526436,
+  "original_engine_validation_conclusion": "success",
+  "original_870_files_unchanged": true,
+  "historical_continuation_job": "skipped by explicit execute_on_push:false",
+  "dedicated_C81_continuation_affected": false,
+  "dedicated_private_PTY_EOF_control_run": 42184815321,
+  "private_PTY_integration_not_yet_claimed": true
+}
