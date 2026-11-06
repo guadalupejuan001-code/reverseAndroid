@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "2035e63f959545c8f6c72f678d837d0d952437ef8a2e0b57c614202f5995682b",
-  "instructions": 19000000000,
+  "checkpoint_sha256": "5bd845c27fb8ea4d392434b67dcbce88631e1da7bcd16c1adfbaf6ec99b05f7c",
+  "instructions": 22000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -9,16 +9,15 @@
   "ready_for_visual_review": false,
   "android_display_content_verified": false,
   "unresolved": [
-    "live_process_missing:zygote64",
     "live_process_missing:system_server",
     "live_sys_boot_completed_unverified"
   ],
-  "cycle": "C76",
+  "cycle": "C77",
   "epoch": "C76-lights-port",
-  "stage": 16,
+  "stage": 15,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
-  "execution_commit": "0ce52e642185d74814227c80eecae9e8d941a29c",
-  "execution_location": "local",
+  "execution_commit": "75ba5471cc113f627598ded21904b5387f35d94d",
+  "execution_location": "independent-CI",
   "epoch_root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
   "parent_epoch_checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
   "parent_epoch_instructions": 88895950532,
@@ -29,13 +28,19 @@
   "live_vsock_lights_port": "6900",
   "actual_port_evidence": "docs/evidence/c76/local-stage1-lights-readonly.json",
   "original_870_files_unchanged": true,
-  "canonical_local_source": "/workspace/scratch/bf4ce496066e/evidence/c76-stage16",
+  "canonical_local_source": null,
   "independent_reproduction_run_id": 42115913067,
-  "independent_reproduction_status": "C76/C77whole2B..15B and19Bmatchlocalexecution;16B+18Brecoveredwholeandoriginalpreflight.",
-  "active_continuation": "Complete19B is also identical to independentC77stage12; next continuefromlatestfullboundary. LightsPID652 alive withactualVSOCKlistener6900 andSurfaceFlinger669 verified.",
+  "independent_reproduction_status": "Los snapshots completos de 2 a 15 mil millones, 19 y 20 mil millones coinciden con la ejecuci\u00f3n local. El estado posterior de 22 mil millones pas\u00f3 las comprobaciones originales en CI y conserva todas sus piezas; todav\u00eda no se ha recuperado localmente.",
+  "active_continuation": "C77 ejecuta el siguiente tramo hacia 23 mil millones. Se conservar\u00e1 y recuperar\u00e1 el \u00faltimo estado completo antes de iniciar C78, manteniendo la misma \u00e9poca.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
-  "lights_vsock_listener_port_verified": 6900
+  "lights_vsock_listener_port_verified": 6900,
+  "source_artifact_lock": "state/experiments/c77-stage-15-artifacts.json",
+  "last_local_admitted_source": {
+    "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage17",
+    "checkpoint_sha256": "bcb489bf791bb185d802bdcf6e29d4207c89b6354a2c23bbca71080f2f3117f3",
+    "instructions": 20000000000
+  }
 }

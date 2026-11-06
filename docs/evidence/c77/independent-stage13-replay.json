@@ -1,0 +1,22 @@
+{
+  "schema": "reverseandroid-independent-epoch-boundary-replay-v1",
+  "cycle": "C77",
+  "epoch": "C76-lights-port",
+  "stage": 13,
+  "run_id": 42123644091,
+  "commit": "75ba5471cc113f627598ded21904b5387f35d94d",
+  "metadata_artifact_id": 13464408977,
+  "metadata_archive_sha256": "ac170c4e9de0452824e67660698cd036a8473eca0a393796d33b36e6ddd2a426",
+  "checkpoint_sha256": "bcb489bf791bb185d802bdcf6e29d4207c89b6354a2c23bbca71080f2f3117f3",
+  "instructions": 20000000000,
+  "independent_complete_snapshot_SHA256_matches_local": true,
+  "local_executed_source": "c76-stage17",
+  "source_boundary_verified": true,
+  "transport_part_count": 2,
+  "all_transport_parts_preserved": true,
+  "transport_lock": "state/experiments/c77-stage-13-transport.json",
+  "artifact_lock": "state/experiments/c77-stage-13-artifacts.json",
+  "split_transport_not_yet_recovered_locally": true,
+  "android_boot_completed_verified": false,
+  "production_guest_input_events": 0
+}

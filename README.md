@@ -6,7 +6,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
-La época corregida C76/C77 ha admitido **19.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. El snapshot completo local coincide por SHA-256 con la ejecución independiente. El servicio de luces **PID 652 está vivo y escucha realmente en el puerto VSOCK 6900**: se comprobaron su descriptor, los enlaces del socket y el estado `TCP_LISTEN` con el BTF del kernel original. [Evidencia auténtica](docs/evidence/c76/stage16-lights-vsock-readonly.json). SurfaceFlinger PID 669 también está ejecutándose; SELinux permanece activo.
+La época corregida C76/C77 ha admitido **22.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. El último límite completo pasó todas las comprobaciones originales en CI y sus piezas están conservadas. Los snapshots locales completos de 19 y 20 mil millones coinciden por SHA-256 con la ejecución independiente.
+
+El servicio de luces **PID 652 está vivo y escucha realmente en el puerto VSOCK 6900**: se comprobaron su descriptor, los enlaces del socket y el estado `TCP_LISTEN` con el BTF del kernel original. [Evidencia auténtica](docs/evidence/c76/stage16-lights-vsock-readonly.json). SurfaceFlinger PID 669 también está ejecutándose; Zygote ya aparece como `zygote64` y SELinux permanece activo.
 
 El arranque completo y la interfaz siguen pendientes. Una [prueba aislada de consola](docs/evidence/c76/actual-console-response-control.json) ya recibió una respuesta generada por Android sin modificar el checkpoint principal. [C77 continúa la misma época](.github/workflows/android-c77-continued-epoch.yml), sin reiniciar la CPU.
 

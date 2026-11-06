@@ -1,0 +1,9 @@
+{
+  "schema": "reverseandroid-epoch-host-policy-v1",
+  "controller_commit": "bd7f02dd992ec1a6cdfe0d9cb872751a9cb7a19d",
+  "native_binary_sha256": "717a0d905ebc5680c206222e48f0fd8abb96058ee15517d12a596ab46c696ced",
+  "instruction_budget": 1000000000,
+  "host_wall_ms": 330000,
+  "logical_RAM_clock_seed_cadence_IRQ_and_codecs_modified": false,
+  "external_input_plan_present": false
+}

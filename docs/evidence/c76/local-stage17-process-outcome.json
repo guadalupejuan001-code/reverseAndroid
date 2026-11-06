@@ -1,0 +1,29 @@
+{
+  "schema": "reverse-c08-host-supervision-v1",
+  "status": "process_completed",
+  "trigger": null,
+  "exit_code": 0,
+  "exit_signal": null,
+  "forced_kill": false,
+  "elapsed_ms": 326703,
+  "startup_marker_seen": true,
+  "last_reported_instructions": 20000000000,
+  "reported_instruction_delta": 1000000000,
+  "error": null,
+  "logs": {
+    "stdout": {
+      "bytes_seen": 28005,
+      "bytes_stored": 28005,
+      "truncated": false
+    },
+    "stderr": {
+      "bytes_seen": 39739,
+      "bytes_stored": 39739,
+      "truncated": false
+    }
+  },
+  "checkpoint_bytes_modified_by_supervisor": false,
+  "android_boot_verified": false,
+  "android_display_verified": false,
+  "native_android_games_verified": false
+}
