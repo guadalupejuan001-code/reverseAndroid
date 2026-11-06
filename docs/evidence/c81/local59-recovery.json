@@ -1,0 +1,19 @@
+{
+  "schema": "reverseandroid-original-checkpoint-local-recovery-v1",
+  "source_checkpoint_sha256": "252448f4809218449ebbe57c566f189b0578abb36f6dc6f7bdb9b6bcd8123563",
+  "source_instructions": 59000000000,
+  "source_artifact_lock": "state/experiments/c81-stage-1-artifacts.json",
+  "all_outer_ZIPs_CRC_and_exact_members_verified": true,
+  "all_inner_transport_parts_and_complete_RVG_SHA_verified_by_original_unpack": true,
+  "original_source_preflight_completed_exit0": true,
+  "original_native_binary_SHA256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "original_media_bytes": 10888413184,
+  "original_media_SHA256": "4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e",
+  "node_version": "24.22.1",
+  "next2B_native_reproduction_started": true,
+  "additional_UART_events": 0,
+  "priority_input_not_repeated": true,
+  "completed_replay_or_matching_next_checkpoint_not_yet_claimed": true,
+  "directory": "/workspace/scratch/bf4ce496066e/emulator-local-recovery",
+  "preflight_report": "reports/source59-local-preflight.json"
+}
