@@ -33,6 +33,17 @@ def run_graph(runs, terminal, failure=False, skipped_preservation=None):
 
 
 class WorkflowPhaseGuardTest(unittest.TestCase):
+    def test_generated_workflows_keep_the_GitHub_on_trigger(self):
+        # PyYAML's default YAML 1.1 loader treats an unquoted on key as True.
+        # BaseLoader checks the actual emitted key, including valid unquoted on.
+        for name in ['android-c87-bounded-continuation.yml','retire-replaced-android-reference-runs.yml']:
+            path=ROOT/'.github/workflows'/name
+            if not path.exists():continue
+            with self.subTest(workflow=name):
+                value=yaml.load(path.read_text(),Loader=yaml.BaseLoader)
+                self.assertIn('on',value)
+                self.assertNotIn('true',value)
+
     def workflows(self):
         paths = [ROOT / '.github/workflows/android-c81-systemserver-diagnostic.yml']
         for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml', 'android-c87-bounded-continuation.yml']:

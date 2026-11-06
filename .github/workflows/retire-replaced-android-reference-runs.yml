@@ -1,11 +1,4 @@
 name: Retire replaced Android reference runs
-true:
-  push:
-    branches:
-    - main
-    paths:
-    - .github/workflows/retire-replaced-android-reference-runs.yml
-  workflow_dispatch: null
 permissions:
   contents: read
   actions: write
@@ -28,3 +21,10 @@ jobs:
         \   if fresh['status']=='completed':\n            print(json.dumps({'reference_run':run,'completed_during_request':True}))\n\
         \            continue\n        raise RuntimeError(f'Cancellation refused for verified reference {run}')\n\
         \    print(json.dumps({'reference_run':run,'head_verified':True,'cancellation_requested':True}))\nPY\n"
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/retire-replaced-android-reference-runs.yml
+  workflow_dispatch: null
