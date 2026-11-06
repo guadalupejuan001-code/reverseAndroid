@@ -1,0 +1,21 @@
+{
+  "schema": "reverseandroid-isolated-console-continuation-v1",
+  "source_checkpoint_sha256": "fcbf062ba03663f49a13a09ce53ddd35128afa8ac72dc78fae24baf4f2095923",
+  "source_instructions": 34500000000,
+  "source_run_id": 42149632235,
+  "source_commit": "2dca55491880b4903d4321e7de9ba01ec2444a0b",
+  "source_artifact_lock": "state/experiments/hardware-probe-continue-artifacts.json",
+  "instruction_budgets": [
+    2000000000,
+    2000000000,
+    2000000000
+  ],
+  "additional_guest_input_events": 0,
+  "prior_input_already_consumed": true,
+  "read_request_still_running": true,
+  "root_UID0_and_su_domain_already_observed": true,
+  "combined_prior_transcript_sha256": "3eeafa50d461c3a4a2a568fc656068db94ef268ca9fd043b59c1d67abd8108e6",
+  "control_is_promotion_authority": false,
+  "main_C79_C80_modified": false,
+  "fresh_hardware_power_cycle": false
+}
