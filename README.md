@@ -7,9 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C88, etapa16: **139.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las 4 piezas del snapshot conservadas y fijadas por SHA-256. **SystemServer original está vivo.** El arranque completo y la interfaz utilizable siguen pendientes.
-Android confirmó el ajuste protegido de JIT5922 a nice0; las lecturas independientes verificaron la prioridad y el trabajo posterior de ART. El único comando nuevo se entregó una vez en la etapa1. Las siguientes no lo reenvían. El motor validado, los siete eventos previos y SELinux se conservan. Los tres canales de periféricos están verificados de nuevo.
-[Admisión actual](docs/evidence/c88/stage16-original-CI-authority.json); [liberación real de la espera](docs/evidence/c88/original-Zygote-futex-released-stage6.json); [prueba de interfaz preparada](docs/real-ui-response.md); [estado actual](state/latest.json).
+C89, etapa1: **140.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las 4 piezas del snapshot conservadas y fijadas por SHA-256. **La comprobación original de SystemServer y el arranque completo siguen pendientes.** Las observaciones detalladas de procesos se conservan por separado; una comprobación no verificada no se presenta como un proceso terminado.
+Esta continuación entrega **cero UART nuevo en todas sus etapas**. Conserva los 8 eventos del historial y todos los bytes anteriores de consola. Se mantienen el motor validado, el disco,2GiB lógicos, el reloj, la semilla, la cadencia, los códecs y SELinux. La interfaz utilizable y la respuesta significativa a un gesto real aún requieren prueba.
+[Admisión actual](docs/evidence/c89/stage1-original-CI-authority.json); [continuación sin entradas](docs/c89-zero-input-continuation.md); [prueba de interfaz preparada](docs/real-ui-response.md); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado
