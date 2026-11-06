@@ -1,0 +1,55 @@
+{
+  "schema": "reverseandroid-checkpoint-transport-v1",
+  "compression": "tar+gzip",
+  "parts": [
+    {
+      "file": "checkpoint.part-000",
+      "bytes": 209715200,
+      "sha256": "8fcdf1aca7f8030510c8881ae8ab2627017b14e0e9a9e07a250ca75a3df1bde6"
+    },
+    {
+      "file": "checkpoint.part-001",
+      "bytes": 209715200,
+      "sha256": "5ecfc1afa6c4159b68968d0222e76f5dc1e3ed44c45bdb307dd47acae9b9db29"
+    },
+    {
+      "file": "checkpoint.part-002",
+      "bytes": 209715200,
+      "sha256": "e7b7bc616c7cb95371e893b6d5840e0ab9cca8d6f0465de3a0426c84ca102728"
+    },
+    {
+      "file": "checkpoint.part-003",
+      "bytes": 65378956,
+      "sha256": "ae954fe6958aac91dd7dbc19f87bfed37ad0f862f4a85b19834076e22850d31f"
+    }
+  ],
+  "source_contract": {
+    "schema": "reverseandroid-epoch-source-v1",
+    "checkpoint_sha256": "a940acfa14acb48ae58669f258aaba8b0ae1a58da93556f0caf63c9b0a20d94c",
+    "report_file": "current.json",
+    "report_sha256": "710bc822f211a57cd84336c8a20bc38b91b76241994ee7b9aac463bf50fabb54",
+    "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+    "instructions": 99547727998,
+    "epoch_original_init_verified": true,
+    "initialized_hardware_root": false,
+    "result_sha256": "e59654153b8c9bb7a69d54c53e92cd60cd53cd34274a8f0982c2e873d6cadfa5",
+    "process_sha256": "c11d3130e064bb54d0e204d73d52cb0d93d687da64d2131be4d693c00c986129",
+    "source_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+  },
+  "progress": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "a940acfa14acb48ae58669f258aaba8b0ae1a58da93556f0caf63c9b0a20d94c",
+    "instructions": 99547727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": false,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:zygote64",
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  }
+}

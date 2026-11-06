@@ -1,0 +1,57 @@
+name: Actual SystemServer IC IVAU fault and native ARM JIT validation
+'on':
+  push:
+    branches: [main]
+    paths:
+      - extensions/aarch64-el0-ic-ivau.inc
+      - scripts/prepare-ic-ivau-extension.py
+      - scripts/build-reverseandroid-ic-ivau.sh
+      - tests/reverseandroid_ic_ivau_test.cpp
+      - .github/workflows/android-ic-ivau-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - name: Reproduce actual original SIGILL and test exact correction with prior architecture checks
+        run: bash scripts/build-reverseandroid-ic-ivau.sh
+      - name: Require real ARM self modifying JIT oracle
+        if: matrix.os == 'ubuntu-24.04-arm'
+        run: |
+          python3 - <<'PY'
+          import json,platform
+          assert platform.machine()=='aarch64'
+          p=json.load(open('build/reverseandroid-ic-ivau/ic-ivau-test.json'))
+          assert p['IC_IVAU_cases']==2048 and p['real_AArch64_hardware_cases']==1
+          p=json.load(open('build/reverseandroid-ic-ivau/retained-clz-test.json'))
+          assert p['CLZ_cases']==p['real_AArch64_hardware_cases']==30887
+          PY
+      - name: Bind build to actual execution commit
+        run: echo "$GITHUB_SHA" > build/reverseandroid-ic-ivau/execution-commit.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-ic-ivau-${{ matrix.os }}
+          path: |
+            build/reverseandroid-ic-ivau/*.json
+            build/reverseandroid-ic-ivau/*.txt
+            build/reverseandroid-ic-ivau/*.sha256
+            build/reverseandroid-ic-ivau/epoch-clz-ic
+          if-no-files-found: error
+          retention-days: 90

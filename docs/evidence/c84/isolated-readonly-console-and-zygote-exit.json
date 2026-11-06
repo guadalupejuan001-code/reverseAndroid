@@ -1,0 +1,291 @@
+{
+  "schema": "reverseandroid-isolated-original-readonly-console-control-v1",
+  "never_primary_or_promotion_source": true,
+  "original_native_SHA256": "1fdc567bc4790b93285c73917e0462dee1e718e6803af40b289026af29dceb86",
+  "execution_controller_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279",
+  "source_checkpoint_SHA256": "034f85684668d131f4485b29c28480167710eb0c9c20c4ca638dd4ebb956603d",
+  "source_instructions": 92547727998,
+  "logcat_input": {
+    "schema": "reverseandroid-authenticated-console-input-plan-v1",
+    "purpose": "diagnostic_console",
+    "input_file": "/workspace/scratch/bf4ce496066e/emulator-local-recovery/c84-readonly-log-control/input.txt",
+    "input_bytes": 110,
+    "input_sha256": "eacb503ce4c5cd0a2f49a18a4ddaf1e248790382d6997175399a9d3aefd0dab6",
+    "source_checkpoint_sha256": "034f85684668d131f4485b29c28480167710eb0c9c20c4ca638dd4ebb956603d",
+    "source_instructions": 92547727998,
+    "effect": "Read original Android logcat buffers to diagnose the actual SystemServer trace stop; no property or filesystem setting changes.",
+    "isolated_control_not_primary": true
+  },
+  "tombstones_input": {
+    "schema": "reverseandroid-authenticated-console-input-plan-v1",
+    "purpose": "diagnostic_console",
+    "input_file": "/workspace/scratch/bf4ce496066e/emulator-local-recovery/c84-readonly-log-control/tombstones-input.txt",
+    "input_bytes": 296,
+    "input_sha256": "e06c0ca24a2c54360816f2398505041a6323ddba9be15e5b39e93b3a8d07911a",
+    "source_checkpoint_sha256": "ca7dd3a1010fa1630e17020e9eee5675cd4ebb5aee4a27e6d3efa5a8c5bf19df",
+    "source_instructions": 94047727998,
+    "effect": "Read actual original tombstone headers for zygote and system_server to identify the observed process termination. No properties, policy, priority or device settings changed.",
+    "isolated_control_not_primary": true
+  },
+  "boundaries": [
+    {
+      "stage": 1,
+      "original_C46_gate": {
+        "schema": "reverse-c46-android-continuation-v1",
+        "checkpoint_sha256": "aa33e0f157e2de0a92d3b7cf1e54e7ef89e00c9a62f77081de88dfebabac0284",
+        "instructions": 93047727998,
+        "source_boundary_verified": true,
+        "system_server_alive_verified": false,
+        "android_boot_completed_verified": false,
+        "scanout_exported": true,
+        "ready_for_visual_review": false,
+        "android_display_content_verified": false,
+        "unresolved": [
+          "live_process_missing:zygote64",
+          "live_process_missing:system_server",
+          "live_sys_boot_completed_unverified"
+        ]
+      },
+      "clean_host_outcome": {
+        "schema": "reverse-c08-host-supervision-v1",
+        "status": "process_completed",
+        "trigger": null,
+        "exit_code": 0,
+        "exit_signal": null,
+        "forced_kill": false,
+        "elapsed_ms": 281553,
+        "startup_marker_seen": true,
+        "last_reported_instructions": 93047727998,
+        "reported_instruction_delta": 500000000,
+        "error": null,
+        "logs": {
+          "stdout": {
+            "bytes_seen": 29823,
+            "bytes_stored": 29823,
+            "truncated": false
+          },
+          "stderr": {
+            "bytes_seen": 37162,
+            "bytes_stored": 37162,
+            "truncated": false
+          }
+        },
+        "checkpoint_bytes_modified_by_supervisor": false,
+        "android_boot_verified": false,
+        "android_display_verified": false,
+        "native_android_games_verified": false
+      },
+      "output_contract": {
+        "schema": "reverseandroid-epoch-source-v1",
+        "checkpoint_sha256": "aa33e0f157e2de0a92d3b7cf1e54e7ef89e00c9a62f77081de88dfebabac0284",
+        "report_file": "current.json",
+        "report_sha256": "3f32172e0106ab8bc3afcb78a7995d74c03644e4389a1e56d276c999d3efc030",
+        "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+        "instructions": 93047727998,
+        "epoch_original_init_verified": true,
+        "initialized_hardware_root": false,
+        "result_sha256": "89e3cf34d1bdfc1029f99bbaa1eb629b1b604028205bd01209dfa7e00abdd915",
+        "process_sha256": "c3a1f407fc128e4f046267a2cb38073dd43d03227311165f546786df5b73caea",
+        "source_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+      },
+      "actual_native_UART_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 92547727998,
+        "counter_subtick": 26,
+        "bytes": 110,
+        "sha256": "eacb503ce4c5cd0a2f49a18a4ddaf1e248790382d6997175399a9d3aefd0dab6"
+      },
+      "new_console_bytes": 25340,
+      "new_console_SHA256": "b0123d82b2f57e5f9b495d33bda469a35d27088fc34062d2bd86e67d036c99ce"
+    },
+    {
+      "stage": 2,
+      "original_C46_gate": {
+        "schema": "reverse-c46-android-continuation-v1",
+        "checkpoint_sha256": "ca7dd3a1010fa1630e17020e9eee5675cd4ebb5aee4a27e6d3efa5a8c5bf19df",
+        "instructions": 94047727998,
+        "source_boundary_verified": true,
+        "system_server_alive_verified": false,
+        "android_boot_completed_verified": false,
+        "scanout_exported": true,
+        "ready_for_visual_review": false,
+        "android_display_content_verified": false,
+        "unresolved": [
+          "live_process_missing:zygote64",
+          "live_process_missing:system_server",
+          "live_sys_boot_completed_unverified"
+        ]
+      },
+      "clean_host_outcome": {
+        "schema": "reverse-c08-host-supervision-v1",
+        "status": "process_completed",
+        "trigger": null,
+        "exit_code": 0,
+        "exit_signal": null,
+        "forced_kill": false,
+        "elapsed_ms": 496437,
+        "startup_marker_seen": true,
+        "last_reported_instructions": 94047727998,
+        "reported_instruction_delta": 1000000000,
+        "error": null,
+        "logs": {
+          "stdout": {
+            "bytes_seen": 63162,
+            "bytes_stored": 63162,
+            "truncated": false
+          },
+          "stderr": {
+            "bytes_seen": 81077,
+            "bytes_stored": 81077,
+            "truncated": false
+          }
+        },
+        "checkpoint_bytes_modified_by_supervisor": false,
+        "android_boot_verified": false,
+        "android_display_verified": false,
+        "native_android_games_verified": false
+      },
+      "output_contract": {
+        "schema": "reverseandroid-epoch-source-v1",
+        "checkpoint_sha256": "ca7dd3a1010fa1630e17020e9eee5675cd4ebb5aee4a27e6d3efa5a8c5bf19df",
+        "report_file": "current.json",
+        "report_sha256": "de7b464dd65380bbf822172d52dac2c8ea76f747f646abdc68391ace51274aca",
+        "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+        "instructions": 94047727998,
+        "epoch_original_init_verified": true,
+        "initialized_hardware_root": false,
+        "result_sha256": "cc7a81e249bc438b2ed10142122754784e8e7244d306e611e8470cf26dda9abd",
+        "process_sha256": "368a39627e5bddb019475bb9b58ba70268cb1b020d06c661ae712a50171bf84c",
+        "source_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+      },
+      "actual_native_UART_event": null,
+      "new_console_bytes": 56884,
+      "new_console_SHA256": "98e7b4eb491e0783ee604b165e267bd738da482761c55da67fabf19d2f939413"
+    },
+    {
+      "stage": 3,
+      "original_C46_gate": {
+        "schema": "reverse-c46-android-continuation-v1",
+        "checkpoint_sha256": "7b7b9b562de5b70fdcf8955debe0a857a37e3e5c33c820100576493185746c53",
+        "instructions": 95047727998,
+        "source_boundary_verified": true,
+        "system_server_alive_verified": false,
+        "android_boot_completed_verified": false,
+        "scanout_exported": true,
+        "ready_for_visual_review": false,
+        "android_display_content_verified": false,
+        "unresolved": [
+          "live_process_missing:zygote64",
+          "live_process_missing:system_server",
+          "live_sys_boot_completed_unverified"
+        ]
+      },
+      "clean_host_outcome": {
+        "schema": "reverse-c08-host-supervision-v1",
+        "status": "process_completed",
+        "trigger": null,
+        "exit_code": 0,
+        "exit_signal": null,
+        "forced_kill": false,
+        "elapsed_ms": 492627,
+        "startup_marker_seen": true,
+        "last_reported_instructions": 95047727998,
+        "reported_instruction_delta": 1000000000,
+        "error": null,
+        "logs": {
+          "stdout": {
+            "bytes_seen": 79174,
+            "bytes_stored": 79174,
+            "truncated": false
+          },
+          "stderr": {
+            "bytes_seen": 97521,
+            "bytes_stored": 97521,
+            "truncated": false
+          }
+        },
+        "checkpoint_bytes_modified_by_supervisor": false,
+        "android_boot_verified": false,
+        "android_display_verified": false,
+        "native_android_games_verified": false
+      },
+      "output_contract": {
+        "schema": "reverseandroid-epoch-source-v1",
+        "checkpoint_sha256": "7b7b9b562de5b70fdcf8955debe0a857a37e3e5c33c820100576493185746c53",
+        "report_file": "current.json",
+        "report_sha256": "7a7d80f5dfb349ca0a0859ef56ed1c4c334ddd9de840dcfbe69e185aefde7173",
+        "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+        "instructions": 95047727998,
+        "epoch_original_init_verified": true,
+        "initialized_hardware_root": false,
+        "result_sha256": "930842d887d66b61703ba6b39ea6188b08051c18c30a815551d528f2a37d4bfa",
+        "process_sha256": "ff84a2b84af63df4824f4706e337c435baa2bd46f4aa8ac137ff8f8e3608367a",
+        "source_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+      },
+      "actual_native_UART_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 94047727998,
+        "counter_subtick": 26,
+        "bytes": 296,
+        "sha256": "e06c0ca24a2c54360816f2398505041a6323ddba9be15e5b39e93b3a8d07911a"
+      },
+      "new_console_bytes": 69566,
+      "new_console_SHA256": "edb4d8e7922680d74456ac740ffd0dcce6cd73f3fa81cb9d2bf9b09beb6829a4"
+    }
+  ],
+  "logcat_result": {
+    "actual_marker": "REVERSE_PTS_C84_SS_DIAG RC_0",
+    "seen_in_original_stage": 2,
+    "returned_log_records": 0
+  },
+  "tombstone_read_pending_after_stage3": true,
+  "next_stage4_input_bytes": 0,
+  "actual94B_zygote_exit": {
+    "pid": 562,
+    "name": "main",
+    "state": 128,
+    "exit_state": 32,
+    "signals": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "ptrace_raw": "0",
+      "jobctl_raw": "0",
+      "exit_code_raw": "9",
+      "parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "real_parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "blocked_words": [
+        "0x80011204"
+      ],
+      "real_blocked_words": [
+        "0x0"
+      ],
+      "saved_sigmask_words": [
+        "0x0"
+      ],
+      "pending_words": [
+        "0x0"
+      ],
+      "signal_owner": "0xffffff800d5fcd80",
+      "flags_raw": "4",
+      "group_exit_code_raw": "9",
+      "group_stop_count_raw": "0",
+      "notify_count_raw": "0",
+      "shared_pending_words": [
+        "0x100"
+      ],
+      "last_siginfo_pointer": "0x0"
+    }
+  },
+  "underlying_JIT_failure_cause_not_yet_identified": true,
+  "boot_or_UI_completion_claimed": false
+}

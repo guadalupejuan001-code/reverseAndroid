@@ -47,6 +47,11 @@ function inspectThreads(api,options={}) {
       const pointers=enumerateThreadPointers({leader,read,task,signal:members(type('signal_struct'))});
       const mm=unsigned(leader,'mm',8),pgd=read(mm+BigInt(mmFields.pgd.offset));
       const memory=userMemoryReader({pgdPhysical:translate(pgd),userAddressBits:64-Number(m(11)&63n),physicalByte:physical,physical64:phys64});
+      if(options.diagnosticProcesses&&mmFields.arg_start&&mmFields.arg_end)try{
+        const first=read(mm+BigInt(mmFields.arg_start.offset)),last=read(mm+BigInt(mmFields.arg_end.offset));
+        assert.ok(last>=first&&last-first<=65536n,'Invalid bounded command-line extent');
+        group.actual_command_line=memory.read(first,Number(last-first)).toString('utf8').split('\0').filter(Boolean);
+      }catch(e){group.command_line_unverified=e.message;}
       const areas=enumerateMapleVmas({mm,read,layout});
       const paths=new Map(),symbolCache=new Map();
       const pathFor=pointer=>{const key=pointer.toString();if(!paths.has(key)){try{paths.set(key,mountedFilePath(pointer,{read,layout}));}catch(e){paths.set(key,null);}}return paths.get(key);};
@@ -115,6 +120,13 @@ function inspectThreads(api,options={}) {
       }
       group.thread_list_verified=true;group.thread_count=group.threads.length;group.user_vma_count=areas.length;
     } catch(e) {group.error=e.stack;}
+  }
+  if(options.diagnosticProcesses){
+    result.diagnostic_task_signals=tasks.filter(t=>t.pid===1||/^(main|system_server|zygote64|crash_dump64)$/.test(t.name)).map(t=>{
+      const row={pid:t.pid,name:t.name,state:t.state,exit_state:t.exit_state};
+      try{row.signals=inspectTaskSignals(api,BigInt(t.task));}catch(e){row.signals_unverified=e.message;}
+      return row;
+    });
   }
   if(options.allScheduling){
     result.all_thread_scheduling=[];
