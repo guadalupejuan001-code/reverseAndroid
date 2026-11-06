@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-diagnostic-tail-condition-failure-and-fix-v1",
+  "run_id": 42190629945,
+  "execution_commit": "5e8d91ec5e95ef7cd71969cfa3cc353493e954a4",
+  "overall_original_workflow_conclusion": "failure",
+  "actual_log_read_completed_successfully_at_stage": 3,
+  "actual_completion_response": "REVERSE_PTS_SS_DIAG RC_0",
+  "original_valid_result": "docs/evidence/c81/systemserver-diagnostic-stage3-producer-boundary.json",
+  "cause": "A skipped step has empty outputs; the old next-stage condition tested complete alone, allowing stage5 to be attempted after stage4 was skipped.",
+  "controller_guard_rejected_stage5_before_any_native_execution": true,
+  "further_native_execution_or_repeated_UART_after_completion": false,
+  "all_three_actual_admitted_control_checkpoints_preserved": true,
+  "fix": "Require the preceding execution step outcome success as well as complete not true; archive only when the original progress file exists.",
+  "regression_models_empty_skipped_step_outputs_and_every_terminal_stage": true,
+  "historical_diagnostic_not_rerun_after_fix": true,
+  "original_boot_or_UI_or_native_gates_changed": false
+}

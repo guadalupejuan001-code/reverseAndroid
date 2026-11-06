@@ -90,7 +90,8 @@ jobs:
 
         '
     - name: 'SystemServer diagnostic 1: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure')
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-1/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-1
@@ -103,12 +104,13 @@ jobs:
         '
     - name: 'SystemServer diagnostic 2: preserve original execution and send the read request at most once'
       id: r2
-      if: success() && steps.r1.outputs.complete != 'true'
+      if: success() && steps.r1.outcome == 'success' && steps.r1.outputs.complete != 'true'
       run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 2
 
         '
     - name: 'SystemServer diagnostic 2: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure')
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-2/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-2
@@ -121,12 +123,13 @@ jobs:
         '
     - name: 'SystemServer diagnostic 3: preserve original execution and send the read request at most once'
       id: r3
-      if: success() && steps.r2.outputs.complete != 'true'
+      if: success() && steps.r2.outcome == 'success' && steps.r2.outputs.complete != 'true'
       run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 3
 
         '
     - name: 'SystemServer diagnostic 3: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure')
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-3/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-3
@@ -139,12 +142,13 @@ jobs:
         '
     - name: 'SystemServer diagnostic 4: preserve original execution and send the read request at most once'
       id: r4
-      if: success() && steps.r3.outputs.complete != 'true'
+      if: success() && steps.r3.outcome == 'success' && steps.r3.outputs.complete != 'true'
       run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 4
 
         '
     - name: 'SystemServer diagnostic 4: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure')
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-4/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-4
@@ -157,12 +161,13 @@ jobs:
         '
     - name: 'SystemServer diagnostic 5: preserve original execution and send the read request at most once'
       id: r5
-      if: success() && steps.r4.outputs.complete != 'true'
+      if: success() && steps.r4.outcome == 'success' && steps.r4.outputs.complete != 'true'
       run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 5
 
         '
     - name: 'SystemServer diagnostic 5: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure')
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-5/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-5
@@ -175,12 +180,13 @@ jobs:
         '
     - name: 'SystemServer diagnostic 6: preserve original execution and send the read request at most once'
       id: r6
-      if: success() && steps.r5.outputs.complete != 'true'
+      if: success() && steps.r5.outcome == 'success' && steps.r5.outputs.complete != 'true'
       run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 6
 
         '
     - name: 'SystemServer diagnostic 6: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure')
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-6/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-6
@@ -193,12 +199,13 @@ jobs:
         '
     - name: 'SystemServer diagnostic 7: preserve original execution and send the read request at most once'
       id: r7
-      if: success() && steps.r6.outputs.complete != 'true'
+      if: success() && steps.r6.outcome == 'success' && steps.r6.outputs.complete != 'true'
       run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 7
 
         '
     - name: 'SystemServer diagnostic 7: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure')
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-7/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-7
@@ -211,12 +218,13 @@ jobs:
         '
     - name: 'SystemServer diagnostic 8: preserve original execution and send the read request at most once'
       id: r8
-      if: success() && steps.r7.outputs.complete != 'true'
+      if: success() && steps.r7.outcome == 'success' && steps.r7.outputs.complete != 'true'
       run: 'python3 scripts/run-c81-systemserver-diagnostic-stage.py 8
 
         '
     - name: 'SystemServer diagnostic 8: preserve every admitted original checkpoint piece'
-      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure')
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure') && hashFiles('evidence/c81-systemserver-diagnostic-8/c46-progress.json')
+        != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c81-systemserver-diagnostic-8
