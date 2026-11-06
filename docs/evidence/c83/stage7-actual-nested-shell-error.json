@@ -1,0 +1,25 @@
+{
+  "schema": "reverseandroid-actual-guest-command-failure-v1",
+  "run_id": 42202570182,
+  "execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
+  "last_original_admitted_stage": 7,
+  "instructions": 92547727998,
+  "checkpoint_SHA256": "034f85684668d131f4485b29c28480167710eb0c9c20c4ca638dd4ebb956603d",
+  "native_process_completed_cleanly": true,
+  "actual_guest_activation_RC": 1,
+  "actual_guest_error_from_stage6_raw_UART": "sh: syntax error: unexpected ';;'",
+  "host_exact_inner_shell_parser_independently_reproduced_error": true,
+  "outer_shell_syntax_check_alone_passed": true,
+  "root_cause": "Plain shlex.split included the adjacent unquoted outer semicolon inside the extracted sh-c argument. Inspection composition also duplicated an existing delimiter.",
+  "both_malformed_inputs_preserved_unchanged": [
+    "state/experiments/c82-input-3.txt",
+    "state/experiments/c82-input-4.txt"
+  ],
+  "latest_source_is_valid_original_native_state_despite_failed_guest_activation": true,
+  "source_must_not_roll_back_or_retransfer_captured_base64": true,
+  "original_native_ISA_codecs_clock_RAM_disk_and_BOOT_gates_not_modified": true,
+  "corrected_generator_nested_syntax_and_actual_shell_argv_oracle_tests_passed": true,
+  "fresh_host_PTY_capture_bad_prefix_rejection_and_exact_ELF_decode_tests_passed": true,
+  "new_inputs_executed_yet": false,
+  "BOOT_or_usable_UI_claimed": false
+}

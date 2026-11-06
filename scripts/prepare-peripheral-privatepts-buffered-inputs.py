@@ -20,6 +20,8 @@ import tempfile
 import time
 import tty
 
+from console_command_syntax import extract_su_shell_body, validate_nested_console_command
+
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
@@ -114,21 +116,21 @@ def main():
     for phase in proposal['phases']:
         raw = (repo / phase['input_file']).read_bytes()
         assert digest(raw) == phase['input_sha256']
-        tokens = shlex.split(raw.decode())
-        assert tokens[:4] == ['su', '0', 'sh', '-c']
-        bodies.append(tokens[4])
+        validate_nested_console_command(raw)
+        bodies.append(extract_su_shell_body(raw))
     # Frozen AOSP IOemLock v1, blob977746c4dd669c404e01eec51b438731d649ec1c:
     # Binder transactions2/3 are the read-only carrier/device getters. Keep
     # their actual Parcel replies and the peer's real request/reply log.
     oem = 'android.hardware.oemlock.IOemLock/default'
-    inspection = ('set -e; ' + bodies[1] + "; printf '\\nREVERSE_%s\\n' PTS_OEM_CARRIER_QUERY; "
+    separator = ' ' if bodies[1].rstrip().endswith(';') else '; '
+    inspection = ('set -e; ' + bodies[1] + separator + "printf '\\nREVERSE_%s\\n' PTS_OEM_CARRIER_QUERY; "
                   'service call ' + oem + ' 2; ' +
                   "printf '\\nREVERSE_%s\\n' PTS_OEM_DEVICE_QUERY; " +
                   'service call ' + oem + ' 3; cat ' + base + '.log')
     commands = [root(capture, 'PTS_TRANSFER_CAPTURE'), chunks[0] + '\n', chunks[1] + '\n',
                 root(decode + bodies[0], 'PTS_TRANSFER_ACTIVATION'), root(inspection, 'PTS_TRANSFER_INSPECT')]
     for i in [0, 3, 4]:
-        subprocess.run(['bash', '-n'], input=commands[i].encode(), check=True)
+        validate_nested_console_command(commands[i])
     exercise_capture(capture, chunks, data_file, encoded)
     exercise_capture(capture, chunks, data_file, encoded, corrupt=True)
     with tempfile.TemporaryDirectory(prefix='reverseandroid-buffered-decode-') as temp:
@@ -158,6 +160,8 @@ def main():
               'host_actual_PTY_blocking_capture_and_prefix_hashes_passed': True,
               'host_actual_PTY_corrupt_prefix_rejected_before_next_read': True,
               'host_exact_production_decode_reconstructs_compiled_ELF': True,
+              'host_outer_and_actual_inner_shell_syntax_verified': True,
+              'nested_syntax_check_shells': ['sh', 'bash'],
               'host_mount_or_SELinux_provisioning_attempted': False,
               'OEM_query_AIDL_v1_git_blob_SHA1': '977746c4dd669c404e01eec51b438731d649ec1c',
               'OEM_Binder_query_transactions': [2, 3],
