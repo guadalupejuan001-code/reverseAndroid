@@ -52,3 +52,14 @@ actual original HAL executables, ownership, open descriptors and real requests;
 then verify the original admission gates and live SELinux state. A ready marker is
 only a peripheral process result. SystemServer, live PID1 boot completion, a real
 visible frame and an actual UI input response remain separate required evidence.
+
+A prepared buffered transfer variant avoids interactive long-line redraw.
+`python3 scripts/prepare-peripheral-buffered-inputs.py VERIFIED_BUILD NEW_DIRECTORY`
+creates a short root capture command, two bounded base64 data lines, activation,
+and inspection inputs. The root command uses real blocking `IFS= read -r` calls
+and checks each actual file prefix hash before acknowledging it. The exact
+verified ELF was recovered in a host PTY/POSIX-shell test;
+[host capture evidence](evidence/c80/buffered-transfer-host-capture.json). This
+variant has not been executed in Android. It requires five new source-bound
+events, handling `REVERSE_PEER_CAPTURE` failures, and the prior successful actual
+HAL control. It must not alter or restart the currently running four-phase test.

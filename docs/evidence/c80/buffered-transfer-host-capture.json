@@ -1,0 +1,12 @@
+{
+  "schema": "reverseandroid-buffered-console-host-PTY-capture-v1",
+  "actual_host_PTY_and_POSIX_shell_used": true,
+  "both_ready_before_data_handshakes_observed": true,
+  "both_actual_file_prefix_hash_checks_passed": true,
+  "full_captured_base64_SHA256": "142627160e5e313d93a46ccfb5673859942b42cb51a2a9f83f69e5c02c749272",
+  "decoded_ELF_SHA256": "20110632e38c9fa662d0b813250ca16da0481251be0daacbc43dee84479a7efb",
+  "exact_verified_AArch64_ELF_recovered": true,
+  "original_HAL_integration_control_result_changed": false,
+  "Android_guest_execution_or_transfer_claimed": false,
+  "source_bound_canonical_adoption_pending_successful_HAL_control": true
+}
