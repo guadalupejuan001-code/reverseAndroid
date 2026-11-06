@@ -1,0 +1,357 @@
+{
+  "schema": "reverseandroid-thread-probe-v1",
+  "read_only": true,
+  "groups": [
+    {
+      "pid": 562,
+      "name": "main",
+      "threads": [
+        {
+          "pid": 562,
+          "tgid": 562,
+          "name": "main",
+          "task": "0xffffff800685d100",
+          "state": 128,
+          "exit_state": 32,
+          "on_rq": 0,
+          "on_cpu": 0,
+          "priority": 120,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "kernel_stack": [],
+          "accounting": {
+            "utime": "30651616000",
+            "stime": "8663255000",
+            "nvcsw": "1037",
+            "nivcsw": "13764",
+            "sum_exec_runtime": "38735613000",
+            "vruntime": "56210035543",
+            "exec_start": "1449254673000"
+          },
+          "policy": 0,
+          "prio": 120,
+          "normal_prio": 120,
+          "rt_priority": 0,
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e000",
+                "cgroup": "0xffffff8009ed7000",
+                "path": "/top-app",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "0",
+              "euid": "0",
+              "gid": "0",
+              "egid": "0"
+            }
+          },
+          "signals": {
+            "read_only": true,
+            "kernel_BTF_layout_verified": true,
+            "ptrace_raw": "0",
+            "jobctl_raw": "0",
+            "exit_code_raw": "9",
+            "exit_signal_raw": "17",
+            "parent": {
+              "task": "0xffffff8002d19440",
+              "pid": 1,
+              "tgid": 1,
+              "name": "init"
+            },
+            "real_parent": {
+              "task": "0xffffff8002d19440",
+              "pid": 1,
+              "tgid": 1,
+              "name": "init"
+            },
+            "blocked_words": [
+              "0x80011204"
+            ],
+            "real_blocked_words": [
+              "0x0"
+            ],
+            "saved_sigmask_words": [
+              "0x0"
+            ],
+            "pending_words": [
+              "0x0"
+            ],
+            "signal_owner": "0xffffff800d5fcd80",
+            "flags_raw": "4",
+            "group_exit_code_raw": "9",
+            "group_stop_count_raw": "0",
+            "notify_count_raw": "0",
+            "shared_pending_words": [
+              "0x100"
+            ],
+            "last_siginfo_pointer": "0x0"
+          },
+          "kernel_unwind_stop": "Android observer: unmapped virtual address",
+          "saved_user_frame_unverified": {
+            "candidate_count": 0
+          }
+        },
+        {
+          "pid": 3387,
+          "tgid": 562,
+          "name": "Jit thread pool",
+          "task": "0xffffff802dba0000",
+          "state": 0,
+          "exit_state": 0,
+          "on_rq": 1,
+          "on_cpu": 0,
+          "priority": 139,
+          "current": false,
+          "context_may_be_stale": false,
+          "kernel_pc": "__switch_to+0x144",
+          "kernel_stack": [
+            {
+              "fp": "0xffffffc086a2b240",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc086a2b300",
+              "lr": "0xffffffc0812a6e34",
+              "symbol": "preempt_schedule_irq+0x4c"
+            },
+            {
+              "fp": "0xffffffc086a2b360",
+              "lr": "0xffffffc0812a9478",
+              "symbol": "arm64_preempt_schedule_irq+0x30"
+            },
+            {
+              "fp": "0xffffffc086a2b380",
+              "lr": "0xffffffc08129e770",
+              "symbol": "el1_interrupt+0x48"
+            },
+            {
+              "fp": "0xffffffc086a2b390",
+              "lr": "0xffffffc08129e71c",
+              "symbol": "el1h_64_irq_handler+0x18"
+            },
+            {
+              "fp": "0xffffffc086a2b3b0",
+              "lr": "0xffffffc080011b90",
+              "symbol": "el1h_64_irq+0x7c"
+            },
+            {
+              "fp": "0xffffffc086a2b4f0",
+              "lr": "0xffffffc0801193fc",
+              "symbol": "free_unref_folios+0x6d8"
+            },
+            {
+              "fp": "0xffffffc086a2b570",
+              "lr": "0xffffffc080162ab0",
+              "symbol": "folios_put_refs+0x234"
+            },
+            {
+              "fp": "0xffffffc086a2b620",
+              "lr": "0xffffffc0801624c4",
+              "symbol": "free_pages_and_swap_cache+0x108"
+            },
+            {
+              "fp": "0xffffffc086a2b810",
+              "lr": "0xffffffc08006bb78",
+              "symbol": "tlb_flush_mmu+0x204"
+            },
+            {
+              "fp": "0xffffffc086a2b870",
+              "lr": "0xffffffc0801652c4",
+              "symbol": "unmap_page_range+0xf30"
+            },
+            {
+              "fp": "0xffffffc086a2b950",
+              "lr": "0xffffffc08015ffcc",
+              "symbol": "unmap_vmas+0xc8"
+            },
+            {
+              "fp": "0xffffffc086a2b9f0",
+              "lr": "0xffffffc08016c398",
+              "symbol": "exit_mmap+0xc8"
+            },
+            {
+              "fp": "0xffffffc086a2bb10",
+              "lr": "0xffffffc080341234",
+              "symbol": "__mmput+0x34"
+            },
+            {
+              "fp": "0xffffffc086a2bb60",
+              "lr": "0xffffffc080126ac0",
+              "symbol": "mmput+0x54"
+            },
+            {
+              "fp": "0xffffffc086a2bb90",
+              "lr": "0xffffffc0801916cc",
+              "symbol": "do_exit+0x1b8"
+            },
+            {
+              "fp": "0xffffffc086a2bbd0",
+              "lr": "0xffffffc0802b8af8",
+              "symbol": "do_group_exit+0x98"
+            },
+            {
+              "fp": "0xffffffc086a2bc00",
+              "lr": "0xffffffc0801ba8b4",
+              "symbol": "get_signal+0x5cc"
+            },
+            {
+              "fp": "0xffffffc086a2bc50",
+              "lr": "0xffffffc0801b7cb0",
+              "symbol": "do_signal+0x820"
+            },
+            {
+              "fp": "0xffffffc086a2bdb0",
+              "lr": "0xffffffc0800bceb0",
+              "symbol": "do_notify_resume+0xe0"
+            },
+            {
+              "fp": "0xffffffc086a2be30",
+              "lr": "0xffffffc08129eaa8",
+              "symbol": "el0_svc+0x80"
+            },
+            {
+              "fp": "0xffffffc086a2be80",
+              "lr": "0xffffffc08129e9bc",
+              "symbol": "el0t_64_sync_handler+0x88"
+            },
+            {
+              "fp": "0xffffffc086a2bea0",
+              "lr": "0xffffffc080011e50",
+              "symbol": "el0t_64_sync+0x1bc"
+            },
+            {
+              "fp": "0xffffffc086a2bfe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ],
+          "accounting": {
+            "utime": "0",
+            "stime": "96453000",
+            "nvcsw": "3",
+            "nivcsw": "45",
+            "sum_exec_runtime": "92776000",
+            "vruntime": "62331756884",
+            "exec_start": "1583867906000"
+          },
+          "policy": 0,
+          "prio": 139,
+          "normal_prio": 139,
+          "rt_priority": 0,
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e000",
+                "cgroup": "0xffffff8009ed7000",
+                "path": "/top-app",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "0",
+              "euid": "0",
+              "gid": "0",
+              "egid": "0"
+            }
+          },
+          "signals": {
+            "read_only": true,
+            "kernel_BTF_layout_verified": true,
+            "ptrace_raw": "0",
+            "jobctl_raw": "0",
+            "exit_code_raw": "9",
+            "exit_signal_raw": "4294967295",
+            "parent": {
+              "task": "0xffffff8002d19440",
+              "pid": 1,
+              "tgid": 1,
+              "name": "init"
+            },
+            "real_parent": {
+              "task": "0xffffff8002d19440",
+              "pid": 1,
+              "tgid": 1,
+              "name": "init"
+            },
+            "blocked_words": [
+              "0x80001204"
+            ],
+            "real_blocked_words": [
+              "0x0"
+            ],
+            "saved_sigmask_words": [
+              "0x0"
+            ],
+            "pending_words": [
+              "0x0"
+            ],
+            "signal_owner": "0xffffff800d5fcd80",
+            "flags_raw": "4",
+            "group_exit_code_raw": "9",
+            "group_stop_count_raw": "0",
+            "notify_count_raw": "0",
+            "shared_pending_words": [
+              "0x100"
+            ],
+            "last_siginfo_pointer": "0x0"
+          },
+          "saved_frame_read_errors": [
+            {
+              "stack_bytes": 32768,
+              "error": "Android observer: unmapped virtual address"
+            },
+            {
+              "stack_bytes": 65536,
+              "error": "Android observer: unmapped virtual address"
+            }
+          ],
+          "saved_user_frame_unverified": {
+            "candidate_count": 0
+          }
+        }
+      ],
+      "leader_has_no_user_mm": true,
+      "thread_list_verified": true,
+      "thread_count": 2,
+      "user_vma_count": 0
+    }
+  ],
+  "kernel_layout_pinned": true,
+  "checkpoint_sha256": "f92de63b69e8921eab0ac5dd7a436b859ef9cbd0f70287d85a2a8e6e8a7729b0",
+  "instructions": 101647727998,
+  "input_unchanged": true,
+  "observer_source_git_blob_sha1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "original_observer_file_unchanged": true,
+  "original_CPU_and_codecs_unchanged": true
+}

@@ -1,0 +1,12 @@
+{
+  "source_checkpoint_sha256": "f92de63b69e8921eab0ac5dd7a436b859ef9cbd0f70287d85a2a8e6e8a7729b0",
+  "instructions": 101647727998,
+  "thread_list_verified": true,
+  "dying_leader_PID": 562,
+  "last_cleanup_TID": 3387,
+  "current_nice": 19,
+  "guarded_relative_renice": -19,
+  "waiting_input_finished": true,
+  "source_events_preserved": 5,
+  "snapshot_or_clock_change": false
+}

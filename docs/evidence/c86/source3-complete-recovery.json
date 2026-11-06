@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-C86-source-complete-authenticated-recovery-v1",
+  "source_checkpoint_SHA256": "f92de63b69e8921eab0ac5dd7a436b859ef9cbd0f70287d85a2a8e6e8a7729b0",
+  "instructions": 101647727998,
+  "source_run_id": 42223223966,
+  "source_execution_commit": "d0b432631011e8c6789345ecdf0ae04155b303a2",
+  "source_stage": 3,
+  "all_four_outer_archives_SHA256_CRC_and_safe_paths_verified": true,
+  "all_inner_piece_bytes_and_SHA256_verified": true,
+  "whole_original_RVG_SHA256_verified": true,
+  "original_epoch_preflight_passed": true,
+  "preflight_report_SHA256": "b8df276d3dfcdfe4c345ad27efa0fab90b15251ac3a2f5fbf62d973fe1da7406",
+  "fresh_original_BTF_thread_list_verified": true,
+  "read_only_thread_report_SHA256": "ba9b42dd451c9c47df8c256bf761af5ccbc3e15942bf360d395fe6762318b7ae",
+  "no_C86_input_executed_at_preparation": true,
+  "old_C85_after_stage3_is_reference": true
+}

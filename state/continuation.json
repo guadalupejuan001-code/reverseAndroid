@@ -32,5 +32,11 @@
   "pending_first_C85_admission": false,
   "current_source_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
   "next_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
-  "C84_is_reference_after_explicit_C85_native_correction": true
+  "C84_is_reference_after_explicit_C85_native_correction": true,
+  "next_explicit_campaign": "C86",
+  "next_plan": "state/experiments/c86-plan.json",
+  "next_workflow": ".github/workflows/android-c86-cleanup-priority.yml",
+  "next_source_is_latest_admitted_C85_stage3": true,
+  "C85_after_stage3_is_reference_after_explicit_C86_input_selection": true,
+  "pending_C86_first_admission": true
 }

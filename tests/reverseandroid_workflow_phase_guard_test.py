@@ -33,7 +33,7 @@ def run_graph(runs, terminal, failure=False):
 class WorkflowPhaseGuardTest(unittest.TestCase):
     def workflows(self):
         paths = [ROOT / '.github/workflows/android-c81-systemserver-diagnostic.yml']
-        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml']:
+        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml']:
             candidate = ROOT / '.github/workflows' / name
             if candidate.exists():
                 paths.append(candidate)

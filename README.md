@@ -9,6 +9,7 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 <!-- current-runtime -->
 C85, etapa 3: **101.647.727.998 instrucciones** admitidas con la corrección IC IVAU validada en ARM real. SystemServer todavía no está activo. El arranque completo, la interfaz utilizable y su respuesta real siguen pendientes.
 SELinux permanece activo. [Estado y piezas](state/latest.json); [corrección y validación ARM](docs/c85-el0-ic-ivau.md). La frontera original de CI y todas sus piezas están verificadas.
+C86 está preparado desde esta frontera para completar la salida del Zygote anterior mediante una entrada acotada de prioridad normal. [Plan y comprobaciones](docs/c86-cleanup-priority.md). El nuevo comando todavía no se ha ejecutado.
 <!-- /current-runtime -->
 
 ### Historial conservado
