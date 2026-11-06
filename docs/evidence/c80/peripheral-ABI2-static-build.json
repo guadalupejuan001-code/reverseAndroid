@@ -1,0 +1,40 @@
+{
+  "schema": "reverseandroid-authenticated-ARM64-ABI2-peer-build-v1",
+  "run_id": 42165077939,
+  "execution_commit": "0d58e916564cdfb9dff416f1a9e5bbac13711738",
+  "artifact_id": 13478647620,
+  "artifact_archive_SHA256": "720226952fe54eeaee7c996ecbe0f2d358974e750a1c827a0e1885d34a269fe7",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "original_870_import_verified_in_CI": true,
+  "build_manifest": {
+    "schema": "reverseandroid-peripheral-peer-build-v1",
+    "source_sha256": {
+      "native/cuttlefish-peripheral-protocol.h": "f8f6c60f2711c25e0cc6af45b15332a4962369ec412b09e9954d11a857604c3e",
+      "native/cuttlefish-peripheral-linux-abi.h": "982b97377fddd0f17297e14c977b62415d3562ca318bfbd5203a32a04b4fa944",
+      "native/cuttlefish-peripheral-peer.c": "02b630bb64a21146d449a413d58d7ddd88cb6c20229a4093c4bba874a351d5f4",
+      "tests/cuttlefish-peripheral-arm64-abi-test.c": "e2285199dc549fe2f890b108a45abc91e16a4a462d53bdc0532a385545b86d4c",
+      "tests/fixtures/linux-v6.12-arm64-fcntl.h": "6d43602d5db08d4f4acda256ba09009c43b9d93b9283ad9dd75ce7c9dd2b6864",
+      "tests/cuttlefish-peripheral-protocol-test.c": "172842be0912271d3a33cccc6939099520962e8e3ef45f3c6e9349994f4e9499",
+      "tests/cuttlefish-peripheral-pty-test.py": "0b96faec5374102f115b98f7b7ceea0cfe99e7739a3605f1a10a46ea09e0a87d",
+      "scripts/build-cuttlefish-peripheral-peer.sh": "e38b52e1b074d1f226bd94f491bcecd16c248cf97242ab37049a07f0452f24ad"
+    },
+    "ELF_SHA256": "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da",
+    "ELF_bytes": 8176,
+    "gzip_SHA256": "fd6492e10fc844dcb5cac6e10999336ecb0c2c32f4b387954c467b5efa1bb326",
+    "gzip_bytes": 4368,
+    "static_AArch64_ELF_verified": true,
+    "original_CPU_and_codecs_modified": false,
+    "Android_HAL_integration_claimed": false,
+    "host_tests": [
+      "arm64-abi-test.json",
+      "protocol-test.json",
+      "pty-test.json"
+    ]
+  },
+  "AArch64_UAPI_test": {
+    "official_AArch64_UAPI_flags_match": true,
+    "O_DIRECTORY": 16384,
+    "O_NOFOLLOW": 32768
+  },
+  "actual_guest_integration_claimed": false
+}

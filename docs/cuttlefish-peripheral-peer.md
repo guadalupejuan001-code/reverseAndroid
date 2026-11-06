@@ -71,3 +71,12 @@ uses explicit arm64 definitions and host-test binaries use their system headers.
 An unmodified official Linux v6.12 arm64 UAPI fixture independently checks all
 eight open flags at compile time. The former build and guest control remain
 preserved. The corrected ARM64 executable needs another actual guest test.
+
+The corrected build is authenticated in
+[ABI2 build evidence](evidence/c80/peripheral-ABI2-static-build.json). A new
+isolated buffered control starts at the latest preserved original C80 source.
+Its root receiver verifies each real file prefix and then the complete ELF.
+The root-capture and raw-data method was checked using real host PTYs and the
+exact corrected binary; this remains separate from actual Android integration.
+Canonical adoption still requires actual original HAL registrations, the real
+reciprocal kernel PTY links, and original admission with enforcing SELinux.

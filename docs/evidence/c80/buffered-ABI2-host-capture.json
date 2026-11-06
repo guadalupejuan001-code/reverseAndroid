@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-buffered-ABI2-host-PTY-capture-v1",
+  "real_host_PTY_and_POSIX_shell_used": true,
+  "both_ready_before_data_handshakes_verified": true,
+  "both_real_file_prefix_hashes_verified": true,
+  "ELF_SHA256": "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da",
+  "exact_corrected_AArch64_ELF_recovered": true,
+  "input_data_line_sizes": [
+    3001,
+    2825
+  ],
+  "Android_execution_claimed": false
+}

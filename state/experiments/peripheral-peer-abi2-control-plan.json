@@ -1,0 +1,86 @@
+{
+  "schema": "reverseandroid-isolated-corrected-ARM64-buffered-peer-control-v1",
+  "source_checkpoint_sha256": "a77c86a19396444d4d8f9f1a90cc50d6e61491d40f1af4b149fefe6f28802fe9",
+  "source_instructions": 53000000000,
+  "source_C80_stage": 11,
+  "ELF_SHA256": "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da",
+  "gzip_SHA256": "fd6492e10fc844dcb5cac6e10999336ecb0c2c32f4b387954c467b5efa1bb326",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi2.elf",
+  "phase_count": 5,
+  "max_stages": 16,
+  "phases": [
+    {
+      "input_file": "state/experiments/peripheral-peer-abi2-control-input-0.txt",
+      "input_bytes": 883,
+      "input_sha256": "90563dea62b153d24d96b9ff7869bf6a6834d413ca58c49924729e3ba8a5826a",
+      "response_marker": "REVERSE_PEER_RX_0",
+      "failure_markers": [
+        "REVERSE_PEER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "effect": "Start a real root blocking read with per-fragment file SHA checks in isolated Android",
+      "instruction_budget": 1000000000
+    },
+    {
+      "input_file": "state/experiments/peripheral-peer-abi2-control-input-1.txt",
+      "input_bytes": 3001,
+      "input_sha256": "7b12927ae7d9fbaa1f975c385fa5eb2fe7316580e413ff074de22335012a33ed",
+      "response_marker": "REVERSE_PEER_DATA_0",
+      "failure_markers": [
+        "REVERSE_PEER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "effect": "Deliver first base64 data line only to the already-waiting guest read",
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PEER_DATA_0",
+        "REVERSE_PEER_RX_1"
+      ]
+    },
+    {
+      "input_file": "state/experiments/peripheral-peer-abi2-control-input-2.txt",
+      "input_bytes": 2825,
+      "input_sha256": "f5be10590031321c7ef32901dafdf2c2f0d27306818d1f1c867f93c0fabfcd2f",
+      "response_marker": "REVERSE_PEER_DATA_1",
+      "failure_markers": [
+        "REVERSE_PEER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "effect": "Deliver final base64 data line, verified against actual full guest file hash",
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PEER_DATA_1",
+        "REVERSE_PEER_CAPTURE"
+      ]
+    },
+    {
+      "input_file": "state/experiments/peripheral-peer-abi2-control-input-3.txt",
+      "input_bytes": 1118,
+      "input_sha256": "1c100bcd05179a65d89c985eb99fcb853a43c2d2b0ee8852709f5ef025ce4fc4",
+      "response_marker": "REVERSE_PEER_ACTIVATION",
+      "failure_markers": [
+        "REVERSE_PEER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "effect": "Decode and verify actual corrected ARM64 ELF, then provision real labeled PTYs with enforcing SELinux",
+      "instruction_budget": 1000000000
+    },
+    {
+      "input_file": "state/experiments/peripheral-peer-abi2-control-input-4.txt",
+      "input_bytes": 706,
+      "input_sha256": "a1c5a052ba82b9db8f56701e029e2b436ebed07d78e07fd7fa769f705174347e",
+      "response_marker": "REVERSE_PEER_INSPECT",
+      "failure_markers": [
+        "REVERSE_PEER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "effect": "Wait for and inspect original OEM/sensor Binder registrations, actual peer traffic and target labels",
+      "instruction_budget": 1000000000
+    }
+  ],
+  "one_input_max_per_phase": true,
+  "kernel_policy_or_properties_modified": false,
+  "main_C79_C80_modified": false,
+  "control_is_promotion_authority": false,
+  "canonical_adoption_requires_successful_original_HAL_test": true
+}

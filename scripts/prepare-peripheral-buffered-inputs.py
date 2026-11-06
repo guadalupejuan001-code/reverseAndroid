@@ -2,7 +2,7 @@
 """Prepare a transfer through a real blocking guest read, without line redraw.
 
 This only writes reviewable input files; it never executes an emulator or injects
-input. Use in a new explicitly bound continuation, after the HAL control succeeds.
+input. Use in a new explicitly bound continuation, for isolated integration testing. Canonical adoption requires a successful HAL control.
 Each phase still needs its own current source SHA/count and native admission.
 """
 import argparse
@@ -36,14 +36,16 @@ def main():
     manifest = json.loads((build/"build-manifest.json").read_text())
     executable = (build/"cuttlefish-peripheral-peer-aarch64").read_bytes()
     compressed = (build/"peer-aarch64.gz").read_bytes()
-    assert (build/"execution-commit.txt").read_text().strip() == "e11a4b86cdb9f79f8d553f67a09bf74afddd9cbe"
-    assert digest(executable) == manifest["ELF_SHA256"] == "20110632e38c9fa662d0b813250ca16da0481251be0daacbc43dee84479a7efb"
-    assert digest(compressed) == manifest["gzip_SHA256"] == "2646fcd488bccea5b2e3ef9ea1b3e6b0218410dad393e17886fe7c3b6c6c1632"
+    assert (build/"execution-commit.txt").read_text().strip() == "0d58e916564cdfb9dff416f1a9e5bbac13711738"
+    assert digest(executable) == manifest["ELF_SHA256"] == "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da"
+    assert digest(compressed) == manifest["gzip_SHA256"] == "fd6492e10fc844dcb5cac6e10999336ecb0c2c32f4b387954c467b5efa1bb326"
     assert gzip.decompress(compressed) == executable
+    abi = json.loads((build/"arm64-abi-test.json").read_text())
+    assert abi == {"official_AArch64_UAPI_flags_match": True, "O_DIRECTORY": 16384, "O_NOFOLLOW": 32768}
     encoded = base64.b64encode(compressed).decode("ascii")
-    chunks = [encoded[i:i+2900] for i in range(0,len(encoded),2900)]
+    chunks = [encoded[i:i+3000] for i in range(0,len(encoded),3000)]
     assert len(chunks) == 2
-    base = "/data/local/tmp/reverseandroid-peer-e11a"
+    base = "/data/local/tmp/reverseandroid-peer-abi2"
     data_file, elf_file, log_file = base+".b64", base+".elf", base+".log"
     capture = "set -e; umask 077; test ! -e "+data_file+"; test ! -L "+data_file+"; "
     for index in range(2):
@@ -57,7 +59,13 @@ def main():
     activation += "sha256sum "+elf_file+"; h=$(sha256sum "+elf_file+'); test "${h%% *}" = '+manifest["ELF_SHA256"]+"; "
     activation += "chmod 700 "+elf_file+"; "+elf_file+" --guest > "+log_file+" 2>&1 < /dev/null & p=$!; "
     activation += 'ready=0; i=0; while test "$i" -lt 20; do if grep -q "^REVERSE_PERIPHERAL_PEER_READY$" '+log_file+'; then ready=1; break; fi; kill -0 "$p" || break; sleep 1; i=$((i+1)); done; cat '+log_file+'; test "$ready" = 1'
-    inspection = "id; cat "+log_file+"; ls -lZL /dev/hvc10 /dev/hvc18 /dev/hvc19; service check android.hardware.light.ILights/default; service check android.hardware.oemlock.IOemLock/default; service check android.hardware.sensors.ISensors/default; ps -A -o PID,UID,NAME,ARGS | grep -E \"oemlock|sensors|reverseandroid-peer\"; true"
+    oem_name="android.hardware.oemlock.IOemLock/default"
+    sensor_name="android.hardware.sensors.ISensors/default"
+    inspection = "id; ls -lZL /dev/hvc10 /dev/hvc18 /dev/hvc19; service check android.hardware.light.ILights/default; "
+    inspection += "ok=0; i=0; while test \"$i\" -lt 20; do o=$(service check "+oem_name+"); s=$(service check "+sensor_name+"); "
+    inspection += "printf '%s\\n%s\\n' \"$o\" \"$s\"; if test \"$o\" = \"Service "+oem_name+": found\" && test \"$s\" = \"Service "+sensor_name+": found\"; then ok=1; break; fi; sleep 1; i=$((i+1)); done; "
+    inspection += "cat "+log_file+"; ps -A -o PID,UID,NAME,ARGS | grep -E \"oemlock|sensors|reverseandroid-peer\"; test \"$ok\" = 1"
+
     commands = [root_command(capture,"REVERSE_PEER_CAPTURE"),chunks[0]+"\n",chunks[1]+"\n",
                 root_command(activation,"REVERSE_PEER_ACTIVATION"),root_command(inspection,"REVERSE_PEER_INSPECT")]
     responses = ["REVERSE_PEER_RX_0","REVERSE_PEER_DATA_0","REVERSE_PEER_DATA_1","REVERSE_PEER_ACTIVATION","REVERSE_PEER_INSPECT"]
@@ -76,7 +84,7 @@ def main():
     result={"schema":"reverseandroid-buffered-UART-transfer-proposal-v1","ELF_SHA256":manifest["ELF_SHA256"],
             "gzip_SHA256":manifest["gzip_SHA256"],"phase_count":len(phases),"phases":phases,
             "requires_new_source_bound_input_plan_per_phase":True,"source_bound_or_executed":False,
-            "requires_successful_prior_original_HAL_control":True,"modifies_original_interpreter_or_codecs":False}
+            "canonical_adoption_requires_successful_prior_original_HAL_control":True,"modifies_original_interpreter_or_codecs":False}
     (output/"proposal.json").write_text(json.dumps(result,indent=2)+"\n")
     print(json.dumps({"phases":len(phases),"input_bytes":[p["input_bytes"] for p in phases],
                       "actual_guest_transfer_test_passed":False,"emulator_execution_started":False}))

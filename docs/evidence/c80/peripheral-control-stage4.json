@@ -1,0 +1,71 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "peripheral-peer-control",
+  "stage": 4,
+  "run_id": 42158822304,
+  "execution_commit": "145f4550086c109ae780d21f8225c29c62f48886",
+  "checkpoint_sha256": "62ace26e590f0b6ecbe2dcf9b969f34e6757257e4046636cd2d8076690dc7384",
+  "instructions": 51000000000,
+  "metadata_artifact_id": 13478393560,
+  "metadata_archive_sha256": "ff5ed20f21330daf8cb0ea922a2718e4077630ee45b42982c79f3f7317958de3",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": false,
+  "transport_lock": "state/experiments/peripheral-peer-control-stage4-transport.json",
+  "artifact_lock": "state/experiments/peripheral-peer-control-stage4-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/peripheral-peer-control-4",
+    "phase": 2,
+    "waiting": true,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/peripheral-peer-control-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 43000000000,
+          "counter_subtick": 28,
+          "bytes": 3241,
+          "sha256": "2cfe2879564409bee09e9a2e542a04564c00c20fa22f128bc1476960d2443c71"
+        }
+      },
+      {
+        "phase": 1,
+        "input_plan": "evidence/peripheral-peer-control-reports/stage-3-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 47000000000,
+          "counter_subtick": 28,
+          "bytes": 3247,
+          "sha256": "005eb45ff153d3bef9f112437b0848ea6fd95796189e53ebe7c7b450a77c80a8"
+        }
+      },
+      {
+        "phase": 2,
+        "input_plan": "evidence/peripheral-peer-control-reports/stage-4-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 49000000000,
+          "counter_subtick": 28,
+          "bytes": 1148,
+          "sha256": "4f19e72114a322250780ca68d8cf482110e93c4a09424ccac26e990f8d724e61"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "last_admitted_sha256": "62ace26e590f0b6ecbe2dcf9b969f34e6757257e4046636cd2d8076690dc7384",
+    "last_admitted_instructions": 51000000000,
+    "combined_original_console_bytes_sha256": "3e7cbf6eaf715304244a7295cf1489b087c0a10c76f3a837da720f742aa0e888",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": false,
+      "android.hardware.sensors.ISensors/default": false
+    },
+    "actual_AArch64_peer_ready_line_seen": false,
+    "actual_guest_ELF_hash_line_seen": true,
+    "control_is_promotion_authority": false,
+    "main_C79_C80_modified": false
+  }
+}

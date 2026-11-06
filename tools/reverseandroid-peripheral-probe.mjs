@@ -7,8 +7,8 @@ import {pathToFileURL} from 'node:url';
 import {mountedFilePath,userMemoryReader} from './android_live_property.mjs';
 const OEM='/apex/com.google.cf.oemlock/bin/hw/android.hardware.oemlock-service.remote';
 const SENSORS='/vendor/bin/hw/android.hardware.sensors-service.multihal';
-const PEER='/data/local/tmp/reverseandroid-peer-e11a.elf';
-function inspect(api){
+const DEFAULT_PEER='/data/local/tmp/reverseandroid-peer-e11a.elf';
+function inspect(api,peerPath){
   const {read,type,members,resolveType,types,tasks,task,translate,physical,phys64,m}=api;
   const layout=name=>Object.fromEntries(Object.entries(members(type(name))).map(([key,v])=>{const t=resolveType(types[v.type]);return [key,{offset:v.offset,count:t.kind===3?api.kernel.readUInt32LE(t.at+20):null}];}));
   const ml=members(type('mm_struct')),fl=members(type('file')),il=members(type('inode'));
@@ -19,7 +19,7 @@ function inspect(api){
     const pointer=BigInt(t.task);if(Number(read(pointer+BigInt(task.tgid.offset),4))!==t.pid)continue;
     try{
       const mm=read(pointer+BigInt(task.mm.offset)),exe=read(mm+BigInt(ml.exe_file.offset));
-      const path=mountedFilePath(exe,{read,layout});if(![OEM,SENSORS,PEER].includes(path))continue;
+      const path=mountedFilePath(exe,{read,layout});if(![OEM,SENSORS,peerPath].includes(path))continue;
       const cp=read(pointer+BigInt(task.cred.offset));
       const credentials=Object.fromEntries(['uid','euid','gid','egid'].map(k=>[k,Number(read(cp+BigInt(cred[k].offset),4))]));
       const start=read(mm+BigInt(ml.arg_start.offset)),end=read(mm+BigInt(ml.arg_end.offset));assert.ok(end>=start&&end-start<=32768n);
@@ -49,7 +49,7 @@ function inspect(api){
       processes.push(process);
     }catch(error){errors.push({pid:t.pid,error:error.message});}
   }
-  const peer=processes.filter(p=>p.exe_path===PEER&&p.credentials.uid===0&&p.credentials.euid===0);
+  const peer=processes.filter(p=>p.exe_path===peerPath&&p.credentials.uid===0&&p.credentials.euid===0);
   const oem=processes.filter(p=>p.exe_path===OEM&&p.credentials.uid===1064),sensors=processes.filter(p=>p.exe_path===SENSORS&&p.credentials.uid===1000);
   const pairs=[];
   if(peer.length===1)for(const hal of [...oem,...sensors])for(const slave of hal.files){
@@ -63,7 +63,8 @@ function inspect(api){
   const count=exe=>new Set(pairs.filter(p=>p.HAL_executable===exe).map(p=>p.PTY_index)).size;
   return {schema:'reverseandroid-original-peripheral-HAL-PTY-readonly-v1',read_only:true,processes,inspection_errors:errors,original_oemlock_executable_alive:oem.length===1,original_sensors_executable_alive:sensors.length===1,real_AArch64_peer_alive:peer.length===1,paired_FDs:pairs,OEM_channel_connected_to_actual_peer:count(OEM)===1,two_separate_sensor_channels_connected_to_actual_peer:count(SENSORS)===2,boot_or_UI_completion_claimed:false};
 }
-export async function probePeripherals(path,sha){
+export async function probePeripherals(path,sha,peerPath=DEFAULT_PEER){
+  assert.ok(/^\/data\/local\/tmp\/reverseandroid-peer-(e11a|abi2)\.elf$/.test(peerPath));
   assert.ok(statSync(path).size<=2147483648);const url=new URL('./android_kernel_observer.mjs',import.meta.url),source=read(url,'utf8');
   const pin=JSON.parse(read(new URL('../state/upstream-snapshot.json',import.meta.url))).files.find(f=>f.path==='tools/android_kernel_observer.mjs');
   assert.equal(createHash('sha1').update('blob '+Buffer.byteLength(source)+'\0').update(source).digest('hex'),pin.git_blob_sha1);
@@ -72,9 +73,9 @@ export async function probePeripherals(path,sha){
   const module=source.replace(marker,hook+marker).replace(/from (['"])(\.\/[^'"]+)\1/g,(_,q,s)=>'from '+q+new URL(s,url).href+q);
   const {observeAndroidKernel}=await import('data:text/javascript;base64,'+Buffer.from(module).toString('base64'));
   const bytes=read(path);let result;
-  const evidence=observeAndroidKernel(bytes,sha,{maxSnapshotBytes:2147483648,liveProperties:true,extraReadOnlyProbe:api=>{result=inspect(api);}});
-  assert.equal(evidence.input_unchanged,true);assert.ok(result);return {...result,checkpoint_sha256:sha,instructions:evidence.instructions,input_unchanged:true,original_observer_source_git_blob_sha1:pin.git_blob_sha1};
+  const evidence=observeAndroidKernel(bytes,sha,{maxSnapshotBytes:2147483648,liveProperties:true,extraReadOnlyProbe:api=>{result=inspect(api,peerPath);}});
+  assert.equal(evidence.input_unchanged,true);assert.ok(result);return {...result,expected_peer_executable:peerPath,checkpoint_sha256:sha,instructions:evidence.instructions,input_unchanged:true,original_observer_source_git_blob_sha1:pin.git_blob_sha1};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){try{
-  const [path,sha,output]=process.argv.slice(2);assert.ok(path&&sha&&output);const result=await probePeripherals(path,sha);write(output,JSON.stringify(result,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({checkpoint_sha256:sha,original_oemlock_executable_alive:result.original_oemlock_executable_alive,original_sensors_executable_alive:result.original_sensors_executable_alive,real_AArch64_peer_alive:result.real_AArch64_peer_alive,paired_FDs:result.paired_FDs}));
+  const [path,sha,output,peerPath]=process.argv.slice(2);assert.ok(path&&sha&&output);const result=await probePeripherals(path,sha,peerPath);write(output,JSON.stringify(result,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({checkpoint_sha256:sha,original_oemlock_executable_alive:result.original_oemlock_executable_alive,original_sensors_executable_alive:result.original_sensors_executable_alive,real_AArch64_peer_alive:result.real_AArch64_peer_alive,paired_FDs:result.paired_FDs}));
 }catch(error){console.error(error.stack);process.exitCode=1;}}
