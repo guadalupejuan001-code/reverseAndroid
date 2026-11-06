@@ -1,0 +1,20 @@
+{
+  "schema": "reverseandroid-isolated-console-continuation-v1",
+  "source_checkpoint_sha256": "a208422ad2f4e9c4fce1f721a6f55aaad5397de2621d906d54e2ff2ae596dd86",
+  "source_instructions": 29500000000,
+  "source_run_id": 42145414137,
+  "source_commit": "62d37b2d036ea9f9acb8f171990aa6b327fda886",
+  "source_artifact_lock": "state/experiments/thread-diagnostic-resume-artifacts.json",
+  "instruction_budgets": [
+    1000000000,
+    1000000000,
+    1000000000
+  ],
+  "original_input_event_SHA256": "78bb7fc603ab7aee2289084b30b139c7866b391d466a0bcbbe0de646325f3ac6",
+  "input_already_delivered_and_echoed": true,
+  "command_response_still_pending": true,
+  "additional_guest_input_events": 0,
+  "control_is_promotion_authority": false,
+  "primary_C79_modified": false,
+  "fresh_hardware_power_cycle": false
+}

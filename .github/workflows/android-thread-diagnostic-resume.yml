@@ -1,0 +1,232 @@
+name: Continue actual Android crash-log read without resubmitting input
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-thread-diagnostic-resume.yml
+    - state/experiments/thread-diagnostic-resume-artifacts.json
+    - state/experiments/thread-diagnostic-resume-plan.json
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-thread-diagnostic-resume
+  cancel-in-progress: false
+jobs:
+  thread-diagnostic-resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate unchanged sources, exact seed, original disk and already-tested runner
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/thread-diagnostic-resume-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source-diagnostic state/experiments/thread-diagnostic-resume-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/thread-diagnostic-resume-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/thread-diagnostic-resume-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/thread-diagnostic-resume-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/thread-diagnostic-resume-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        chmod +x build/reverseandroid/epoch build/reverseandroid/frame
+
+        mkdir -p evidence/thread-diagnostic-resume-reports
+
+        python3 - <<''PYCACHE''
+
+        import pathlib,json,hashlib
+
+        p=pathlib.Path(''build/reverseandroid'')
+
+        assert hashlib.file_digest((p/''epoch'').open(''rb''),''sha256'').hexdigest()==''72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa''
+
+        fixture=json.loads((p/''console-event-test.json'').read_text());assert len(fixture)==5 and all(v is True
+        for v in fixture.values())
+
+        PYCACHE
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-diagnostic
+        > evidence/thread-diagnostic-resume-reports/source-admission.json
+
+        cp build/source-diagnostic/console-new.txt evidence/thread-diagnostic-resume-reports/console-all.txt
+
+        '
+    - name: 'Control stage 1: continue the already-delivered console request without new input'
+      id: r1
+      if: success()
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run build/source-diagnostic
+        evidence/thread-diagnostic-resume-1 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 1000000000 > evidence/thread-diagnostic-resume-reports/stage-1.json
+
+        python3 - <<''PYCONTROL''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/thread-diagnostic-resume-1'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        all_console=pathlib.Path(''evidence/thread-diagnostic-resume-reports/console-all.txt'')
+
+        with all_console.open(''a'') as f:f.write((p/''console-new.txt'').read_text())
+
+        s=all_console.read_text();begin=s.find(''REVERSE_CRASH_BEGIN'');end=s.find(''REVERSE_CRASH_END'',max(0,begin));complete=0<=begin<end
+
+        proof={''schema'':''reverseandroid-continued-actual-crash-console-response-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''actual_crash_begin_seen'':begin>=0,''actual_crash_end_after_begin_seen'':complete,''combined_console_sha256'':hashlib.sha256(s.encode()).hexdigest(),''control_is_promotion_authority'':False,''primary_C79_input_modified'':False,''additional_guest_input_events'':0,''prior_input_command_not_resubmitted'':True}
+
+        (p/''crash-control-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(complete).lower()+''\n'')
+
+        PYCONTROL
+
+        '
+    - name: 'Control stage 1: preserve every full original piece'
+      if: always() && steps.r1.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/thread-diagnostic-resume-1
+        transport_path: build/thread-diagnostic-resume-transport-1
+        artifact_prefix: reverseandroid-thread-diagnostic-resume-1
+    - name: 'Control stage 1: release only earlier redundant host copies after full preservation'
+      if: success() && steps.r1.outcome == 'success'
+      run: 'rm -rf build/source-diagnostic
+
+        '
+    - name: 'Control stage 2: continue the already-delivered console request without new input'
+      id: r2
+      if: success() && steps.r1.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/thread-diagnostic-resume-1
+        evidence/thread-diagnostic-resume-2 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 1000000000 > evidence/thread-diagnostic-resume-reports/stage-2.json
+
+        python3 - <<''PYCONTROL''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/thread-diagnostic-resume-2'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        all_console=pathlib.Path(''evidence/thread-diagnostic-resume-reports/console-all.txt'')
+
+        with all_console.open(''a'') as f:f.write((p/''console-new.txt'').read_text())
+
+        s=all_console.read_text();begin=s.find(''REVERSE_CRASH_BEGIN'');end=s.find(''REVERSE_CRASH_END'',max(0,begin));complete=0<=begin<end
+
+        proof={''schema'':''reverseandroid-continued-actual-crash-console-response-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''actual_crash_begin_seen'':begin>=0,''actual_crash_end_after_begin_seen'':complete,''combined_console_sha256'':hashlib.sha256(s.encode()).hexdigest(),''control_is_promotion_authority'':False,''primary_C79_input_modified'':False,''additional_guest_input_events'':0,''prior_input_command_not_resubmitted'':True}
+
+        (p/''crash-control-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(complete).lower()+''\n'')
+
+        PYCONTROL
+
+        '
+    - name: 'Control stage 2: preserve every full original piece'
+      if: always() && steps.r2.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/thread-diagnostic-resume-2
+        transport_path: build/thread-diagnostic-resume-transport-2
+        artifact_prefix: reverseandroid-thread-diagnostic-resume-2
+    - name: 'Control stage 2: release only earlier redundant host copies after full preservation'
+      if: success() && steps.r2.outcome == 'success'
+      run: 'rm -rf evidence/thread-diagnostic-resume-1 build/thread-diagnostic-resume-transport-1
+
+        '
+    - name: 'Control stage 3: continue the already-delivered console request without new input'
+      id: r3
+      if: success() && steps.r2.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/thread-diagnostic-resume-2
+        evidence/thread-diagnostic-resume-3 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 1000000000 > evidence/thread-diagnostic-resume-reports/stage-3.json
+
+        python3 - <<''PYCONTROL''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/thread-diagnostic-resume-3'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        all_console=pathlib.Path(''evidence/thread-diagnostic-resume-reports/console-all.txt'')
+
+        with all_console.open(''a'') as f:f.write((p/''console-new.txt'').read_text())
+
+        s=all_console.read_text();begin=s.find(''REVERSE_CRASH_BEGIN'');end=s.find(''REVERSE_CRASH_END'',max(0,begin));complete=0<=begin<end
+
+        proof={''schema'':''reverseandroid-continued-actual-crash-console-response-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''actual_crash_begin_seen'':begin>=0,''actual_crash_end_after_begin_seen'':complete,''combined_console_sha256'':hashlib.sha256(s.encode()).hexdigest(),''control_is_promotion_authority'':False,''primary_C79_input_modified'':False,''additional_guest_input_events'':0,''prior_input_command_not_resubmitted'':True}
+
+        (p/''crash-control-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(complete).lower()+''\n'')
+
+        PYCONTROL
+
+        '
+    - name: 'Control stage 3: preserve every full original piece'
+      if: always() && steps.r3.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/thread-diagnostic-resume-3
+        transport_path: build/thread-diagnostic-resume-transport-3
+        artifact_prefix: reverseandroid-thread-diagnostic-resume-3
+    - name: 'Control stage 3: release only earlier redundant host copies after full preservation'
+      if: success() && steps.r3.outcome == 'success'
+      run: 'rm -rf evidence/thread-diagnostic-resume-2 build/thread-diagnostic-resume-transport-2
+
+        '
+    - name: Require actual completed diagnostic output
+      if: success()
+      run: 'python3 - <<''PYDONE''
+
+        from pathlib import Path
+
+        s=Path(''evidence/thread-diagnostic-resume-reports/console-all.txt'').read_text();a=s.find(''REVERSE_CRASH_BEGIN'');b=s.find(''REVERSE_CRASH_END'',max(0,a));assert
+        0<=a<b,''Actual crash-log read still pending; full controls remain preserved''
+
+        PYDONE
+
+        '
+    - name: Preserve actual combined console and every original report
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-thread-diagnostic-resume-evidence
+        path: 'evidence/thread-diagnostic-resume-reports
+
+          evidence/thread-diagnostic-resume-*/*.json
+
+          evidence/thread-diagnostic-resume-*/*.log
+
+          evidence/thread-diagnostic-resume-*/*.txt
+
+          state/experiments/thread-diagnostic-input.txt
+
+          state/experiments/thread-diagnostic-plan.json
+
+          state/experiments/thread-diagnostic-resume-plan.json'
+        retention-days: 90
+        if-no-files-found: error
