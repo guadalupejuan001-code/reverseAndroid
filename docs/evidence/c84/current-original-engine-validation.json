@@ -1,0 +1,26 @@
+{
+  "schema": "reverseandroid-current-C84-original-engine-validation-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "run_id": 42213153661,
+  "execution_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279",
+  "status": "completed",
+  "conclusion": "success",
+  "workflow_path": ".github/workflows/reverseandroid.yml",
+  "jobs": [
+    {
+      "id": 127876506855,
+      "name": "original-engine-validation",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 127879038001,
+      "name": "authenticated-android-continuation",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "original_870_imported_files_remain_verified": true,
+  "actual_native_CLZ_validation_separate": "docs/evidence/c83/actual-Android-CLZ-retirement.json",
+  "boot_or_UI_completion_claimed": false
+}
