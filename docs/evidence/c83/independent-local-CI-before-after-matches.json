@@ -1,0 +1,39 @@
+{
+  "schema": "reverseandroid-independent-local-CI-whole-snapshot-matches-v1",
+  "CI_run_id": 42202570182,
+  "CI_execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
+  "CI_native_SHA256": "1fdc567bc4790b93285c73917e0462dee1e718e6803af40b289026af29dceb86",
+  "local_native_SHA256": "49ac5fcc19add1f11be3622bcb59306601d4bd89d488785313fb7b37fa5f362e",
+  "actual_Android_instruction_operand": [
+    0,
+    2047,
+    1023,
+    15
+  ],
+  "actual_Android_instruction_result": [
+    32,
+    21,
+    22,
+    28
+  ],
+  "all_original_admission_and_clean_outcomes_verified": true,
+  "new_UART_events_in_both_branches": 0,
+  "all_CI_transport_pieces_preserved_and_pinned": true,
+  "fresh_recovery_of_CI_transport_or_identical_report_files_claimed": false,
+  "matches": [
+    {
+      "stage": 1,
+      "instructions": 85047727997,
+      "whole_RVG_SHA256": "9b67411e2faefdd2c3e200d4c41157c2513f738fde934cf9d9947651bc47d866",
+      "local_complete_RVG_bytes": 1970774310,
+      "CI_transport_lock": "state/experiments/c83-stage-1-artifacts.json"
+    },
+    {
+      "stage": 2,
+      "instructions": 85047727998,
+      "whole_RVG_SHA256": "d4ca99f595a326dce6ef4b789497ea32aca17faf257a18dd80450cf49eb64098",
+      "local_complete_RVG_bytes": 1970774310,
+      "CI_transport_lock": "state/experiments/c83-stage-2-artifacts.json"
+    }
+  ]
+}

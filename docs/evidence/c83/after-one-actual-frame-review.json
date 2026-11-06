@@ -1,0 +1,16 @@
+{
+  "schema": "reverseandroid-manual-original-frame-review-v1",
+  "checkpoint_SHA256": "d4ca99f595a326dce6ef4b789497ea32aca17faf257a18dd80450cf49eb64098",
+  "instructions": 85047727998,
+  "PPM_SHA256": "8ea1369736136a6b2d1d1bce0376b5d47323fff179d32c7944c21ca8934448fa",
+  "RGB_SHA256": "43fecb788e4f2d88f177addae0073c83a9119d443276c01f49e397b3dad30410",
+  "width": 800,
+  "height": 600,
+  "actual_frame_counter": 160,
+  "original_pixels_reviewed": true,
+  "observed_content": "Original Android wordmark boot animation on black. No launcher, system bars, buttons or usable app UI is visible.",
+  "usable_UI_verified": false,
+  "actual_UI_response_verified": false,
+  "same_frame_as_original_pre_CLZ_snapshot": true,
+  "image_synthesis_or_pixel_retouching_used": false
+}
