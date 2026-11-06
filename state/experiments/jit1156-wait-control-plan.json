@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "965513c9b6c7bac3b382272fb30b1d3f042afa50ac3795f15350aac483e27bf9",
+  "source_instructions": 49000000000,
+  "input_file": "jit1156-wait-control-input.txt",
+  "input_sha256": "800b7d30cdd77b0731c25fca639a4d70e0732acc4a2bcbf0fe652571103a72a2",
+  "input_bytes": 588,
+  "scope": "Isolated explicit OS priority experiment. Original read-only probes at32B and33B verify runnable JIT1156, TGID562, UID0, nice+19 and unchanged12,092,000ns runtime. Main has not been proven GC-blocked. The actual console checks owner/name/nice, applies Toybox delta-19 once, verifies nice0, then measures original thread accounting. C79 and C80 retain zero new input. This control is not promotion authority. Uses direct su/sh arguments. The earlier heredoc control failed to create its shell temporary file before su; it applied no priority change. This is a separate control from the original33B parent, not a second input in that failed VM.",
+  "baseline_main_PID": 562,
+  "baseline_main_utime_ns": 23530892000,
+  "baseline_main_wait_futex": "0x7355e07da0",
+  "same_main_accounting_and_futex_at47B_and49B_verified": true,
+  "experimental_objective": "Measure actual foreground user execution after a separately authenticated nice19-to0 JIT input. Do not infer GC cause. Main C79/C80 remain unchanged.",
+  "baseline_JIT_utime_ns": 237412000,
+  "parallel_reference_comparison_required_before_canonical_adoption": true
+}

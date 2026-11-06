@@ -57,7 +57,7 @@ def main():
     activation += "sha256sum "+elf_file+"; h=$(sha256sum "+elf_file+'); test "${h%% *}" = '+manifest["ELF_SHA256"]+"; "
     activation += "chmod 700 "+elf_file+"; "+elf_file+" --guest > "+log_file+" 2>&1 < /dev/null & p=$!; "
     activation += 'ready=0; i=0; while test "$i" -lt 20; do if grep -q "^REVERSE_PERIPHERAL_PEER_READY$" '+log_file+'; then ready=1; break; fi; kill -0 "$p" || break; sleep 1; i=$((i+1)); done; cat '+log_file+'; test "$ready" = 1'
-    inspection = "id; cat "+log_file+"; ls -lZ /dev/hvc10 /dev/hvc18 /dev/hvc19; service check android.hardware.oemlock.IOemLock/default; service check android.hardware.sensors.ISensors/default; ps -A -o PID,UID,NAME,ARGS | grep -E \"oemlock|sensors|reverseandroid-peer\"; true"
+    inspection = "id; cat "+log_file+"; ls -lZL /dev/hvc10 /dev/hvc18 /dev/hvc19; service check android.hardware.light.ILights/default; service check android.hardware.oemlock.IOemLock/default; service check android.hardware.sensors.ISensors/default; ps -A -o PID,UID,NAME,ARGS | grep -E \"oemlock|sensors|reverseandroid-peer\"; true"
     commands = [root_command(capture,"REVERSE_PEER_CAPTURE"),chunks[0]+"\n",chunks[1]+"\n",
                 root_command(activation,"REVERSE_PEER_ACTIVATION"),root_command(inspection,"REVERSE_PEER_INSPECT")]
     responses = ["REVERSE_PEER_RX_0","REVERSE_PEER_DATA_0","REVERSE_PEER_DATA_1","REVERSE_PEER_ACTIVATION","REVERSE_PEER_INSPECT"]

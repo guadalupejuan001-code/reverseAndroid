@@ -1,0 +1,74 @@
+{
+  "schema": "reverseandroid-observed-original-ART-main-wait-v1",
+  "reference_run": 42147763604,
+  "reference_execution_commit": "c435ee53ef65e60f00ef2f7fb946c8e53eea8a8f",
+  "samples": [
+    {
+      "instructions": 47000000000,
+      "checkpoint_sha256": "bfd5feee5264a2e43f21684a25b7ceb7b27222c94264f188983b9cff1f8ac801",
+      "main_state": 8193,
+      "main_accounting": {
+        "utime": "23530892000",
+        "stime": "7768307000",
+        "nvcsw": "1016",
+        "nivcsw": "11366",
+        "sum_exec_runtime": "31441045000",
+        "vruntime": "6752092865",
+        "exec_start": "727849224000"
+      },
+      "main_futex": {
+        "raw_tagged_address": "0xb400007355e07da0",
+        "address": "0x7355e07da0",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7355e07da0",
+          "start": "0x7355e01000",
+          "end": "0x7355e41000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      }
+    },
+    {
+      "instructions": 49000000000,
+      "checkpoint_sha256": "965513c9b6c7bac3b382272fb30b1d3f042afa50ac3795f15350aac483e27bf9",
+      "main_state": 8193,
+      "main_accounting": {
+        "utime": "23530892000",
+        "stime": "7768307000",
+        "nvcsw": "1016",
+        "nivcsw": "11366",
+        "sum_exec_runtime": "31441045000",
+        "vruntime": "6752092865",
+        "exec_start": "727849224000"
+      },
+      "main_futex": {
+        "raw_tagged_address": "0xb400007355e07da0",
+        "address": "0x7355e07da0",
+        "TBI0_enabled": true,
+        "operation": 128,
+        "expected": 0,
+        "observed": 0,
+        "mapping": {
+          "address": "0x7355e07da0",
+          "start": "0x7355e01000",
+          "end": "0x7355e41000",
+          "flags": "0x100073",
+          "file": null,
+          "file_offset": null
+        }
+      }
+    }
+  ],
+  "JIT_actual_UID": 0,
+  "JIT_actual_TGID": 562,
+  "JIT_actual_PID": 1156,
+  "JIT_actual_nice": 19,
+  "GC_cause_not_assumed": true,
+  "isolated_priority_control_planned": true,
+  "main_priority_modified": false
+}

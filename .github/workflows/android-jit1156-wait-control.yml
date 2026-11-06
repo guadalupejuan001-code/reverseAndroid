@@ -1,0 +1,302 @@
+name: Measure actual ART foreground progress after guarded JIT priority input
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-jit1156-wait-control.yml
+    - state/experiments/jit1156-wait-control-artifacts.json
+    - state/experiments/jit1156-wait-control-plan.json
+    - state/experiments/jit1156-wait-control-input.txt
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-jit1156-wait-control
+  cancel-in-progress: false
+jobs:
+  jit1156-wait-control:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate unchanged sources, exact seed, original disk and already-tested runner
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/jit1156-wait-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source-hardware state/experiments/jit1156-wait-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/jit1156-wait-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/jit1156-wait-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/jit1156-wait-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/jit1156-wait-control-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        chmod +x build/reverseandroid/epoch build/reverseandroid/frame
+
+        mkdir -p evidence/jit1156-wait-control-reports
+
+        python3 - <<''PYCACHE''
+
+        import pathlib,json,hashlib
+
+        p=pathlib.Path(''build/reverseandroid'')
+
+        assert hashlib.file_digest((p/''epoch'').open(''rb''),''sha256'').hexdigest()==''72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa''
+
+        fixture=json.loads((p/''console-event-test.json'').read_text());assert len(fixture)==5 and all(v is True
+        for v in fixture.values())
+
+        PYCACHE
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-hardware
+        > evidence/jit1156-wait-control-reports/source-admission.json
+
+        cp build/source-hardware/console-new.txt evidence/jit1156-wait-control-reports/console-all.txt
+
+        '
+    - name: 'Control stage 1: execute the guarded input once and inspect original JIT scheduling'
+      id: r1
+      if: success()
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run build/source-hardware
+        evidence/jit1156-wait-control-1 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 1000000000 state/experiments/jit1156-wait-control-plan.json > evidence/jit1156-wait-control-reports/stage-1.json
+
+        TASK_JIT_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-control-1/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-control-1/current.rvg
+        "$TASK_JIT_SHA" evidence/jit1156-wait-control-1/threads-readonly.json
+
+        python3 - <<''PYCONTROL''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-control-1'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        a=pathlib.Path(''evidence/jit1156-wait-control-reports/console-all.txt'')
+
+        with a.open(''a'') as f:f.write((p/''console-new.txt'').read_text())
+
+        s=a.read_text();marker=''REVERSE_JIT_PRIORITY_DONE NICE_0'' in s
+
+        ob=json.loads((p/''threads-readonly.json'').read_text());assert ob[''input_unchanged''] and ob[''checkpoint_sha256'']==g[''checkpoint_sha256''];group=next((x
+        for x in ob[''groups''] if x[''pid'']==562),None);assert group is not None and group[''thread_list_verified'']
+
+        jit=next((t for t in group[''threads''] if t[''pid'']==1156 and t[''tgid'']==562 and t[''name'']==''Jit
+        thread pool''),None)
+
+        nice0=bool(jit and jit[''priority'']==120 and jit[''normal_prio'']==120);ran=bool(jit and int(jit[''accounting''][''utime''])>237412000)
+
+        main=next((t for t in group[''threads''] if t[''pid'']==562),None)
+
+        foreground_user_progress=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        complete=marker and ((nice0 and ran) or jit is None) and foreground_user_progress
+
+        proof={''schema'':''reverseandroid-isolated-guarded-JIT-priority-control-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''actual_guarded_nice0_console_response_seen'':marker,''actual_original_kernel_nice0_observed'':nice0,''actual_JIT_user_execution_observed'':ran,''JIT_retired_from_verified_owner_group'':jit
+        is None,''actual_thread'':jit,''zygote_thread_count'':group[''thread_count''],''main_GC_dependency_not_assumed'':True,''actual_main_user_progress_from_fixed49B'':foreground_user_progress,''baseline_main_utime_ns'':23530892000,''baseline_JIT_utime_ns'':237412000,''parallel_original_reference_comparison_pending'':True,''actual_main_thread'':main,''combined_console_sha256'':hashlib.sha256(s.encode()).hexdigest(),''control_is_promotion_authority'':False,''C79_and_C80_input_modified'':False,''input_submitted_only_once'':True}
+
+        (p/''jit1156-wait-control-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(complete).lower()+''\n'')
+
+        PYCONTROL
+
+        '
+    - name: 'Control stage 1: preserve every full original piece'
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-control-1
+        transport_path: build/jit1156-wait-control-transport-1
+        artifact_prefix: reverseandroid-jit1156-wait-control-1
+    - name: 'Control stage 1: release only earlier redundant host copies after full preservation'
+      if: success() && steps.r1.outcome == 'success'
+      run: 'rm -rf build/source-hardware
+
+        '
+    - name: 'Control stage 2: execute the guarded input once and inspect original JIT scheduling'
+      id: r2
+      if: success() && steps.r1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-control-1
+        evidence/jit1156-wait-control-2 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 1000000000 > evidence/jit1156-wait-control-reports/stage-2.json
+
+        TASK_JIT_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-control-2/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-control-2/current.rvg
+        "$TASK_JIT_SHA" evidence/jit1156-wait-control-2/threads-readonly.json
+
+        python3 - <<''PYCONTROL''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-control-2'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        a=pathlib.Path(''evidence/jit1156-wait-control-reports/console-all.txt'')
+
+        with a.open(''a'') as f:f.write((p/''console-new.txt'').read_text())
+
+        s=a.read_text();marker=''REVERSE_JIT_PRIORITY_DONE NICE_0'' in s
+
+        ob=json.loads((p/''threads-readonly.json'').read_text());assert ob[''input_unchanged''] and ob[''checkpoint_sha256'']==g[''checkpoint_sha256''];group=next((x
+        for x in ob[''groups''] if x[''pid'']==562),None);assert group is not None and group[''thread_list_verified'']
+
+        jit=next((t for t in group[''threads''] if t[''pid'']==1156 and t[''tgid'']==562 and t[''name'']==''Jit
+        thread pool''),None)
+
+        nice0=bool(jit and jit[''priority'']==120 and jit[''normal_prio'']==120);ran=bool(jit and int(jit[''accounting''][''utime''])>237412000)
+
+        main=next((t for t in group[''threads''] if t[''pid'']==562),None)
+
+        foreground_user_progress=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        complete=marker and ((nice0 and ran) or jit is None) and foreground_user_progress
+
+        proof={''schema'':''reverseandroid-isolated-guarded-JIT-priority-control-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''actual_guarded_nice0_console_response_seen'':marker,''actual_original_kernel_nice0_observed'':nice0,''actual_JIT_user_execution_observed'':ran,''JIT_retired_from_verified_owner_group'':jit
+        is None,''actual_thread'':jit,''zygote_thread_count'':group[''thread_count''],''main_GC_dependency_not_assumed'':True,''actual_main_user_progress_from_fixed49B'':foreground_user_progress,''baseline_main_utime_ns'':23530892000,''baseline_JIT_utime_ns'':237412000,''parallel_original_reference_comparison_pending'':True,''actual_main_thread'':main,''combined_console_sha256'':hashlib.sha256(s.encode()).hexdigest(),''control_is_promotion_authority'':False,''C79_and_C80_input_modified'':False,''input_submitted_only_once'':True}
+
+        (p/''jit1156-wait-control-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(complete).lower()+''\n'')
+
+        PYCONTROL
+
+        '
+    - name: 'Control stage 2: preserve every full original piece'
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-control-2
+        transport_path: build/jit1156-wait-control-transport-2
+        artifact_prefix: reverseandroid-jit1156-wait-control-2
+    - name: 'Control stage 2: release only earlier redundant host copies after full preservation'
+      if: success() && steps.r2.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-control-1 build/jit1156-wait-control-transport-1
+
+        '
+    - name: 'Control stage 3: execute the guarded input once and inspect original JIT scheduling'
+      id: r3
+      if: success() && steps.r2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-control-2
+        evidence/jit1156-wait-control-3 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 1000000000 > evidence/jit1156-wait-control-reports/stage-3.json
+
+        TASK_JIT_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-control-3/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-control-3/current.rvg
+        "$TASK_JIT_SHA" evidence/jit1156-wait-control-3/threads-readonly.json
+
+        python3 - <<''PYCONTROL''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-control-3'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        a=pathlib.Path(''evidence/jit1156-wait-control-reports/console-all.txt'')
+
+        with a.open(''a'') as f:f.write((p/''console-new.txt'').read_text())
+
+        s=a.read_text();marker=''REVERSE_JIT_PRIORITY_DONE NICE_0'' in s
+
+        ob=json.loads((p/''threads-readonly.json'').read_text());assert ob[''input_unchanged''] and ob[''checkpoint_sha256'']==g[''checkpoint_sha256''];group=next((x
+        for x in ob[''groups''] if x[''pid'']==562),None);assert group is not None and group[''thread_list_verified'']
+
+        jit=next((t for t in group[''threads''] if t[''pid'']==1156 and t[''tgid'']==562 and t[''name'']==''Jit
+        thread pool''),None)
+
+        nice0=bool(jit and jit[''priority'']==120 and jit[''normal_prio'']==120);ran=bool(jit and int(jit[''accounting''][''utime''])>237412000)
+
+        main=next((t for t in group[''threads''] if t[''pid'']==562),None)
+
+        foreground_user_progress=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        complete=marker and ((nice0 and ran) or jit is None) and foreground_user_progress
+
+        proof={''schema'':''reverseandroid-isolated-guarded-JIT-priority-control-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''actual_guarded_nice0_console_response_seen'':marker,''actual_original_kernel_nice0_observed'':nice0,''actual_JIT_user_execution_observed'':ran,''JIT_retired_from_verified_owner_group'':jit
+        is None,''actual_thread'':jit,''zygote_thread_count'':group[''thread_count''],''main_GC_dependency_not_assumed'':True,''actual_main_user_progress_from_fixed49B'':foreground_user_progress,''baseline_main_utime_ns'':23530892000,''baseline_JIT_utime_ns'':237412000,''parallel_original_reference_comparison_pending'':True,''actual_main_thread'':main,''combined_console_sha256'':hashlib.sha256(s.encode()).hexdigest(),''control_is_promotion_authority'':False,''C79_and_C80_input_modified'':False,''input_submitted_only_once'':True}
+
+        (p/''jit1156-wait-control-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(complete).lower()+''\n'')
+
+        PYCONTROL
+
+        '
+    - name: 'Control stage 3: preserve every full original piece'
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-control-3
+        transport_path: build/jit1156-wait-control-transport-3
+        artifact_prefix: reverseandroid-jit1156-wait-control-3
+    - name: 'Control stage 3: release only earlier redundant host copies after full preservation'
+      if: success() && steps.r3.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-control-2 build/jit1156-wait-control-transport-2
+
+        '
+    - name: Require actual completed diagnostic output
+      if: success()
+      run: 'python3 - <<''PYDONE''
+
+        from pathlib import Path
+
+        import json
+
+        p=sorted(Path(''evidence'').glob(''jit1156-wait-control-[1-3]/jit1156-wait-control-proof.json''));assert
+        p
+
+        d=json.loads(p[-1].read_text());assert d[''actual_main_user_progress_from_fixed49B''],''Require actual foreground
+        user execution after the prior wait'';assert d[''actual_guarded_nice0_console_response_seen''];assert (d[''actual_original_kernel_nice0_observed'']
+        and d[''actual_JIT_user_execution_observed'']) or d[''JIT_retired_from_verified_owner_group''],''Actual
+        controlled JIT effect still pending; preserve all admitted controls''
+
+        PYDONE
+
+        '
+    - name: Preserve actual combined console and every original report
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-jit1156-wait-control-evidence
+        path: 'evidence/jit1156-wait-control-reports
+
+          evidence/jit1156-wait-control-*/*.json
+
+          evidence/jit1156-wait-control-*/*.log
+
+          evidence/jit1156-wait-control-*/*.txt
+
+          state/experiments/jit1156-wait-control-input.txt
+
+          state/experiments/jit1156-wait-control-plan.json
+
+          state/experiments/jit1156-wait-control-plan.json
+
+          evidence/jit1156-wait-control-*/applied-input.bin'
+        retention-days: 90
+        if-no-files-found: error
