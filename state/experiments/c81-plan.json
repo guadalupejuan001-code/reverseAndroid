@@ -40,5 +40,6 @@
   "original_admission_roundtrip_process_kernel_property_gates_unchanged": true,
   "original_C80_continues_as_reference_after_fork": true,
   "peripheral_peer_adopted": false,
-  "boot_gate": "Original full C46, actual SystemServer, live PID1 sys.boot_completed=1, enforcing SELinux; then manually inspect authentic UI and bind a real UI response test to its before frame."
+  "boot_gate": "Original full C46, actual SystemServer, live PID1 sys.boot_completed=1, enforcing SELinux; then manually inspect authentic UI and bind a real UI response test to its before frame.",
+  "execute_on_push": false
 }

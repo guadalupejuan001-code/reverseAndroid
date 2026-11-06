@@ -1,0 +1,14 @@
+{
+  "schema": "reverseandroid-original-engine-CI-validation-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "execution_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
+  "run_id": 42169590945,
+  "job_id": 127734018092,
+  "job_conclusion": "success",
+  "original_all_870_files_and_engine_admission_tests_passed": true,
+  "historical_generic_continuation_skipped": false,
+  "historical_generic_job_id": 127735722588,
+  "historical_generic_source_admission_failed_before_emulator_execution": true,
+  "policy_error": "C81 plan omitted execute_on_push:false, so the historical generic workflow defaulted to true. Current plan and continuation now explicitly retain false. The dedicated C81 workflow uses the actual same-epoch source and is unaffected.",
+  "actual_boot_claimed": false
+}
