@@ -1,0 +1,99 @@
+{
+  "schema": "reverseandroid-independent-complete-source-and-console-match-v1",
+  "stage": 1,
+  "CI_run_id": 42247589579,
+  "CI_execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
+  "local_execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
+  "metadata_artifact_id": 13519707990,
+  "metadata_archive_SHA256": "53e3b77be6fa94134746e790ccdb7572010eaaee2fa5aa1d11e723c6826af9a1",
+  "whole_RVG_SHA256": "36b6b347d537b0d7aca6a6fc08b03ab8c865d30219908482aacfff35a43e4168",
+  "whole_RVG_bytes": 1990280783,
+  "instructions": 110147727998,
+  "entire_original_console_SHA256": "dff87b8bcec8788f6563e999078b75709b37145cbe3ad96ad77ac9b12caea8af",
+  "actual_native_events": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    },
+    {
+      "phase": 2,
+      "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 87047727998,
+        "counter_subtick": 26,
+        "bytes": 2837,
+        "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+      }
+    },
+    {
+      "phase": 3,
+      "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 89547727998,
+        "counter_subtick": 26,
+        "bytes": 2103,
+        "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+      }
+    },
+    {
+      "phase": 4,
+      "input_plan": "evidence/c84-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 92547727998,
+        "counter_subtick": 26,
+        "bytes": 2097,
+        "sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7"
+      }
+    },
+    {
+      "phase": 5,
+      "input_plan": "evidence/c86-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 101647727998,
+        "counter_subtick": 26,
+        "bytes": 1000,
+        "sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096"
+      }
+    },
+    {
+      "phase": 6,
+      "input_plan": "evidence/c86-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 104147727998,
+        "counter_subtick": 26,
+        "bytes": 932,
+        "sha256": "8d47dc63c80f12d0eab0e866355225e82bc6a842aeef9a8086d1e5b6da1d86e3"
+      }
+    }
+  ],
+  "phase": 7,
+  "waiting": false,
+  "all_original_admission_clean_outcome_and_piece_pins_verified": true,
+  "fresh_local_recovery_of_CI_transport_claimed": false,
+  "unchanged_selected_native_and_zero_new_UART_verified": true,
+  "boot_completed": false,
+  "usable_UI_or_input_response_claimed": false
+}
