@@ -46,6 +46,37 @@ against temporary proc/cgroup fixtures. Identity, priority, group-membership
 and previous-value failures leave the fixture unchanged. Command echoes
 cannot satisfy the reply parser, and a failed reply overrides a success.
 
+## Measured progress
+
+The first two complete trial states reproduce byte for byte in independent
+[CI](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42265960158)
+and local original-engine execution. The kernel observations, fresh thread
+probes, console bytes and scanout bytes also match. The original C46 and live
+peripheral checks pass in both branches. At trial stage2, the original-kernel
+probe independently observes shares_raw 16777216 in the same `/top-app`
+task-group pointer, with root shares and group quota/period unchanged.
+
+The table measures the same Zygote kernel task from the same admitted source
+at identical retired-instruction counts. Values are its scheduler runtime
+increments, in seconds.
+
+| Instructions from common source | JIT-only reference | CPU group trial | Ratio |
+| --- | ---: | ---: | ---: |
+| 1 billion | 0.719811 | 2.215391 | 3.08 |
+| 2 billion | 2.493726 | 6.074833 | 2.44 |
+
+This is measured CPU allocation and task progress, not a measurement of
+completed-boot or host wall-clock acceleration. The trial includes one
+source-bound guest shares request; the JIT-only reference has zero new input.
+The authenticated producer bindings, exact counters and original admission
+are in [the 1B comparison](evidence/topapp/matched-1B-CPU-comparison.json)
+and [the 2B comparison](evidence/topapp/matched-2B-CPU-comparison.json).
+
+At trial stage3, Android emitted `BOOST_DONE SHARES_16384`; the final outer RC
+was still pending. The JIT has advanced, the main and JIT currently wait on
+separate futexes, and HeapTaskDaemon remains runnable. Original SystemServer,
+completed boot and usable UI response remain unverified at that boundary.
+
 Sources:
 
 - [Linux CFS group scheduling](https://www.kernel.org/doc/html/latest/scheduler/sched-design-CFS.html#group-scheduler-extensions-to-cfs)

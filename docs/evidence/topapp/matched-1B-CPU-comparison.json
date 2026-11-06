@@ -1,0 +1,117 @@
+{
+  "schema": "reverseandroid-matched-source-CPU-group-comparison-v1",
+  "common_source_checkpoint_SHA256": "6134b364f97612b20233938e1aa22933a14ea2fcaf8ab7a340bf0c28d65e6567",
+  "common_source_instructions": 116647727998,
+  "matched_final_instruction_count": 117647727998,
+  "instructions_per_branch": 1000000000,
+  "original_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "same_original_Zygote_kernel_task_pointer": "0xffffff802db95100",
+  "actual_CPU_counters": {
+    "source": {
+      "nvcsw": "25",
+      "nivcsw": "6826",
+      "utime": "18155094000",
+      "stime": "4244501000",
+      "sum_exec_runtime": "20669581000",
+      "vruntime": "64407392654",
+      "exec_start": "1820644276000"
+    },
+    "reference": {
+      "nvcsw": "29",
+      "nivcsw": "7066",
+      "utime": "18647080000",
+      "stime": "4555541000",
+      "sum_exec_runtime": "21389392000",
+      "vruntime": "64444911998",
+      "exec_start": "1827507757000"
+    },
+    "trial": {
+      "nvcsw": "37",
+      "nivcsw": "7340",
+      "utime": "20130475000",
+      "stime": "4626946000",
+      "sum_exec_runtime": "22884972000",
+      "vruntime": "64505171007",
+      "exec_start": "1836267582000"
+    }
+  },
+  "CPU_deltas_ns": {
+    "JIT_only_reference": {
+      "utime": 491986000,
+      "stime": 311040000,
+      "sum_exec_runtime": 719811000
+    },
+    "CPU_group_trial": {
+      "utime": 1975381000,
+      "stime": 382445000,
+      "sum_exec_runtime": 2215391000
+    }
+  },
+  "scheduler_runtime_ratio": 3.0777398511553726,
+  "user_runtime_ratio": 4.015116283796694,
+  "virtual_counter_ticks": {
+    "source": "1900455971",
+    "reference": "1916746735",
+    "trial": "1916740433"
+  },
+  "trial_actual_kernel_CPU_groups": [
+    {
+      "task_group": "0xffffff8002d9e000",
+      "cgroup": "0xffffff8009ed7000",
+      "path": "/top-app",
+      "shares_raw": "16777216",
+      "quota_raw": "18446744073709551615",
+      "period_raw": "100000000"
+    },
+    {
+      "task_group": "0xffffffc082828800",
+      "cgroup": "0xffffff8006972040",
+      "path": "/",
+      "shares_raw": "1048576",
+      "quota_raw": "18446744073709551615",
+      "period_raw": "100000000"
+    }
+  ],
+  "trial_fresh_readonly_thread_probe_SHA256": "0e40cbd56bf6d34ba267fb616022a46e53056495ec8e5a4e3c96a0838cecb5f9",
+  "trial_source_bound_new_UART_events": [
+    {
+      "purpose": "boost",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 116647727998,
+        "counter_subtick": 26,
+        "bytes": 836,
+        "sha256": "2b9028ef76fba483221e3138e13e8df722193e391d3e093a26acfb181263feff"
+      }
+    }
+  ],
+  "references": {
+    "source": {
+      "run": 42259037815,
+      "stage": 3,
+      "metadata_artifact": 13525660989,
+      "metadata_ZIP_SHA256": "af93e7bad88e7b8738f95249c6801be96d47bd084afdf44a867e46365c5cb14e"
+    },
+    "JIT_only_reference": {
+      "run": 42259037815,
+      "stage": 4,
+      "checkpoint_SHA256": "f85cc18220daf5dc2baa4f591c66ab73924e26bb55421b68026a0e4f0329af1c",
+      "metadata_artifact": 13525129082,
+      "metadata_ZIP_SHA256": "5b2428305860b906b8c2e3cc35111303f68c4dd1efbc6255fb80fe5d7c57f070"
+    },
+    "CPU_group_trial": {
+      "run": 42265960158,
+      "stage": 2,
+      "checkpoint_SHA256": "fc991e83e1a73b61e85473ab402745441d181bb0482657e7454dd05c3df68cb1",
+      "metadata_artifact": 13527049832,
+      "metadata_ZIP_SHA256": "1d341395a040ce454e1cf225a80b15f537cf960bf323122753d98232adaa0089",
+      "two_independent_complete_original_states_kernel_threads_console_and_scanout_reproduced": true
+    }
+  },
+  "original_live_peripheral_checks_pass": true,
+  "original_boot_completed": false,
+  "original_system_server_alive_verified": false,
+  "usable_UI_response_verified": false,
+  "wall_clock_or_completed_boot_speedup_measured": false,
+  "scope": "Measured CPU allocation and actual task progress at the same retired-instruction count. The trial includes one explicitly modeled guarded group-shares request; the reference has zero new UART input."
+}

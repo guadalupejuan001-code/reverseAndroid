@@ -1,0 +1,69 @@
+{
+  "schema": "reverseandroid-matched-source-CPU-group-comparison-v1",
+  "common_source_checkpoint_SHA256": "6134b364f97612b20233938e1aa22933a14ea2fcaf8ab7a340bf0c28d65e6567",
+  "common_source_instructions": 116647727998,
+  "matched_final_instruction_count": 118647727998,
+  "instructions_per_branch": 2000000000,
+  "same_original_Zygote_kernel_task_pointer": "0xffffff802db95100",
+  "actual_CPU_counters": {
+    "source": {
+      "nvcsw": "25",
+      "nivcsw": "6826",
+      "utime": "18155094000",
+      "stime": "4244501000",
+      "sum_exec_runtime": "20669581000",
+      "vruntime": "64407392654",
+      "exec_start": "1820644276000"
+    },
+    "reference": {
+      "nvcsw": "31",
+      "nivcsw": "7649",
+      "utime": "20471311000",
+      "stime": "4712313000",
+      "sum_exec_runtime": "23163307000",
+      "vruntime": "64485442282",
+      "exec_start": "1851898659000"
+    },
+    "trial": {
+      "nvcsw": "44",
+      "nivcsw": "8146",
+      "utime": "24035118000",
+      "stime": "4963323000",
+      "sum_exec_runtime": "26744414000",
+      "vruntime": "65008212886",
+      "exec_start": "1846160259000"
+    }
+  },
+  "reference_Zygote_scheduler_runtime_delta_ns": 2493726000,
+  "trial_Zygote_scheduler_runtime_delta_ns": 6074833000,
+  "scheduler_runtime_ratio": 2.4360467028053603,
+  "reference": {
+    "run": 42259037815,
+    "stage": 5,
+    "checkpoint_SHA256": "a4ce3e59d278ac79ccdf260e0b7fca0b2fcd8c48af5b140576a329d884448213",
+    "metadata_artifact": 13526906007,
+    "metadata_ZIP_SHA256": "ee238d67ef54f8eaf60dfe35cdbf51272d93096594e87e232c1bbd7a7c99751b"
+  },
+  "trial": {
+    "local_stage": 3,
+    "checkpoint_SHA256": "64002e6160f6affdc66ecce0636dce1394d433353d3154804878b07e2f83a8b7",
+    "original_admission": {
+      "schema": "reverse-c46-android-continuation-v1",
+      "checkpoint_sha256": "64002e6160f6affdc66ecce0636dce1394d433353d3154804878b07e2f83a8b7",
+      "instructions": 118647727998,
+      "source_boundary_verified": true,
+      "system_server_alive_verified": false,
+      "android_boot_completed_verified": false,
+      "scanout_exported": true,
+      "ready_for_visual_review": false,
+      "android_display_content_verified": false,
+      "unresolved": [
+        "live_process_missing:system_server",
+        "live_sys_boot_completed_unverified"
+      ]
+    }
+  },
+  "original_live_peripheral_checks_pass": true,
+  "wall_clock_or_completed_boot_speedup_measured": false,
+  "usable_UI_response_verified": false
+}

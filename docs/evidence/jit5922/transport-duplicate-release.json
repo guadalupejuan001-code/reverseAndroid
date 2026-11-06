@@ -1,0 +1,40 @@
+{
+  "schema": "reverseandroid-verified-transport-duplicate-release-v1",
+  "checkpoints_removed": false,
+  "complete_original_RVG_sources_retained": true,
+  "canonical_worker_files_modified": false,
+  "released": [
+    {
+      "file": "reverseandroid-c87-5-000.zip",
+      "SHA256": "1e6ce46e04228e7604527653fb5c828d4aea7b490182df8f2cda1d31e8d0897e",
+      "bytes": 209715352,
+      "allocated_bytes": 209719296
+    },
+    {
+      "file": "reverseandroid-c87-5-001.zip",
+      "SHA256": "f6caa92043b7b15c1e31eaf5b1de323cbebf3c3fc9de320f840c328d8c970c62",
+      "bytes": 209715352,
+      "allocated_bytes": 209723392
+    },
+    {
+      "file": "reverseandroid-c87-5-002.zip",
+      "SHA256": "f550e10a8a9a1ee89cb6808d6649b9e995cb9f82f337937925d45cc7fe56bcb7",
+      "bytes": 209715352,
+      "allocated_bytes": 209723392
+    },
+    {
+      "file": "reverseandroid-c87-5-003.zip",
+      "SHA256": "50b22bbfacd02e8d4f35b8c8b49c32e619a2a18b08e705fd13416a8a0f722339",
+      "bytes": 66651409,
+      "allocated_bytes": 66654208
+    },
+    {
+      "file": "jit5922-control-stage3-000.zip",
+      "SHA256": "3c5100b938e78be8e0072dac6c8030334bb87c2fd33fe7035f9db7541b8513b1",
+      "bytes": 209715352,
+      "allocated_bytes": 209719296
+    }
+  ],
+  "allocated_bytes_released": 905539584,
+  "checked_at_UTC": "2026-11-06T17:59:06.671355+00:00"
+}
