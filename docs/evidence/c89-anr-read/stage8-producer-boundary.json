@@ -1,0 +1,34 @@
+{
+  "schema": "reverseandroid-authenticated-isolated-ANR-read-boundary-v1",
+  "stage": 8,
+  "instructions": 147147727998,
+  "checkpoint_sha256": "3042ee4b35dee6de860d7e66cbca23af6bb0ce8e6b773e67e7db27ea804a1a8b",
+  "parent_checkpoint_sha256": "10ef4531950023f2834ec7a5ac48b99f4f2026039cecee29ca7a8e311aafa52a",
+  "metadata_artifact_id": 13547304884,
+  "metadata_ZIP_SHA256": "94d8f48cbeea49a2d423086de4f318895bf5ec47bc3eb374168ac4e773a13b77",
+  "original_native_full_admission_and_snapshot_roundtrip": true,
+  "entire_console_SHA256": "fbd53b3eacd5f358dfaeb9fd682656b198d55c2a05d8b35096d60e579861059f",
+  "all_full_transport_pieces_pinned": true,
+  "transport_piece_count": 4,
+  "new_UART_bytes": 0,
+  "inherited_primary_events_unchanged": true,
+  "one_isolated_new_event": {
+    "schema": "reverse-modeled-uart-input-v1",
+    "instructions": 143147727998,
+    "counter_subtick": 26,
+    "bytes": 515,
+    "sha256": "75881919d7c60daa1e29018444cdcdb8d7e5fb735d5e0e4cc609dfb5880862a7"
+  },
+  "query_reply": {
+    "begin_seen": true,
+    "end_after_begin_seen": true,
+    "reply_code": 0,
+    "completed_read_query": true,
+    "failed": false
+  },
+  "original_SystemServer_gate": true,
+  "original_BOOT_gate": false,
+  "SELinux_enforcing": true,
+  "primary_or_promotion_authority": false,
+  "emulator_completion_claimed": false
+}
