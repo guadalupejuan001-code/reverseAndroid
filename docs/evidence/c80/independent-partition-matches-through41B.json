@@ -1,0 +1,45 @@
+{
+  "schema": "reverseandroid-independent-native-partition-equivalence-v1",
+  "reference_run": 42146302356,
+  "reference_commit": "a201ea14b8143cc099b8068249bbafba238c825d",
+  "reference_stage_budget": 1000000000,
+  "candidate_run": 42147763604,
+  "candidate_commit": "c435ee53ef65e60f00ef2f7fb946c8e53eea8a8f",
+  "candidate_stage_budget": 2000000000,
+  "same_original_native_SHA256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "same_C76_epoch": true,
+  "new_UART_events": 0,
+  "matches": [
+    {
+      "instructions": 33000000000,
+      "whole_RVG_SHA256": "bff9cbe2f55ff02a9fb9940380582c4de31f2e4631c3c123e11efef8fa337f03",
+      "C79_producer_evidence": "docs/evidence/c79/stage3-producer-boundary.json",
+      "C80_producer_evidence": "docs/evidence/c80/stage1-producer-boundary.json"
+    },
+    {
+      "instructions": 35000000000,
+      "whole_RVG_SHA256": "d7321c21f13179a9bfb10960b5a07a5e8849a3e3f6532059e16de6bbd14c4471",
+      "C79_producer_evidence": "docs/evidence/c79/stage5-producer-boundary.json",
+      "C80_producer_evidence": "docs/evidence/c80/stage2-producer-boundary.json"
+    },
+    {
+      "instructions": 37000000000,
+      "whole_RVG_SHA256": "dbbc3866de60677f9f0e159e58dc0a982cf12ab6f1ac68b71880cb51cc43fd9a",
+      "C79_producer_evidence": "docs/evidence/c79/stage7-producer-boundary.json",
+      "C80_producer_evidence": "docs/evidence/c80/stage3-producer-boundary.json"
+    },
+    {
+      "instructions": 39000000000,
+      "whole_RVG_SHA256": "e3523924842a49a6a0dc692ae5daf2933568a9fa333045f99f90fa61f0e83cd0",
+      "C79_producer_evidence": "docs/evidence/c79/stage9-producer-boundary.json",
+      "C80_producer_evidence": "docs/evidence/c80/stage4-producer-boundary.json"
+    },
+    {
+      "instructions": 41000000000,
+      "whole_RVG_SHA256": "c63ea218dbea0cd308cc972b98b27160e27e73e8ddf75031f78439b02bb62f0f",
+      "C79_producer_evidence": "docs/evidence/c79/stage11-producer-boundary.json",
+      "C80_producer_evidence": "docs/evidence/c80/stage5-producer-boundary.json"
+    }
+  ],
+  "fresh_local_whole_transport_recovery_or_replay_claimed": false
+}

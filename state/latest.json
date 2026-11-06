@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "c63ea218dbea0cd308cc972b98b27160e27e73e8ddf75031f78439b02bb62f0f",
-  "instructions": 41000000000,
+  "checkpoint_sha256": "72a59f312f8b45e8f864db1618b2c141cafc345438a61a39ff78eaa042a49fa9",
+  "instructions": 45000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -14,7 +14,7 @@
   ],
   "cycle": "C80",
   "epoch": "C76-lights-port",
-  "stage": 5,
+  "stage": 7,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "c435ee53ef65e60f00ef2f7fb946c8e53eea8a8f",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
@@ -30,14 +30,14 @@
   "original_870_files_unchanged": true,
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42146302356,
-  "independent_reproduction_status": "C79 and C80 original complete RVG hashes match at 33,35,37,39 billion with independent 1B/2B partitions. Latest C80 is41B, fully admitted and all pieces pinned; local full recovery/replay is not claimed.",
+  "independent_reproduction_status": "Whole RVG SHA256 matches independently at33,35,37,39,41B using native1B/2B partitions. Latest original C80 is45B, full producer gate and all pieces pinned; no fresh local full recovery/replay claimed.",
   "active_continuation": "C80 contin\u00faa la misma \u00e9poca con tramos de 2 mil millones, dentro del l\u00edmite original. C79 permanece como referencia independiente en tramos de 1 mil millones.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c80-stage-5-artifacts.json",
+  "source_artifact_lock": "state/experiments/c80-stage-7-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
     "checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
@@ -46,15 +46,15 @@
     "raw_current_rvg_archived_losslessly": true
   },
   "last_durable_transport_source": {
-    "instructions": 41000000000,
-    "checkpoint_sha256": "c63ea218dbea0cd308cc972b98b27160e27e73e8ddf75031f78439b02bb62f0f",
-    "source_artifact_lock": "state/experiments/c80-stage-5-artifacts.json"
+    "instructions": 45000000000,
+    "checkpoint_sha256": "72a59f312f8b45e8f864db1618b2c141cafc345438a61a39ff78eaa042a49fa9",
+    "source_artifact_lock": "state/experiments/c80-stage-7-artifacts.json"
   },
   "visual_review_result": "El PPM original sigue siendo id\u00e9ntico por SHA-256 al fotograma negro de 800\u00d7600 inspeccionado en 24 mil millones; no acredita interfaz ni arranque completo.",
   "visual_review_evidence": "docs/evidence/c78/local24-original-frame.json",
   "active_continuation_run_id": 42147763604,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c80/stage5-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c80/stage7-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c80-plan.json",
@@ -64,7 +64,7 @@
   "host_compiler_evaluation_outcome": "Four complete measured RVG hashes match. Speedup 1.050821 is below the required 1.10; candidate not adopted.",
   "hardware_probe_plan": "state/experiments/hardware-probe-plan.json",
   "isolated_crash_console_response_evidence": "docs/evidence/c78/actual-crash-console-response.json",
-  "peripheral_peer_status": "Host literal-vector and real-PTY tests passed. Static AArch64 build and actual original Android HAL integration pending. Not applied to primary.",
+  "peripheral_peer_status": "Original unchanged interpreter is delivering four explicitly pinned console commands in isolated control42158822304 from43B. No main priority, property, SELinux or UART change. Guest binary hash and original HAL PTY/Binder integration pending.",
   "isolated_JIT_control_evidence": "docs/evidence/c80/jit1156-direct-success.json",
   "main_priority_input_events": 0
 }
