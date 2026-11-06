@@ -1,0 +1,2584 @@
+{
+  "schema": "reverseandroid-original-SystemServer-identity-and-threads-v1",
+  "source_checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
+  "instructions": 133147727998,
+  "diagnostic_execution_commit": "270e576c00c9636f4756b07ab1aaa5ae986a4e2a",
+  "diagnostic_run": 42290686191,
+  "diagnostic_job": 128143011173,
+  "diagnostic_conclusion": "success",
+  "artifact_id": 13540180962,
+  "artifact_ZIP_SHA256": "6555d0e13a9da8b7ac20eb5bf10e2b53e4bd0ce0755c5e198f76fab8268bb712",
+  "guest_instructions_executed": 0,
+  "new_UART_bytes": 0,
+  "whole_original_source_admission_and_entire_RVG_digest_verified": true,
+  "original_observer_file_unchanged": true,
+  "kernel_BTF_layout_verified": true,
+  "actual_SystemServer_group": {
+    "pid": 7354,
+    "name": "system_server",
+    "threads": [
+      {
+        "pid": 7354,
+        "tgid": 7354,
+        "name": "system_server",
+        "task": "0xffffff80224b6540",
+        "state": 0,
+        "exit_state": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "priority": 100,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc08682bac0",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc08682bb80",
+            "lr": "0xffffffc0812a6e34",
+            "symbol": "preempt_schedule_irq+0x4c"
+          },
+          {
+            "fp": "0xffffffc08682bbe0",
+            "lr": "0xffffffc0812a9478",
+            "symbol": "arm64_preempt_schedule_irq+0x30"
+          },
+          {
+            "fp": "0xffffffc08682bc00",
+            "lr": "0xffffffc08129e770",
+            "symbol": "el1_interrupt+0x48"
+          },
+          {
+            "fp": "0xffffffc08682bc10",
+            "lr": "0xffffffc08129e71c",
+            "symbol": "el1h_64_irq_handler+0x18"
+          },
+          {
+            "fp": "0xffffffc08682bc30",
+            "lr": "0xffffffc080011b90",
+            "symbol": "el1h_64_irq+0x7c"
+          },
+          {
+            "fp": "0xffffffc08682bd70",
+            "lr": "0xffffffc0812b0cd0",
+            "symbol": "do_page_fault+0x13c"
+          },
+          {
+            "fp": "0xffffffc08682bdc0",
+            "lr": "0xffffffc0800bccf8",
+            "symbol": "do_mem_abort+0x54"
+          },
+          {
+            "fp": "0xffffffc08682be20",
+            "lr": "0xffffffc08129eb4c",
+            "symbol": "el0_da+0x54"
+          },
+          {
+            "fp": "0xffffffc08682be70",
+            "lr": "0xffffffc08129e954",
+            "symbol": "el0t_64_sync_handler+0x20"
+          },
+          {
+            "fp": "0xffffffc08682bea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc08682bfe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "699818000",
+          "stime": "1247459000",
+          "nvcsw": "5",
+          "nivcsw": "614",
+          "sum_exec_runtime": "1783481000",
+          "vruntime": "45252164883",
+          "exec_start": "2078640254000"
+        },
+        "policy": 0,
+        "prio": 100,
+        "normal_prio": 100,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e840",
+              "cgroup": "0xffffff8009ad1800",
+              "path": "/foreground",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "1000",
+            "euid": "1000",
+            "gid": "1000",
+            "egid": "1000"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "17",
+          "parent": {
+            "task": "0xffffff802db95100",
+            "pid": 5629,
+            "tgid": 5629,
+            "name": "main"
+          },
+          "real_parent": {
+            "task": "0xffffff802db95100",
+            "pid": 5629,
+            "tgid": 5629,
+            "name": "main"
+          },
+          "blocked_words": [
+            "0x80001204"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff801dca0d80",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 4294967295,
+          "pc": {
+            "address": "0x73d9ec33f8",
+            "start": "0x73d9e00000",
+            "end": "0x73da65f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2896888",
+            "dynamic_symbols_unavailable": "User page not present"
+          },
+          "sp": "0x7fce38de80",
+          "fp": "0x7fce38df80",
+          "lr": {
+            "address": "0x73d9ec33a8",
+            "start": "0x73d9e00000",
+            "end": "0x73da65f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2896808",
+            "dynamic_symbols_unavailable": "User page not present"
+          },
+          "args": [
+            "0x76a58edaff",
+            "0x73d9c5c82f",
+            "0x11",
+            "0x11",
+            "0x7fce38dff0",
+            "0x800000000000"
+          ],
+          "registers": [
+            "0x76a58edaff",
+            "0x73d9c5c82f",
+            "0x11",
+            "0x11",
+            "0x7fce38dff0",
+            "0x800000000000",
+            "0x10",
+            "0x7f7f7f7f7f7f7f7f",
+            "0x7189eb40",
+            "0x718a4990",
+            "0x0",
+            "0x76a58ed0fc",
+            "0x74",
+            "0x61",
+            "0x10",
+            "0x10",
+            "0x0",
+            "0x0",
+            "0x76a62c8000",
+            "0x471d",
+            "0xb40000743be09380",
+            "0xb40000743be09380",
+            "0x1e",
+            "0xb40000754be03c70",
+            "0x1794",
+            "0x5fa2c89f",
+            "0xb40000754be03b30",
+            "0xb40000746be14ce0",
+            "0xb4000075cbe1a4a0",
+            "0x7fce38df80",
+            "0x73d9ec33a8"
+          ],
+          "pstate": "0x20000000",
+          "user_stack": [
+            {
+              "fp": "0x7fce38df80",
+              "return_pc": {
+                "address": "0x73d9ec134c",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "2888524",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x7fce38e000",
+              "return_pc": {
+                "address": "0x73da10f198",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "5304728",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x7fce38e2e0",
+              "return_pc": {
+                "address": "0x73da1659e4",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "5659108",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x7fce38e360",
+              "return_pc": {
+                "address": "0x73da165ec0",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "5660352",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x7fce38e4b0",
+              "return_pc": {
+                "address": "0x73da163a94",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "5651092",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x7fce38e620",
+              "return_pc": {
+                "address": "0x71fe880c",
+                "start": "0x71fb0000",
+                "end": "0x71fec000",
+                "flags": "0x75",
+                "file": "/system/framework/arm64/boot-core-libart.oat",
+                "file_offset": "296972",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x7fce38e7e0",
+              "return_pc": {
+                "address": "0x73d6fb3580",
+                "start": "0x73d6794000",
+                "end": "0x73d71eb000",
+                "flags": "0x100071",
+                "file": "/system/framework/framework.jar",
+                "file_offset": "46359936",
+                "dynamic_symbols_unavailable": "No mapped ELF header"
+              }
+            },
+            {
+              "fp": "0x7fce38e8a8",
+              "return_pc": {
+                "address": "0x76a49f0eb2",
+                "start": "0x76a49f0000",
+                "end": "0x76a49f8000",
+                "flags": "0x100073",
+                "file": null,
+                "file_offset": null
+              }
+            }
+          ],
+          "pc_code_le_hex": "2a0140b95f210071a30500542a0140b9eb4b40b94a010b4a5f09007241040054280140b900717d92080c40b9e22340f9e12b40f948d30035086040b91f3d0072"
+        }
+      },
+      {
+        "pid": 7409,
+        "tgid": 7354,
+        "name": "Signal Catcher",
+        "task": "0xffffff8002d29440",
+        "state": 8193,
+        "exit_state": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "priority": 100,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc08688bb20",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc08688bbe0",
+            "lr": "0xffffffc0812a6bc8",
+            "symbol": "schedule+0x4c"
+          },
+          {
+            "fp": "0xffffffc08688bc40",
+            "lr": "0xffffffc0812ac530",
+            "symbol": "schedule_hrtimeout_range_clock+0x2fc"
+          },
+          {
+            "fp": "0xffffffc08688bcc0",
+            "lr": "0xffffffc0812acd8c",
+            "symbol": "schedule_hrtimeout_range+0x14"
+          },
+          {
+            "fp": "0xffffffc08688bd20",
+            "lr": "0xffffffc0802b955c",
+            "symbol": "do_sigtimedwait+0x114"
+          },
+          {
+            "fp": "0xffffffc08688bd60",
+            "lr": "0xffffffc0804ae8c0",
+            "symbol": "__arm64_sys_rt_sigtimedwait+0xb4"
+          },
+          {
+            "fp": "0xffffffc08688be00",
+            "lr": "0xffffffc0800bb2fc",
+            "symbol": "invoke_syscall+0x58"
+          },
+          {
+            "fp": "0xffffffc08688be20",
+            "lr": "0xffffffc0800bb250",
+            "symbol": "do_el0_svc+0x8c"
+          },
+          {
+            "fp": "0xffffffc08688be40",
+            "lr": "0xffffffc08129ea70",
+            "symbol": "el0_svc+0x48"
+          },
+          {
+            "fp": "0xffffffc08688be80",
+            "lr": "0xffffffc08129e9bc",
+            "symbol": "el0t_64_sync_handler+0x88"
+          },
+          {
+            "fp": "0xffffffc08688bea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc08688bfe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "0",
+          "stime": "3757000",
+          "nvcsw": "1",
+          "nivcsw": "2",
+          "sum_exec_runtime": "1894000",
+          "vruntime": "45252073108",
+          "exec_start": "2078617607000"
+        },
+        "policy": 0,
+        "prio": 100,
+        "normal_prio": 100,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e840",
+              "cgroup": "0xffffff8009ad1800",
+              "path": "/foreground",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "1000",
+            "euid": "1000",
+            "gid": "1000",
+            "egid": "1000"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "4294967295",
+          "parent": {
+            "task": "0xffffff802db95100",
+            "pid": 5629,
+            "tgid": 5629,
+            "name": "main"
+          },
+          "real_parent": {
+            "task": "0xffffff802db95100",
+            "pid": 5629,
+            "tgid": 5629,
+            "name": "main"
+          },
+          "blocked_words": [
+            "0x1000"
+          ],
+          "real_blocked_words": [
+            "0x80001204"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff801dca0d80",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 137,
+          "pc": {
+            "address": "0x76a49b7a08",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "965128",
+            "dynamic_symbols_unavailable": "User page not present"
+          },
+          "sp": "0x739f9f7dd0",
+          "fp": "0x739f9f7de0",
+          "lr": {
+            "address": "0x76a4964bb8",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "625592",
+            "dynamic_symbols_unavailable": "User page not present"
+          },
+          "args": [
+            "0x739f9f7dd0",
+            "0x739f9f7e30",
+            "0x0",
+            "0x8",
+            "0x0",
+            "0x0"
+          ],
+          "registers": [
+            "0x739f9f7dd0",
+            "0x739f9f7e30",
+            "0x0",
+            "0x8",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x73daa00008",
+            "0x89",
+            "0x688fdc1b9f3dec07",
+            "0x1",
+            "0x20000000",
+            "0x73d9ea5228",
+            "0x73d9ea5278",
+            "0x73d9ea52f8",
+            "0x0",
+            "0x73da8316c0",
+            "0x76a4964b70",
+            "0x72bfa60000",
+            "0x739f9f8300",
+            "0xb40000742be0f4a0",
+            "0xb40000743be102c0",
+            "0x73d9c88455",
+            "0x739f9f7f80",
+            "0x739f9f8300",
+            "0xb40000743be112c0",
+            "0x739f9f8300",
+            "0x73daa0e000",
+            "0x4253",
+            "0x739f9f7de0",
+            "0x76a4964bb8"
+          ],
+          "pstate": "0x60000000",
+          "user_stack": [
+            {
+              "fp": "0x739f9f7de0",
+              "return_pc": {
+                "address": "0x73da088dc4",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "4754884",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x739f9f7ed0",
+              "return_pc": {
+                "address": "0x76a495e39c",
+                "start": "0x76a4928000",
+                "end": "0x76a49cc000",
+                "flags": "0x75",
+                "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+                "file_offset": "598940",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x739f9f7f30",
+              "return_pc": {
+                "address": "0x76a494e0e8",
+                "start": "0x76a4928000",
+                "end": "0x76a49cc000",
+                "flags": "0x75",
+                "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+                "file_offset": "532712",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x739f9f7f50",
+              "return_pc": null
+            }
+          ],
+          "pc_code_le_hex": "1ffc3fb1a23fc954c0035fd61f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d5481180d2010000d4"
+        }
+      },
+      {
+        "pid": 7411,
+        "tgid": 7354,
+        "name": "system_server",
+        "task": "0xffffff800d4fa880",
+        "state": 0,
+        "exit_state": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "priority": 100,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "ret_from_fork+0x0",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc0868e3fe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "0",
+          "stime": "0",
+          "nvcsw": "0",
+          "nivcsw": "0",
+          "sum_exec_runtime": "0",
+          "vruntime": "45252154062",
+          "exec_start": "0"
+        },
+        "policy": 0,
+        "prio": 100,
+        "normal_prio": 100,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e840",
+              "cgroup": "0xffffff8009ad1800",
+              "path": "/foreground",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "1000",
+            "euid": "1000",
+            "gid": "1000",
+            "egid": "1000"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "4294967295",
+          "parent": {
+            "task": "0xffffff802db95100",
+            "pid": 5629,
+            "tgid": 5629,
+            "name": "main"
+          },
+          "real_parent": {
+            "task": "0xffffff802db95100",
+            "pid": 5629,
+            "tgid": 5629,
+            "name": "main"
+          },
+          "blocked_words": [
+            "0xfffffffffffbfeff"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff801dca0d80",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 220,
+          "pc": {
+            "address": "0x76a4976a48",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "698952",
+            "dynamic_symbols_unavailable": "User page not present"
+          },
+          "sp": "0x739f8f3f80",
+          "fp": "0x7fce38e090",
+          "lr": {
+            "address": "0x76a494e2b8",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "533176",
+            "dynamic_symbols_unavailable": "User page not present"
+          },
+          "args": [
+            "0x0",
+            "0x739f8f3f80",
+            "0x739f8f3f90",
+            "0x739f8f4300",
+            "0x739f8f3f90",
+            "0x76a495e2e0"
+          ],
+          "registers": [
+            "0x0",
+            "0x739f8f3f80",
+            "0x739f8f3f90",
+            "0x739f8f4300",
+            "0x739f8f3f90",
+            "0x76a495e2e0",
+            "0x739f8f3f80",
+            "0x700000001",
+            "0xdc",
+            "0x4100",
+            "0x7fce38e040",
+            "0x76a4fb3890",
+            "0xd8",
+            "0x8e518d8a7fde6e",
+            "0x8000000000000300",
+            "0x0",
+            "0x76a49cf6d0",
+            "0x76a494e0f0",
+            "0x76a62c8000",
+            "0x3d0f00",
+            "0x1cba",
+            "0x739f8f3f80",
+            "0x76a495e2e0",
+            "0x739f8f3f80",
+            "0x739f8f4300",
+            "0x1cba",
+            "0x739f8f3f90",
+            "0x76a6c21300",
+            "0x76a6faf048",
+            "0x7fce38e090",
+            "0x76a494e2b8"
+          ],
+          "pstate": "0x0",
+          "user_stack": [],
+          "pc_code_le_hex": "800000b41ffc3fb182bde954c0035fd61d0080d21e0080d2e00305aae10306aa8e5dff171f2003d51f2003d51f2003d51f2003d51f2003d5683680d2010000d4"
+        }
+      }
+    ],
+    "actual_command_line": [
+      "zygote64"
+    ],
+    "thread_list_verified": true,
+    "thread_count": 3,
+    "user_vma_count": 2574
+  },
+  "original_Zygote_group": {
+    "pid": 5629,
+    "name": "main",
+    "threads": [
+      {
+        "pid": 5629,
+        "tgid": 5629,
+        "name": "main",
+        "task": "0xffffff802db95100",
+        "state": 1,
+        "exit_state": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "priority": 120,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc087733720",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc0877337e0",
+            "lr": "0xffffffc0812a6bc8",
+            "symbol": "schedule+0x4c"
+          },
+          {
+            "fp": "0xffffffc087733840",
+            "lr": "0xffffffc0812ac530",
+            "symbol": "schedule_hrtimeout_range_clock+0x2fc"
+          },
+          {
+            "fp": "0xffffffc0877338c0",
+            "lr": "0xffffffc0812acd8c",
+            "symbol": "schedule_hrtimeout_range+0x14"
+          },
+          {
+            "fp": "0xffffffc087733920",
+            "lr": "0xffffffc080144bd0",
+            "symbol": "do_sys_poll+0x34c"
+          },
+          {
+            "fp": "0xffffffc087733d20",
+            "lr": "0xffffffc0801eee24",
+            "symbol": "__arm64_sys_ppoll+0xa8"
+          },
+          {
+            "fp": "0xffffffc087733dd0",
+            "lr": "0xffffffc0800bb2fc",
+            "symbol": "invoke_syscall+0x58"
+          },
+          {
+            "fp": "0xffffffc087733e20",
+            "lr": "0xffffffc0800bb250",
+            "symbol": "do_el0_svc+0x8c"
+          },
+          {
+            "fp": "0xffffffc087733e40",
+            "lr": "0xffffffc08129ea70",
+            "symbol": "el0_svc+0x48"
+          },
+          {
+            "fp": "0xffffffc087733e80",
+            "lr": "0xffffffc08129e9bc",
+            "symbol": "el0t_64_sync_handler+0x88"
+          },
+          {
+            "fp": "0xffffffc087733ea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc087733fe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "31153604000",
+          "stime": "5966511000",
+          "nvcsw": "39",
+          "nivcsw": "11145",
+          "sum_exec_runtime": "34065497000",
+          "vruntime": "68706824880",
+          "exec_start": "2069641879000"
+        },
+        "policy": 0,
+        "prio": 120,
+        "normal_prio": 120,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e000",
+              "cgroup": "0xffffff8009ed7000",
+              "path": "/top-app",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "0",
+            "euid": "0",
+            "gid": "0",
+            "egid": "0"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "17",
+          "parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "real_parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "blocked_words": [
+            "0x80001204"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff802ae6b180",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 73,
+          "pc": {
+            "address": "0x76a49b8888",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "968840",
+            "dynamic_symbol": null
+          },
+          "sp": "0x7fce397e10",
+          "fp": "0x7fce397e30",
+          "lr": {
+            "address": "0x76a495bac4",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "588484",
+            "dynamic_symbol": {
+              "name": "poll",
+              "offset": "0x64",
+              "range_verified": true
+            }
+          },
+          "args": [
+            "0xb4000074dbe197b0",
+            "0x1",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0xb4000074dbe19530"
+          ],
+          "registers": [
+            "0xb4000074dbe197b0",
+            "0x1",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0xb4000074dbe19530",
+            "0x73746e65",
+            "0x73d9c5ba2f",
+            "0x49",
+            "0x86d",
+            "0x86d",
+            "0x3b9ac9ff",
+            "0x7fffffff",
+            "0x106e9a",
+            "0x80bdc646",
+            "0x7d000000",
+            "0x76a49cf9e8",
+            "0x76a495ba60",
+            "0x76a62c8000",
+            "0x0",
+            "0x76a6c21300",
+            "0xb4000074dbe19538",
+            "0x3b9aca00",
+            "0x1",
+            "0x0",
+            "0xb4000074dbe19538",
+            "0xb4000074dbe19ad0",
+            "0x3e8",
+            "0x431bde82d7b634db",
+            "0x7fce397e30",
+            "0x76a495bac4"
+          ],
+          "pstate": "0x60000000",
+          "user_stack": [
+            {
+              "fp": "0x7fce397e30",
+              "return_pc": {
+                "address": "0x73a7bb48e4",
+                "start": "0x73a7ba5000",
+                "end": "0x73a7bcd000",
+                "flags": "0x1800000000000075",
+                "file": "/apex/com.android.art/lib64/libjavacore.so",
+                "file_offset": "145636",
+                "dynamic_symbol": null
+              }
+            },
+            {
+              "fp": "0x7fce397ec0",
+              "return_pc": {
+                "address": "0x71fe8090",
+                "start": "0x71fb0000",
+                "end": "0x71fec000",
+                "flags": "0x75",
+                "file": "/system/framework/arm64/boot-core-libart.oat",
+                "file_offset": "295056",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            }
+          ],
+          "pc_code_le_hex": "1ffc3fb1a2cbc854c0035fd61f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d5c82180d2010000d4"
+        }
+      },
+      {
+        "pid": 7357,
+        "tgid": 5629,
+        "name": "Jit thread pool",
+        "task": "0xffffff8028ca9440",
+        "state": 8193,
+        "exit_state": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "priority": 139,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc08685bb20",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc08685bbe0",
+            "lr": "0xffffffc0812a6bc8",
+            "symbol": "schedule+0x4c"
+          },
+          {
+            "fp": "0xffffffc08685bc40",
+            "lr": "0xffffffc08010d478",
+            "symbol": "futex_wait+0x158"
+          },
+          {
+            "fp": "0xffffffc08685bd40",
+            "lr": "0xffffffc080230c28",
+            "symbol": "__arm64_sys_futex+0xfc"
+          },
+          {
+            "fp": "0xffffffc08685bdd0",
+            "lr": "0xffffffc0800bb2fc",
+            "symbol": "invoke_syscall+0x58"
+          },
+          {
+            "fp": "0xffffffc08685be20",
+            "lr": "0xffffffc0800bb250",
+            "symbol": "do_el0_svc+0x8c"
+          },
+          {
+            "fp": "0xffffffc08685be40",
+            "lr": "0xffffffc08129ea70",
+            "symbol": "el0_svc+0x48"
+          },
+          {
+            "fp": "0xffffffc08685be80",
+            "lr": "0xffffffc08129e9bc",
+            "symbol": "el0t_64_sync_handler+0x88"
+          },
+          {
+            "fp": "0xffffffc08685bea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc08685bfe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "0",
+          "stime": "0",
+          "nvcsw": "2",
+          "nivcsw": "0",
+          "sum_exec_runtime": "2053000",
+          "vruntime": "68812223687",
+          "exec_start": "2065309182000"
+        },
+        "policy": 0,
+        "prio": 139,
+        "normal_prio": 139,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e000",
+              "cgroup": "0xffffff8009ed7000",
+              "path": "/top-app",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "0",
+            "euid": "0",
+            "gid": "0",
+            "egid": "0"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "4294967295",
+          "parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "real_parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "blocked_words": [
+            "0x80001204"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff802ae6b180",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 98,
+          "pc": {
+            "address": "0x76a4976f20",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "sp": "0x73a1b23e20",
+          "fp": "0x73a1b23e50",
+          "lr": {
+            "address": "0x73d9e04620",
+            "start": "0x73d9e00000",
+            "end": "0x73da65f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2115104",
+            "dynamic_symbol": {
+              "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+              "offset": "0x90",
+              "range_verified": true
+            }
+          },
+          "args": [
+            "0xb40000747be06588",
+            "0x80",
+            "0x1",
+            "0x0",
+            "0x0",
+            "0x0"
+          ],
+          "registers": [
+            "0xb40000747be06588",
+            "0x80",
+            "0x1",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x7f7fffff7f7f7f7f",
+            "0x62",
+            "0x15d08e462a7b55cd",
+            "0xb4000074dbe14230",
+            "0x1",
+            "0x73d9ea5228",
+            "0x73d9ea5278",
+            "0x73d9ea52f8",
+            "0x0",
+            "0x73da82fbd8",
+            "0x76a4976f00",
+            "0x73a146c000",
+            "0xb40000747be06578",
+            "0xb40000743be13a60",
+            "0x1",
+            "0xb40000747be06530",
+            "0xb40000747be065a9",
+            "0x73a1b24300",
+            "0x15fd",
+            "0x73a1b24300",
+            "0x1",
+            "0x76a6faf048",
+            "0x73a1b23e50",
+            "0x73d9e04620"
+          ],
+          "pstate": "0x60000000",
+          "user_stack": [
+            {
+              "fp": "0x73a1b23e50",
+              "return_pc": {
+                "address": "0x73d9e04518",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "2114840",
+                "dynamic_symbol": null
+              }
+            },
+            {
+              "fp": "0x73a1b23eb0",
+              "return_pc": {
+                "address": "0x73da08ad28",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "4762920",
+                "dynamic_symbol": null
+              }
+            },
+            {
+              "fp": "0x73a1b23f00",
+              "return_pc": {
+                "address": "0x76a495e39c",
+                "start": "0x76a4928000",
+                "end": "0x76a49cc000",
+                "flags": "0x75",
+                "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+                "file_offset": "598940",
+                "dynamic_symbol": null
+              }
+            },
+            {
+              "fp": "0x73a1b23f30",
+              "return_pc": {
+                "address": "0x76a494e0e8",
+                "start": "0x76a4928000",
+                "end": "0x76a49cc000",
+                "flags": "0x75",
+                "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+                "file_offset": "532712",
+                "dynamic_symbol": null
+              }
+            },
+            {
+              "fp": "0x73a1b23f50",
+              "return_pc": null
+            }
+          ],
+          "futex": {
+            "raw_tagged_address": "0xb40000747be06588",
+            "address": "0x747be06588",
+            "TBI0_enabled": true,
+            "operation": 128,
+            "expected": 1,
+            "observed": 1,
+            "mapping": {
+              "address": "0x747be06588",
+              "start": "0x747be03000",
+              "end": "0x747be43000",
+              "flags": "0x100073",
+              "file": null,
+              "file_offset": null
+            }
+          },
+          "pc_code_le_hex": "1ffc3fb1e296e954c0035fd60000000000000000000000000000000000000000fe0f1ff884460194fe0741f849d03bd5290540f90000b0522a1540b9201500b9"
+        }
+      },
+      {
+        "pid": 7359,
+        "tgid": 5629,
+        "name": "HeapTaskDaemon",
+        "task": "0xffffff80192f5100",
+        "state": 8193,
+        "exit_state": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "priority": 124,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc086863b20",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc086863be0",
+            "lr": "0xffffffc0812a6bc8",
+            "symbol": "schedule+0x4c"
+          },
+          {
+            "fp": "0xffffffc086863c40",
+            "lr": "0xffffffc08010d478",
+            "symbol": "futex_wait+0x158"
+          },
+          {
+            "fp": "0xffffffc086863d40",
+            "lr": "0xffffffc080230c28",
+            "symbol": "__arm64_sys_futex+0xfc"
+          },
+          {
+            "fp": "0xffffffc086863dd0",
+            "lr": "0xffffffc0800bb2fc",
+            "symbol": "invoke_syscall+0x58"
+          },
+          {
+            "fp": "0xffffffc086863e20",
+            "lr": "0xffffffc0800bb250",
+            "symbol": "do_el0_svc+0x8c"
+          },
+          {
+            "fp": "0xffffffc086863e40",
+            "lr": "0xffffffc08129ea70",
+            "symbol": "el0_svc+0x48"
+          },
+          {
+            "fp": "0xffffffc086863e80",
+            "lr": "0xffffffc08129e9bc",
+            "symbol": "el0t_64_sync_handler+0x88"
+          },
+          {
+            "fp": "0xffffffc086863ea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc086863fe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "0",
+          "stime": "0",
+          "nvcsw": "1",
+          "nivcsw": "2",
+          "sum_exec_runtime": "2206000",
+          "vruntime": "68703152551",
+          "exec_start": "2068170787000"
+        },
+        "policy": 0,
+        "prio": 124,
+        "normal_prio": 124,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e000",
+              "cgroup": "0xffffff8009ed7000",
+              "path": "/top-app",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "0",
+            "euid": "0",
+            "gid": "0",
+            "egid": "0"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "4294967295",
+          "parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "real_parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "blocked_words": [
+            "0x80001204"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff802ae6b180",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 98,
+          "pc": {
+            "address": "0x76a4976f20",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "sp": "0x73a1a17b00",
+          "fp": "0x73a1a17b30",
+          "lr": {
+            "address": "0x73d9e04620",
+            "start": "0x73d9e00000",
+            "end": "0x73da65f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2115104",
+            "dynamic_symbol": {
+              "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+              "offset": "0x90",
+              "range_verified": true
+            }
+          },
+          "args": [
+            "0xb4000075cbe1a210",
+            "0x80",
+            "0x3",
+            "0x0",
+            "0x0",
+            "0x0"
+          ],
+          "registers": [
+            "0xb4000075cbe1a210",
+            "0x80",
+            "0x3",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0xb40000743be09380",
+            "0x62",
+            "0x15d08e462a7b55cd",
+            "0x7",
+            "0x20",
+            "0x0",
+            "0x106b9c",
+            "0x80a65b35",
+            "0x0",
+            "0x73da82fbd8",
+            "0x76a4976f00",
+            "0x739eb2c000",
+            "0xb4000075cbe1a200",
+            "0xb40000743be102c0",
+            "0x3",
+            "0xb40000752be3b450",
+            "0x431bde82d7b634db",
+            "0xfff0bdc0",
+            "0x73a1a18300",
+            "0x73a1a18300",
+            "0x1",
+            "0xfffff9",
+            "0x73a1a17b30",
+            "0x73d9e04620"
+          ],
+          "pstate": "0x60000000",
+          "user_stack": [
+            {
+              "fp": "0x73a1a17b30",
+              "return_pc": {
+                "address": "0x73d9e01a38",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "2103864",
+                "dynamic_symbol": null
+              }
+            },
+            {
+              "fp": "0x73a1a17bd0",
+              "return_pc": {
+                "address": "0x71fe7e44",
+                "start": "0x71fb0000",
+                "end": "0x71fec000",
+                "flags": "0x75",
+                "file": "/system/framework/arm64/boot-core-libart.oat",
+                "file_offset": "294468",
+                "dynamic_symbols_unavailable": "User page not present"
+              }
+            },
+            {
+              "fp": "0x73a1a17d90",
+              "return_pc": {
+                "address": "0x73a1a17ea8",
+                "start": "0x73a1915000",
+                "end": "0x73a1a1c000",
+                "flags": "0x200073",
+                "file": null,
+                "file_offset": null
+              }
+            },
+            {
+              "fp": "0x73a1a17e60",
+              "return_pc": null
+            }
+          ],
+          "futex": {
+            "raw_tagged_address": "0xb4000075cbe1a210",
+            "address": "0x75cbe1a210",
+            "TBI0_enabled": true,
+            "operation": 128,
+            "expected": 3,
+            "observed": 3,
+            "mapping": {
+              "address": "0x75cbe1a210",
+              "start": "0x75cbe0f000",
+              "end": "0x75cbe4f000",
+              "flags": "0x100073",
+              "file": null,
+              "file_offset": null
+            }
+          },
+          "pc_code_le_hex": "1ffc3fb1e296e954c0035fd60000000000000000000000000000000000000000fe0f1ff884460194fe0741f849d03bd5290540f90000b0522a1540b9201500b9"
+        }
+      },
+      {
+        "pid": 7360,
+        "tgid": 5629,
+        "name": "ReferenceQueueD",
+        "task": "0xffffff804489a880",
+        "state": 8193,
+        "exit_state": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "priority": 124,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc08686bb20",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc08686bbe0",
+            "lr": "0xffffffc0812a6bc8",
+            "symbol": "schedule+0x4c"
+          },
+          {
+            "fp": "0xffffffc08686bc40",
+            "lr": "0xffffffc08010d478",
+            "symbol": "futex_wait+0x158"
+          },
+          {
+            "fp": "0xffffffc08686bd40",
+            "lr": "0xffffffc080230c28",
+            "symbol": "__arm64_sys_futex+0xfc"
+          },
+          {
+            "fp": "0xffffffc08686bdd0",
+            "lr": "0xffffffc0800bb2fc",
+            "symbol": "invoke_syscall+0x58"
+          },
+          {
+            "fp": "0xffffffc08686be20",
+            "lr": "0xffffffc0800bb250",
+            "symbol": "do_el0_svc+0x8c"
+          },
+          {
+            "fp": "0xffffffc08686be40",
+            "lr": "0xffffffc08129ea70",
+            "symbol": "el0_svc+0x48"
+          },
+          {
+            "fp": "0xffffffc08686be80",
+            "lr": "0xffffffc08129e9bc",
+            "symbol": "el0t_64_sync_handler+0x88"
+          },
+          {
+            "fp": "0xffffffc08686bea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc08686bfe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "3782000",
+          "stime": "0",
+          "nvcsw": "4",
+          "nivcsw": "2",
+          "sum_exec_runtime": "4674000",
+          "vruntime": "68711036366",
+          "exec_start": "2073572900000"
+        },
+        "policy": 0,
+        "prio": 124,
+        "normal_prio": 124,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e000",
+              "cgroup": "0xffffff8009ed7000",
+              "path": "/top-app",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "0",
+            "euid": "0",
+            "gid": "0",
+            "egid": "0"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "4294967295",
+          "parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "real_parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "blocked_words": [
+            "0x80001204"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff802ae6b180",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 98,
+          "pc": {
+            "address": "0x76a4976f20",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "sp": "0x73a07f7870",
+          "fp": "0x73a07f78a0",
+          "lr": {
+            "address": "0x73d9e04620",
+            "start": "0x73d9e00000",
+            "end": "0x73da65f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2115104",
+            "dynamic_symbol": {
+              "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+              "offset": "0x90",
+              "range_verified": true
+            }
+          },
+          "args": [
+            "0xb40000746be2afe0",
+            "0x80",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0"
+          ],
+          "registers": [
+            "0xb40000746be2afe0",
+            "0x80",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0xb40000752be2db10",
+            "0x62",
+            "0x15d08e462a7b55cd",
+            "0x0",
+            "0x60000020",
+            "0x0",
+            "0xb4000073dbe0d070",
+            "0x80cd527c",
+            "0x0",
+            "0x73da82fbd8",
+            "0x76a4976f00",
+            "0x739d974000",
+            "0xb40000746be2afd0",
+            "0xb40000743be0af50",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0xb40000752be2da50",
+            "0x76a5723a70",
+            "0x73a07f8300",
+            "0x1",
+            "0x0",
+            "0x73a07f78a0",
+            "0x73d9e04620"
+          ],
+          "pstate": "0x60000000",
+          "user_stack": [
+            {
+              "fp": "0x73a07f78a0",
+              "return_pc": {
+                "address": "0x73da1e2b78",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "6171512",
+                "dynamic_symbol": {
+                  "name": "_ZN3art7Monitor4WaitEPNS_6ThreadENS_6ObjPtrINS_6mirror6ObjectEEElibNS_11ThreadStateE",
+                  "offset": "0x16a8",
+                  "range_verified": true
+                }
+              }
+            },
+            {
+              "fp": "0x73a07f7b60",
+              "return_pc": {
+                "address": "0x71f930cc",
+                "start": "0x71d4c000",
+                "end": "0x71f9b000",
+                "flags": "0x75",
+                "file": "/system/framework/arm64/boot.oat",
+                "file_offset": "3027148",
+                "dynamic_symbols_unavailable": "The expression evaluated to a falsy value:\n\n  assert.ok(terminated)\n"
+              }
+            },
+            {
+              "fp": "0x73a07f7d90",
+              "return_pc": {
+                "address": "0x73a07f7ea8",
+                "start": "0x73a06f5000",
+                "end": "0x73a07fc000",
+                "flags": "0x200073",
+                "file": null,
+                "file_offset": null
+              }
+            },
+            {
+              "fp": "0x73a07f7e60",
+              "return_pc": null
+            }
+          ],
+          "futex": {
+            "raw_tagged_address": "0xb40000746be2afe0",
+            "address": "0x746be2afe0",
+            "TBI0_enabled": true,
+            "operation": 128,
+            "expected": 0,
+            "observed": 0,
+            "mapping": {
+              "address": "0x746be2afe0",
+              "start": "0x746be0f000",
+              "end": "0x746be4f000",
+              "flags": "0x100073",
+              "file": null,
+              "file_offset": null
+            }
+          },
+          "pc_code_le_hex": "1ffc3fb1e296e954c0035fd60000000000000000000000000000000000000000fe0f1ff884460194fe0741f849d03bd5290540f90000b0522a1540b9201500b9"
+        }
+      },
+      {
+        "pid": 7368,
+        "tgid": 5629,
+        "name": "FinalizerDaemon",
+        "task": "0xffffff800d7f2880",
+        "state": 8193,
+        "exit_state": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "priority": 124,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc086833b20",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc086833be0",
+            "lr": "0xffffffc0812a6bc8",
+            "symbol": "schedule+0x4c"
+          },
+          {
+            "fp": "0xffffffc086833c40",
+            "lr": "0xffffffc08010d478",
+            "symbol": "futex_wait+0x158"
+          },
+          {
+            "fp": "0xffffffc086833d40",
+            "lr": "0xffffffc080230c28",
+            "symbol": "__arm64_sys_futex+0xfc"
+          },
+          {
+            "fp": "0xffffffc086833dd0",
+            "lr": "0xffffffc0800bb2fc",
+            "symbol": "invoke_syscall+0x58"
+          },
+          {
+            "fp": "0xffffffc086833e20",
+            "lr": "0xffffffc0800bb250",
+            "symbol": "do_el0_svc+0x8c"
+          },
+          {
+            "fp": "0xffffffc086833e40",
+            "lr": "0xffffffc08129ea70",
+            "symbol": "el0_svc+0x48"
+          },
+          {
+            "fp": "0xffffffc086833e80",
+            "lr": "0xffffffc08129e9bc",
+            "symbol": "el0t_64_sync_handler+0x88"
+          },
+          {
+            "fp": "0xffffffc086833ea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc086833fe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "0",
+          "stime": "0",
+          "nvcsw": "5",
+          "nivcsw": "2",
+          "sum_exec_runtime": "2702000",
+          "vruntime": "68710959139",
+          "exec_start": "2073705829000"
+        },
+        "policy": 0,
+        "prio": 124,
+        "normal_prio": 124,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e000",
+              "cgroup": "0xffffff8009ed7000",
+              "path": "/top-app",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "0",
+            "euid": "0",
+            "gid": "0",
+            "egid": "0"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "4294967295",
+          "parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "real_parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "blocked_words": [
+            "0x80001204"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff802ae6b180",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 98,
+          "pc": {
+            "address": "0x76a4976f20",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "sp": "0x73a06e7820",
+          "fp": "0x73a06e7850",
+          "lr": {
+            "address": "0x73d9e04620",
+            "start": "0x73d9e00000",
+            "end": "0x73da65f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2115104",
+            "dynamic_symbol": {
+              "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+              "offset": "0x90",
+              "range_verified": true
+            }
+          },
+          "args": [
+            "0xb40000746be1cac0",
+            "0x80",
+            "0x1",
+            "0x0",
+            "0x0",
+            "0x0"
+          ],
+          "registers": [
+            "0xb40000746be1cac0",
+            "0x80",
+            "0x1",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x28",
+            "0x62",
+            "0x15d08e462a7b55cd",
+            "0x0",
+            "0x73a06e7758",
+            "0x0",
+            "0x73d9ea5544",
+            "0x73d9ea55c4",
+            "0x0",
+            "0x73da82fbd8",
+            "0x76a4976f00",
+            "0x7350644000",
+            "0xb40000746be1cab0",
+            "0xb40000743be0e6f0",
+            "0x1",
+            "0x0",
+            "0x0",
+            "0xb40000752be2dc90",
+            "0x76a5723a70",
+            "0x73a06e8300",
+            "0x1",
+            "0x0",
+            "0x73a06e7850",
+            "0x73d9e04620"
+          ],
+          "pstate": "0x60000000",
+          "user_stack": [
+            {
+              "fp": "0x73a06e7850",
+              "return_pc": {
+                "address": "0x73da1e2b78",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "6171512",
+                "dynamic_symbol": {
+                  "name": "_ZN3art7Monitor4WaitEPNS_6ThreadENS_6ObjPtrINS_6mirror6ObjectEEElibNS_11ThreadStateE",
+                  "offset": "0x16a8",
+                  "range_verified": true
+                }
+              }
+            },
+            {
+              "fp": "0x73a06e7b10",
+              "return_pc": {
+                "address": "0x71f930cc",
+                "start": "0x71d4c000",
+                "end": "0x71f9b000",
+                "flags": "0x75",
+                "file": "/system/framework/arm64/boot.oat",
+                "file_offset": "3027148",
+                "dynamic_symbols_unavailable": "The expression evaluated to a falsy value:\n\n  assert.ok(terminated)\n"
+              }
+            },
+            {
+              "fp": "0x73a06e7d90",
+              "return_pc": {
+                "address": "0x73a06e7ea8",
+                "start": "0x73a05e5000",
+                "end": "0x73a06ec000",
+                "flags": "0x200073",
+                "file": null,
+                "file_offset": null
+              }
+            },
+            {
+              "fp": "0x73a06e7e60",
+              "return_pc": null
+            }
+          ],
+          "futex": {
+            "raw_tagged_address": "0xb40000746be1cac0",
+            "address": "0x746be1cac0",
+            "TBI0_enabled": true,
+            "operation": 128,
+            "expected": 1,
+            "observed": 1,
+            "mapping": {
+              "address": "0x746be1cac0",
+              "start": "0x746be0f000",
+              "end": "0x746be4f000",
+              "flags": "0x100073",
+              "file": null,
+              "file_offset": null
+            }
+          },
+          "pc_code_le_hex": "1ffc3fb1e296e954c0035fd60000000000000000000000000000000000000000fe0f1ff884460194fe0741f849d03bd5290540f90000b0522a1540b9201500b9"
+        }
+      },
+      {
+        "pid": 7374,
+        "tgid": 5629,
+        "name": "FinalizerWatchd",
+        "task": "0xffffff8028c7e540",
+        "state": 8193,
+        "exit_state": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "priority": 124,
+        "current": false,
+        "context_may_be_stale": false,
+        "kernel_pc": "__switch_to+0x144",
+        "kernel_stack": [
+          {
+            "fp": "0xffffffc086773b20",
+            "lr": "0xffffffc0812a57c8",
+            "symbol": "__schedule+0x1004"
+          },
+          {
+            "fp": "0xffffffc086773be0",
+            "lr": "0xffffffc0812a6bc8",
+            "symbol": "schedule+0x4c"
+          },
+          {
+            "fp": "0xffffffc086773c40",
+            "lr": "0xffffffc08010d478",
+            "symbol": "futex_wait+0x158"
+          },
+          {
+            "fp": "0xffffffc086773d40",
+            "lr": "0xffffffc080230c28",
+            "symbol": "__arm64_sys_futex+0xfc"
+          },
+          {
+            "fp": "0xffffffc086773dd0",
+            "lr": "0xffffffc0800bb2fc",
+            "symbol": "invoke_syscall+0x58"
+          },
+          {
+            "fp": "0xffffffc086773e20",
+            "lr": "0xffffffc0800bb250",
+            "symbol": "do_el0_svc+0x8c"
+          },
+          {
+            "fp": "0xffffffc086773e40",
+            "lr": "0xffffffc08129ea70",
+            "symbol": "el0_svc+0x48"
+          },
+          {
+            "fp": "0xffffffc086773e80",
+            "lr": "0xffffffc08129e9bc",
+            "symbol": "el0t_64_sync_handler+0x88"
+          },
+          {
+            "fp": "0xffffffc086773ea0",
+            "lr": "0xffffffc080011e50",
+            "symbol": "el0t_64_sync+0x1bc"
+          },
+          {
+            "fp": "0xffffffc086773fe0",
+            "lr": "0x0",
+            "symbol": null
+          }
+        ],
+        "accounting": {
+          "utime": "0",
+          "stime": "0",
+          "nvcsw": "4",
+          "nivcsw": "0",
+          "sum_exec_runtime": "2133000",
+          "vruntime": "68710920872",
+          "exec_start": "2074148530000"
+        },
+        "policy": 0,
+        "prio": 124,
+        "normal_prio": 124,
+        "rt_priority": 0,
+        "scheduling": {
+          "read_only": true,
+          "task_and_runqueue_group_match": true,
+          "ancestry_verified": true,
+          "groups": [
+            {
+              "task_group": "0xffffff8002d9e000",
+              "cgroup": "0xffffff8009ed7000",
+              "path": "/top-app",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            },
+            {
+              "task_group": "0xffffffc082828800",
+              "cgroup": "0xffffff8006972040",
+              "path": "/",
+              "shares_raw": "1048576",
+              "quota_raw": "18446744073709551615",
+              "period_raw": "100000000"
+            }
+          ],
+          "credentials": {
+            "uid": "0",
+            "euid": "0",
+            "gid": "0",
+            "egid": "0"
+          }
+        },
+        "signals": {
+          "read_only": true,
+          "kernel_BTF_layout_verified": true,
+          "ptrace_raw": "0",
+          "jobctl_raw": "0",
+          "exit_code_raw": "0",
+          "exit_signal_raw": "4294967295",
+          "parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "real_parent": {
+            "task": "0xffffff8002d19440",
+            "pid": 1,
+            "tgid": 1,
+            "name": "init"
+          },
+          "blocked_words": [
+            "0x80001204"
+          ],
+          "real_blocked_words": [
+            "0x0"
+          ],
+          "saved_sigmask_words": [
+            "0x0"
+          ],
+          "pending_words": [
+            "0x0"
+          ],
+          "signal_owner": "0xffffff802ae6b180",
+          "flags_raw": "0",
+          "group_exit_code_raw": "0",
+          "group_stop_count_raw": "0",
+          "notify_count_raw": "0",
+          "shared_pending_words": [
+            "0x0"
+          ],
+          "last_siginfo_pointer": "0x0"
+        },
+        "saved_frame_read_errors": [
+          {
+            "stack_bytes": 32768,
+            "error": "Android observer: unmapped virtual address"
+          },
+          {
+            "stack_bytes": 65536,
+            "error": "Android observer: unmapped virtual address"
+          }
+        ],
+        "saved_user_frame": {
+          "stack_bytes": 16384,
+          "syscall": 98,
+          "pc": {
+            "address": "0x76a4976f20",
+            "start": "0x76a4928000",
+            "end": "0x76a49cc000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+            "file_offset": "700192",
+            "dynamic_symbol": {
+              "name": "syscall",
+              "offset": "0x20",
+              "range_verified": true
+            }
+          },
+          "sp": "0x73a05d7700",
+          "fp": "0x73a05d7760",
+          "lr": {
+            "address": "0x73d9e02694",
+            "start": "0x73d9e00000",
+            "end": "0x73da65f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "2107028",
+            "dynamic_symbol": {
+              "name": "_ZN3art17ConditionVariable9TimedWaitEPNS_6ThreadEli",
+              "offset": "0x134",
+              "range_verified": true
+            }
+          },
+          "args": [
+            "0xb40000746be16c10",
+            "0x80",
+            "0x0",
+            "0x73a05d7708",
+            "0x0",
+            "0x0"
+          ],
+          "registers": [
+            "0xb40000746be16c10",
+            "0x80",
+            "0x0",
+            "0x73a05d7708",
+            "0x0",
+            "0x0",
+            "0x0",
+            "0x73daa00008",
+            "0x62",
+            "0x9",
+            "0x3b9aca00",
+            "0x0",
+            "0x0",
+            "0x1077c8",
+            "0x81057160",
+            "0x0",
+            "0x73da82fbd8",
+            "0x76a4976f00",
+            "0x734f0ec000",
+            "0xb40000746be16c00",
+            "0xb40000743be05be0",
+            "0x0",
+            "0x1",
+            "0x2",
+            "0xb40000752be3b450",
+            "0x76a5723a70",
+            "0x73a05d8300",
+            "0x73a05d7870",
+            "0x1",
+            "0x73a05d7760",
+            "0x73d9e02694"
+          ],
+          "pstate": "0x0",
+          "user_stack": [
+            {
+              "fp": "0x73a05d7760",
+              "return_pc": {
+                "address": "0x73da1e18a4",
+                "start": "0x73d9e00000",
+                "end": "0x73da65f000",
+                "flags": "0x20000075",
+                "file": "/apex/com.android.art/lib64/libart.so",
+                "file_offset": "6166692",
+                "dynamic_symbol": {
+                  "name": "_ZN3art7Monitor4WaitEPNS_6ThreadENS_6ObjPtrINS_6mirror6ObjectEEElibNS_11ThreadStateE",
+                  "offset": "0x3d4",
+                  "range_verified": true
+                }
+              }
+            },
+            {
+              "fp": "0x73a05d7a20",
+              "return_pc": {
+                "address": "0x71f93dac",
+                "start": "0x71d4c000",
+                "end": "0x71f9b000",
+                "flags": "0x75",
+                "file": "/system/framework/arm64/boot.oat",
+                "file_offset": "3030444",
+                "dynamic_symbols_unavailable": "The expression evaluated to a falsy value:\n\n  assert.ok(terminated)\n"
+              }
+            }
+          ],
+          "futex": {
+            "raw_tagged_address": "0xb40000746be16c10",
+            "address": "0x746be16c10",
+            "TBI0_enabled": true,
+            "operation": 128,
+            "expected": 0,
+            "observed": 0,
+            "mapping": {
+              "address": "0x746be16c10",
+              "start": "0x746be0f000",
+              "end": "0x746be4f000",
+              "flags": "0x100073",
+              "file": null,
+              "file_offset": null
+            }
+          },
+          "pc_code_le_hex": "1ffc3fb1e296e954c0035fd60000000000000000000000000000000000000000fe0f1ff884460194fe0741f849d03bd5290540f90000b0522a1540b9201500b9"
+        }
+      }
+    ],
+    "actual_command_line": [
+      "zygote64"
+    ],
+    "thread_list_verified": true,
+    "thread_count": 6,
+    "user_vma_count": 2329
+  },
+  "actual_SystemServer_UID": 1000,
+  "actual_SystemServer_EUID": 1000,
+  "original_parent_Zygote_PID": 5629,
+  "original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
+    "instructions": 133147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "SELinux_enforcing": true,
+  "BOOT": false,
+  "usable_UI_or_response_claimed": false
+}
