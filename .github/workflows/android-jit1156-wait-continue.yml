@@ -1,0 +1,539 @@
+name: Continue actual ART foreground recovery control without any repeated input
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-jit1156-wait-continue.yml
+    - state/experiments/jit1156-wait-continue-plan.json
+    - state/experiments/jit1156-wait-continue-artifacts.json
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-jit1156-no-new-input-followup
+  cancel-in-progress: false
+jobs:
+  jit1156-wait-continue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate the last fully admitted guarded-priority control; submit no new input
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/jit1156-wait-continue-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source-jit-continue state/experiments/jit1156-wait-continue-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/jit1156-wait-continue-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/jit1156-wait-continue-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/jit1156-wait-continue-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/jit1156-wait-continue-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        chmod +x build/reverseandroid/epoch build/reverseandroid/frame
+
+        mkdir -p evidence/jit1156-wait-continue-reports
+
+        python3 - <<''PYCACHE''
+
+        import pathlib,json,hashlib
+
+        p=pathlib.Path(''build/reverseandroid'')
+
+        assert hashlib.file_digest((p/''epoch'').open(''rb''),''sha256'').hexdigest()==''72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa''
+
+        fixture=json.loads((p/''console-event-test.json'').read_text());assert len(fixture)==5 and all(v is True
+        for v in fixture.values())
+
+        PYCACHE
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-jit-continue
+        > evidence/jit1156-wait-continue-reports/source-admission.json
+
+        python3 - <<''PYSOURCE''
+
+        import pathlib,json
+
+        p=pathlib.Path(''build/source-jit-continue'');c=json.loads((p/''output-contract.json'').read_text());proof=json.loads((p/''jit1156-wait-control-proof.json'').read_text())
+
+        assert c[''checkpoint_sha256'']==''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'' and
+        c[''instructions'']==52000000000
+
+        assert proof[''checkpoint_sha256'']==c[''checkpoint_sha256''] and proof[''instructions'']==c[''instructions'']
+
+        assert proof[''actual_guarded_nice0_console_response_seen''] and proof[''actual_original_kernel_nice0_observed'']
+
+        assert proof[''input_submitted_only_once''] and not proof[''C79_and_C80_input_modified'']
+
+        PYSOURCE
+
+        '
+    - name: 'ART follow-up 1: continue original execution without UART or new priority changes'
+      id: r1
+      if: success()
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run build/source-jit-continue
+        evidence/jit1156-wait-continue-1 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-1.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-1/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-1/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-1/threads-readonly.json --all-scheduling
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-1'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 1: preserve every complete original checkpoint piece'
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-1
+        transport_path: build/jit1156-wait-continue-transport-1
+        artifact_prefix: reverseandroid-jit1156-wait-continue-1
+    - name: 'ART follow-up 1: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r1.outcome == 'success'
+      run: 'rm -rf build/source-jit-continue
+
+        '
+    - name: 'ART follow-up 2: continue original execution without UART or new priority changes'
+      id: r2
+      if: success() && steps.r1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-continue-1
+        evidence/jit1156-wait-continue-2 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-2.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-2/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-2/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-2/threads-readonly.json
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-2'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 2: preserve every complete original checkpoint piece'
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-2
+        transport_path: build/jit1156-wait-continue-transport-2
+        artifact_prefix: reverseandroid-jit1156-wait-continue-2
+    - name: 'ART follow-up 2: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r2.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-continue-1 build/jit1156-wait-continue-transport-1
+
+        '
+    - name: 'ART follow-up 3: continue original execution without UART or new priority changes'
+      id: r3
+      if: success() && steps.r2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-continue-2
+        evidence/jit1156-wait-continue-3 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-3.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-3/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-3/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-3/threads-readonly.json
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-3'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 3: preserve every complete original checkpoint piece'
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-3
+        transport_path: build/jit1156-wait-continue-transport-3
+        artifact_prefix: reverseandroid-jit1156-wait-continue-3
+    - name: 'ART follow-up 3: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r3.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-continue-2 build/jit1156-wait-continue-transport-2
+
+        '
+    - name: 'ART follow-up 4: continue original execution without UART or new priority changes'
+      id: r4
+      if: success() && steps.r3.outcome == 'success' && steps.r3.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-continue-3
+        evidence/jit1156-wait-continue-4 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-4.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-4/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-4/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-4/threads-readonly.json
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-4'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 4: preserve every complete original checkpoint piece'
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-4
+        transport_path: build/jit1156-wait-continue-transport-4
+        artifact_prefix: reverseandroid-jit1156-wait-continue-4
+    - name: 'ART follow-up 4: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r4.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-continue-3 build/jit1156-wait-continue-transport-3
+
+        '
+    - name: 'ART follow-up 5: continue original execution without UART or new priority changes'
+      id: r5
+      if: success() && steps.r4.outcome == 'success' && steps.r4.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-continue-4
+        evidence/jit1156-wait-continue-5 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-5.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-5/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-5/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-5/threads-readonly.json
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-5'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 5: preserve every complete original checkpoint piece'
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-5
+        transport_path: build/jit1156-wait-continue-transport-5
+        artifact_prefix: reverseandroid-jit1156-wait-continue-5
+    - name: 'ART follow-up 5: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r5.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-continue-4 build/jit1156-wait-continue-transport-4
+
+        '
+    - name: 'ART follow-up 6: continue original execution without UART or new priority changes'
+      id: r6
+      if: success() && steps.r5.outcome == 'success' && steps.r5.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-continue-5
+        evidence/jit1156-wait-continue-6 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-6.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-6/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-6/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-6/threads-readonly.json
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-6'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 6: preserve every complete original checkpoint piece'
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-6
+        transport_path: build/jit1156-wait-continue-transport-6
+        artifact_prefix: reverseandroid-jit1156-wait-continue-6
+    - name: 'ART follow-up 6: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r6.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-continue-5 build/jit1156-wait-continue-transport-5
+
+        '
+    - name: 'ART follow-up 7: continue original execution without UART or new priority changes'
+      id: r7
+      if: success() && steps.r6.outcome == 'success' && steps.r6.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-continue-6
+        evidence/jit1156-wait-continue-7 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-7.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-7/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-7/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-7/threads-readonly.json
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-7'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 7: preserve every complete original checkpoint piece'
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-7
+        transport_path: build/jit1156-wait-continue-transport-7
+        artifact_prefix: reverseandroid-jit1156-wait-continue-7
+    - name: 'ART follow-up 7: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r7.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-continue-6 build/jit1156-wait-continue-transport-6
+
+        '
+    - name: 'ART follow-up 8: continue original execution without UART or new priority changes'
+      id: r8
+      if: success() && steps.r7.outcome == 'success' && steps.r7.outputs.complete != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/jit1156-wait-continue-7
+        evidence/jit1156-wait-continue-8 build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 2000000000 > evidence/jit1156-wait-continue-reports/stage-8.json
+
+        TASK_ART_SHA=$(python3 -c ''import json;print(json.load(open("evidence/jit1156-wait-continue-8/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/jit1156-wait-continue-8/current.rvg
+        "$TASK_ART_SHA" evidence/jit1156-wait-continue-8/threads-readonly.json
+
+        python3 - <<''PYSTAGE''
+
+        import pathlib,json,hashlib,shutil,os
+
+        p=pathlib.Path(''evidence/jit1156-wait-continue-8'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256'']
+
+        r=json.loads((p/''current.json'').read_text());assert r[''provenance''][''new_uart_input_bytes'']==0 and
+        ''external_uart_input'' not in r[''provenance'']
+
+        o=json.loads((p/''threads-readonly.json'').read_text());assert o[''input_unchanged''] and o[''checkpoint_sha256'']==g[''checkpoint_sha256'']
+
+        group=next((x for x in o[''groups''] if x[''pid'']==562),None);main=next((t for t in group[''threads'']
+        if t[''pid'']==562),None) if group else None;jit=next((t for t in group[''threads''] if t[''pid'']==1156
+        and t[''tgid'']==562 and t[''name'']==''Jit thread pool''),None) if group else None
+
+        foreground=bool(main and int(main[''accounting''][''utime''])>23530892000)
+
+        proof={''schema'':''reverseandroid-no-new-input-ART-foreground-followup-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''prior_actual_nice0_control_source'':''68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442'',''additional_UART_events'':0,''prior_input_not_repeated'':True,''actual_main_user_progress_from_fixed49B'':foreground,''baseline_main_utime_ns'':23530892000,''actual_main_thread'':main,''actual_JIT_thread'':jit,''original_SystemServer_alive'':g[''system_server_alive_verified''],''GC_cause_not_assumed'':True,''control_is_promotion_authority'':False,''main_C79_C80_modified'':False,''parallel_reference_comparison_pending'':True}
+
+        (p/''ART-foreground-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'');shutil.rmtree(p/''native/journal'')
+
+        with open(os.environ[''GITHUB_OUTPUT''],''a'') as f:f.write(''complete=''+str(foreground or g[''system_server_alive_verified'']).lower()+''\n'')
+
+        PYSTAGE
+
+        '
+    - name: 'ART follow-up 8: preserve every complete original checkpoint piece'
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit1156-wait-continue-8
+        transport_path: build/jit1156-wait-continue-transport-8
+        artifact_prefix: reverseandroid-jit1156-wait-continue-8
+    - name: 'ART follow-up 8: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.r8.outcome == 'success'
+      run: 'rm -rf evidence/jit1156-wait-continue-7 build/jit1156-wait-continue-transport-7
+
+        '
+    - name: Require actual ART foreground recovery, keep boot and UI conditions separate
+      run: 'python3 - <<''PYFINAL''
+
+        import pathlib,json
+
+        p=sorted(pathlib.Path(''evidence'').glob(''jit1156-wait-continue-[1-8]/ART-foreground-proof.json''));assert
+        p
+
+        s=json.loads(p[-1].read_text());assert s[''actual_main_user_progress_from_fixed49B''] or s[''original_SystemServer_alive''],''Actual
+        foreground recovery still pending; preserve every full state''
+
+        PYFINAL
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-jit1156-wait-continue-evidence
+        path: 'evidence/jit1156-wait-continue-reports
+
+          evidence/jit1156-wait-continue-*/*.json
+
+          evidence/jit1156-wait-continue-*/*.log
+
+          evidence/jit1156-wait-continue-*/*.txt
+
+          state/experiments/jit1156-wait-continue-plan.json'
+        retention-days: 90
+        if-no-files-found: error

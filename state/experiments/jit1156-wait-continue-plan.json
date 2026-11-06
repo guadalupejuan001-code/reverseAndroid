@@ -1,0 +1,17 @@
+{
+  "schema": "reverseandroid-no-new-input-ART-foreground-followup-v1",
+  "source_checkpoint_sha256": "68c37a1451bec55d78965eb3e2495d27149135695c2924386d81b4723ed08442",
+  "source_instructions": 52000000000,
+  "prior_actual_priority_control_run": 42162796607,
+  "prior_input_submitted_once": true,
+  "additional_UART_events": 0,
+  "main_PID": 562,
+  "JIT_PID": 1156,
+  "baseline_main_utime_ns": 23530892000,
+  "source_JIT_utime_ns": 1383539000,
+  "max_stages": 8,
+  "stage_budget": 2000000000,
+  "GC_cause_not_assumed": true,
+  "control_is_promotion_authority": false,
+  "main_C79_C80_modified": false
+}
