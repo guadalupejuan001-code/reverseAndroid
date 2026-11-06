@@ -1,0 +1,99 @@
+{
+  "schema": "reverseandroid-original-Zygote64-and-Binder-observation-v1",
+  "stage": 6,
+  "checkpoint_SHA256": "7c342f0cc8676d3208163f9152875614197cf0ceb569beee2200e6be075231d7",
+  "instructions": 107147727998,
+  "full_original_admission_clean_exit_enforcing_verified": true,
+  "actual_live_Zygote64": {
+    "pid": 5629,
+    "name": "zygote64",
+    "task": "0xffffff802db95100",
+    "state": 0,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc087733cb0",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc087733cb0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc087733d70",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc087733dd0",
+        "lr": "0xffffffc0800bce9c",
+        "symbol": "do_notify_resume+0xcc"
+      },
+      {
+        "fp": "0xffffffc087733e10",
+        "lr": "0xffffffc08129fcf0",
+        "symbol": "el0_interrupt+0x94"
+      },
+      {
+        "fp": "0xffffffc087733e60",
+        "lr": "0xffffffc08129f728",
+        "symbol": "__el0_irq_handler_common+0x18"
+      },
+      {
+        "fp": "0xffffffc087733e90",
+        "lr": "0xffffffc08129f704",
+        "symbol": "el0t_64_irq_handler+0x10"
+      },
+      {
+        "fp": "0xffffffc087733ea0",
+        "lr": "0xffffffc080012010",
+        "symbol": "el0t_64_irq+0x1bc"
+      },
+      {
+        "fp": "0xffffffc087733fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 5629,
+      "comm": "zygote64",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 1,
+      "argv": [
+        "zygote64"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": false
+    },
+    "on_rq": 1,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "4",
+      "nivcsw": "1401",
+      "utime": "3085527000",
+      "stime": "1567496000",
+      "sum_exec_runtime": "4412413000",
+      "vruntime": "64068112488",
+      "exec_start": "1672125935000"
+    }
+  },
+  "actual_Binder_found": {
+    "android.hardware.oemlock.IOemLock/default": true,
+    "android.hardware.sensors.ISensors/default": true
+  },
+  "actual_service_lines": [
+    "Service android.hardware.oemlock.IOemLock/default: found",
+    "Service android.hardware.sensors.ISensors/default: found"
+  ],
+  "new_UART_input_bytes": 0,
+  "inspection_response_still_pending": true,
+  "SystemServer_alive": false,
+  "original_BOOT_completed": false,
+  "usable_UI_or_response_claimed": false
+}

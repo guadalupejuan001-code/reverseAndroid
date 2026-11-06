@@ -1,0 +1,53 @@
+{
+  "schema": "reverseandroid-local-original-admitted-boundary-v1",
+  "cycle": "C86",
+  "stage": 6,
+  "execution_commit": "5055208388e512f86a05aa48f3310adb256d8e9b",
+  "checkpoint_sha256": "7c342f0cc8676d3208163f9152875614197cf0ceb569beee2200e6be075231d7",
+  "instructions": 107147727998,
+  "whole_RVG_bytes": 1985791190,
+  "original_admission_passed": true,
+  "clean_native_process": {
+    "schema": "reverse-c08-host-supervision-v1",
+    "status": "process_completed",
+    "trigger": null,
+    "exit_code": 0,
+    "exit_signal": null,
+    "forced_kill": false,
+    "elapsed_ms": 543840,
+    "startup_marker_seen": true,
+    "last_reported_instructions": 107147727998,
+    "reported_instruction_delta": 1000000000,
+    "error": null,
+    "logs": {
+      "stdout": {
+        "bytes_seen": 36606,
+        "bytes_stored": 36606,
+        "truncated": false
+      },
+      "stderr": {
+        "bytes_seen": 54783,
+        "bytes_stored": 54783,
+        "truncated": false
+      }
+    },
+    "checkpoint_bytes_modified_by_supervisor": false,
+    "android_boot_verified": false,
+    "android_display_verified": false,
+    "native_android_games_verified": false
+  },
+  "actual_native_UART_event": null,
+  "new_UART_bytes": 0,
+  "old_five_events_preserved": true,
+  "phase": 6,
+  "waiting": true,
+  "combined_original_console_SHA256": "d1b218459a3f9607f573c857ef1504244276bfd26994d8ae725c8a834c6a6f01",
+  "system_server_alive": false,
+  "boot_completed": false,
+  "SELinux_enforcing": true,
+  "actual_nice0_reply_observed": true,
+  "outer_cleanup_ACK_verified": true,
+  "independent_CI_match_not_yet_claimed": true,
+  "remote_transport_not_yet_pinned": true,
+  "actual_UI_response_claimed": false
+}
