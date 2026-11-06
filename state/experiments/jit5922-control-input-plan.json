@@ -1,0 +1,10 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "5e8ddb757fee6cbc030230f2dfc532dfb2e08648c9e00f4020335f7b28ff109c",
+  "source_instructions": 114147727998,
+  "input_file": "jit5922-control-input.txt",
+  "input_sha256": "70523e6019776b099cb44df08db7042b9cb46fcd154b7b6ac7af4c342369a1e5",
+  "input_bytes": 596,
+  "scope": "One explicit guarded Android Toybox renice increment -19 for the actual UID0 Jit thread pool TID5922 of verified Zygote5629. The original C87 zero-UART continuation remains the reference. No new power cycle, property injection, policy or compact-codec change."
+}
