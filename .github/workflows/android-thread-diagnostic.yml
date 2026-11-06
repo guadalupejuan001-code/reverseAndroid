@@ -1,0 +1,121 @@
+name: Read actual Android crash logs in an isolated console control
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-thread-diagnostic.yml
+    - state/experiments/thread-diagnostic-plan.json
+    - state/experiments/thread-diagnostic-artifacts.json
+    - state/experiments/thread-diagnostic-input.txt
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-thread-diagnostic
+  cancel-in-progress: false
+jobs:
+  thread-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate unchanged sources, exact seed, original disk and already-tested runner
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/thread-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source-diagnostic state/experiments/thread-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/thread-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/thread-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/thread-diagnostic-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/thread-diagnostic-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        chmod +x build/reverseandroid/epoch build/reverseandroid/frame
+
+        mkdir -p evidence/thread-diagnostic-reports
+
+        python3 - <<''PYCACHE''
+
+        import pathlib,json,hashlib
+
+        p=pathlib.Path(''build/reverseandroid'')
+
+        assert hashlib.file_digest((p/''epoch'').open(''rb''),''sha256'').hexdigest()==''72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa''
+
+        fixture=json.loads((p/''console-event-test.json'').read_text());assert len(fixture)==5 and all(v is True
+        for v in fixture.values())
+
+        PYCACHE
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-diagnostic
+        > evidence/thread-diagnostic-reports/source-admission.json
+
+        '
+    - name: Execute only the authenticated read-only logcat console request and fully admit the control
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run build/source-diagnostic
+        evidence/thread-diagnostic build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame
+        "$(git rev-parse HEAD)" 500000000 state/experiments/thread-diagnostic-plan.json > evidence/thread-diagnostic-reports/result.json
+
+        python3 - <<''PYCONTROL''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/thread-diagnostic'');g=json.loads((p/''c46-progress.json'').read_text());assert
+        g[''source_boundary_verified'']
+
+        assert hashlib.file_digest((p/''current.rvg'').open(''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        s=(p/''console-new.txt'').read_text();proof={''schema'':''reverseandroid-isolated-crash-console-response-v1'',''checkpoint_sha256'':g[''checkpoint_sha256''],''instructions'':g[''instructions''],''actual_crash_begin_seen'':''REVERSE_CRASH_BEGIN''
+        in s,''actual_crash_end_seen'':''REVERSE_CRASH_END'' in s,''console_sha256'':hashlib.sha256(s.encode()).hexdigest(),''control_is_promotion_authority'':False,''C78_primary_input_modified'':False}
+
+        (p/''crash-control-proof.json'').write_text(json.dumps(proof,indent=2)+''\n'')
+
+        PYCONTROL
+
+        '
+    - name: Preserve every full original control piece
+      if: always() && hashFiles('evidence/thread-diagnostic/c46-progress.json') != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/thread-diagnostic
+        transport_path: build/thread-diagnostic-transport
+        artifact_prefix: reverseandroid-thread-diagnostic-control
+    - name: Preserve the actual input bytes, console and original reports
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-thread-diagnostic-evidence
+        path: 'evidence/thread-diagnostic-reports
+
+          evidence/thread-diagnostic/*.json
+
+          evidence/thread-diagnostic/*.log
+
+          evidence/thread-diagnostic/*.txt
+
+          evidence/thread-diagnostic/applied-input.bin
+
+          state/experiments/thread-diagnostic-input.txt
+
+          state/experiments/thread-diagnostic-plan.json
+
+          build/reverseandroid/console-event-test.json'
+        retention-days: 90
+        if-no-files-found: error

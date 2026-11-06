@@ -1,0 +1,2 @@
+
+printf '\nREVERSE_%s\n' CRASH_BEGIN; logcat -b crash -d -t 160; printf '\nREVERSE_%s\n' CRASH_END

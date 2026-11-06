@@ -1,0 +1,10 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "9b4d91aa5e9e2cce5e6c234fb6e5034d1479d7e422f107a4617d2d73e36d9dca",
+  "source_instructions": 29000000000,
+  "input_file": "thread-diagnostic-input.txt",
+  "input_sha256": "78bb7fc603ab7aee2289084b30b139c7866b391d466a0bcbbe0de646325f3ac6",
+  "input_bytes": 99,
+  "scope": "Isolated actual crash-log read through the existing modeled PL011 console. The C78 primary execution continues without this input. No properties, priorities, service state or original CPU code are edited. This control is not promotion authority."
+}
