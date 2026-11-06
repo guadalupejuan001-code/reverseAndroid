@@ -1,0 +1,329 @@
+{
+  "schema": "reverseandroid-readonly-tracer-and-clone-wait-v1",
+  "checkpoint_SHA256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+  "instructions": 90547727998,
+  "source_whole_local_CI_identity_previously_verified": true,
+  "original_observer_git_blob_SHA1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "original_observer_and_CPU_and_codecs_unchanged": true,
+  "input_bytes_unchanged": true,
+  "complete_report_SHA256": "d871436a020f606b221b2ed1dfd350ff6f46165c038586937fe760987da4a535",
+  "complete_report_bytes": 1184480,
+  "thread_count": 56,
+  "thread_list_and_backlinks_verified": true,
+  "actual_trace_states": {
+    "8": 56
+  },
+  "actual_trace_signal_codes": {
+    "32773": 55,
+    "773": 1
+  },
+  "all_actual_tracers_same_PID": true,
+  "main_thread_signals": {
+    "read_only": true,
+    "kernel_BTF_layout_verified": true,
+    "ptrace_raw": "65537",
+    "jobctl_raw": "134217728",
+    "exit_code_raw": "0",
+    "parent": {
+      "task": "0xffffff803db35100",
+      "pid": 4779,
+      "tgid": 4779,
+      "name": "crash_dump64"
+    },
+    "real_parent": {
+      "task": "0xffffff800685d100",
+      "pid": 562,
+      "tgid": 562,
+      "name": "main"
+    },
+    "blocked_words": [
+      "0x80001204"
+    ],
+    "real_blocked_words": [
+      "0x0"
+    ],
+    "saved_sigmask_words": [
+      "0x0"
+    ],
+    "pending_words": [
+      "0x0"
+    ],
+    "signal_owner": "0xffffff802ae6ba80",
+    "flags_raw": "0",
+    "group_exit_code_raw": "0",
+    "group_stop_count_raw": "0",
+    "notify_count_raw": "0",
+    "shared_pending_words": [
+      "0x0"
+    ],
+    "last_siginfo_pointer": "0xffffffc0869f3bb8",
+    "last_siginfo": {
+      "si_signo": 5,
+      "si_errno": 0,
+      "si_code": 32773,
+      "bytes_le_hex": "050000000000000005800000000000003a0d0000e8030000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "pseudothread_actual_saved_syscall": 220,
+  "pseudothread_signals": {
+    "read_only": true,
+    "kernel_BTF_layout_verified": true,
+    "ptrace_raw": "65601",
+    "jobctl_raw": "134217728",
+    "exit_code_raw": "0",
+    "parent": {
+      "task": "0xffffff803db35100",
+      "pid": 4779,
+      "tgid": 4779,
+      "name": "crash_dump64"
+    },
+    "real_parent": {
+      "task": "0xffffff800685d100",
+      "pid": 562,
+      "tgid": 562,
+      "name": "main"
+    },
+    "blocked_words": [
+      "0xfffffffffffbfeff"
+    ],
+    "real_blocked_words": [
+      "0x0"
+    ],
+    "saved_sigmask_words": [
+      "0x0"
+    ],
+    "pending_words": [
+      "0x0"
+    ],
+    "signal_owner": "0xffffff802ae6ba80",
+    "flags_raw": "0",
+    "group_exit_code_raw": "0",
+    "group_stop_count_raw": "0",
+    "notify_count_raw": "0",
+    "shared_pending_words": [
+      "0x0"
+    ],
+    "last_siginfo_pointer": "0xffffffc085ffbc98",
+    "last_siginfo": {
+      "si_signo": 5,
+      "si_errno": 0,
+      "si_code": 773,
+      "bytes_le_hex": "05000000000000000503000000000000ac110000e8030000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "tracer_wait": {
+    "PID": 4779,
+    "name": "crash_dump64",
+    "state": 1,
+    "syscall": 260,
+    "actual_register_arguments": [
+      "0x12df",
+      "0x7fffd3d0a4",
+      "0x40000000",
+      "0x0",
+      "0x7fffd3ca91",
+      "0x7fffd3d022"
+    ],
+    "target_PID_decimal": 4831,
+    "kernel_stack": [
+      "__schedule+0x1004",
+      "schedule+0x4c",
+      "do_wait+0x80",
+      "kernel_wait4+0x9c",
+      "__arm64_sys_wait4+0x68",
+      "invoke_syscall+0x58",
+      "do_el0_svc+0x8c",
+      "el0_svc+0x48",
+      "el0t_64_sync_handler+0x88",
+      "el0t_64_sync+0x1bc",
+      null
+    ],
+    "parent": {
+      "task": "0xffffff804489e540",
+      "pid": 4555,
+      "tgid": 4555,
+      "name": "crash_dump64"
+    }
+  },
+  "actual_wait_target": {
+    "pid": 4831,
+    "name": "Jit thread pool",
+    "task": "0xffffff8002d2e540",
+    "state": 0,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc08689b7d0",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc08689b7d0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc08689b890",
+        "lr": "0xffffffc0812a6e34",
+        "symbol": "preempt_schedule_irq+0x4c"
+      },
+      {
+        "fp": "0xffffffc08689b8f0",
+        "lr": "0xffffffc0812a9478",
+        "symbol": "arm64_preempt_schedule_irq+0x30"
+      },
+      {
+        "fp": "0xffffffc08689b910",
+        "lr": "0xffffffc08129e770",
+        "symbol": "el1_interrupt+0x48"
+      },
+      {
+        "fp": "0xffffffc08689b920",
+        "lr": "0xffffffc08129e71c",
+        "symbol": "el1h_64_irq_handler+0x18"
+      },
+      {
+        "fp": "0xffffffc08689b940",
+        "lr": "0xffffffc080011b90",
+        "symbol": "el1h_64_irq+0x7c",
+        "interrupted_pc": "0xffffffc08026fc34",
+        "interrupted_symbol": "obj_cgroup_charge+0x4",
+        "interrupted_registers": [
+          "0xffffff802269ad00",
+          "0xcc0",
+          "0x48",
+          "0x1",
+          "0xffffffc08689bb00",
+          "0x40",
+          "0x3f",
+          "0x0",
+          "0x48",
+          "0x0",
+          "0xff0100",
+          "0xffffffbffd582000",
+          "0x2059f34280ffffff",
+          "0x10",
+          "0x0",
+          "0x8",
+          "0x0",
+          "0xee97aaac",
+          "0xffffffc085735058",
+          "0xffffffc08689bb00",
+          "0x1",
+          "0xcc0",
+          "0xffffff8002c1e900",
+          "0xffffff802269ad00",
+          "0x0",
+          "0x0",
+          "0xfffffff",
+          "0xffffff8042f35920",
+          "0xffffff801dfd0000",
+          "0xffffffc08689baa0",
+          "0xffffffc080313590"
+        ]
+      },
+      {
+        "fp": "0xffffffc08689ba80",
+        "lr": "0xffffffc08026fc34",
+        "symbol": "obj_cgroup_charge+0x4"
+      },
+      {
+        "fp": "0xffffffc08689baa0",
+        "lr": "0xffffffc0800fbb1c",
+        "symbol": "kmem_cache_alloc_noprof+0x3b4"
+      },
+      {
+        "fp": "0xffffffc08689bb20",
+        "lr": "0xffffffc0800c5e54",
+        "symbol": "anon_vma_fork+0x180"
+      },
+      {
+        "fp": "0xffffffc08689bb80",
+        "lr": "0xffffffc0801d698c",
+        "symbol": "copy_process+0xe20"
+      },
+      {
+        "fp": "0xffffffc08689bca0",
+        "lr": "0xffffffc0801d567c",
+        "symbol": "kernel_clone+0x80"
+      },
+      {
+        "fp": "0xffffffc08689bd30",
+        "lr": "0xffffffc080079048",
+        "symbol": "__arm64_sys_clone+0x60"
+      },
+      {
+        "fp": "0xffffffc08689be10",
+        "lr": "0xffffffc0800bb2fc",
+        "symbol": "invoke_syscall+0x58"
+      },
+      {
+        "fp": "0xffffffc08689be20",
+        "lr": "0xffffffc0800bb250",
+        "symbol": "do_el0_svc+0x8c"
+      },
+      {
+        "fp": "0xffffffc08689be40",
+        "lr": "0xffffffc08129ea70",
+        "symbol": "el0_svc+0x48"
+      },
+      {
+        "fp": "0xffffffc08689be80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc08689bea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc08689bfe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "on_rq": 1,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "1",
+      "nivcsw": "10",
+      "utime": "0",
+      "stime": "31034000",
+      "sum_exec_runtime": "27741000",
+      "vruntime": "30246465587",
+      "exec_start": "1412630906000"
+    }
+  },
+  "interpretation": {
+    "observed_ptrace_event_stop": 128,
+    "observed_pseudothread_ptrace_event_clone": 3,
+    "tracee_not_in_fatal_signal_delivery_stop_at_this_boundary": true,
+    "tracer_waiting_for_double_fork_progress_is_inference_from_exact_actual_wait_and_primary_source": true,
+    "underlying_dump_request_or_fatal_cause_not_identified": true,
+    "no_scheduling_or_property_or_guest_state_change_made": true
+  },
+  "primary_sources": [
+    {
+      "URL": "https://github.com/torvalds/linux/blob/v6.12/include/uapi/linux/ptrace.h",
+      "fact": "PTRACE_EVENT_STOP=128 and PTRACE_EVENT_CLONE=3."
+    },
+    {
+      "URL": "https://android.googlesource.com/platform/system/core/+/refs/heads/main/debuggerd/crash_dump.cpp",
+      "git_blob_SHA1": "92d81b326db08ce3e3be8c8f58333a44befc323d",
+      "fact": "wait_for_vm_process waits for two clones while tracees remain stopped."
+    },
+    {
+      "URL": "https://android.googlesource.com/kernel/common/+/1f3214aae9f49faf495f3836216afbc6c5400b2e/kernel/signal.c",
+      "fact": "do_jobctl_trap uses SIGTRAP and PTRACE_EVENT_STOP for seized tasks."
+    }
+  ],
+  "validation": {
+    "meaningful_BTF_identity_signal_width_signed_code_invalid_pointer_and_bounds_tests_passed": 4,
+    "existing_thread_graph_tests_passed": 3,
+    "live_original_boot_and_process_gates_not_changed": true
+  },
+  "boot_or_UI_completion_claimed": false
+}

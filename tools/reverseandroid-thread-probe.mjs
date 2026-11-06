@@ -7,6 +7,7 @@ import {resolve} from 'node:path';
 import {enumerateMapleVmas,mountedFilePath,userMemoryReader} from './android_live_property.mjs';
 import {memoryElfSymbols} from './reverseandroid-elf-symbols.mjs';
 import {inspectTaskScheduling} from './reverseandroid-scheduler-group.mjs';
+import {inspectTaskSignals} from './reverseandroid-task-signals.mjs';
 
 const hx=x=>'0x'+x.toString(16), kernelPointer=x=>x>=0xffff000000000000n;
 export function enumerateThreadPointers({leader,read,task,signal}) {
@@ -36,7 +37,8 @@ function inspectThreads(api,options={}) {
   const contextOffset=task.thread.offset+members(types[task.thread.type]).cpu_context.offset;
   const pt=members(type('pt_regs')),ptSize=type('pt_regs').type,mmFields=members(type('mm_struct'));
   const unsigned=(p,key,n=4)=>read(p+BigInt(task[key].offset),n);
-  const selected=tasks.filter(t=>t.zygote_startup||/bootanim|surfaceflinger|^(sh|su|printf|id|cat|toybox|renice)$/.test(t.name));
+  const selected=tasks.filter(t=>t.zygote_startup||/bootanim|surfaceflinger|^(sh|su|printf|id|cat|toybox|renice)$/.test(t.name)
+    ||options.diagnosticProcesses&&/^(crash_dump64|tombstoned|logd|logcat|debuggerd)$/.test(t.name));
   const result={schema:'reverseandroid-thread-probe-v1',read_only:true,groups:[],kernel_layout_pinned:true};
   for(const leaderItem of selected) {
     const leader=BigInt(leaderItem.task),group={pid:leaderItem.pid,name:leaderItem.name,threads:[]};
@@ -74,6 +76,7 @@ function inspectThreads(api,options={}) {
         assert.equal(item.tgid,leaderItem.pid);
         for(const key of ['policy','prio','normal_prio','rt_priority'])if(task[key])item[key]=Number(unsigned(p,key));
         try{item.scheduling=inspectTaskScheduling(api,p);}catch(e){item.scheduling_unverified=e.message;}
+        try{item.signals=inspectTaskSignals(api,p);}catch(e){item.signals_unverified=e.message;}
         for(const k of ['utime','stime','nvcsw','nivcsw'])if(task[k])item.accounting[k]=unsigned(p,k,8).toString();
         const se=members(types[task.se.type]);
         for(const k of ['sum_exec_runtime','vruntime','exec_start'])if(se[k])item.accounting[k]=read(p+BigInt(task.se.offset+se[k].offset)).toString();
@@ -153,7 +156,7 @@ export async function probeThreads(path,sha,options={}) {
     observer_source_git_blob_sha1:blob,original_observer_file_unchanged:true,original_CPU_and_codecs_unchanged:true};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
-  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>x==='--all-scheduling'));
-  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling')});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>['--all-scheduling','--diagnostic-processes'].includes(x)));
+  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling'),diagnosticProcesses:flags.includes('--diagnostic-processes')});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
   console.log(JSON.stringify({instructions:result.instructions,groups:result.groups.map(x=>({pid:x.pid,name:x.name,thread_count:x.thread_count,error:x.error})),input_unchanged:true}));
 }
