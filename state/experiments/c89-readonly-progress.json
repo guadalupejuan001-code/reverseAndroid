@@ -1,12 +1,12 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 2,
-  "source_checkpoint_sha256": "8ec19f6987929de6ab141f1f200e1e5741c56b5713d0dc8d4ba1f448ab680c57",
-  "instructions": 141147727998,
-  "source_artifact_lock": "state/experiments/c89-stage-2-artifacts.json",
+  "source_stage": 6,
+  "source_checkpoint_sha256": "6e9b4a431736c99c29b7f12ca2db4b4a50660d7ed8e75f13cf4dc0831658964e",
+  "instructions": 145147727998,
+  "source_artifact_lock": "state/experiments/c89-stage-6-artifacts.json",
   "source_execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
   "source_CI_run_id": 42299162841,
-  "source_proof_SHA256": "8e5c97a24e1179ac7b13932040e9986a43dc1fff6906f0be2ba50aeac59c79f6",
+  "source_proof_SHA256": "73f64c197544f849fc5470c428a874a5632cb9e29e8dca02118849c9fc932c54",
   "zygote_PID": 5629,
   "target_JIT_TID": 5922,
   "system_server_PID": 7354,
@@ -103,7 +103,7 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Read the actual bounded candidate signal/ucontext bytes at SystemServer7354 futex. Independently constrain TIDs, signal range, readable pointers and executable EL0 PC; preserve candidate status because private source layout is not guest-version locked. Zero guest execution, zero UART.",
+  "purpose": "Inspect the exact current SystemServer7354 main wait and complete thread list after genuine ioctl/futex transitions. Decode bounded debuggerd candidate only if its independent layout constraints still match; otherwise retain an explicit unverified result. Zero guest execution and UART.",
   "read_only_debuggerd_context_PID": 7354,
   "debuggerd_candidate_module_SHA256": "5d4edd7dcd4f394b2f9ba84c4a697a05b621d072ad3b34ee3ba16afb171469cd"
 }
