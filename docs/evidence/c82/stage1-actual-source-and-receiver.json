@@ -1,0 +1,41 @@
+{
+  "schema": "reverseandroid-actual-first-primary-peripheral-adoption-boundary-v1",
+  "checkpoint_SHA256": "9cf838db393a1b3a58dcab9810274f7c4e04409a849cdc73cbb3fa765d8a0dc8",
+  "instructions": 84000000000,
+  "source_C81_SHA256": "12760b2bbb2cf8cb28af23c823ea7d2c663cb79168b1403c69094f8b75c2e6f5",
+  "source_C81_instructions": 83000000000,
+  "actual_new_primary_input": {
+    "phase": 0,
+    "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+    "actual_native_event": {
+      "schema": "reverse-modeled-uart-input-v1",
+      "instructions": 83000000000,
+      "counter_subtick": 28,
+      "bytes": 923,
+      "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+    }
+  },
+  "actual_receiver_response": "REVERSE_PTS_TRANSFER_RX_0 RC_0",
+  "actual_original_SystemServer_process": {
+    "read_only": true,
+    "pid": 3386,
+    "comm": "system_server",
+    "exe_path": "/system/bin/app_process64",
+    "parent_pid": 562,
+    "argv": [
+      "system_server"
+    ],
+    "argv_verified": true,
+    "launch_signature_verified": false,
+    "state": 8193,
+    "exit_state": 0,
+    "has_user_mm": true
+  },
+  "original_SystemServer_alive_gate": true,
+  "current_primary_guest_ELF_or_peer_or_HAL_integration_not_yet_claimed": true,
+  "inherited_one_JIT_priority_input_not_reapplied": true,
+  "all_original_gates_and_pieces": "docs/evidence/c82/stage1-producer-boundary.json",
+  "live_SELinux_enforcing": true,
+  "original_boot_completed": false,
+  "UI_response_verified": false
+}

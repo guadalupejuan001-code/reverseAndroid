@@ -1,0 +1,65 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "c82",
+  "stage": 1,
+  "run_id": 42196559322,
+  "execution_commit": "505df20297b7e4df3345f906f3899ffad19d5d98",
+  "checkpoint_sha256": "9cf838db393a1b3a58dcab9810274f7c4e04409a849cdc73cbb3fa765d8a0dc8",
+  "instructions": 84000000000,
+  "metadata_artifact_id": 13492687591,
+  "metadata_archive_sha256": "2d5f5f3423da84b1384f2d637da798900bd991748d838dbd93d6e23d2677a67c",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": null,
+  "transport_lock": "state/experiments/c82-stage-1-transport.json",
+  "artifact_lock": "state/experiments/c82-stage-1-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/c82-1",
+    "phase": 1,
+    "waiting": false,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 83000000000,
+          "counter_subtick": 28,
+          "bytes": 923,
+          "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "hardware_commands_completed": false,
+    "boot_completed": false,
+    "system_server_alive": true,
+    "last_admitted_sha256": "9cf838db393a1b3a58dcab9810274f7c4e04409a849cdc73cbb3fa765d8a0dc8",
+    "last_admitted_instructions": 84000000000,
+    "combined_original_console_bytes_sha256": "f4f56c08a400e97e0b3046874ed0d4629beb0c524e6cf860ac5764849a370b4e",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": false,
+      "android.hardware.sensors.ISensors/default": false
+    },
+    "actual_AArch64_peer_ready_line_seen": false,
+    "actual_guest_ELF_hash_line_seen": false,
+    "actual_private_device_filesystem_mount_seen": false,
+    "actual_loaded_policy_unchanged_hashes": [],
+    "console_observation": "evidence/c82-1/console-observation.json",
+    "prior_canonical_phase_input_repeated": false,
+    "admitted_parent_primary": "state/experiments/c82-artifacts.json",
+    "continuation_is_primary": true,
+    "validated_original_HAL_control": "docs/evidence/c82/prior-private-HAL-integration.json",
+    "original_admission_and_codecs_unchanged": true,
+    "fresh_power_cycle": false,
+    "SELinux_enforcing": true,
+    "ui_response_verified": false,
+    "ELF_SHA256_expected": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+    "all_event_phases_unique": true,
+    "original_C81_branch_state_rewritten": false,
+    "C81_is_reference_after_explicit_C82_fork": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "reverseandroid-observed-C82-start-and-independent-original-validation-v1",
+  "C82_run_id": 42196559322,
+  "C82_job_id": 127821220538,
+  "execution_commit": "505df20297b7e4df3345f906f3899ffad19d5d98",
+  "source_instructions": 83000000000,
+  "source_checkpoint_SHA256": "12760b2bbb2cf8cb28af23c823ea7d2c663cb79168b1403c69094f8b75c2e6f5",
+  "original_source_full_preflight_and_bootstrap_checks_passed": true,
+  "prior_HAL_control_metadata_refetched_and_checked_in_independent_CI": true,
+  "original_engine_validation_run_id": 42196558760,
+  "original_engine_validation_job_id": 127821238163,
+  "original_engine_validation_conclusion": "success",
+  "historical_continuation_job_id": 127823285264,
+  "historical_continuation_conclusion": "skipped by explicit execute_on_push:false",
+  "original_870_files_unchanged": true,
+  "first_new_C82_checkpoint_and_native_input_observation_still_pending": false,
+  "boot_or_UI_completion_claimed": false,
+  "first_fully_admitted_C82_checkpoint_SHA256": "9cf838db393a1b3a58dcab9810274f7c4e04409a849cdc73cbb3fa765d8a0dc8",
+  "first_native_input": {
+    "schema": "reverse-modeled-uart-input-v1",
+    "instructions": 83000000000,
+    "counter_subtick": 28,
+    "bytes": 923,
+    "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+  }
+}
