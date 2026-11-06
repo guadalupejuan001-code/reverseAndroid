@@ -7,10 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C87, etapa 3: **112.147.727.998 instrucciones** admitidas localmente. SystemServer sigue pendiente. El arranque completo y la interfaz utilizable siguen pendientes. SELinux permanece activo.
+C87, etapa 4: **113.147.727.998 instrucciones** admitidas localmente. SystemServer sigue pendiente. El arranque completo y la interfaz utilizable siguen pendientes. SELinux permanece activo.
 El `init` original recuperó Zygote; [prueba del nuevo arranque](docs/evidence/c86/original-init-Zygote-recovery.json).
-La etapa 3 coincide íntegramente entre la ejecución local y CI y tiene todas sus piezas conservadas. [Prueba](docs/evidence/c87/stage3-independent-local-CI-match.json); [estado actual](state/latest.json).
-Zygote conserva seis hilos y el principal sigue ejecutando Java original de boot-core-libart.oat. [Lectura actual de los hilos](docs/evidence/c87/stage3-original-Java-execution.json).
+La etapa 4 coincide íntegramente entre la ejecución local y CI y tiene todas sus piezas conservadas. [Prueba](docs/evidence/c87/stage4-independent-local-CI-match.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado
