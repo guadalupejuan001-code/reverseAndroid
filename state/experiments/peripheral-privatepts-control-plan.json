@@ -1,0 +1,76 @@
+{
+  "schema": "reverseandroid-isolated-peripheral-private-PTY-control-v1",
+  "source_checkpoint_sha256": "8a8c7de17bc9d5adb0370f619fb82a180854abd3f95998794a9c937fcf20b7a9",
+  "source_instructions": 61000000000,
+  "source_artifact_lock": "state/experiments/peripheral-privatepts-control-artifacts.json",
+  "source_run_id": 42166740537,
+  "source_commit": "17408a20c8433f13e6af5aef1cd95bf3206b7060",
+  "source_original_failed_control_not_primary": true,
+  "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "gzip_SHA256": "671fd2b742811b13eb861fb848f5a033989de991561c064caf09e310ee8e0522",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "old_guest_ELF_SHA256": "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da",
+  "phases": [
+    {
+      "input_file": "state/experiments/peripheral-privatepts-control-input-0.txt",
+      "input_bytes": 704,
+      "input_sha256": "eb20a2d4e12c16ef73bd2958eba53c5c3c6eaf11846c758739a140429a7d90d0",
+      "response_marker": "REVERSE_PTS_RX",
+      "failure_markers": [
+        "REVERSE_PTS_COPY"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Authenticate the existing ABI2 guest ELF and prepare a root blocking read for an ordinary file update."
+    },
+    {
+      "input_file": "state/experiments/peripheral-privatepts-control-input-1.txt",
+      "input_bytes": 2656,
+      "input_sha256": "eda301772d5fb91358163413759ee92f3099ab6154276b9ba2467419c67f1715",
+      "response_marker": "REVERSE_PTS_COPY",
+      "failure_markers": [
+        "REVERSE_PTS_COPY"
+      ],
+      "data_for_waiting_guest_read": true,
+      "instruction_budget": 1000000000,
+      "effect": "Deliver authenticated text only to that waiting read; reconstruct a separate ABI3 ELF with guest cp/dd/xxd and verify its whole SHA256 before returning."
+    },
+    {
+      "input_file": "state/experiments/peripheral-privatepts-control-input-2.txt",
+      "input_bytes": 1353,
+      "input_sha256": "69ea07138e758dae0682fa15e6fc74103e1dca551a9afcbe80d6d3f14260e688",
+      "response_marker": "REVERSE_PTS_ACTIVATION",
+      "failure_markers": [
+        "REVERSE_PTS_COPY"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Create one new private devpts instance with explicit device-filesystem security labels; run the authenticated ABI3 ELF; require enforcing1 and unchanged loaded policy hash."
+    },
+    {
+      "input_file": "state/experiments/peripheral-privatepts-control-input-3.txt",
+      "input_bytes": 645,
+      "input_sha256": "a71736868204416192ae1ed6b438a63caf6885ed59d02a8c020a6758fdf70b6a",
+      "response_marker": "REVERSE_PTS_INSPECT",
+      "failure_markers": [
+        "REVERSE_PTS_COPY"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Observe original HAL Binder registrations, owners, target labels and actual peer logs."
+    }
+  ],
+  "max_stages": 16,
+  "private_devpts_mountpoint": "/dev/ra-pts",
+  "filesystem_security_context": "u:object_r:tmpfs:s0",
+  "root_inode_context": "u:object_r:device:s0",
+  "original_system_devpts_instance_modified": false,
+  "SELinux_policy_or_enforcement_edits": false,
+  "guest_properties_injected": false,
+  "original_CPU_and_codecs_modified": false,
+  "RVG_snapshot_file_patched": false,
+  "actual_guest_file_copy_dd_xxd_via_explicit_UART": true,
+  "control_is_promotion_authority": false,
+  "main_C81_modified": false,
+  "execute_on_push": false
+}

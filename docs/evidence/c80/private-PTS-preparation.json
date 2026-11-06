@@ -1,0 +1,83 @@
+{
+  "schema": "reverseandroid-private-PTY-input-preparation-proof-v1",
+  "build_run": 42175694808,
+  "build_execution_commit": "c657a2395d8ebc9b2df2d3e0d7d9e5e28556ce32",
+  "build_artifact": 13482783345,
+  "build_archive_SHA256": "c58f67b4ab85a49201c90b7c605777a3be04e21b2a45938890522e620634e74e",
+  "build_all_protocol_realPTY_persistence_ARM64_ABI_tests_passed": true,
+  "actual_new_ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "ELF_bytes": 8184,
+  "gzip_SHA256": "671fd2b742811b13eb861fb848f5a033989de991561c064caf09e310ee8e0522",
+  "gzip_bytes": 4376,
+  "host_proposal": {
+    "schema": "reverseandroid-private-PTY-controlled-input-proposal-v1",
+    "phases": [
+      {
+        "input_file": "input-0.txt",
+        "input_bytes": 704,
+        "input_sha256": "eb20a2d4e12c16ef73bd2958eba53c5c3c6eaf11846c758739a140429a7d90d0",
+        "response_marker": "REVERSE_PTS_RX",
+        "failure_markers": [
+          "REVERSE_PTS_COPY"
+        ],
+        "data_for_waiting_guest_read": false,
+        "instruction_budget": 1000000000
+      },
+      {
+        "input_file": "input-1.txt",
+        "input_bytes": 2656,
+        "input_sha256": "eda301772d5fb91358163413759ee92f3099ab6154276b9ba2467419c67f1715",
+        "response_marker": "REVERSE_PTS_COPY",
+        "failure_markers": [
+          "REVERSE_PTS_COPY"
+        ],
+        "data_for_waiting_guest_read": true,
+        "instruction_budget": 1000000000
+      },
+      {
+        "input_file": "input-2.txt",
+        "input_bytes": 1353,
+        "input_sha256": "69ea07138e758dae0682fa15e6fc74103e1dca551a9afcbe80d6d3f14260e688",
+        "response_marker": "REVERSE_PTS_ACTIVATION",
+        "failure_markers": [
+          "REVERSE_PTS_COPY"
+        ],
+        "data_for_waiting_guest_read": false,
+        "instruction_budget": 1000000000
+      },
+      {
+        "input_file": "input-3.txt",
+        "input_bytes": 645,
+        "input_sha256": "a71736868204416192ae1ed6b438a63caf6885ed59d02a8c020a6758fdf70b6a",
+        "response_marker": "REVERSE_PTS_INSPECT",
+        "failure_markers": [
+          "REVERSE_PTS_COPY"
+        ],
+        "data_for_waiting_guest_read": false,
+        "instruction_budget": 1000000000
+      }
+    ],
+    "original_guest_ELF_SHA256": "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da",
+    "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+    "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+    "copy_from_authenticated_original_file": {
+      "old_offset": 1309,
+      "new_offset": 1317,
+      "bytes": 6867
+    },
+    "host_exact_Toybox_reverse_and_original_root_body_test_passed": true,
+    "host_source_old_ELF_unmodified": true,
+    "host_reconstructed_whole_ELF_equals_compiled_target": true,
+    "host_device_mount_or_SELinux_provisioning_attempted": false,
+    "guest_integration_claimed": false,
+    "RVG_or_policy_or_properties_modified": false
+  },
+  "guest_integration_not_yet_passed": true,
+  "source_control_terminal_failure_SHA256": "8a8c7de17bc9d5adb0370f619fb82a180854abd3f95998794a9c937fcf20b7a9",
+  "canonical_main_not_modified": true,
+  "private_mount_profile_and_policy_unchanged_must_be_observed_in_actual_guest": true,
+  "actual_upstream_Toybox_source_GitBlob_SHA1": "2a82d63f85fe85709c1166238b61898dba794f07",
+  "actual_upstream_Toybox_source_SHA256": "915bf96a1aeb7ab078bcb8603eb81e7913fedb9d68007ce5f3998877de871b5e",
+  "host_reference_fixture": "tests/fixtures/toybox-xxd-reverse-reference.c",
+  "host_reference_function_bodies_unmodified_verified": true
+}
