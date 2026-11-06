@@ -1,0 +1,155 @@
+{
+  "schema": "reverseandroid-independent-native-IC-IVAU-validation-v1",
+  "execution_commit": "dd052d474e5256fbbf4743078b6ec1bc24a56cb8",
+  "run_id": 42221035217,
+  "both_jobs_conclusion": "success",
+  "x86_job": 127902830993,
+  "ARM_job": 127902831269,
+  "actual_AArch64_JIT_warmed_code_changed_from_7_to_42": true,
+  "artifacts": {
+    "x86": {
+      "artifact_id": 13504365235,
+      "ZIP_SHA256": "03e432b4bdf383c9e76a3b3a62a3db3f232204ad56e0d7c02464cca587cdc7cf",
+      "ZIP_SHA256_CRC_and_safe_paths_verified": true,
+      "native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+      "IC_IVAU_test": {
+        "IC_IVAU_cases": 2048,
+        "checks": 79978,
+        "real_AArch64_hardware_cases": 0,
+        "all_Rt_and_unaligned_offsets": true,
+        "UCI_traps_exact_SYS_syndrome": true,
+        "neighbor_privileged_SYS_still_rejected": true,
+        "original_snapshot_roundtrip_and_guest_JIT_response": true
+      },
+      "retained_CLZ_test": {
+        "CLZ_cases": 30887,
+        "checks": 1112149,
+        "real_AArch64_hardware_cases": 0,
+        "mathematical_oracle": true,
+        "all_six_forms": true,
+        "all_register_pairs": true,
+        "exhaustive_B_H_values": true,
+        "FP_traps_and_reserved_rejection": true
+      },
+      "old_cache_test": {
+        "checks": 82,
+        "el0_dczid": true,
+        "el0_dc_zva": true,
+        "kernel_permissions_preserved": true,
+        "native_system_trap_fields": true,
+        "full_state_resume": true
+      },
+      "old_system_test": {
+        "checks": 1992,
+        "system": "own-EL1-MMU-IRQ-EL0-SVC",
+        "existing_quantum_qubits": 4096,
+        "android_boot": "not_implemented"
+      },
+      "extension_manifest": {
+        "schema": "reverseandroid-explicit-IC-IVAU-correction-v1",
+        "original_source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+        "all_870_imported_files_unchanged": true,
+        "original_engine_binary_unchanged_claimed": false,
+        "retained_CLZ_extension": {
+          "schema": "reverseandroid-explicit-ISA-extension-v1",
+          "original_source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+          "all_870_imported_files_unchanged": true,
+          "original_engine_binary_unchanged_claimed": false,
+          "extension": "AArch64 AdvSIMD CLZ (vector), all six allocated forms",
+          "observed_blocking_opcode": "0x6ea04800",
+          "baseline_decoder_SHA256": "7fd5378bacd59543d03b453467e6abc44c4a5bc6389fde827f9bf0aa6f377790",
+          "extended_decoder_SHA256": "1a1a0a3adc386b0be7f76292ec4531a5b144cea758cdeffd1db7aea91de897d5",
+          "extension_SHA256": "1fd924cfab3278faf6550bc8ed54793c426ea3662d97499c0d0e07f6682ea1a4",
+          "changed_original_build_copy_files": [
+            "minimal_guest_simd.inc"
+          ],
+          "snapshot_codecs_RAM_disk_clock_seed_and_cadence_unchanged": true
+        },
+        "extension": "Exact IC IVAU, Xt at EL0 with SCTLR_EL1.UCI control",
+        "observed_SIGILL_opcode": "0xd50b7529",
+        "observed_fault_address": "0x7544ce7e64",
+        "baseline_decoder_SHA256": "c98fd56d9dbe1f4d9d3ad9ae8fe06aee2933cbcbe8174afe7749b420e0532581",
+        "extended_decoder_SHA256": "36324216f1b908daf163a7ef906ba407b2d5c2aafbeeeb1b3c3518e7d5fdeb74",
+        "extension_SHA256": "147947b8fe7da59fc2334bb031ed28fecd86f073025ef9a4f6945377550de19d",
+        "changed_original_build_copy_files": [
+          "minimal_guest.hpp",
+          "minimal_guest_simd.inc"
+        ],
+        "snapshot_codecs_RAM_disk_clock_seed_cadence_IRQ_and_security_gates_unchanged": true
+      }
+    },
+    "arm": {
+      "artifact_id": 13504140858,
+      "ZIP_SHA256": "7c44bd703c6a78d41fd8be99879b4c044a30561a346617da09edee005a720f27",
+      "ZIP_SHA256_CRC_and_safe_paths_verified": true,
+      "native_SHA256": "a988d51e759973747807030ca728f7ee86893c02b448b4f284cd0579f0ac9222",
+      "IC_IVAU_test": {
+        "IC_IVAU_cases": 2048,
+        "checks": 79982,
+        "real_AArch64_hardware_cases": 1,
+        "all_Rt_and_unaligned_offsets": true,
+        "UCI_traps_exact_SYS_syndrome": true,
+        "neighbor_privileged_SYS_still_rejected": true,
+        "original_snapshot_roundtrip_and_guest_JIT_response": true
+      },
+      "retained_CLZ_test": {
+        "CLZ_cases": 30887,
+        "checks": 1143036,
+        "real_AArch64_hardware_cases": 30887,
+        "mathematical_oracle": true,
+        "all_six_forms": true,
+        "all_register_pairs": true,
+        "exhaustive_B_H_values": true,
+        "FP_traps_and_reserved_rejection": true
+      },
+      "old_cache_test": {
+        "checks": 82,
+        "el0_dczid": true,
+        "el0_dc_zva": true,
+        "kernel_permissions_preserved": true,
+        "native_system_trap_fields": true,
+        "full_state_resume": true
+      },
+      "old_system_test": {
+        "checks": 1992,
+        "system": "own-EL1-MMU-IRQ-EL0-SVC",
+        "existing_quantum_qubits": 4096,
+        "android_boot": "not_implemented"
+      },
+      "extension_manifest": {
+        "schema": "reverseandroid-explicit-IC-IVAU-correction-v1",
+        "original_source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+        "all_870_imported_files_unchanged": true,
+        "original_engine_binary_unchanged_claimed": false,
+        "retained_CLZ_extension": {
+          "schema": "reverseandroid-explicit-ISA-extension-v1",
+          "original_source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+          "all_870_imported_files_unchanged": true,
+          "original_engine_binary_unchanged_claimed": false,
+          "extension": "AArch64 AdvSIMD CLZ (vector), all six allocated forms",
+          "observed_blocking_opcode": "0x6ea04800",
+          "baseline_decoder_SHA256": "7fd5378bacd59543d03b453467e6abc44c4a5bc6389fde827f9bf0aa6f377790",
+          "extended_decoder_SHA256": "1a1a0a3adc386b0be7f76292ec4531a5b144cea758cdeffd1db7aea91de897d5",
+          "extension_SHA256": "1fd924cfab3278faf6550bc8ed54793c426ea3662d97499c0d0e07f6682ea1a4",
+          "changed_original_build_copy_files": [
+            "minimal_guest_simd.inc"
+          ],
+          "snapshot_codecs_RAM_disk_clock_seed_and_cadence_unchanged": true
+        },
+        "extension": "Exact IC IVAU, Xt at EL0 with SCTLR_EL1.UCI control",
+        "observed_SIGILL_opcode": "0xd50b7529",
+        "observed_fault_address": "0x7544ce7e64",
+        "baseline_decoder_SHA256": "c98fd56d9dbe1f4d9d3ad9ae8fe06aee2933cbcbe8174afe7749b420e0532581",
+        "extended_decoder_SHA256": "36324216f1b908daf163a7ef906ba407b2d5c2aafbeeeb1b3c3518e7d5fdeb74",
+        "extension_SHA256": "147947b8fe7da59fc2334bb031ed28fecd86f073025ef9a4f6945377550de19d",
+        "changed_original_build_copy_files": [
+          "minimal_guest.hpp",
+          "minimal_guest_simd.inc"
+        ],
+        "snapshot_codecs_RAM_disk_clock_seed_cadence_IRQ_and_security_gates_unchanged": true
+      }
+    }
+  },
+  "original_live_boot_UI_and_security_gates_not_changed": true,
+  "guest_runtime_adoption_pending": true
+}

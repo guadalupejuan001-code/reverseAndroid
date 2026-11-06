@@ -7,6 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
+
+C85 now selects this same admitted C84 state with the independently validated IC IVAU correction. The original SystemServer JIT SIGILL, exact instruction, complete source recovery and real ARM cache/JIT validation are recorded in [C85](docs/c85-el0-ic-ivau.md). C84 continuation is retained as a reference after this explicit engine correction; actual boot and usable UI are still pending.
+
 La etapa4 todavía no verifica a SystemServer activo. El arranque completo, la interfaz utilizable y su respuesta real siguen pendientes.
 <!-- /current-runtime -->
 
