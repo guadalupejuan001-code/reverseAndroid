@@ -1,0 +1,37 @@
+name: Retire replaced Android reference runs
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/retire-replaced-android-reference-runs.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  retire-explicit-references:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify immutable run heads and cancel only the three replaced reference recipes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,subprocess
+          repository='guadalupejuan001-code/reverseAndroid'
+          expected={
+            42213153593:'adf2a95715806d23882d3ab3cda554fdef8dc279',
+            42223223966:'d0b432631011e8c6789345ecdf0ae04155b303a2',
+            42229435150:'5055208388e512f86a05aa48f3310adb256d8e9b',
+          }
+          for run,head in expected.items():
+              path=f'repos/{repository}/actions/runs/{run}'
+              actual=json.loads(subprocess.check_output(['gh','api',path]))
+              assert actual['head_sha']==head and actual['repository']['full_name']==repository
+              if actual['status']=='completed':
+                  print(json.dumps({'reference_run':run,'already_completed':True}))
+                  continue
+              subprocess.run(['gh','api','--method','POST',path+'/cancel'],check=True,stdout=subprocess.DEVNULL)
+              print(json.dumps({'reference_run':run,'head_verified':True,'cancellation_requested':True}))
+          PY
