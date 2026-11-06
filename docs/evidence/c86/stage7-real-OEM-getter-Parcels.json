@@ -1,0 +1,38 @@
+{
+  "schema": "reverseandroid-actual-original-OEM-Binder-read-replies-v1",
+  "stage": 7,
+  "checkpoint_SHA256": "ad6e3200b0bb31ba28bf086565fface6a6b7754ea002965cbb84d225739eb493",
+  "instructions": 108147727998,
+  "full_original_admission_clean_exit_enforcing_verified": true,
+  "combined_original_console_SHA256": "5a4bd3f5f990f8b8aa07c576d959cb4245bbfeef7960066e186698a1315c037c",
+  "entire_console_and_unique_actual_query_marker_order_verified": true,
+  "only_actual_inspection_event_from_source104147727998_used": true,
+  "service": "android.hardware.oemlock.IOemLock/default",
+  "getter_transaction_codes": [
+    2,
+    3
+  ],
+  "getter_names": [
+    "isOemUnlockAllowedByCarrier",
+    "isOemUnlockAllowedByDevice"
+  ],
+  "actual_returned_Parcels": [
+    {
+      "exception_status": "00000000",
+      "boolean_value": true,
+      "raw_bool_hex": "00000001"
+    },
+    {
+      "exception_status": "00000000",
+      "boolean_value": true,
+      "raw_bool_hex": "00000001"
+    }
+  ],
+  "no_setter_transaction_sent": true,
+  "original_stock_HAL_and_guest_peer_used": true,
+  "guest_peer_ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "inspection_outer_acknowledgement_still_pending": true,
+  "BOOT_or_UI_completion_claimed": false,
+  "frozen_AOSP_v1_getter_order_source": "https://android.googlesource.com/platform/hardware/interfaces/+/refs/heads/main/oemlock/aidl/aidl_api/android.hardware.oemlock/1/android/hardware/oemlock/IOemLock.aidl",
+  "validated_peripheral_original_initial_state_byte": 3
+}

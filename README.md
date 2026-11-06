@@ -7,8 +7,8 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C86, etapa 6: **107.147.727.998 instrucciones** admitidas. El Zygote original ya aparece como zygote64 y Binder devolvió found para los servicios originales de bloqueo OEM y sensores. Las consultas siguen pendientes de confirmación final. SystemServer, el arranque completo y la interfaz siguen pendientes. SELinux permanece activo.
-[Zygote64 y Binder reales](docs/evidence/c86/stage6-original-Zygote64-and-Binder.json). Las cinco primeras etapas coinciden íntegramente entre la ejecución local y CI y tienen todas sus piezas conservadas. [Última prueba independiente](docs/evidence/c86/stage5-independent-local-CI-match.json); [estado actual](state/latest.json).
+C86, etapa 7: **108.147.727.998 instrucciones** admitidas. Zygote64 sigue avanzando. Binder encuentra los servicios originales de bloqueo OEM y sensores; las dos consultas OEM devolvieron respuestas válidas, sin excepción. La confirmación final de la inspección sigue pendiente. SystemServer, el arranque completo y la interfaz siguen pendientes. SELinux permanece activo.
+[Consultas OEM reales](docs/evidence/c86/stage7-real-OEM-getter-Parcels.json). Las seis primeras etapas coinciden íntegramente entre la ejecución local y CI y tienen todas sus piezas conservadas. [Última prueba independiente](docs/evidence/c86/stage6-independent-local-CI-match.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado

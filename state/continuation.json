@@ -3,11 +3,11 @@
   "cycle": "C86",
   "epoch": "C76-lights-port",
   "execute_on_push": false,
-  "current_source_checkpoint_sha256": "7c342f0cc8676d3208163f9152875614197cf0ceb569beee2200e6be075231d7",
-  "current_source_instructions": 107147727998,
+  "current_source_checkpoint_sha256": "ad6e3200b0bb31ba28bf086565fface6a6b7754ea002965cbb84d225739eb493",
+  "current_source_instructions": 108147727998,
   "current_source_artifact_lock": null,
   "current_source_proof_file": "c86-proof.json",
-  "current_stage": 6,
+  "current_stage": 7,
   "active_run_id": null,
   "active_execution_commit": "5055208388e512f86a05aa48f3310adb256d8e9b",
   "immutable_initial_workflow_recipe": "state/experiments/c86-plan.json",
@@ -39,13 +39,13 @@
   "next_source_is_latest_admitted_C85_stage3": true,
   "C85_after_stage3_is_reference_after_explicit_C86_input_selection": true,
   "pending_C86_first_admission": false,
-  "current_source_local_directory": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c86-6",
+  "current_source_local_directory": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c86-7",
   "remote_transport_current_boundary_pending": true,
   "last_durable_transport_source": {
-    "instructions": 106147727998,
-    "checkpoint_sha256": "d7fed51701fc32835fba49c7b8ac6cd98cce34179645ba303856b0018f8a2a8e",
-    "source_artifact_lock": "state/experiments/c86-stage-5-artifacts.json",
-    "independent_local_native_match": "docs/evidence/c86/stage5-independent-local-CI-match.json"
+    "instructions": 107147727998,
+    "checkpoint_sha256": "7c342f0cc8676d3208163f9152875614197cf0ceb569beee2200e6be075231d7",
+    "source_artifact_lock": "state/experiments/c86-stage-6-artifacts.json",
+    "independent_local_native_match": "docs/evidence/c86/stage6-independent-local-CI-match.json"
   },
   "independent_CI_run_id": 42231109648
 }
