@@ -52,3 +52,5 @@ Original live PID 1 boot completion and live SystemServer remain mandatory.
 A valid native boundary, completed peripheral adoption, or logo is not a
 completed usable Android boot. The authentic before/after UI test remains a
 separate final requirement.
+
+La etapa 5 se ejecutó y admitió originalmente en CI. Sus cuatro archivos de transporte se recuperaron completos, con SHA-256 exterior e interior, CRC, restauración original y preflight de época verificados localmente. Las etapas 1 a 4 tienen además una ejecución local independiente con RVG y consola completos idénticos. No se atribuye una ejecución nativa local independiente a la etapa 5. La continuación de CI conserva el mismo binario seleccionado y cero UART nuevo.
