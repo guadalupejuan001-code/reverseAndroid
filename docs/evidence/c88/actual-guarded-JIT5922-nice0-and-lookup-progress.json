@@ -1,0 +1,166 @@
+{
+  "schema": "reverseandroid-real-guarded-priority-result-v1",
+  "original_CI_run": 42274580377,
+  "execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
+  "checkpoint_sha256": "e2b02ffe56d5bcb7b1f5acd03514ca49103879d739bd7bc68abb65c93aa329a7",
+  "instructions": 125147727998,
+  "exact_actual_reply_lines": [
+    "REVERSE_JIT5922_CONTROL_DONE NICE_0",
+    "REVERSE_JIT5922_CONTROL_RESULT RC_0"
+  ],
+  "single_new_input_bytes": 596,
+  "new_input_sha256": "70523e6019776b099cb44df08db7042b9cb46fcd154b7b6ac7af4c342369a1e5",
+  "original_seven_events_preserved": true,
+  "new_UART_bytes_in_second_stage": 0,
+  "complete_thread_list_backlinks_verified": true,
+  "actual_target": {
+    "pid": 5922,
+    "tgid": 5629,
+    "name": "Jit thread pool",
+    "state": 0,
+    "priority": 120,
+    "accounting": {
+      "utime": "452896000",
+      "stime": "7597000",
+      "nvcsw": "0",
+      "nivcsw": "141",
+      "sum_exec_runtime": "392391000",
+      "vruntime": "67265283182",
+      "exec_start": "1953477698000"
+    },
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      }
+    },
+    "signals": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "ptrace_raw": "0",
+      "jobctl_raw": "0",
+      "exit_code_raw": "0",
+      "exit_signal_raw": "4294967295",
+      "parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "real_parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "blocked_words": [
+        "0x80001204"
+      ],
+      "real_blocked_words": [
+        "0x0"
+      ],
+      "saved_sigmask_words": [
+        "0x0"
+      ],
+      "pending_words": [
+        "0x0"
+      ],
+      "signal_owner": "0xffffff802ae6b180",
+      "flags_raw": "0",
+      "group_exit_code_raw": "0",
+      "group_stop_count_raw": "0",
+      "notify_count_raw": "0",
+      "shared_pending_words": [
+        "0x0"
+      ],
+      "last_siginfo_pointer": "0x0"
+    }
+  },
+  "before_priority": 139,
+  "before_sum_exec_runtime_ns": "16465000",
+  "after_sum_exec_runtime_ns": "392391000",
+  "actual_lookup_operands_changed": {
+    "before_args": [
+      "0x70a365c8",
+      "0x73d9a60988",
+      "0x18",
+      "0x0",
+      "0x63696d616c24313b",
+      "0x3b31246c616d6963"
+    ],
+    "after_args": [
+      "0x718ca148",
+      "0x73d8a82db3",
+      "0x1e",
+      "0x0",
+      "0x696373244b65793b",
+      "0x3b79654b24736369"
+    ],
+    "before_PC": {
+      "address": "0x73da0c9d00",
+      "start": "0x73d9e00000",
+      "end": "0x73da65f000",
+      "flags": "0x20000075",
+      "file": "/apex/com.android.art/lib64/libart.so",
+      "file_offset": "5020928",
+      "dynamic_symbol": null
+    },
+    "after_PC": {
+      "address": "0x73da0c9d0c",
+      "start": "0x73d9e00000",
+      "end": "0x73da65f000",
+      "flags": "0x20000075",
+      "file": "/apex/com.android.art/lib64/libart.so",
+      "file_offset": "5020940",
+      "dynamic_symbol": null
+    },
+    "changed_GPR_indices": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      22,
+      23,
+      24,
+      26,
+      27,
+      28
+    ]
+  },
+  "main_still_same_original_futex": true,
+  "BOOT": false,
+  "SystemServer": false,
+  "usable_UI_or_response_claimed": false
+}

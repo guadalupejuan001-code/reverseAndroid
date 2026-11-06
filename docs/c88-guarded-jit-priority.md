@@ -43,3 +43,20 @@ The priority result alone is not Android boot. Completion requires genuine live
 PID1 `sys.boot_completed=1`, actual SystemServer and fresh peripheral verification.
 An authentic usable display and a meaningful real UI input response remain
 separate requirements. No C88 execution or successful boot is claimed by this plan.
+
+## Actual second-stage result
+
+The single596-byte event was delivered at123,147,727,998 instructions, subtick26.
+Stage1 admitted the resulting full state while the reply was still pending.
+Stage2, with zero new input, admitted125,147,727,998 instructions and received both
+the real `NICE_0` and `RC_0` replies. The independent read-only kernel inspection
+verified TID5922/TGID5629, the actual JIT name, UID0/EUID0 and static priority120
+(nice0), with a fully verified six-thread list.
+
+The JIT's runtime rose from16,465,000ns in the original stage12 read to392,391,000ns.
+Although its saved PC remains in the same hot libart lookup function, its type
+descriptor pointers, lengths, hash values and19 general registers differ. That is
+evidence that ART is processing different lookup requests. The
+main thread remains in its original futex with unchanged accounting. SystemServer,
+BOOT, usable UI and a real UI response are still unverified. See the linked
+`evidence/c88/actual-guarded-JIT5922-nice0-and-lookup-progress.json`.

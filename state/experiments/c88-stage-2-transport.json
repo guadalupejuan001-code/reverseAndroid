@@ -1,0 +1,54 @@
+{
+  "schema": "reverseandroid-checkpoint-transport-v1",
+  "compression": "tar+gzip",
+  "parts": [
+    {
+      "file": "checkpoint.part-000",
+      "bytes": 209715200,
+      "sha256": "2f9f038150c2ba37a62df82e0d432c9e7d2d25393ae57de67e07eb731dbc739d"
+    },
+    {
+      "file": "checkpoint.part-001",
+      "bytes": 209715200,
+      "sha256": "32fe932929970f8e6623359aef3a44ab6d0893221c8e05aa0767edf72e059a97"
+    },
+    {
+      "file": "checkpoint.part-002",
+      "bytes": 209715200,
+      "sha256": "e1a4aa0559823981cd808b30cb5ed82e6ffd38bd7bf0929b9ca233fcac3a3618"
+    },
+    {
+      "file": "checkpoint.part-003",
+      "bytes": 67283334,
+      "sha256": "0a2d61ecc3302c6f8d94f0f08dc0d47cd5caab27a88aafbd6420b75684bbedab"
+    }
+  ],
+  "source_contract": {
+    "schema": "reverseandroid-epoch-source-v1",
+    "checkpoint_sha256": "e2b02ffe56d5bcb7b1f5acd03514ca49103879d739bd7bc68abb65c93aa329a7",
+    "report_file": "current.json",
+    "report_sha256": "cb9011d89d00ac22483b856bafed902bfc9be02a7f73432d3d510b1e73207356",
+    "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+    "instructions": 125147727998,
+    "epoch_original_init_verified": true,
+    "initialized_hardware_root": false,
+    "result_sha256": "94ef479d35630f2d04930a65a1059c14072302bc7fe0e3f5662c43423123f5c7",
+    "process_sha256": "90695497da31ea9bdd540f7dc1ed122e6335f44e4e959663ae47d5a3c2fc1600",
+    "source_commit": "6b586622b7ddd9655c932cfc987a45b78550d190"
+  },
+  "progress": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "e2b02ffe56d5bcb7b1f5acd03514ca49103879d739bd7bc68abb65c93aa329a7",
+    "instructions": 125147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": false,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  }
+}
