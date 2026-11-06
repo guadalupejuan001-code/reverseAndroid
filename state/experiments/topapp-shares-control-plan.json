@@ -1,0 +1,28 @@
+{
+  "schema": "reverseandroid-topapp-shares-control-plan-v1",
+  "source_checkpoint_sha256": "6134b364f97612b20233938e1aa22933a14ea2fcaf8ab7a340bf0c28d65e6567",
+  "source_instructions": 116647727998,
+  "source_control_proof_SHA256": "459d1a398f3790e6973e2b2737e101bd710d484f70f84e65df49628733cc1acc",
+  "source_console_SHA256": "4ad2ac96e1aa2a9cf0f32fcdce4f71bc1657113ce0e9fbe853b511adf6bf08a3",
+  "source_metadata_artifact_id": 13525660989,
+  "source_metadata_ZIP_SHA256": "af93e7bad88e7b8738f95249c6801be96d47bd084afdf44a867e46365c5cb14e",
+  "source_epoch_SHA256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+  "native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "JIT_TID": 5922,
+  "zygote_PID": 5629,
+  "group_path": "/top-app",
+  "group_task_pointer": "0xffffff8002d9e000",
+  "shares_before": 1024,
+  "shares_trial": 16384,
+  "kernel_shares_raw_before": "1048576",
+  "kernel_shares_raw_trial": "16777216",
+  "restoration_required_before_promotion": true,
+  "matched_first_budgets": [
+    500000000,
+    500000000
+  ],
+  "continuation_budget": 1000000000,
+  "max_stages": 12,
+  "original_C87_reference_continues": true,
+  "JIT_only_reference_continues": true
+}
