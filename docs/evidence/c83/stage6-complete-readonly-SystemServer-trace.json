@@ -1,0 +1,628 @@
+{
+  "schema": "reverseandroid-original-readonly-thread-list-v1",
+  "checkpoint_SHA256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+  "instructions": 90547727998,
+  "CI_whole_snapshot_identity_verified": true,
+  "read_only": true,
+  "input_bytes_unchanged": true,
+  "original_observer_file_unchanged": true,
+  "original_observer_git_blob_SHA1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "complete_probe_report_SHA256": "407ba8d376e01f232839eecf5fe6777a60bbd58add988f0a3cf4b3a036585c62",
+  "complete_probe_report_bytes": 757750,
+  "reproduction_command": [
+    "node",
+    "tools/reverseandroid-thread-probe.mjs",
+    "SOURCE/current.rvg",
+    "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+    "OUTPUT.json"
+  ],
+  "PID": 3386,
+  "UID": 1000,
+  "TGID": 3386,
+  "thread_count": 56,
+  "all_threads_traced_state8": true,
+  "all_thread_exit_states_zero": true,
+  "kernel_thread_list_and_backlinks_verified": true,
+  "main_thread": {
+    "pid": 3386,
+    "tgid": 3386,
+    "name": "system_server",
+    "task": "0xffffff80224a2880",
+    "state": 8,
+    "exit_state": 0,
+    "on_rq": 0,
+    "on_cpu": 0,
+    "priority": 118,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [
+      {
+        "fp": "0xffffffc0869f3a30",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc0869f3af0",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc0869f3b50",
+        "lr": "0xffffffc0802b937c",
+        "symbol": "ptrace_stop+0x1a8"
+      },
+      {
+        "fp": "0xffffffc0869f3b70",
+        "lr": "0xffffffc0804ad7f8",
+        "symbol": "do_jobctl_trap+0xc0"
+      },
+      {
+        "fp": "0xffffffc0869f3bf0",
+        "lr": "0xffffffc080017754",
+        "symbol": "get_signal.cold+0xfc"
+      },
+      {
+        "fp": "0xffffffc0869f3c30",
+        "lr": "0xffffffc0801b74f0",
+        "symbol": "do_signal+0x60"
+      },
+      {
+        "fp": "0xffffffc0869f3d90",
+        "lr": "0xffffffc0800bceb0",
+        "symbol": "do_notify_resume+0xe0"
+      },
+      {
+        "fp": "0xffffffc0869f3e10",
+        "lr": "0xffffffc08129fcf0",
+        "symbol": "el0_interrupt+0x94"
+      },
+      {
+        "fp": "0xffffffc0869f3e60",
+        "lr": "0xffffffc08129f728",
+        "symbol": "__el0_irq_handler_common+0x18"
+      },
+      {
+        "fp": "0xffffffc0869f3e90",
+        "lr": "0xffffffc08129f704",
+        "symbol": "el0t_64_irq_handler+0x10"
+      },
+      {
+        "fp": "0xffffffc0869f3ea0",
+        "lr": "0xffffffc080012010",
+        "symbol": "el0t_64_irq+0x1bc"
+      },
+      {
+        "fp": "0xffffffc0869f3fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "accounting": {
+      "utime": "9197198000",
+      "stime": "7425815000",
+      "nvcsw": "772",
+      "nivcsw": "5998",
+      "sum_exec_runtime": "14073776000",
+      "vruntime": "27974741366",
+      "exec_start": "1409298019000"
+    },
+    "policy": 0,
+    "prio": 118,
+    "normal_prio": 118,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e840",
+          "cgroup": "0xffffff8009ad1800",
+          "path": "/foreground",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      }
+    },
+    "saved_frame_read_errors": [
+      {
+        "stack_bytes": 32768,
+        "error": "Android observer: unmapped virtual address"
+      },
+      {
+        "stack_bytes": 65536,
+        "error": "Android observer: unmapped virtual address"
+      }
+    ],
+    "saved_user_frame": {
+      "stack_bytes": 16384,
+      "syscall": 4294967295,
+      "pc": {
+        "address": "0x724bccb768",
+        "start": "0x724bcbd000",
+        "end": "0x724bd51000",
+        "flags": "0x74",
+        "file": "/apex/com.android.conscrypt/lib64/libcrypto.so",
+        "file_offset": "776040",
+        "dynamic_symbols_unavailable": "User page not present"
+      },
+      "sp": "0x7ffe18fea0",
+      "fp": "0x7ffe190010",
+      "lr": {
+        "address": "0x724bccb33c",
+        "start": "0x724bcbd000",
+        "end": "0x724bd51000",
+        "flags": "0x74",
+        "file": "/apex/com.android.conscrypt/lib64/libcrypto.so",
+        "file_offset": "774972",
+        "dynamic_symbols_unavailable": "User page not present"
+      },
+      "args": [
+        "0xb400007355e5ffc8",
+        "0xb400007355e5ffc8",
+        "0xb400007355e5ffc8",
+        "0xb400007395e1a468",
+        "0xb400007485e2d698",
+        "0x200"
+      ],
+      "registers": [
+        "0xb400007355e5ffc8",
+        "0xb400007355e5ffc8",
+        "0xb400007355e5ffc8",
+        "0xb400007395e1a468",
+        "0xb400007485e2d698",
+        "0x200",
+        "0x4cff53a7895db293",
+        "0x4f4b145c8d2673f",
+        "0xb400007485e2d698",
+        "0x1",
+        "0xb400007365e3feb8",
+        "0xb400007355e5fe48",
+        "0x8000",
+        "0x10001",
+        "0x78e209506a138f6f",
+        "0x3f0fc4856e03cb49",
+        "0x4e3a961ca7437369",
+        "0x71a870a208c38c1d",
+        "0x75458dc000",
+        "0xb400007485e2d698",
+        "0x0",
+        "0xb400007355e5ffc8",
+        "0xb400007395e1a468",
+        "0x1",
+        "0xfffffffffffffffc",
+        "0x75451cf300",
+        "0xb400007355e5ff98",
+        "0xb400007355e5fe48",
+        "0x0",
+        "0x7ffe190010",
+        "0x724bccb33c"
+      ],
+      "pstate": "0x80001000",
+      "user_stack": [
+        {
+          "fp": "0x7ffe190010",
+          "return_pc": {
+            "address": "0x724bd0abe4",
+            "start": "0x724bcbd000",
+            "end": "0x724bd51000",
+            "flags": "0x74",
+            "file": "/apex/com.android.conscrypt/lib64/libcrypto.so",
+            "file_offset": "1035236",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        },
+        {
+          "fp": "0x7ffe190070",
+          "return_pc": {
+            "address": "0x724bd0a828",
+            "start": "0x724bcbd000",
+            "end": "0x724bd51000",
+            "flags": "0x74",
+            "file": "/apex/com.android.conscrypt/lib64/libcrypto.so",
+            "file_offset": "1034280",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        },
+        {
+          "fp": "0x7ffe190100",
+          "return_pc": {
+            "address": "0x724bce2880",
+            "start": "0x724bcbd000",
+            "end": "0x724bd51000",
+            "flags": "0x74",
+            "file": "/apex/com.android.conscrypt/lib64/libcrypto.so",
+            "file_offset": "870528",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        },
+        {
+          "fp": "0x7ffe190290",
+          "return_pc": {
+            "address": "0x725209ce90",
+            "start": "0x7252092000",
+            "end": "0x72520b6000",
+            "flags": "0x1000000000000075",
+            "file": "/apex/com.android.conscrypt/lib64/libjavacrypto.so",
+            "file_offset": "142992",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        },
+        {
+          "fp": "0x7ffe190710",
+          "return_pc": {
+            "address": "0x73415a98",
+            "start": "0x733f0000",
+            "end": "0x7341a000",
+            "flags": "0x75",
+            "file": "/system/framework/arm64/boot-framework-adservices.oat",
+            "file_offset": "318104",
+            "dynamic_symbols_unavailable": "The expression evaluated to a falsy value:\n\n  assert.ok(terminated)\n"
+          }
+        },
+        {
+          "fp": "0x7ffe190850",
+          "return_pc": null
+        }
+      ],
+      "pc_code_le_hex": "f85f01a9f65702a9f44f03a9fd030091281040b968000035481040b9e8010034a3fbff906354169160008052e1031f2aa20d805244268052d41fff97e0031f2a"
+    }
+  },
+  "thread_names_and_state": [
+    {
+      "PID": 3386,
+      "TGID": 3386,
+      "name": "system_server",
+      "state": 8
+    },
+    {
+      "PID": 3580,
+      "TGID": 3386,
+      "name": "Signal Catcher",
+      "state": 8
+    },
+    {
+      "PID": 3581,
+      "TGID": 3386,
+      "name": "perfetto_hprof_",
+      "state": 8
+    },
+    {
+      "PID": 3583,
+      "TGID": 3386,
+      "name": "Jit thread pool",
+      "state": 8
+    },
+    {
+      "PID": 3584,
+      "TGID": 3386,
+      "name": "HeapTaskDaemon",
+      "state": 8
+    },
+    {
+      "PID": 3585,
+      "TGID": 3386,
+      "name": "ReferenceQueueD",
+      "state": 8
+    },
+    {
+      "PID": 3587,
+      "TGID": 3386,
+      "name": "FinalizerDaemon",
+      "state": 8
+    },
+    {
+      "PID": 3588,
+      "TGID": 3386,
+      "name": "FinalizerWatchd",
+      "state": 8
+    },
+    {
+      "PID": 3591,
+      "TGID": 3386,
+      "name": "binder:3386_1",
+      "state": 8
+    },
+    {
+      "PID": 3593,
+      "TGID": 3386,
+      "name": "TracingMuxer",
+      "state": 8
+    },
+    {
+      "PID": 3595,
+      "TGID": 3386,
+      "name": "system-server-i",
+      "state": 8
+    },
+    {
+      "PID": 3762,
+      "TGID": 3386,
+      "name": "Thread-2",
+      "state": 8
+    },
+    {
+      "PID": 3764,
+      "TGID": 3386,
+      "name": "socket_writer_q",
+      "state": 8
+    },
+    {
+      "PID": 3767,
+      "TGID": 3386,
+      "name": "atchdog.monitor",
+      "state": 8
+    },
+    {
+      "PID": 3768,
+      "TGID": 3386,
+      "name": "android.fg",
+      "state": 8
+    },
+    {
+      "PID": 3769,
+      "TGID": 3386,
+      "name": "android.ui",
+      "state": 8
+    },
+    {
+      "PID": 3771,
+      "TGID": 3386,
+      "name": "android.io",
+      "state": 8
+    },
+    {
+      "PID": 3772,
+      "TGID": 3386,
+      "name": "android.display",
+      "state": 8
+    },
+    {
+      "PID": 3773,
+      "TGID": 3386,
+      "name": "android.anim",
+      "state": 8
+    },
+    {
+      "PID": 3774,
+      "TGID": 3386,
+      "name": "android.anim.lf",
+      "state": 8
+    },
+    {
+      "PID": 3776,
+      "TGID": 3386,
+      "name": "watchdog",
+      "state": 8
+    },
+    {
+      "PID": 3806,
+      "TGID": 3386,
+      "name": "PowerStatsServi",
+      "state": 8
+    },
+    {
+      "PID": 3808,
+      "TGID": 3386,
+      "name": "android.bg",
+      "state": 8
+    },
+    {
+      "PID": 3810,
+      "TGID": 3386,
+      "name": "ActivityManager",
+      "state": 8
+    },
+    {
+      "PID": 3812,
+      "TGID": 3386,
+      "name": "ActivityManager",
+      "state": 8
+    },
+    {
+      "PID": 3814,
+      "TGID": 3386,
+      "name": "ActivityManager",
+      "state": 8
+    },
+    {
+      "PID": 3818,
+      "TGID": 3386,
+      "name": "ActivityManager",
+      "state": 8
+    },
+    {
+      "PID": 3819,
+      "TGID": 3386,
+      "name": "ActivityManager",
+      "state": 8
+    },
+    {
+      "PID": 3821,
+      "TGID": 3386,
+      "name": "LowMemThread",
+      "state": 8
+    },
+    {
+      "PID": 3822,
+      "TGID": 3386,
+      "name": "OomAdjuster",
+      "state": 8
+    },
+    {
+      "PID": 3825,
+      "TGID": 3386,
+      "name": "AnrTimerService",
+      "state": 8
+    },
+    {
+      "PID": 3826,
+      "TGID": 3386,
+      "name": "ackgroundThread",
+      "state": 8
+    },
+    {
+      "PID": 3836,
+      "TGID": 3386,
+      "name": "batterystats-ha",
+      "state": 8
+    },
+    {
+      "PID": 3840,
+      "TGID": 3386,
+      "name": "AppOpHistoryHel",
+      "state": 8
+    },
+    {
+      "PID": 3841,
+      "TGID": 3386,
+      "name": "AppOpHistoryHel",
+      "state": 8
+    },
+    {
+      "PID": 3843,
+      "TGID": 3386,
+      "name": "bgres-controlle",
+      "state": 8
+    },
+    {
+      "PID": 3845,
+      "TGID": 3386,
+      "name": "FileObserver",
+      "state": 8
+    },
+    {
+      "PID": 3849,
+      "TGID": 3386,
+      "name": "binder:3386_2",
+      "state": 8
+    },
+    {
+      "PID": 3850,
+      "TGID": 3386,
+      "name": "CpuTracker",
+      "state": 8
+    },
+    {
+      "PID": 3851,
+      "TGID": 3386,
+      "name": "CriticalEventLo",
+      "state": 8
+    },
+    {
+      "PID": 3852,
+      "TGID": 3386,
+      "name": "DataLoaderManag",
+      "state": 8
+    },
+    {
+      "PID": 3854,
+      "TGID": 3386,
+      "name": "Thread-4",
+      "state": 8
+    },
+    {
+      "PID": 3855,
+      "TGID": 3386,
+      "name": "Thread-5",
+      "state": 8
+    },
+    {
+      "PID": 3857,
+      "TGID": 3386,
+      "name": "Thread-6",
+      "state": 8
+    },
+    {
+      "PID": 3858,
+      "TGID": 3386,
+      "name": "Thread-7",
+      "state": 8
+    },
+    {
+      "PID": 3863,
+      "TGID": 3386,
+      "name": "PowerManagerSer",
+      "state": 8
+    },
+    {
+      "PID": 3871,
+      "TGID": 3386,
+      "name": "BatteryStats_wa",
+      "state": 8
+    },
+    {
+      "PID": 3900,
+      "TGID": 3386,
+      "name": "PackageManagerB",
+      "state": 8
+    },
+    {
+      "PID": 3942,
+      "TGID": 3386,
+      "name": "DefaultPermGran",
+      "state": 8
+    },
+    {
+      "PID": 3956,
+      "TGID": 3386,
+      "name": "PackageManager",
+      "state": 8
+    },
+    {
+      "PID": 3967,
+      "TGID": 3386,
+      "name": "PermissionServi",
+      "state": 8
+    },
+    {
+      "PID": 4343,
+      "TGID": 3386,
+      "name": "package-parsing",
+      "state": 8
+    },
+    {
+      "PID": 4344,
+      "TGID": 3386,
+      "name": "package-parsing",
+      "state": 8
+    },
+    {
+      "PID": 4345,
+      "TGID": 3386,
+      "name": "package-parsing",
+      "state": 8
+    },
+    {
+      "PID": 4346,
+      "TGID": 3386,
+      "name": "package-parsing",
+      "state": 8
+    },
+    {
+      "PID": 4524,
+      "TGID": 3386,
+      "name": "Jit thread pool",
+      "state": 8
+    }
+  ],
+  "cause_or_fatal_exit_not_proven": true,
+  "property_or_snapshot_edits_or_new_UART_input": false,
+  "BOOT_or_usable_UI_claimed": false
+}

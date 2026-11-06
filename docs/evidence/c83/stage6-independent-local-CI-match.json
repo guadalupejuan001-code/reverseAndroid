@@ -1,0 +1,24 @@
+{
+  "schema": "reverseandroid-independent-complete-source-and-console-match-v1",
+  "stage": 6,
+  "CI_run_id": 42202570182,
+  "CI_execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
+  "metadata_artifact_id": 13497157658,
+  "metadata_archive_SHA256": "643356efd726b28dfd5e6019101e58acc8b96f0c78ebe49474581075a451182e",
+  "whole_RVG_SHA256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+  "whole_RVG_bytes": 1993363330,
+  "instructions": 90547727998,
+  "entire_original_console_SHA256": "0516f6c52394ee779b682e9e908c38c20868bd46bc88f9b83a0288a9091cbfaa",
+  "actual_native_input": {
+    "schema": "reverse-modeled-uart-input-v1",
+    "instructions": 89547727998,
+    "counter_subtick": 26,
+    "bytes": 2103,
+    "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+  },
+  "all_original_admission_clean_outcome_and_piece_pins_verified": true,
+  "fresh_local_recovery_of_CI_transport_claimed": false,
+  "all_native_event_phases_unique": true,
+  "boot_completed": false,
+  "usable_UI_or_input_response_claimed": false
+}

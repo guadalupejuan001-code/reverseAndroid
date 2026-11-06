@@ -53,7 +53,7 @@
   "visual_review_result": "The authentic C83 post-CLZ frame at85,047,727,998 shows the original Android wordmark boot animation. Usable UI and actual input response are still pending.",
   "visual_review_evidence": "docs/evidence/c83/after-one-actual-frame-review.json",
   "active_continuation_run_id": 42202570182,
-  "independent_engine_validation_run_id": 42137711614,
+  "independent_engine_validation_run_id": 42202570186,
   "latest_boundary_evidence": "docs/evidence/c83/stage6-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
@@ -105,7 +105,7 @@
   "main_peripheral_input_events": 4,
   "current_primary_peripheral_phase": 3,
   "current_primary_peripheral_waiting": true,
-  "last_direct_SystemServer_UID_observation": "docs/evidence/c81/stage13-package-parsing.json",
+  "last_direct_SystemServer_UID_observation": "docs/evidence/c83/stage6-complete-readonly-SystemServer-trace.json",
   "current_primary_peer_ready_verified": false,
   "new_hardware_power_cycle_in_C82": false,
   "failed_native_blocker_evidence": "docs/evidence/c82/stage4-actual-CLZ-blocker.json",
@@ -126,7 +126,7 @@
   "actual_CLZ_retirement_verified_in_canonical_CI": true,
   "independent_post_CLZ_whole_snapshot_match": "docs/evidence/c83/independent-local-CI-before-after-matches.json",
   "current_primary_hardware_commands_completed": false,
-  "independent_primary_full_snapshot_and_console_match": "docs/evidence/c83/stage5-independent-local-CI-match.json",
+  "independent_primary_full_snapshot_and_console_match": "docs/evidence/c83/stage6-independent-local-CI-match.json",
   "last_readonly_SystemServer_task_observation": {
     "source_checkpoint_SHA256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
     "instructions": 90547727998,
@@ -161,5 +161,6 @@
   "current_primary_peer_live_probe_available": true,
   "current_primary_peer_alive_observed": false,
   "current_primary_live_original_OEM_channel": false,
-  "current_primary_live_two_sensor_channels": false
+  "current_primary_live_two_sensor_channels": false,
+  "current_original_reference_validation_evidence": "docs/evidence/c83/current-original-engine-validation.json"
 }
