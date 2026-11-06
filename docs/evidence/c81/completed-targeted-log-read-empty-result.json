@@ -1,0 +1,22 @@
+{
+  "schema": "reverseandroid-completed-isolated-targeted-log-read-result-v1",
+  "source79B_snapshot_SHA256": "44ab1e22d2e21243003d764dcb42c6e041d1fc76c344329b44140d7115f37773",
+  "result_snapshot_SHA256": "66aad35f80bb5cf4e255a02e9c2a96cb7241475fbebd0c72c32ec89863451cdd",
+  "result_instructions": 82000000000,
+  "actual_completed_response": "REVERSE_PTS_SS_DIAG RC_0",
+  "actual_BEGIN_seen": true,
+  "target_PIDs": [
+    3386,
+    4062,
+    4158
+  ],
+  "matching_guest_log_records_returned": 0,
+  "cause_of_prior_diagnostic_stop_not_identified_from_this_empty_result": true,
+  "same_SystemServer_resumed_in_untouched_primary_at81B": true,
+  "actual_four_package_parsers_running_in_untouched_primary83B": true,
+  "input_events": 1,
+  "no_new_input_in_later_control_stages": true,
+  "source_and_process_and_security_original_gates_and_all_parts": "docs/evidence/c81/systemserver-diagnostic-stage3-producer-boundary.json",
+  "control_is_promotion_authority": false,
+  "boot_or_UI_completion_claimed": false
+}

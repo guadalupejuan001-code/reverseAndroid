@@ -1,0 +1,60 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "c81-systemserver-diagnostic",
+  "stage": 2,
+  "run_id": 42190629945,
+  "execution_commit": "5e8d91ec5e95ef7cd71969cfa3cc353493e954a4",
+  "checkpoint_sha256": "1a24e362ec8b6b4a4a37cceaa85be12a18d8e1b5c675f95319d57b1658fd0ded",
+  "instructions": 81000000000,
+  "metadata_artifact_id": 13491035407,
+  "metadata_archive_sha256": "b252826ad34e834336eaf926eab925fba6f4a4ed44e13b0c7bba43027dc2aaf3",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": false,
+  "transport_lock": "state/experiments/c81-systemserver-diagnostic-stage2-transport.json",
+  "artifact_lock": "state/experiments/c81-systemserver-diagnostic-stage2-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/c81-systemserver-diagnostic-2",
+    "phase": 0,
+    "waiting": true,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/c81-systemserver-diagnostic-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 79000000000,
+          "counter_subtick": 28,
+          "bytes": 258,
+          "sha256": "05422a10d56c7830cbd9897b20dd462354fabec0dbd6c0607f3002257070b48b"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "last_admitted_sha256": "1a24e362ec8b6b4a4a37cceaa85be12a18d8e1b5c675f95319d57b1658fd0ded",
+    "last_admitted_instructions": 81000000000,
+    "combined_original_console_bytes_sha256": "f65c525dd5b56afd812e76cfcfbee61f8e2571cde8db3d03ca3e2455de3e64db",
+    "actual_diagnostic_observation": {
+      "schema": "reverseandroid-actual-SystemServer-diagnostic-console-v1",
+      "raw_console_SHA256": "f65c525dd5b56afd812e76cfcfbee61f8e2571cde8db3d03ca3e2455de3e64db",
+      "raw_console_bytes": 102879,
+      "normalized_stdout_SHA256": "2b1b2f75ba110eb3ccb2af947b8a38298f6a7db2b331b1cd378fed58fb451af7",
+      "removed_complete_kernel_records": 730,
+      "actual_diagnostic_begin_seen": true,
+      "actual_response_codes": [],
+      "diagnostic_completed": false,
+      "diagnostic_failed": false,
+      "original_console_bytes_unchanged": true,
+      "original_C46_or_boot_or_UI_gates_modified": false,
+      "boot_or_UI_completion_claimed": false
+    },
+    "actual_SystemServer_alive_gate": true,
+    "original_boot_completed_gate": false,
+    "control_is_promotion_authority": false,
+    "main_C81_modified": false,
+    "one_readonly_input_once_then_zero_further_UART": true
+  }
+}
