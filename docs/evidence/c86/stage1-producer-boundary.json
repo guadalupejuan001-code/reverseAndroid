@@ -1,0 +1,156 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "c86",
+  "stage": 1,
+  "run_id": 42231109648,
+  "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+  "checkpoint_sha256": "0a3b708e0abf7586c55a85423b51f21318ab50286bd624846e07ce5e84c6c3e8",
+  "instructions": 102147727998,
+  "metadata_artifact_id": 13510601848,
+  "metadata_archive_sha256": "a9560d08c91db41b5dec8ea1bc66a452256c47589c4c580d41b5f844272a58f8",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": null,
+  "transport_lock": "state/experiments/c86-stage-1-transport.json",
+  "artifact_lock": "state/experiments/c86-stage-1-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/c86-1",
+    "phase": 5,
+    "waiting": true,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 83000000000,
+          "counter_subtick": 28,
+          "bytes": 923,
+          "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+        }
+      },
+      {
+        "phase": 1,
+        "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 84000000000,
+          "counter_subtick": 28,
+          "bytes": 3001,
+          "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+        }
+      },
+      {
+        "phase": 2,
+        "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 87047727998,
+          "counter_subtick": 26,
+          "bytes": 2837,
+          "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+        }
+      },
+      {
+        "phase": 3,
+        "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 89547727998,
+          "counter_subtick": 26,
+          "bytes": 2103,
+          "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+        }
+      },
+      {
+        "phase": 4,
+        "input_plan": "evidence/c84-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 92547727998,
+          "counter_subtick": 26,
+          "bytes": 2097,
+          "sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7"
+        }
+      },
+      {
+        "phase": 5,
+        "input_plan": "evidence/c86-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 101647727998,
+          "counter_subtick": 26,
+          "bytes": 1000,
+          "sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "hardware_commands_completed": false,
+    "boot_completed": false,
+    "system_server_alive": false,
+    "last_admitted_sha256": "0a3b708e0abf7586c55a85423b51f21318ab50286bd624846e07ce5e84c6c3e8",
+    "last_admitted_instructions": 102147727998,
+    "combined_original_console_bytes_sha256": "45d6e93d7aa2d47ad77ea5f17d07a7b570cbf8abc9d5667df8e1f3cf8500e12f",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": false,
+      "android.hardware.sensors.ISensors/default": false
+    },
+    "actual_AArch64_peer_ready_line_seen": true,
+    "actual_guest_ELF_hash_line_seen": true,
+    "actual_private_device_filesystem_mount_seen": true,
+    "actual_loaded_policy_unchanged_hashes": [
+      "e7dc888c8a4c5ae6f48a175ace91e63ab262e64d4d6f6799a015fed5b4c32f97"
+    ],
+    "console_observation": "evidence/c86-1/console-observation.json",
+    "prior_canonical_phase_input_repeated": false,
+    "admitted_parent_primary": "state/experiments/c86-artifacts.json",
+    "continuation_is_primary": true,
+    "validated_original_HAL_control": "docs/evidence/c82/prior-private-HAL-integration.json",
+    "original_admission_and_codecs_unchanged": true,
+    "fresh_power_cycle": false,
+    "SELinux_enforcing": true,
+    "ui_response_verified": false,
+    "ELF_SHA256_expected": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+    "all_event_phases_unique": true,
+    "original_C81_branch_state_rewritten": false,
+    "C81_is_reference_after_explicit_C82_fork": true,
+    "resumed_from_original_proof_file": "build/source-c83/c82-proof.json",
+    "inherited_console_SHA256": "ccab34ab478f4bc3738961a700fede998ed97bf3ec3158bfe2f32edd39217b62",
+    "inherited_native_events_replayed": false,
+    "original_engine_binary_unchanged": false,
+    "explicit_ISA_extension": "Retained AArch64 AdvSIMD CLZ and exact EL0 IC IVAU with UCI control",
+    "native_binary_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+    "prefix_byte_identical_to_original_stop_verified": true,
+    "actual_CLZ_retirement_verified": true,
+    "corrective_campaign": "C84",
+    "prior_C83_campaign_failed": true,
+    "prior_failed_phase": 3,
+    "prior_failed_control_proof_SHA256": "1c01d143ce26a6f14453c69c7b8f44ff4ea50cbeaca74c2fd6e416f3dc2836d3",
+    "prior_failed_control_proof_preserved": true,
+    "known_failed_input_not_replayed_unchanged": true,
+    "receiver_and_base64_data_not_retransferred": true,
+    "actual_new_corrective_events": 2,
+    "C85_resume_from_C84": true,
+    "C85_source_control_proof_SHA256": "903e857a57c4f6230da89a3f08d8b2458c2e3c285fe2ae7a89ceef3706fc5b6c",
+    "pending_C85_new_native_admission": false,
+    "next_native_binary_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+    "C84_is_reference_after_explicit_C85_native_correction": true,
+    "live_peripherals_verified": false,
+    "actual_C85_new_events": 0,
+    "explicit_IC_IVAU_correction": true,
+    "IC_IVAU_validation_run": 42221035217,
+    "C86_explicit_cleanup_priority_continuation": true,
+    "C86_source_control_proof_SHA256": "6deca3b1d894a3aa5762fbcc1c7bde49a02264d86cb93958a968acda0c6628b8",
+    "C85_after_stage3_is_reference_after_explicit_C86_input_selection": true,
+    "pending_C86_input_admission": false,
+    "actual_C86_new_events": 1
+  },
+  "ISA_extension_explicit_and_binary_pinned": true,
+  "IC_IVAU_correction_explicit_and_independently_validated": true,
+  "old_C85_full_phase_and_input_ledger_retained": true,
+  "guarded_normal_OS_cleanup_input_explicit": true
+}

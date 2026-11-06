@@ -1,0 +1,16 @@
+{
+  "schema": "reverseandroid-verified-obsolete-reference-campaign-retirement-v1",
+  "execution_commit": "2a1c7b821aefb6af3cb1342eddc13efacba656db",
+  "run_id": 42231310737,
+  "workflow_conclusion": "success",
+  "reference_runs_cancelled": [
+    42213153593,
+    42223223966,
+    42229435150
+  ],
+  "each_immutable_head_and_repository_checked_before_cancellation": true,
+  "corrected_independent_CI_run": 42231109648,
+  "corrected_CI_execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+  "original_parent_stage3_complete_transport_preserved": true,
+  "canonical_local_C86_continues": true
+}

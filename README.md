@@ -7,8 +7,8 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C86, etapa 1: **102.147.727.998 instrucciones** admitidas localmente. La entrada de limpieza se entregó una vez; su respuesta sigue pendiente. SystemServer, el arranque completo y la interfaz utilizable siguen pendientes. SELinux permanece activo.
-La conservación de estados en CI tenía una ruta antigua de C85. La ruta y las condiciones de preservación se han corregido; la reproducción independiente con piezas conservadas está pendiente. [Estado](state/latest.json); [plan de limpieza](docs/c86-cleanup-priority.md).
+C86, etapa 2: **103.147.727.998 instrucciones** admitidas localmente. SystemServer sigue pendiente. El arranque completo y la interfaz utilizable siguen pendientes. SELinux permanece activo.
+La etapa 1 coincide íntegramente entre la ejecución local y CI y tiene todas sus piezas conservadas. [Prueba](docs/evidence/c86/stage1-independent-local-CI-match.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado
