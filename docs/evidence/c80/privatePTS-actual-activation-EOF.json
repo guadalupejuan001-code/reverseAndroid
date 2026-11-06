@@ -1,0 +1,22 @@
+{
+  "schema": "reverseandroid-actual-privatePTS-activation-failure-and-EOF-fix-v1",
+  "source_checkpoint_SHA256": "7313c8f2fab0d0bd53393355fbecbbd16f1fad62a6be26a5acb5ec33d799866b",
+  "instructions": 67000000000,
+  "actual_activation_RC": 1,
+  "peer_READY_observed": false,
+  "private_mount_observed": false,
+  "original_C46_and_all_pieces": "docs/evidence/c80/privatepts-control-stage6.json",
+  "ELF_copy_completed_in_stage5": true,
+  "stage5_exact_ELF_hash_reconstructed_by_readonly_UART_parser": "docs/evidence/c80/privatePTS-stage5-actual-hash-multiplexed.json",
+  "observed_failure_has_no_mount_or_peer_error": true,
+  "inferred_first_failure": "The original bare shell read returns failure at EOF for a file containing only digit1; under set-e this exits before the mount. The followup prints the actual guest read status before proceeding.",
+  "official_kernel_source": "https://github.com/torvalds/linux/blob/v6.12/security/selinux/selinuxfs.c",
+  "official_kernel_file_git_blob_SHA1": "e172f182b65cc360d2734330864ce9070f83f005",
+  "official_sel_read_enforce_format": "scnprintf(tmpbuf, TMPBUFLEN, \"%d\", enforcing_enabled())",
+  "independent_real_bash_and_dash_no_newline_regression_passed": true,
+  "no_policy_or_enforcement_change": true,
+  "completed_transfer_will_not_be_repeated": true,
+  "new_control_plan": "state/experiments/peripheral-privatepts-eof-control-plan.json",
+  "new_control_has_not_yet_passed": true,
+  "canonical_main_modified": false
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "c81",
+  "stage": 8,
+  "run_id": 42169590905,
+  "execution_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
+  "checkpoint_sha256": "d620ad4c359c2ab27e3657385bfc500d244c651f5db7ae22683fb0bfc6d3f68f",
+  "instructions": 73000000000,
+  "metadata_artifact_id": 13486945283,
+  "metadata_archive_sha256": "f7c6f0535eb4b62dc80d923994c24e5683270def981add0c2a8ebaa18254af6c",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": null,
+  "transport_lock": "state/experiments/c81-stage-8-transport.json",
+  "artifact_lock": "state/experiments/c81-stage-8-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/c81-8",
+    "input_events": [
+      {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 57000000000,
+        "counter_subtick": 28,
+        "bytes": 588,
+        "sha256": "800b7d30cdd77b0731c25fca639a4d70e0732acc4a2bcbf0fe652571103a72a2"
+      }
+    ],
+    "guard_result_seen": true,
+    "guard_succeeded": true,
+    "failed": false,
+    "boot_completed": false,
+    "checkpoint_sha256": "d620ad4c359c2ab27e3657385bfc500d244c651f5db7ae22683fb0bfc6d3f68f",
+    "instructions": 73000000000,
+    "system_server_alive": true,
+    "console_sha256": "ccf84df1a1ffc51de1a4ce9d919d0b3f24de3b62aa63bb1c376036e6a01aed2e",
+    "original_admission_and_codecs_unchanged": true,
+    "fresh_power_cycle": false,
+    "SELinux_enforcing": true,
+    "ui_response_verified": false
+  }
+}

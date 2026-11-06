@@ -1,0 +1,26 @@
+{
+  "schema": "reverseandroid-readonly-multiplexed-console-observation-v1",
+  "raw_console_bytes": 51563,
+  "raw_console_SHA256": "add09b72b3337601460341bbc414ac137a660f73b4d515491d18f561733cdec2",
+  "normalized_stdout_SHA256": "178c6c60fcad4cb0bb8d07c389de2f3b690be2baee39dec491f7b1c27cbeab45",
+  "only_complete_timestamp_and_TID_tagged_kernel_records_removed": true,
+  "removed_kernel_records": 366,
+  "original_input_bytes_unchanged": true,
+  "expected_guest_ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "actual_exact_guest_hash_and_path_observed": true,
+  "actual_peer_READY_observed": false,
+  "actual_response_codes": {
+    "PTS_COPY": [
+      0
+    ]
+  },
+  "actual_loaded_policy_unchanged_hashes": [],
+  "actual_private_device_filesystem_mounts": [],
+  "original_HAL_Binder_found": {
+    "android.hardware.oemlock.IOemLock/default": false,
+    "android.hardware.sensors.ISensors/default": false
+  },
+  "original_C46_or_boot_or_UI_gates_modified": false,
+  "boot_or_UI_completion_claimed": false
+}

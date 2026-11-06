@@ -96,7 +96,10 @@ def main():
         assert original.read_bytes() == old
     first = root(body, "PTS_COPY", " sh " + shlex.quote(OLD_GUEST) + " " + shlex.quote(NEW_GUEST))
     mount = (
-        "set -e; umask 077; IFS= read -r e < /sys/fs/selinux/enforce; test \"$e\" = 1; "
+        # sel_read_enforce returns one digit without a newline. A bare shell
+        # read sets e but returns EOF failure under set -e. cat checks the same
+        # complete value without mistaking its missing newline for failure.
+        "set -e; umask 077; e=$(cat /sys/fs/selinux/enforce); test \"$e\" = 1; "
         "before=$(sha256sum /sys/fs/selinux/policy); before=${before%% *}; "
         "test ! -e /dev/ra-pts; mkdir -m 755 /dev/ra-pts; chcon u:object_r:device:s0 /dev/ra-pts; "
         "mount -t devpts -o newinstance,nosuid,noexec,mode=0600,ptmxmode=0600,fscontext=u:object_r:tmpfs:s0,rootcontext=u:object_r:device:s0 devpts /dev/ra-pts; "
@@ -106,7 +109,7 @@ def main():
         "ready=0; i=0; while test \"$i\" -lt 20; do if grep -q '^REVERSE_PERIPHERAL_PEER_READY$' " + LOG_GUEST +
         "; then ready=1; break; fi; kill -0 \"$p\" || break; sleep 1; i=$((i+1)); done; cat " + LOG_GUEST + "; "
         "test \"$ready\" = 1; after=$(sha256sum /sys/fs/selinux/policy); after=${after%% *}; "
-        "test \"$before\" = \"$after\"; IFS= read -r e < /sys/fs/selinux/enforce; test \"$e\" = 1; "
+        "test \"$before\" = \"$after\"; e=$(cat /sys/fs/selinux/enforce); test \"$e\" = 1; "
         "printf '\\nREVERSE_%s SHA_%s\\n' PTS_POLICY_UNCHANGED \"$after\""
     )
     oem, sensors = "android.hardware.oemlock.IOemLock/default", "android.hardware.sensors.ISensors/default"

@@ -1,0 +1,52 @@
+{
+  "schema": "reverseandroid-isolated-peripheral-private-PTY-EOF-control-v1",
+  "source_checkpoint_sha256": "7313c8f2fab0d0bd53393355fbecbbd16f1fad62a6be26a5acb5ec33d799866b",
+  "source_instructions": 67000000000,
+  "source_artifact_lock": "state/experiments/peripheral-privatepts-eof-control-artifacts.json",
+  "source_run_id": 42177363469,
+  "source_commit": "ab3d319e1dd185c5a1a408492c785225612e8768",
+  "source_original_failed_control_not_primary": true,
+  "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "gzip_SHA256": "671fd2b742811b13eb861fb848f5a033989de991561c064caf09e310ee8e0522",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "old_guest_ELF_SHA256": "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da",
+  "phases": [
+    {
+      "input_file": "state/experiments/peripheral-privatepts-eof-control-input-0.txt",
+      "input_bytes": 1562,
+      "input_sha256": "20977832b21232b06ad2c3646e7dad8b6c3cf279972a2649ee707b74794fb4c6",
+      "response_marker": "REVERSE_PTS_EOF_ACTIVATION",
+      "failure_markers": [],
+      "instruction_budget": 1000000000,
+      "effect": "Observe actual EOF return; read the complete enforcing value; provision the separate private PTY instance and require unchanged loaded policy and authentic ELF before execution."
+    },
+    {
+      "input_file": "state/experiments/peripheral-privatepts-eof-control-input-1.txt",
+      "input_bytes": 650,
+      "input_sha256": "7d8993436d52216265ffc2e87e4e718a2afa5e929514949f645785fa3b45fb2d",
+      "response_marker": "REVERSE_PTS_EOF_INSPECT",
+      "failure_markers": [],
+      "instruction_budget": 1000000000,
+      "effect": "Observe the stock OEM Lock and sensors Binder services and real device labels after actual peer readiness."
+    }
+  ],
+  "max_stages": 16,
+  "private_devpts_mountpoint": "/dev/ra-pts",
+  "filesystem_security_context": "u:object_r:tmpfs:s0",
+  "root_inode_context": "u:object_r:device:s0",
+  "original_system_devpts_instance_modified": false,
+  "SELinux_policy_or_enforcement_edits": false,
+  "guest_properties_injected": false,
+  "original_CPU_and_codecs_modified": false,
+  "RVG_snapshot_file_patched": false,
+  "actual_guest_file_copy_dd_xxd_via_explicit_UART": true,
+  "control_is_promotion_authority": false,
+  "main_C81_modified": false,
+  "execute_on_push": false,
+  "source_proof_file": "peripheral-privatepts-control-proof.json",
+  "source_previous_event_count": 3,
+  "completed_guest_ELF_transfer_repeated": false,
+  "sysfs_no_newline_handled_without_changing_enforcement": true,
+  "previous_transfer_history": "docs/evidence/c80/privatepts-control-stage6.json",
+  "full_original_source_admission_required": true
+}
