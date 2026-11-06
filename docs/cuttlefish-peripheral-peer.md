@@ -60,9 +60,11 @@ and inspection inputs. The root command uses real blocking `IFS= read -r` calls
 and checks each actual file prefix hash before acknowledging it. The exact
 verified ELF was recovered in a host PTY/POSIX-shell test;
 [host capture evidence](evidence/c80/buffered-transfer-host-capture.json). This
-variant has not been executed in Android. It requires five new source-bound
-events, handling `REVERSE_PEER_CAPTURE` failures, and the prior successful actual
-HAL control. It must not alter or restart the currently running four-phase test.
+variant was executed in the isolated ABI2 Android control: the complete guest
+ELF matched the corrected build. That integration failed at the real enforcing
+kernel's filesystem association check, before any successful HAL connection.
+All admitted states of that negative control remain preserved. Each fresh
+transfer requires distinct source-bound events and actual response checks.
 
 AArch64 portability correction: Linux arm64 retains ARM32 assignments for
 `O_DIRECTORY` (16384) and `O_NOFOLLOW` (32768). The first prototype used x86
@@ -70,7 +72,8 @@ values, which select `O_DIRECT` and `O_LARGEFILE` on arm64. The corrected peer
 uses explicit arm64 definitions and host-test binaries use their system headers.
 An unmodified official Linux v6.12 arm64 UAPI fixture independently checks all
 eight open flags at compile time. The former build and guest control remain
-preserved. The corrected ARM64 executable needs another actual guest test.
+preserved. Actual guest execution confirmed the corrected ELF and then exposed
+the separate filesystem association failure described below.
 
 The corrected build is authenticated in
 [ABI2 build evidence](evidence/c80/peripheral-ABI2-static-build.json). A new
@@ -90,3 +93,32 @@ This is a proposed device-filesystem configuration, not a passed guest integrati
 
 
 The private-PTS control starts from the admitted terminal ABI2 failure at61B. It authenticates the existing guest ELF, reconstructs a separate ABI3 filename through real guest `cp`, `dd`, `printf` and `xxd` calls, and verifies the new whole ELF SHA before execution. These are modeled UART inputs and normal guest file writes. The RVG is never edited. The preparation test runs the production blocking-read body against an unmodified upstream Toybox reverse-parser reference and compares every output byte with the compiled candidate. Reproduce the host check with `cc -std=c11 -O2 tests/fixtures/toybox-xxd-reverse-reference.c -o /tmp/xxd`, then run `scripts/prepare-peripheral-privatepts-control.py` with the two authenticated build directories and `--host-xxd /tmp/xxd`. The mount step checks enforcing1 and the unchanged loaded-policy SHA, and the final test requires three distinct actual kernel PTY pairs and both original Binder registrations. This isolated control is not promotion authority.
+
+The separate ABI3 guest file was reconstructed correctly at66B. Its exact hash
+was interrupted by a timestamped kernel message on the shared UART; the
+[read-only console observation](evidence/c80/privatePTS-stage5-actual-hash-multiplexed.json)
+reconstructs that full hash and path while preserving the original bytes and
+original admission flags. Only complete timestamp-and-TID-tagged printk records
+are removed; prompts, quoted input and incomplete hash lines remain ineligible.
+
+The first activation returned1 before producing any mount or peer result.
+`sel_read_enforce` returns digit1 without a newline; a bare shell `read` sets
+the value but returns EOF failure under `set -e`. The
+[separate continuation from its admitted67B state](../.github/workflows/android-peripheral-privatepts-eof-control.yml)
+catches and prints that original read result and uses `cat` for the complete
+enforcing-value checks. The real guest confirmed `READ_1 VALUE_1` at68B.
+[Evidence](evidence/c80/privatePTS-actual-activation-EOF.json) binds the raw
+console bytes, kernel source reference, original admission and every transport
+piece. The existing ELF transfer is not repeated. Actual private mount, peer
+readiness, policy hash equality, original HAL connections and Binder
+registrations are still required; they have not yet all passed.
+
+For a later fresh canonical source,
+`scripts/prepare-peripheral-privatepts-buffered-inputs.py VERIFIED_ABI3_BUILD NEW_DIRECTORY`
+prepares a complete five-phase ABI3 transfer with the same explicit private
+filesystem setup. Real host PTYs verify the produced blocking capture and
+reject a corrupt prefix before another read. The actual decode body reproduces
+every compiled ELF byte. This prepared variant has not run in Android, has no
+source binding and cannot be adopted until the isolated original HAL test
+succeeds. Both acknowledgments of each data phase must be observed before the
+next phase is allowed.
