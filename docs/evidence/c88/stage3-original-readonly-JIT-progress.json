@@ -1,0 +1,157 @@
+{
+  "schema": "reverseandroid-readonly-JIT-progress-v1",
+  "source_checkpoint_sha256": "cfc20928dc14d1b0ac9d2941e6c23cabec61e1f15e0f38380a3d3b13fb747a34",
+  "instructions": 126147727998,
+  "diagnostic_execution_commit": "76258835e505abc4a318e8cc3c050b44e5b59321",
+  "diagnostic_run": 42279911665,
+  "artifact_id": 13534907720,
+  "artifact_ZIP_SHA256": "c124a65e6ca2122cddd8f5f6c59d4f6d5dc4b65bb8d29e4411096cdee8f63d22",
+  "guest_instructions_executed": 0,
+  "new_UART_bytes": 0,
+  "full_original_source_admission_and_entire_RVG_digest_verified": true,
+  "kernel_BTF_layout_verified": true,
+  "original_observer_unchanged": true,
+  "SELinux_enforcing": true,
+  "main_zygote": {
+    "pid": 5629,
+    "state": 8193,
+    "priority": 100,
+    "accounting": {
+      "utime": "24114666000",
+      "stime": "5035830000",
+      "nvcsw": "19",
+      "nivcsw": "8768",
+      "sum_exec_runtime": "26794720000",
+      "vruntime": "64689290087",
+      "exec_start": "1877255550000"
+    }
+  },
+  "actual_JIT": {
+    "pid": 5922,
+    "tgid": 5629,
+    "name": "Jit thread pool",
+    "state": 0,
+    "priority": 120,
+    "accounting": {
+      "utime": "1014611000",
+      "stime": "15252000",
+      "nvcsw": "0",
+      "nivcsw": "304",
+      "sum_exec_runtime": "884906000",
+      "vruntime": "67757798182",
+      "exec_start": "1969163282000"
+    },
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      }
+    },
+    "signals": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "ptrace_raw": "0",
+      "jobctl_raw": "0",
+      "exit_code_raw": "0",
+      "exit_signal_raw": "4294967295",
+      "parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "real_parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "blocked_words": [
+        "0x80001204"
+      ],
+      "real_blocked_words": [
+        "0x0"
+      ],
+      "saved_sigmask_words": [
+        "0x0"
+      ],
+      "pending_words": [
+        "0x0"
+      ],
+      "signal_owner": "0xffffff802ae6b180",
+      "flags_raw": "0",
+      "group_exit_code_raw": "0",
+      "group_stop_count_raw": "0",
+      "notify_count_raw": "0",
+      "shared_pending_words": [
+        "0x0"
+      ],
+      "last_siginfo_pointer": "0x0"
+    }
+  },
+  "earlier_C88_stage2_JIT_runtime_ns": "392391000",
+  "actual_new_JIT_runtime_ns": "884906000",
+  "old_and_new_lookup_operands": {
+    "previous": [
+      "0x718ca148",
+      "0x73d8a82db3",
+      "0x1e",
+      "0x0",
+      "0x696373244b65793b",
+      "0x3b79654b24736369"
+    ],
+    "current": [
+      "0x1",
+      "0x0",
+      "0xb4000075cbe1a4b4",
+      "0x6f6c6c657224313b",
+      "0x6f6c6c657224313b",
+      "0x3b312472656c6c6f"
+    ],
+    "current_saved_PC": {
+      "address": "0x73da0c9dbc",
+      "start": "0x73d9e00000",
+      "end": "0x73da65f000",
+      "flags": "0x20000075",
+      "file": "/apex/com.android.art/lib64/libart.so",
+      "file_offset": "5021116",
+      "dynamic_symbol": null
+    },
+    "current_saved_LR": {
+      "address": "0x73da0c9d80",
+      "start": "0x73d9e00000",
+      "end": "0x73da65f000",
+      "flags": "0x20000075",
+      "file": "/apex/com.android.art/lib64/libart.so",
+      "file_offset": "5021056",
+      "dynamic_symbol": null
+    }
+  },
+  "main_futex_still_unchanged": true,
+  "BOOT": false,
+  "SystemServer": false,
+  "usable_UI_or_response_claimed": false
+}
