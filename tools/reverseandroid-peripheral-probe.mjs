@@ -32,7 +32,7 @@ function inspect(api,peerPath){
         const ip=read(fp+BigInt(fl.f_inode.offset));if(!ip)continue;
         if(Number(read(ip+BigInt(il.i_mode.offset),2)&0xf000n)!==0x2000)continue;
         const entry={fd,file_pointer:'0x'+fp.toString(16),path:mountedFilePath(fp,{read,layout}),rdev:'0x'+read(ip+BigInt(il.i_rdev.offset),4).toString(16)};
-        if(/^\/dev\/pts\/(?:[0-9]+|ptmx)$/.test(entry.path)||entry.path==='/dev/ptmx'){
+        if(/^\/dev\/(?:pts|ra-pts)\/(?:[0-9]+|ptmx)$/.test(entry.path)||entry.path==='/dev/ptmx'){
           try{
             const privateLayout=members(type('tty_file_private')),ttyLayout=members(type('tty_struct'));
             const priv=read(fp+BigInt(fl.private_data.offset)),tty=read(priv+BigInt(privateLayout.tty.offset));
@@ -55,7 +55,7 @@ function inspect(api,peerPath){
   if(peer.length===1)for(const hal of [...oem,...sensors])for(const slave of hal.files){
     if(!slave.tty)continue;
     for(const master of peer[0].files){
-      if(!master.tty||!['/dev/pts/ptmx','/dev/ptmx'].includes(master.path))continue;
+      if(!master.tty||!['/dev/pts/ptmx','/dev/ptmx','/dev/ra-pts/ptmx'].includes(master.path))continue;
       if(master.tty.pointer===slave.tty.linked_pointer&&master.tty.linked_pointer===slave.tty.pointer)
         pairs.push({HAL_pid:hal.pid,HAL_executable:hal.exe_path,HAL_fd:slave.fd,peer_pid:peer[0].pid,peer_fd:master.fd,PTY_index:slave.tty.index,actual_kernel_PTY_backlinks_verified:true});
     }
@@ -64,7 +64,7 @@ function inspect(api,peerPath){
   return {schema:'reverseandroid-original-peripheral-HAL-PTY-readonly-v1',read_only:true,processes,inspection_errors:errors,original_oemlock_executable_alive:oem.length===1,original_sensors_executable_alive:sensors.length===1,real_AArch64_peer_alive:peer.length===1,paired_FDs:pairs,OEM_channel_connected_to_actual_peer:count(OEM)===1,two_separate_sensor_channels_connected_to_actual_peer:count(SENSORS)===2,boot_or_UI_completion_claimed:false};
 }
 export async function probePeripherals(path,sha,peerPath=DEFAULT_PEER){
-  assert.ok(/^\/data\/local\/tmp\/reverseandroid-peer-(e11a|abi2)\.elf$/.test(peerPath));
+  assert.ok(/^\/data\/local\/tmp\/reverseandroid-peer-(e11a|abi2|abi3)\.elf$/.test(peerPath));
   assert.ok(statSync(path).size<=2147483648);const url=new URL('./android_kernel_observer.mjs',import.meta.url),source=read(url,'utf8');
   const pin=JSON.parse(read(new URL('../state/upstream-snapshot.json',import.meta.url))).files.find(f=>f.path==='tools/android_kernel_observer.mjs');
   assert.equal(createHash('sha1').update('blob '+Buffer.byteLength(source)+'\0').update(source).digest('hex'),pin.git_blob_sha1);

@@ -1,0 +1,44 @@
+{
+  "schema": "reverseandroid-independent-local-and-CI-complete-state-equivalence-v1",
+  "source_checkpoint_SHA256": "252448f4809218449ebbe57c566f189b0578abb36f6dc6f7bdb9b6bcd8123563",
+  "source_instructions": 59000000000,
+  "source_recovery_evidence": "docs/evidence/c81/local59-recovery.json",
+  "local_instruction_partitions": [
+    1964000000,
+    36000000
+  ],
+  "local_first_boundary": {
+    "instructions": 60964000000,
+    "SHA256": "0cd65179f94caccf93278d99293c2dcf33bbff85cb83ecd65d6787ae06338c6c",
+    "original_C46_passed": true,
+    "clean_exit0_no_forced_kill": true,
+    "stop_reason": "host_wall_budget",
+    "full_files_preserved_in_local_directory": "/workspace/scratch/bf4ce496066e/emulator-local-recovery/local-c81-61b"
+  },
+  "local_final_boundary": {
+    "instructions": 61000000000,
+    "SHA256": "7d958ef43b44b855cb5ae5cc4ff50cab52bcfe9c3d4d326e850586c0cbf7efea",
+    "original_C46_passed": true,
+    "clean_exit0_no_forced_kill": true,
+    "full_current_RVG_SHA256_independently_rehashed": true,
+    "directory": "/workspace/scratch/bf4ce496066e/emulator-local-recovery/local-c81-exact61b"
+  },
+  "independent_CI": {
+    "run_id": 42169590905,
+    "execution_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
+    "stage": 2,
+    "instruction_budget": 2000000000,
+    "instructions": 61000000000,
+    "SHA256": "7d958ef43b44b855cb5ae5cc4ff50cab52bcfe9c3d4d326e850586c0cbf7efea",
+    "all_parts_and_original_C46_evidence": "docs/evidence/c81/stage2-producer-boundary.json"
+  },
+  "whole_original_RVG_bytes_identical": true,
+  "new_UART_events_in_both_reproductions": 0,
+  "original_guarded_priority_input_not_repeated": true,
+  "actual_original_native_SHA256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "unchanged_original_CPU_codecs_XI_Ether_zero_background_2GiB_RAM_seed64_cadence_and_IRQ": true,
+  "SELinux_enforcing": true,
+  "boot_completed": false,
+  "SystemServer": false,
+  "UI_response_claimed": false
+}

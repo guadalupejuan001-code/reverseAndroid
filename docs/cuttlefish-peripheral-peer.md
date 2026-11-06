@@ -80,3 +80,11 @@ The root-capture and raw-data method was checked using real host PTYs and the
 exact corrected binary; this remains separate from actual Android integration.
 Canonical adoption still requires actual original HAL registrations, the real
 reciprocal kernel PTY links, and original admission with enforcing SELinux.
+# Private PTY filesystem candidate
+
+The corrected ARM64 ABI2 executable reached the real guest and its SHA256 matched the pinned build. At its admitted 60B boundary the original kernel rejected `oemlock_device` association with the existing `devpts` filesystem, with `permissive=0`. This is an integration failure; the original main does not contain this peer.
+
+The next candidate uses only `/dev/ra-pts/ptmx` and `/dev/ra-pts/<index>`. It requires an independently provisioned private devpts mount whose filesystem security label is `u:object_r:tmpfs:s0`, with root inode label `u:object_r:device:s0`. Its three slave inodes must still acquire and verify their exact original OEM Lock or sensor device labels, owners and mode0600. The existing system PTY instance is not changed. No SELinux allow rule, enforcement setting or Android boot property is changed.
+
+This is a proposed device-filesystem configuration, not a passed guest integration. [AOSP's current filesystem association rules](https://android.googlesource.com/platform/system/sepolicy/+/refs/heads/main/private/file.te) distinguish device nodes on the device filesystem from ordinary devpts labels. [Linux devpts documentation](https://docs.kernel.org/filesystems/devpts.html) describes independent instances. [The mount manual](https://kernel.googlesource.com/pub/scm/utils/util-linux/util-linux/+/refs/tags/v2.41.1/sys-utils/mount.8.adoc) distinguishes the filesystem label from individual inode labels. The new candidate must pass the real enforcing guest, original HAL executables, all three reciprocal PTY links and actual Binder registrations before any canonical adoption.
+

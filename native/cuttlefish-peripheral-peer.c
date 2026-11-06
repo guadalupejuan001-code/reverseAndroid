@@ -134,6 +134,11 @@ static struct channel channels[3];
 static const char *const aliases[3]={"/dev/hvc10","/dev/hvc18","/dev/hvc19"};
 static const char *const labels[3]={"u:object_r:oemlock_device:s0","u:object_r:sensors_device:s0","u:object_r:sensors_device:s0"};
 static const unsigned owners[3]={1064,1000,1000};
+/* A separate, explicitly provisioned devpts instance. Its filesystem security
+ * label matches the device filesystem while each slave keeps the stock HAL
+ * device label. Never relabel the existing system /dev/pts instance. */
+#define RA_GUEST_PTMX "/dev/ra-pts/ptmx"
+#define RA_GUEST_PTS_PREFIX "/dev/ra-pts/"
 static int state_fd=-1;
 static ra_u8 state_byte;
 static int label_fd(int fd,const char *label) {
@@ -155,10 +160,10 @@ static int label_alias(const char *path) {
 }
 static int provision(unsigned i) {
   struct channel *c=channels+i;int unlocked=0;unsigned index;
-  c->master=(int)C4(openat,AT_FDCWD,PTR("/dev/ptmx"),O_RDWR|O_NOCTTY|O_NONBLOCK|O_CLOEXEC,0);
+  c->master=(int)C4(openat,AT_FDCWD,PTR(RA_GUEST_PTMX),O_RDWR|O_NOCTTY|O_NONBLOCK|O_CLOEXEC,0);
   if(c->master<0){numberlog("PTMX_OPEN_ERRNO ",c->master);return -1;}
   if(C3(ioctl,c->master,0x40045431,PTR(&unlocked))<0 || C3(ioctl,c->master,0x80045430,PTR(&index))<0)return -1;
-  char path[64]="/dev/pts/";decimal(path+9,index);
+  char path[64]=RA_GUEST_PTS_PREFIX;decimal(path+sizeof(RA_GUEST_PTS_PREFIX)-1,index);
   c->slave=(int)C4(openat,AT_FDCWD,PTR(path),O_RDWR|O_NOCTTY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC,0);
   if(c->slave<0)return -1;
   struct { unsigned iflag,oflag,cflag,lflag;ra_u8 line,cc[19]; } term;
