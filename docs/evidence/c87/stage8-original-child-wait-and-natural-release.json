@@ -1,0 +1,655 @@
+{
+  "schema": "reverseandroid-original-readonly-parent-child-inspection-v1",
+  "source_checkpoint_sha256": "f64b98e77cbcca9f8ac93007778b9006c515cc103389cae3faef1b9986ed1c54",
+  "instructions": 117147727998,
+  "source_native_execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
+  "diagnostic_execution_commit": "c4d57aaadca6848c0f90373bb1d05e49d2389ee5",
+  "whole_original_transport_and_original_epoch_preflight_verified": true,
+  "original_RVG_SHA256_reverified_after_diagnostic": true,
+  "guest_instructions_executed_by_diagnostic": 0,
+  "new_guest_UART_bytes": 0,
+  "original_observer_file_unchanged": true,
+  "kernel_BTF_layout_verified": true,
+  "SELinux_enforcing": true,
+  "source_original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "f64b98e77cbcca9f8ac93007778b9006c515cc103389cae3faef1b9986ed1c54",
+    "instructions": 117147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": false,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "source_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "main_zygote": {
+    "pid": 5629,
+    "tgid": 5629,
+    "name": "main",
+    "task": "0xffffff802db95100",
+    "state": 1,
+    "exit_state": 0,
+    "on_rq": 0,
+    "on_cpu": 0,
+    "priority": 100,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [
+      {
+        "fp": "0xffffffc087733b50",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc087733c10",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc087733c70",
+        "lr": "0xffffffc080294538",
+        "symbol": "do_wait+0x80"
+      },
+      {
+        "fp": "0xffffffc087733c90",
+        "lr": "0xffffffc080293ee8",
+        "symbol": "kernel_wait4+0x9c"
+      },
+      {
+        "fp": "0xffffffc087733d30",
+        "lr": "0xffffffc0804a1b28",
+        "symbol": "__arm64_sys_wait4+0x68"
+      },
+      {
+        "fp": "0xffffffc087733e00",
+        "lr": "0xffffffc0800bb2fc",
+        "symbol": "invoke_syscall+0x58"
+      },
+      {
+        "fp": "0xffffffc087733e20",
+        "lr": "0xffffffc0800bb250",
+        "symbol": "do_el0_svc+0x8c"
+      },
+      {
+        "fp": "0xffffffc087733e40",
+        "lr": "0xffffffc08129ea70",
+        "symbol": "el0_svc+0x48"
+      },
+      {
+        "fp": "0xffffffc087733e80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc087733ea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc087733fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "accounting": {
+      "utime": "18682263000",
+      "stime": "4585986000",
+      "nvcsw": "16",
+      "nivcsw": "6989",
+      "sum_exec_runtime": "21382422000",
+      "vruntime": "64602594682",
+      "exec_start": "1825136196000"
+    },
+    "policy": 0,
+    "prio": 100,
+    "normal_prio": 100,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "9999",
+        "gid": "0",
+        "egid": "9999"
+      }
+    },
+    "signals": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "ptrace_raw": "0",
+      "jobctl_raw": "0",
+      "exit_code_raw": "0",
+      "exit_signal_raw": "17",
+      "parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "real_parent": {
+        "task": "0xffffff8002d19440",
+        "pid": 1,
+        "tgid": 1,
+        "name": "init"
+      },
+      "blocked_words": [
+        "0x80001204"
+      ],
+      "real_blocked_words": [
+        "0x0"
+      ],
+      "saved_sigmask_words": [
+        "0x0"
+      ],
+      "pending_words": [
+        "0x0"
+      ],
+      "signal_owner": "0xffffff802ae6b180",
+      "flags_raw": "0",
+      "group_exit_code_raw": "0",
+      "group_stop_count_raw": "0",
+      "notify_count_raw": "0",
+      "shared_pending_words": [
+        "0x0"
+      ],
+      "last_siginfo_pointer": "0x0"
+    },
+    "saved_frame_read_errors": [
+      {
+        "stack_bytes": 32768,
+        "error": "Android observer: unmapped virtual address"
+      },
+      {
+        "stack_bytes": 65536,
+        "error": "Android observer: unmapped virtual address"
+      }
+    ],
+    "saved_user_frame": {
+      "stack_bytes": 16384,
+      "syscall": 260,
+      "pc": {
+        "address": "0x76a49b8a88",
+        "start": "0x76a4928000",
+        "end": "0x76a49cc000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "969352",
+        "dynamic_symbol": {
+          "name": "wait4",
+          "offset": "0x8",
+          "range_verified": true
+        }
+      },
+      "sp": "0x7fce397230",
+      "fp": "0x7fce397330",
+      "lr": {
+        "address": "0x76a45534b4",
+        "start": "0x76a44c9000",
+        "end": "0x76a45b9000",
+        "flags": "0x1800000000000075",
+        "file": "/system/lib64/libandroidfw.so",
+        "file_offset": "844980",
+        "dynamic_symbol": {
+          "name": "_ZN7android4util13ExecuteBinaryERKNSt3__16vectorINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEENS6_IS8_EEEE",
+          "offset": "0x2a4",
+          "range_verified": true
+        }
+      },
+      "args": [
+        "0x18f3",
+        "0x7fce39728c",
+        "0x0",
+        "0x0",
+        "0x68",
+        "0x68"
+      ],
+      "registers": [
+        "0x18f3",
+        "0x7fce39728c",
+        "0x0",
+        "0x0",
+        "0x68",
+        "0x68",
+        "0x76a6faf058",
+        "0x7f7f7f7f7f7f7f7f",
+        "0x104",
+        "0x15d08e462a7b55cd",
+        "0x15",
+        "0x90",
+        "0x0",
+        "0xb40000750be0ca19",
+        "0x8000000000000300",
+        "0x0",
+        "0x76a49cfd58",
+        "0x76a49b8a80",
+        "0x76a62c8000",
+        "0x7fce3973c0",
+        "0xb4000075cbe35770",
+        "0x0",
+        "0x0",
+        "0x18f3",
+        "0x76a6c21300",
+        "0xb40000750be0c910",
+        "0xb40000750be0ca30",
+        "0xb40000757be0f7b0",
+        "0x3164f30",
+        "0x7fce397330",
+        "0x76a45534b4"
+      ],
+      "pstate": "0x0",
+      "user_stack": [
+        {
+          "fp": "0x7fce397330",
+          "return_pc": {
+            "address": "0x769d944474",
+            "start": "0x769d7ec000",
+            "end": "0x769d980000",
+            "flags": "0x75",
+            "file": "/system/lib64/libandroid_runtime.so",
+            "file_offset": "2507892",
+            "dynamic_symbol": null
+          }
+        },
+        {
+          "fp": "0x7fce397530",
+          "return_pc": {
+            "address": "0x7288bdbc",
+            "start": "0x72240000",
+            "end": "0x72899000",
+            "flags": "0x75",
+            "file": "/system/framework/arm64/boot-framework.oat",
+            "file_offset": "8617404",
+            "dynamic_symbols_unavailable": "The expression evaluated to a falsy value:\n\n  assert.ok(terminated)\n"
+          }
+        }
+      ],
+      "pc_code_le_hex": "1ffc3fb1a2bbc854c0035fd61f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d5e80b80d2010000d4"
+    }
+  },
+  "actual_observed_direct_children": [
+    {
+      "pid": 6387,
+      "name": "idmap2",
+      "threads": [
+        {
+          "pid": 6387,
+          "tgid": 6387,
+          "name": "idmap2",
+          "task": "0xffffff803db30000",
+          "state": 0,
+          "exit_state": 0,
+          "on_rq": 1,
+          "on_cpu": 1,
+          "priority": 100,
+          "current": true,
+          "context_may_be_stale": true,
+          "kernel_pc": "__switch_to+0x144",
+          "kernel_stack": [
+            {
+              "fp": "0xffffffc084c93cb0",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc084c93d70",
+              "lr": "0xffffffc0812a6bc8",
+              "symbol": "schedule+0x4c"
+            },
+            {
+              "fp": "0xffffffc084c93dd0",
+              "lr": "0xffffffc0800bce40",
+              "symbol": "do_notify_resume+0x70"
+            },
+            {
+              "fp": "0xffffffc084c93e10",
+              "lr": "0xffffffc08129fcf0",
+              "symbol": "el0_interrupt+0x94"
+            },
+            {
+              "fp": "0xffffffc084c93e60",
+              "lr": "0xffffffc08129f728",
+              "symbol": "__el0_irq_handler_common+0x18"
+            },
+            {
+              "fp": "0xffffffc084c93e90",
+              "lr": "0xffffffc08129f704",
+              "symbol": "el0t_64_irq_handler+0x10"
+            },
+            {
+              "fp": "0xffffffc084c93ea0",
+              "lr": "0xffffffc080012010",
+              "symbol": "el0t_64_irq+0x1bc"
+            },
+            {
+              "fp": "0xffffffc084c93fe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ],
+          "accounting": {
+            "utime": "141803000",
+            "stime": "334484000",
+            "nvcsw": "0",
+            "nivcsw": "138",
+            "sum_exec_runtime": "425371000",
+            "vruntime": "64607534008",
+            "exec_start": "1828448068000"
+          },
+          "policy": 0,
+          "prio": 100,
+          "normal_prio": 100,
+          "rt_priority": 0,
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e000",
+                "cgroup": "0xffffff8009ed7000",
+                "path": "/top-app",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "0",
+              "euid": "0",
+              "gid": "0",
+              "egid": "0"
+            }
+          },
+          "signals": {
+            "read_only": true,
+            "kernel_BTF_layout_verified": true,
+            "ptrace_raw": "0",
+            "jobctl_raw": "0",
+            "exit_code_raw": "0",
+            "exit_signal_raw": "17",
+            "parent": {
+              "task": "0xffffff802db95100",
+              "pid": 5629,
+              "tgid": 5629,
+              "name": "main"
+            },
+            "real_parent": {
+              "task": "0xffffff802db95100",
+              "pid": 5629,
+              "tgid": 5629,
+              "name": "main"
+            },
+            "blocked_words": [
+              "0x80001204"
+            ],
+            "real_blocked_words": [
+              "0x0"
+            ],
+            "saved_sigmask_words": [
+              "0x0"
+            ],
+            "pending_words": [
+              "0x0"
+            ],
+            "signal_owner": "0xffffff80191e8d80",
+            "flags_raw": "0",
+            "group_exit_code_raw": "0",
+            "group_stop_count_raw": "0",
+            "notify_count_raw": "0",
+            "shared_pending_words": [
+              "0x0"
+            ],
+            "last_siginfo_pointer": "0x0"
+          },
+          "live_user_pc": {
+            "address": "0x79378c9870",
+            "start": "0x79378b6000",
+            "end": "0x7937a22000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "407664",
+            "dynamic_symbol": null
+          }
+        }
+      ],
+      "actual_command_line": [
+        "/system/bin/idmap2",
+        "create-multiple",
+        "--target-apk-path",
+        "/system/framework/framework-res.apk",
+        "--overlay-apk-path",
+        "/vendor/overlay/cuttlefish_overlay_frameworks_base_core.apk",
+        "--overlay-apk-path",
+        "/vendor/overlay/cuttlefish_phone_overlay_frameworks_base_core.apk",
+        "--policy",
+        "public",
+        "--policy",
+        "vendor"
+      ],
+      "thread_list_verified": true,
+      "thread_count": 1,
+      "user_vma_count": 277
+    }
+  ],
+  "idmap2_groups": [
+    {
+      "pid": 6387,
+      "name": "idmap2",
+      "threads": [
+        {
+          "pid": 6387,
+          "tgid": 6387,
+          "name": "idmap2",
+          "task": "0xffffff803db30000",
+          "state": 0,
+          "exit_state": 0,
+          "on_rq": 1,
+          "on_cpu": 1,
+          "priority": 100,
+          "current": true,
+          "context_may_be_stale": true,
+          "kernel_pc": "__switch_to+0x144",
+          "kernel_stack": [
+            {
+              "fp": "0xffffffc084c93cb0",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc084c93d70",
+              "lr": "0xffffffc0812a6bc8",
+              "symbol": "schedule+0x4c"
+            },
+            {
+              "fp": "0xffffffc084c93dd0",
+              "lr": "0xffffffc0800bce40",
+              "symbol": "do_notify_resume+0x70"
+            },
+            {
+              "fp": "0xffffffc084c93e10",
+              "lr": "0xffffffc08129fcf0",
+              "symbol": "el0_interrupt+0x94"
+            },
+            {
+              "fp": "0xffffffc084c93e60",
+              "lr": "0xffffffc08129f728",
+              "symbol": "__el0_irq_handler_common+0x18"
+            },
+            {
+              "fp": "0xffffffc084c93e90",
+              "lr": "0xffffffc08129f704",
+              "symbol": "el0t_64_irq_handler+0x10"
+            },
+            {
+              "fp": "0xffffffc084c93ea0",
+              "lr": "0xffffffc080012010",
+              "symbol": "el0t_64_irq+0x1bc"
+            },
+            {
+              "fp": "0xffffffc084c93fe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ],
+          "accounting": {
+            "utime": "141803000",
+            "stime": "334484000",
+            "nvcsw": "0",
+            "nivcsw": "138",
+            "sum_exec_runtime": "425371000",
+            "vruntime": "64607534008",
+            "exec_start": "1828448068000"
+          },
+          "policy": 0,
+          "prio": 100,
+          "normal_prio": 100,
+          "rt_priority": 0,
+          "scheduling": {
+            "read_only": true,
+            "task_and_runqueue_group_match": true,
+            "ancestry_verified": true,
+            "groups": [
+              {
+                "task_group": "0xffffff8002d9e000",
+                "cgroup": "0xffffff8009ed7000",
+                "path": "/top-app",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              },
+              {
+                "task_group": "0xffffffc082828800",
+                "cgroup": "0xffffff8006972040",
+                "path": "/",
+                "shares_raw": "1048576",
+                "quota_raw": "18446744073709551615",
+                "period_raw": "100000000"
+              }
+            ],
+            "credentials": {
+              "uid": "0",
+              "euid": "0",
+              "gid": "0",
+              "egid": "0"
+            }
+          },
+          "signals": {
+            "read_only": true,
+            "kernel_BTF_layout_verified": true,
+            "ptrace_raw": "0",
+            "jobctl_raw": "0",
+            "exit_code_raw": "0",
+            "exit_signal_raw": "17",
+            "parent": {
+              "task": "0xffffff802db95100",
+              "pid": 5629,
+              "tgid": 5629,
+              "name": "main"
+            },
+            "real_parent": {
+              "task": "0xffffff802db95100",
+              "pid": 5629,
+              "tgid": 5629,
+              "name": "main"
+            },
+            "blocked_words": [
+              "0x80001204"
+            ],
+            "real_blocked_words": [
+              "0x0"
+            ],
+            "saved_sigmask_words": [
+              "0x0"
+            ],
+            "pending_words": [
+              "0x0"
+            ],
+            "signal_owner": "0xffffff80191e8d80",
+            "flags_raw": "0",
+            "group_exit_code_raw": "0",
+            "group_stop_count_raw": "0",
+            "notify_count_raw": "0",
+            "shared_pending_words": [
+              "0x0"
+            ],
+            "last_siginfo_pointer": "0x0"
+          },
+          "live_user_pc": {
+            "address": "0x79378c9870",
+            "start": "0x79378b6000",
+            "end": "0x7937a22000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "407664",
+            "dynamic_symbol": null
+          }
+        }
+      ],
+      "actual_command_line": [
+        "/system/bin/idmap2",
+        "create-multiple",
+        "--target-apk-path",
+        "/system/framework/framework-res.apk",
+        "--overlay-apk-path",
+        "/vendor/overlay/cuttlefish_overlay_frameworks_base_core.apk",
+        "--overlay-apk-path",
+        "/vendor/overlay/cuttlefish_phone_overlay_frameworks_base_core.apk",
+        "--policy",
+        "public",
+        "--policy",
+        "vendor"
+      ],
+      "thread_list_verified": true,
+      "thread_count": 1,
+      "user_vma_count": 277
+    }
+  ],
+  "usable_UI_or_response_claimed": false,
+  "readonly_CI_run_id": 42264165145,
+  "readonly_artifact_id": 13525783177,
+  "readonly_artifact_ZIP_SHA256": "102dab718b877c1e1433cda1fc9d2591afbb1c5da296786dacd285ea5a67a9d8",
+  "readonly_execution_commit": "c4d57aaadca6848c0f90373bb1d05e49d2389ee5",
+  "local_full_original_transport_bytes_verified": true,
+  "local_original_epoch_preflight_claimed": false,
+  "later_original_CI_checkpoint": {
+    "instructions": 118147727998,
+    "checkpoint_sha256": "f632b83dbaf271b8f10552a861c297cd5e91137b13c76ac1e71f8e3491534a51",
+    "same_zygote_5629_state": 0,
+    "idmap2_child6387_absent": true,
+    "original_guest_UART_inputs_added": false
+  }
+}
