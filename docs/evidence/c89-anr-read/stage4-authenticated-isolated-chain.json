@@ -1,0 +1,146 @@
+{
+  "schema": "reverseandroid-authenticated-isolated-ANR-read-chain-v1",
+  "CI_run_id": 42304775133,
+  "execution_commit": "fe9d6bc09bb0e46688ad6ca1a578f841a0c48621",
+  "selected_original_source": "92a25368bc67fb204b74780abb4343210bd13b27eea993e360a29370ac623e11",
+  "original_admitted_chain": [
+    {
+      "schema": "reverseandroid-authenticated-isolated-ANR-read-boundary-v1",
+      "stage": 1,
+      "instructions": 143647727998,
+      "checkpoint_sha256": "f2c04e2368e9a85663698e35f53c8af723e48f06b2dad206ce44fab1ddd74fa3",
+      "parent_checkpoint_sha256": "92a25368bc67fb204b74780abb4343210bd13b27eea993e360a29370ac623e11",
+      "metadata_artifact_id": 13546456975,
+      "metadata_ZIP_SHA256": "08a5f2a9a9303e07f40e8e8f07e81396648197e004bbdcfdcb0df414133c866b",
+      "original_native_full_admission_and_snapshot_roundtrip": true,
+      "entire_console_SHA256": "7e01e1595ccd169e59468d72afba42265864927473228e1407d29e9fefc49a9e",
+      "all_full_transport_pieces_pinned": true,
+      "transport_piece_count": 4,
+      "new_UART_bytes": 515,
+      "inherited_primary_events_unchanged": true,
+      "one_isolated_new_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 143147727998,
+        "counter_subtick": 26,
+        "bytes": 515,
+        "sha256": "75881919d7c60daa1e29018444cdcdb8d7e5fb735d5e0e4cc609dfb5880862a7"
+      },
+      "query_reply": {
+        "begin_seen": false,
+        "end_after_begin_seen": false,
+        "reply_code": null,
+        "completed_read_query": false,
+        "failed": false
+      },
+      "original_SystemServer_gate": true,
+      "original_BOOT_gate": false,
+      "SELinux_enforcing": true,
+      "primary_or_promotion_authority": false,
+      "emulator_completion_claimed": false
+    },
+    {
+      "schema": "reverseandroid-authenticated-isolated-ANR-read-boundary-v1",
+      "stage": 2,
+      "instructions": 144147727998,
+      "checkpoint_sha256": "2971f4af19f86b3f4206057e624bed79fd6281d7c934c12a4e76811d842be216",
+      "parent_checkpoint_sha256": "f2c04e2368e9a85663698e35f53c8af723e48f06b2dad206ce44fab1ddd74fa3",
+      "metadata_artifact_id": 13546027812,
+      "metadata_ZIP_SHA256": "05d40e95c5e2b180775518664ec3c7ff1037ae4492e549a300379133da939e3f",
+      "original_native_full_admission_and_snapshot_roundtrip": true,
+      "entire_console_SHA256": "77d2cfd5f20b0817b4d5b733a24933d10af6029163d1b43844911fdf2db05901",
+      "all_full_transport_pieces_pinned": true,
+      "transport_piece_count": 4,
+      "new_UART_bytes": 0,
+      "inherited_primary_events_unchanged": true,
+      "one_isolated_new_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 143147727998,
+        "counter_subtick": 26,
+        "bytes": 515,
+        "sha256": "75881919d7c60daa1e29018444cdcdb8d7e5fb735d5e0e4cc609dfb5880862a7"
+      },
+      "query_reply": {
+        "begin_seen": true,
+        "end_after_begin_seen": false,
+        "reply_code": null,
+        "completed_read_query": false,
+        "failed": false
+      },
+      "original_SystemServer_gate": true,
+      "original_BOOT_gate": false,
+      "SELinux_enforcing": true,
+      "primary_or_promotion_authority": false,
+      "emulator_completion_claimed": false
+    },
+    {
+      "schema": "reverseandroid-authenticated-isolated-ANR-read-boundary-v1",
+      "stage": 3,
+      "instructions": 144647727998,
+      "checkpoint_sha256": "729045edaf46ebfae91b8373477061a57aae251056726333e84cdcb6f23cbfb6",
+      "parent_checkpoint_sha256": "2971f4af19f86b3f4206057e624bed79fd6281d7c934c12a4e76811d842be216",
+      "metadata_artifact_id": 13546633336,
+      "metadata_ZIP_SHA256": "439cd18f5eac331efee263bcaf51fe82e0b44736b468f4aeb3461744b557906c",
+      "original_native_full_admission_and_snapshot_roundtrip": true,
+      "entire_console_SHA256": "129fc41b53f2f925b2d894d7697c419b60d92673203d3b45f8cc5ea5092c112c",
+      "all_full_transport_pieces_pinned": true,
+      "transport_piece_count": 4,
+      "new_UART_bytes": 0,
+      "inherited_primary_events_unchanged": true,
+      "one_isolated_new_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 143147727998,
+        "counter_subtick": 26,
+        "bytes": 515,
+        "sha256": "75881919d7c60daa1e29018444cdcdb8d7e5fb735d5e0e4cc609dfb5880862a7"
+      },
+      "query_reply": {
+        "begin_seen": true,
+        "end_after_begin_seen": false,
+        "reply_code": null,
+        "completed_read_query": false,
+        "failed": false
+      },
+      "original_SystemServer_gate": true,
+      "original_BOOT_gate": false,
+      "SELinux_enforcing": true,
+      "primary_or_promotion_authority": false,
+      "emulator_completion_claimed": false
+    },
+    {
+      "schema": "reverseandroid-authenticated-isolated-ANR-read-boundary-v1",
+      "stage": 4,
+      "instructions": 145147727998,
+      "checkpoint_sha256": "34b3276b7bd39ff3f165fa7a4e67ea6ab8e6563e6d5b04965f7d8a85d5a32e63",
+      "parent_checkpoint_sha256": "729045edaf46ebfae91b8373477061a57aae251056726333e84cdcb6f23cbfb6",
+      "metadata_artifact_id": 13547431224,
+      "metadata_ZIP_SHA256": "df07f7ea6a0aa4256e1bbfbba39ccafdbc284548b2ef88e04cde3a582686750e",
+      "original_native_full_admission_and_snapshot_roundtrip": true,
+      "entire_console_SHA256": "9f824976303fe1c0578a43f485dafd3af896fa61c153950ec99f1c77ab5e9c42",
+      "all_full_transport_pieces_pinned": true,
+      "transport_piece_count": 4,
+      "new_UART_bytes": 0,
+      "inherited_primary_events_unchanged": true,
+      "one_isolated_new_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 143147727998,
+        "counter_subtick": 26,
+        "bytes": 515,
+        "sha256": "75881919d7c60daa1e29018444cdcdb8d7e5fb735d5e0e4cc609dfb5880862a7"
+      },
+      "query_reply": {
+        "begin_seen": true,
+        "end_after_begin_seen": false,
+        "reply_code": null,
+        "completed_read_query": false,
+        "failed": false
+      },
+      "original_SystemServer_gate": true,
+      "original_BOOT_gate": false,
+      "SELinux_enforcing": true,
+      "primary_or_promotion_authority": false,
+      "emulator_completion_claimed": false
+    }
+  ],
+  "primary_or_promotion_authority": false,
+  "emulator_completion_claimed": false
+}
