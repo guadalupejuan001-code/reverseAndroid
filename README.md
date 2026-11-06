@@ -6,7 +6,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
-La época corregida C76/C77 ha admitido **18.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. El último snapshot se recuperó íntegramente y pasó la admisión original. Los límites completos de 2 a 15 mil millones coinciden por SHA-256 con la ejecución local. Se verificó Zygote PID 562 con su ejecutable y argumentos reales, y SELinux activo. Una [prueba aislada de consola](docs/evidence/c76/actual-console-response-control.json) recibió una respuesta generada por Android sin modificar el checkpoint principal. El arranque completo y la interfaz siguen pendientes. [C77 continúa la misma época](.github/workflows/android-c77-continued-epoch.yml), sin reiniciar la CPU.
+La época corregida C76/C77 ha admitido **19.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. El snapshot completo local coincide por SHA-256 con la ejecución independiente. El servicio de luces **PID 652 está vivo y escucha realmente en el puerto VSOCK 6900**: se comprobaron su descriptor, los enlaces del socket y el estado `TCP_LISTEN` con el BTF del kernel original. [Evidencia auténtica](docs/evidence/c76/stage16-lights-vsock-readonly.json). SurfaceFlinger PID 669 también está ejecutándose; SELinux permanece activo.
+
+El arranque completo y la interfaz siguen pendientes. Una [prueba aislada de consola](docs/evidence/c76/actual-console-response-control.json) ya recibió una respuesta generada por Android sin modificar el checkpoint principal. [C77 continúa la misma época](.github/workflows/android-c77-continued-epoch.yml), sin reiniciar la CPU.
 
 [C75, etapa 6](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42098763084) conserva **`system_server` vivo, PID 3340**, a **88.895.950.532 instrucciones**, con checkpoint `7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec`. Pasó la [recuperación y admisión originales](docs/evidence/c75/independent-final-recovery.json). Android todavía no ha completado el arranque.
 

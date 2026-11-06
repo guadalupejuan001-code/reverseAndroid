@@ -32,3 +32,11 @@ The local new epoch completed exactly 2,000,000,000 instructions at checkpoint `
 Independent run [42115913067](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42115913067) has passed the original engine build and new helper tests and is recovering the exact parent and media. Its initialized root and complete boundaries must be compared before claiming independent execution equality.
 
 The independent initialized root and first complete 2B snapshot now match the local SHA-256 values. The local run has admitted 3B, 4B and 5B boundaries. At 5B APEX bootstrap has finished and init is waiting for the real vendor BoringSSL self-test; framework/display boot is still pending. An isolated reference/candidate/reference compiler comparison produced three identical complete control snapshots, but the candidate did not improve time, so execution retains the original reference binary. Benchmark control states are not continuation authority.
+
+## Servicio real verificado a 19.000.000.000 instrucciones
+
+El checkpoint completo `2035e63f959545c8f6c72f678d837d0d952437ef8a2e0b57c614202f5995682b` pasó todas las comprobaciones originales y coincide con C77, etapa 12. PID 1 informa `init.svc.vendor.light-cuttlefish=running` y PID 652. La identidad y el ejecutable de ese proceso están verificados.
+
+La lectura de sus archivos abiertos encontró el descriptor 4: socket de familia 40, tipo stream, CID ANY y puerto **6900**, con ambos enlaces inversos al propietario correctos. Su estado 10 coincide con `TCP_LISTEN=10`, obtenido del BTF del mismo kernel fijado por hash. El servicio superó el fallo anterior de bind al puerto reservado; no se inyectaron propiedades ni entrada UART en esta continuación. La [observación](evidence/c76/stage16-lights-vsock-readonly.json) es de solo lectura y verifica de nuevo el hash completo de la entrada.
+
+SurfaceFlinger PID 669 también está vivo. `system_server`, el arranque completo y la interfaz siguen pendientes en esta época; este resultado no los da por terminados.

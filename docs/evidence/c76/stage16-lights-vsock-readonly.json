@@ -1,0 +1,84 @@
+{
+  "schema": "reverseandroid-lights-live-profile-v1",
+  "read_only": true,
+  "live_pid1_property_observations": [
+    {
+      "status": "property_observed",
+      "name": "init.svc.vendor.light-cuttlefish",
+      "value": "running",
+      "serial": 117440512,
+      "boot_completed_property_in_ram": false,
+      "file": "/dev/__properties__/u:object_r:vendor_default_prop:s0",
+      "pid": 1,
+      "task": "0xffffff8002d19440",
+      "vma": "0x7cfcc60000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true
+    },
+    {
+      "status": "property_observed",
+      "name": "init.svc_debug_pid.vendor.light-cuttlefish",
+      "value": "652",
+      "serial": 50331648,
+      "boot_completed_property_in_ram": false,
+      "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+      "pid": 1,
+      "task": "0xffffff8002d19440",
+      "vma": "0x7cfe0e0000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true
+    },
+    {
+      "status": "property_observed",
+      "name": "ro.boot.vsock_lights_port",
+      "value": "6900",
+      "serial": 67108864,
+      "boot_completed_property_in_ram": false,
+      "file": "/dev/__properties__/u:object_r:bootloader_prop:s0",
+      "pid": 1,
+      "task": "0xffffff8002d19440",
+      "vma": "0x7f8f48f000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true
+    }
+  ],
+  "configured_port_verified": true,
+  "init_reports_service_running": true,
+  "service_process": {
+    "pid": 652,
+    "name": "android.hardwar",
+    "state": 8193,
+    "exit_state": 0,
+    "has_user_mm": true,
+    "exe_path": "/apex/com.google.cf.light/bin/hw/android.hardware.light-service.cuttlefish",
+    "argv": [
+      "/apex/com.google.cf.light/bin/hw/android.hardware.light-service.cuttlefish"
+    ],
+    "vsock": {
+      "read_only": true,
+      "btf_layout_verified": true,
+      "fd_table_slots": 64,
+      "sockets": [
+        {
+          "fd": 4,
+          "socket": "0xffffff800cfca000",
+          "sock": "0xffffff801dcadf80",
+          "address_family": 40,
+          "socket_type": 1,
+          "local_cid": 4294967295,
+          "local_port": 6900,
+          "protocol_state": 10,
+          "TCP_LISTEN_value_from_pinned_kernel_BTF": 10,
+          "listening": true,
+          "fd_owner_and_socket_backlinks_verified": true
+        }
+      ],
+      "listener_on_port6900_verified": true
+    }
+  },
+  "vsock_listener_verified": true,
+  "android_boot_completion_proved_by_this_probe": false,
+  "checkpoint_sha256": "2035e63f959545c8f6c72f678d837d0d952437ef8a2e0b57c614202f5995682b",
+  "instructions": 19000000000,
+  "input_unchanged": true
+}
