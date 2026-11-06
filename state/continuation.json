@@ -3,11 +3,11 @@
   "cycle": "C88",
   "epoch": "C76-lights-port",
   "execute_on_push": false,
-  "current_source_checkpoint_sha256": "fb421cb1127531cde2d786f401021fe93f94f7133f2f4882cfcee9218a3a3cde",
-  "current_source_instructions": 138147727998,
-  "current_source_artifact_lock": "state/experiments/c88-stage-15-artifacts.json",
+  "current_source_checkpoint_sha256": "6c9bd7ff865cfa457c8c752250c96919648dfacf39bc5f8cbb8917f84a0ffab2",
+  "current_source_instructions": 139147727998,
+  "current_source_artifact_lock": "state/experiments/c88-stage-16-artifacts.json",
   "current_source_proof_file": "c88-proof.json",
-  "current_stage": 15,
+  "current_stage": 16,
   "active_run_id": 42274580377,
   "active_execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
   "immutable_initial_workflow_recipe": "state/experiments/c88-plan.json",
@@ -35,10 +35,10 @@
   "current_source_local_directory": null,
   "remote_transport_current_boundary_pending": false,
   "last_durable_transport_source": {
-    "instructions": 138147727998,
-    "checkpoint_sha256": "fb421cb1127531cde2d786f401021fe93f94f7133f2f4882cfcee9218a3a3cde",
-    "source_artifact_lock": "state/experiments/c88-stage-15-artifacts.json",
-    "original_CI_admission_and_transport_proof": "docs/evidence/c88/stage15-original-CI-authority.json",
+    "instructions": 139147727998,
+    "checkpoint_sha256": "6c9bd7ff865cfa457c8c752250c96919648dfacf39bc5f8cbb8917f84a0ffab2",
+    "source_artifact_lock": "state/experiments/c88-stage-16-artifacts.json",
+    "original_CI_admission_and_transport_proof": "docs/evidence/c88/stage16-original-CI-authority.json",
     "independent_local_native_match": null
   },
   "current_source_execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
@@ -60,5 +60,9 @@
     "next_plan": "state/experiments/c88-plan.json",
     "next_workflow": ".github/workflows/android-c88-jit-priority.yml",
     "independent_CI_run_id": 42247589579
-  }
+  },
+  "next_explicit_campaign": "C89",
+  "next_plan": "state/experiments/c89-plan.json",
+  "next_workflow": ".github/workflows/android-c89-zero-input-continuation.yml",
+  "pending_C89_first_admission": true
 }
