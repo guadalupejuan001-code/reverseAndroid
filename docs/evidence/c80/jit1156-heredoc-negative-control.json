@@ -1,0 +1,20 @@
+{
+  "schema": "reverseandroid-actual-console-command-negative-control-v1",
+  "execution_run_id": 42150487953,
+  "execution_commit": "9b1f92b822a4364ad41be875657240b81c0b7711",
+  "source_checkpoint_sha256": "bff9cbe2f55ff02a9fb9940380582c4de31f2e4631c3c123e11efef8fa337f03",
+  "source_instructions": 33000000000,
+  "observed_stage_instructions": 34000000000,
+  "observed_stage_checkpoint_sha256": "11459f6ee7d5b9ec21807e5a4855b3c5a6b23549b6ce877e0be6906a00d012bd",
+  "metadata_artifact_id": 13472711031,
+  "metadata_ZIP_SHA256": "666fad3c98e987884eef9a92b7186f641e3d542e960346dc7f19ffc995596301",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "actual_shell_error": "/system/bin/sh: can't create temporary file /data/local/sh2o9zfu.tmp: Permission denied",
+  "actual_JIT_priority_after": 139,
+  "actual_JIT_user_time_after": 0,
+  "priority_adjustment_verified": false,
+  "main_C79_and_C80_modified": false,
+  "old_input_preserved": "state/experiments/jit1156-control-input.txt",
+  "corrected_isolated_plan": "state/experiments/jit1156-direct-control-plan.json",
+  "control_is_promotion_authority": false
+}

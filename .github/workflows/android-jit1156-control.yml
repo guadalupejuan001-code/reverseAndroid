@@ -1,13 +1,5 @@
-name: Measure a guarded actual JIT priority input in an isolated control
+name: Archived negative JIT console control with heredoc permission failure
 'on':
-  push:
-    branches:
-    - main
-    paths:
-    - .github/workflows/android-jit1156-control.yml
-    - state/experiments/jit1156-control-artifacts.json
-    - state/experiments/jit1156-control-plan.json
-    - state/experiments/jit1156-control-input.txt
   workflow_dispatch: null
 permissions:
   contents: read
