@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "62c8d73f4bebc44b1824b0bafa3d09f691fa5d20f2b00ae3a03b5f47ee0d956b",
+  "source_instructions": 57000000000,
+  "input_file": "c81-priority-input.txt",
+  "input_sha256": "800b7d30cdd77b0731c25fca639a4d70e0732acc4a2bcbf0fe652571103a72a2",
+  "input_bytes": 588,
+  "effect": "Explicit OS scheduling change: real su shell checks current thread name, TGID562, UID0 and nice19, applies Toybox relative renice -19 once, verifies actual nice0. No property or snapshot injection.",
+  "adoption_evidence": "docs/evidence/c81/measured-priority-adoption.json",
+  "canonical_continuation_intentionally_changes_input_schedule": true,
+  "old_controls_not_promoted": true
+}

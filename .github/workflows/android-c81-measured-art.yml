@@ -1,0 +1,332 @@
+name: Android C81 measured ART progress on latest preserved epoch
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c81-measured-art.yml
+    - state/experiments/c81-plan.json
+    - state/experiments/c81-artifacts.json
+    - state/experiments/c81-priority-input*
+    - scripts/run-c81-stage.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c81-campaign
+  cancel-in-progress: false
+jobs:
+  c81-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate the unchanged sources and the fully tested original C78 epoch runner
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/c81-artifacts.json
+
+        chmod +x build/reverseandroid/epoch build/reverseandroid/frame
+
+        python3 - <<''PYCACHE''
+
+        import pathlib,json,hashlib
+
+        p=pathlib.Path(''build/reverseandroid'')
+
+        assert hashlib.file_digest((p/''epoch'').open(''rb''),''sha256'').hexdigest()==''72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa''
+
+        t=json.loads((p/''console-event-test.json'').read_text());assert len(t)==5 and all(x is True for x in t.values())
+
+        PYCACHE
+
+        node --test tests/reverseandroid_epoch_input.test.mjs > build/reverseandroid/c81-epoch-input-tests.tap
+
+        mkdir -p evidence/c81-reports
+
+        '
+    - name: Recover the latest pinned complete C80 boundary without resetting the guest
+      run: 'python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c81 state/experiments/c81-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c81-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c81-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c81-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c81-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw > evidence/c81-reports/disk.json
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-c81 > evidence/c81-reports/source-admission.json
+
+        '
+    - name: 'C81 stage 1: continue with original gates and at most one measured guarded input'
+      id: s1
+      if: success()
+      run: python3 scripts/run-c81-stage.py 1
+    - name: 'C81 stage 1: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s1.outcome == 'success' || steps.s1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-1
+        transport_path: build/c81-transport-1
+        artifact_prefix: reverseandroid-c81-stage-1
+    - name: 'C81 stage 1: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s1.outcome == 'success'
+      run: rm -rf build/source-c81
+    - name: 'C81 stage 2: continue with original gates and at most one measured guarded input'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 2
+    - name: 'C81 stage 2: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s2.outcome == 'success' || steps.s2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-2
+        transport_path: build/c81-transport-2
+        artifact_prefix: reverseandroid-c81-stage-2
+    - name: 'C81 stage 2: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s2.outcome == 'success'
+      run: rm -rf evidence/c81-1 build/c81-transport-1
+    - name: 'C81 stage 3: continue with original gates and at most one measured guarded input'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 3
+    - name: 'C81 stage 3: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s3.outcome == 'success' || steps.s3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-3
+        transport_path: build/c81-transport-3
+        artifact_prefix: reverseandroid-c81-stage-3
+    - name: 'C81 stage 3: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s3.outcome == 'success'
+      run: rm -rf evidence/c81-2 build/c81-transport-2
+    - name: 'C81 stage 4: continue with original gates and at most one measured guarded input'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 4
+    - name: 'C81 stage 4: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s4.outcome == 'success' || steps.s4.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-4
+        transport_path: build/c81-transport-4
+        artifact_prefix: reverseandroid-c81-stage-4
+    - name: 'C81 stage 4: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s4.outcome == 'success'
+      run: rm -rf evidence/c81-3 build/c81-transport-3
+    - name: 'C81 stage 5: continue with original gates and at most one measured guarded input'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 5
+    - name: 'C81 stage 5: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s5.outcome == 'success' || steps.s5.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-5
+        transport_path: build/c81-transport-5
+        artifact_prefix: reverseandroid-c81-stage-5
+    - name: 'C81 stage 5: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s5.outcome == 'success'
+      run: rm -rf evidence/c81-4 build/c81-transport-4
+    - name: 'C81 stage 6: continue with original gates and at most one measured guarded input'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 6
+    - name: 'C81 stage 6: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s6.outcome == 'success' || steps.s6.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-6
+        transport_path: build/c81-transport-6
+        artifact_prefix: reverseandroid-c81-stage-6
+    - name: 'C81 stage 6: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s6.outcome == 'success'
+      run: rm -rf evidence/c81-5 build/c81-transport-5
+    - name: 'C81 stage 7: continue with original gates and at most one measured guarded input'
+      id: s7
+      if: success() && steps.s6.outcome == 'success' && steps.s6.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 7
+    - name: 'C81 stage 7: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s7.outcome == 'success' || steps.s7.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-7
+        transport_path: build/c81-transport-7
+        artifact_prefix: reverseandroid-c81-stage-7
+    - name: 'C81 stage 7: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s7.outcome == 'success'
+      run: rm -rf evidence/c81-6 build/c81-transport-6
+    - name: 'C81 stage 8: continue with original gates and at most one measured guarded input'
+      id: s8
+      if: success() && steps.s7.outcome == 'success' && steps.s7.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 8
+    - name: 'C81 stage 8: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s8.outcome == 'success' || steps.s8.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-8
+        transport_path: build/c81-transport-8
+        artifact_prefix: reverseandroid-c81-stage-8
+    - name: 'C81 stage 8: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s8.outcome == 'success'
+      run: rm -rf evidence/c81-7 build/c81-transport-7
+    - name: 'C81 stage 9: continue with original gates and at most one measured guarded input'
+      id: s9
+      if: success() && steps.s8.outcome == 'success' && steps.s8.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 9
+    - name: 'C81 stage 9: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s9.outcome == 'success' || steps.s9.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-9
+        transport_path: build/c81-transport-9
+        artifact_prefix: reverseandroid-c81-stage-9
+    - name: 'C81 stage 9: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s9.outcome == 'success'
+      run: rm -rf evidence/c81-8 build/c81-transport-8
+    - name: 'C81 stage 10: continue with original gates and at most one measured guarded input'
+      id: s10
+      if: success() && steps.s9.outcome == 'success' && steps.s9.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 10
+    - name: 'C81 stage 10: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s10.outcome == 'success' || steps.s10.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-10
+        transport_path: build/c81-transport-10
+        artifact_prefix: reverseandroid-c81-stage-10
+    - name: 'C81 stage 10: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s10.outcome == 'success'
+      run: rm -rf evidence/c81-9 build/c81-transport-9
+    - name: 'C81 stage 11: continue with original gates and at most one measured guarded input'
+      id: s11
+      if: success() && steps.s10.outcome == 'success' && steps.s10.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 11
+    - name: 'C81 stage 11: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s11.outcome == 'success' || steps.s11.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-11
+        transport_path: build/c81-transport-11
+        artifact_prefix: reverseandroid-c81-stage-11
+    - name: 'C81 stage 11: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s11.outcome == 'success'
+      run: rm -rf evidence/c81-10 build/c81-transport-10
+    - name: 'C81 stage 12: continue with original gates and at most one measured guarded input'
+      id: s12
+      if: success() && steps.s11.outcome == 'success' && steps.s11.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 12
+    - name: 'C81 stage 12: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s12.outcome == 'success' || steps.s12.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-12
+        transport_path: build/c81-transport-12
+        artifact_prefix: reverseandroid-c81-stage-12
+    - name: 'C81 stage 12: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s12.outcome == 'success'
+      run: rm -rf evidence/c81-11 build/c81-transport-11
+    - name: 'C81 stage 13: continue with original gates and at most one measured guarded input'
+      id: s13
+      if: success() && steps.s12.outcome == 'success' && steps.s12.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 13
+    - name: 'C81 stage 13: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s13.outcome == 'success' || steps.s13.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-13
+        transport_path: build/c81-transport-13
+        artifact_prefix: reverseandroid-c81-stage-13
+    - name: 'C81 stage 13: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s13.outcome == 'success'
+      run: rm -rf evidence/c81-12 build/c81-transport-12
+    - name: 'C81 stage 14: continue with original gates and at most one measured guarded input'
+      id: s14
+      if: success() && steps.s13.outcome == 'success' && steps.s13.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 14
+    - name: 'C81 stage 14: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s14.outcome == 'success' || steps.s14.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-14
+        transport_path: build/c81-transport-14
+        artifact_prefix: reverseandroid-c81-stage-14
+    - name: 'C81 stage 14: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s14.outcome == 'success'
+      run: rm -rf evidence/c81-13 build/c81-transport-13
+    - name: 'C81 stage 15: continue with original gates and at most one measured guarded input'
+      id: s15
+      if: success() && steps.s14.outcome == 'success' && steps.s14.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 15
+    - name: 'C81 stage 15: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s15.outcome == 'success' || steps.s15.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-15
+        transport_path: build/c81-transport-15
+        artifact_prefix: reverseandroid-c81-stage-15
+    - name: 'C81 stage 15: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s15.outcome == 'success'
+      run: rm -rf evidence/c81-14 build/c81-transport-14
+    - name: 'C81 stage 16: continue with original gates and at most one measured guarded input'
+      id: s16
+      if: success() && steps.s15.outcome == 'success' && steps.s15.outputs.stop != 'true'
+      run: python3 scripts/run-c81-stage.py 16
+    - name: 'C81 stage 16: preserve every complete admitted checkpoint piece'
+      if: always() && (steps.s16.outcome == 'success' || steps.s16.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c81-16
+        transport_path: build/c81-transport-16
+        artifact_prefix: reverseandroid-c81-stage-16
+    - name: 'C81 stage 16: release only earlier host duplicates after all pieces preserved'
+      if: success() && steps.s16.outcome == 'success'
+      run: rm -rf evidence/c81-15 build/c81-transport-15
+    - name: Report original boot and actual input outcome separately
+      if: always()
+      run: 'python3 - <<''PYRESULT''
+
+        import json,pathlib
+
+        p=pathlib.Path(''evidence/c81-reports/continuation-state.json'')
+
+        assert p.exists(),''No admitted C81 boundary''
+
+        s=json.loads(p.read_text());print(json.dumps(s,indent=2))
+
+        assert not s[''failed''],''Actual guarded guest input reported failure; valid state preserved''
+
+        assert s[''guard_succeeded''],''Actual guarded input completion remains pending; valid state preserved''
+
+        assert s[''boot_completed''],''Original Android boot remains pending; continue from latest admitted state''
+
+        PYRESULT
+
+        '
+    - name: Preserve all input plans, source probes and continuation evidence
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-c81-reports
+        path: 'evidence/c81-reports
+
+          state/experiments/c81*
+
+          docs/evidence/c81
+
+          '
+        retention-days: 90
+        if-no-files-found: error

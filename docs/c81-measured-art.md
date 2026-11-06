@@ -1,0 +1,7 @@
+# C81: measured ART foreground recovery
+
+The isolated guarded input changed JIT TID1156 in zygote TGID562 from nice19 to nice0 through Android Toybox, with current owner/name/nice checks. Its zero-input continuation reached54B with main user time24,491,120,000ns, up960,228,000ns; the main was runnable and the JIT worker was waiting. The untouched original57B main remained at23,530,892,000ns in the same futex wait. These different input schedules are not a byte-identical replay comparison. The original full producer gates and all checkpoint pieces are preserved for both branches.
+
+C81 forks the newest admitted original57B source, not the older diagnostic copy. It re-observes the current thread before its one SHA-bound UART input, then uses the proven guarded command exactly once. Subsequent stages have zero new input. C80 remains the original-input reference; no prior valid boundary is deleted or promoted across this fork. Original CPU, codecs, disk,2GiB RAM, seed,64-instruction cadence, IRQs and SELinux enforcing remain unchanged.
+
+Boot completion and usable UI are still pending. Each stage preserves the original admission, roundtrip, process binding, live kernel/property evidence and scanout before releasing earlier host duplicates. A budget or priority response is not completed boot. A full original boot result must be followed by authentic UI review and a separately bound real input response test. The corrected peripheral peer remains an isolated experiment until its actual original HAL integrations pass.
