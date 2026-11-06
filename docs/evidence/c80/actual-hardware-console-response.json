@@ -1,0 +1,33 @@
+{
+  "schema": "reverseandroid-actual-original-hardware-console-response-v1",
+  "run_id": 42157099103,
+  "job_id": 127693737578,
+  "execution_commit": "a66d5244edd62e0095e9e40caf0086651daf5f8a",
+  "source_preserved_control_SHA256": "fcbf062ba03663f49a13a09ce53ddd35128afa8ac72dc78fae24baf4f2095923",
+  "final_SHA256": "52ef7756645c430495a62254493d7f44311ae08611ae53b23892bbf6894d2bb4",
+  "final_instructions": 38500000000,
+  "evidence_artifact_id": 13476256900,
+  "evidence_ZIP_SHA256": "6e45b84e7c0e18a35a9d36c09164c2cafb8ada3a17d5922032335abf33f7d807",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "original_raw_console_bytes_SHA256": "9ce39c9ea08ab5b603a9d27a68d1499694dace692e398fc80636340e9a004c7f",
+  "actual_begin_and_end_response_seen": true,
+  "additional_UART_inputs": 0,
+  "actual_su_UID": 0,
+  "actual_su_context": "u:r:su:s0",
+  "actual_CapEff_hex": "000001ffffffffff",
+  "actual_kernel_pty_master_major": 128,
+  "actual_kernel_pty_slave_major": 136,
+  "actual_ptmx_major_minor": [
+    5,
+    2
+  ],
+  "actual_uart_driver": "ttyAMA",
+  "no_devices_files_mounts_or_SELinux_policy_modified_by_read_request": true,
+  "hvc13_was_an_exploratory_read_not_the_sensor_port": true,
+  "actual_sensors_control_and_data_port_contract": [
+    18,
+    19
+  ],
+  "control_is_promotion_authority": false,
+  "main_C79_C80_modified": false
+}

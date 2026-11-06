@@ -1,0 +1,56 @@
+{
+  "schema": "reverseandroid-bootstrap-artifacts-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "artifacts": {
+    "seed": {
+      "transport_manifest": "state/experiments/c79-stage-13-transport.json",
+      "pieces": [
+        {
+          "id": 13474744788,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "ced81e6d5ca837d82f12fa09dcd9c38903ecc3a107d05078b591556cc82d3388"
+        },
+        {
+          "id": 13475623318,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "7849ebbbce7ea409734eef28ff34bc69d4fc0f483c248a709ba5a87bd3594f7c"
+        },
+        {
+          "id": 13475568566,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "489278470e895f3a0772fd239ca862ae3f08f3d78f6c036b0745f9300e54022e"
+        }
+      ]
+    },
+    "media-manifest": {
+      "id": 13427116817,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d9cb8cb0448199a76840f02676ccde8cceb02934b4e340a9a218103757689c91"
+    },
+    "media-aa": {
+      "id": 13427701335,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "df9735902d27bad91cec9d93a1ac13980113bbd6fcaa33303366bf420bb79ac0"
+    },
+    "media-ab": {
+      "id": 13427181837,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7aa01e7a17ed14bf23c83425bfc26da7848f253641079427f1a4b6f44ecefff8"
+    },
+    "media-ac": {
+      "id": 13426962020,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ecf54e700e4a1c10a3c101a8fcd8e20aa7a63df7f5cd2456cb662c7117dee789"
+    },
+    "native-cache": {
+      "id": 13466524323,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "c2b848df200cf49b3992b77ef5b3b95589096b38e7a334740400de59780062f9"
+    }
+  },
+  "epoch_native_build_required": false,
+  "legacy_native_cache_is_not_the_C76_runner": false,
+  "epoch_native_filename": "epoch",
+  "epoch_native_validation_run": 42137711600,
+  "epoch_native_validation_commit": "6c4fe6d4bf7840b5de89dfdfd820e01ea0e64387"
+}

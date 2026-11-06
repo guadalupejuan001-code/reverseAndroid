@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-isolated-authenticated-hardware-probe-boundary-v1",
+  "run_id": 42157099103,
+  "execution_commit": "a66d5244edd62e0095e9e40caf0086651daf5f8a",
+  "metadata_artifact_id": 13476311674,
+  "metadata_archive_sha256": "3b149b21298c107fcc90f9d9f077ef76c064ca3c075de8a6ade6d2f65e0b19a8",
+  "checkpoint_sha256": "52ef7756645c430495a62254493d7f44311ae08611ae53b23892bbf6894d2bb4",
+  "instructions": 38500000000,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_pieces_pinned": true,
+  "control_is_promotion_authority": false,
+  "fresh_local_full_recovery_or_CPU_replay_claimed": false
+}
