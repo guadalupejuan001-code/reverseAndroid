@@ -1,0 +1,13 @@
+{
+  "schema": "reverseandroid-hardware-transcript-byte-binding-v1",
+  "failed_run": 42156484278,
+  "no_guest_execution_in_failed_run": true,
+  "artifact_id": 13473396007,
+  "zip_sha256": "9a9e179612e709877a756f787e6d4849331f448f007a6042e9d3cf9b4c87cb38",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "original_console_bytes_sha256": "ec8060763c455e6938088d8cac100fd8071491d1ecbaf6ec1fa0c02d7300f726",
+  "universal_newline_decoded_text_sha256": "3eeafa50d461c3a4a2a568fc656068db94ef268ca9fd043b59c1d67abd8108e6",
+  "original_bytes": 198071,
+  "CRLF_sequences": 402,
+  "fix": "Bind original bytes instead of text with CRLF normalization. Preserve transcript and existing control checkpoint; no new UART or guest mutation."
+}

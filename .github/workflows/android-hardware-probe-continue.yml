@@ -74,7 +74,7 @@ jobs:
 
         p=pathlib.Path(''build/previous-hardware/evidence/hardware-probe-reports/console-all.txt'')
 
-        assert hashlib.file_digest(p.open(''rb''),''sha256'').hexdigest()==''3eeafa50d461c3a4a2a568fc656068db94ef268ca9fd043b59c1d67abd8108e6''
+        assert hashlib.file_digest(p.open(''rb''),''sha256'').hexdigest()==''ec8060763c455e6938088d8cac100fd8071491d1ecbaf6ec1fa0c02d7300f726''
 
         shutil.copyfile(p,''evidence/hardware-probe-continue-reports/console-all.txt'')
 
