@@ -1,0 +1,34 @@
+{
+  "schema": "reverseandroid-original-CI-admitted-canonical-boundary-v1",
+  "CI_run_id": 42247589579,
+  "execution_commit": "edab994d902183575c90fda4bfaabf887830b0e9",
+  "chain_from_previous_canonical_stage": 12,
+  "original_admitted_chain": [
+    {
+      "stage": 13,
+      "instructions": 122147727998,
+      "checkpoint_sha256": "002d7d40cb122799890bbfc5dfeaf020b5ee4b5e16628aba5a93b35c133003db",
+      "parent_checkpoint_sha256": "77a43d489062634841a5b2fbca751e371102d92b403e0f30fc0438da75dfea0d",
+      "metadata_artifact_id": 13529320625,
+      "metadata_ZIP_SHA256": "956c91b0f236c5554f324153c7dd26ff3e9e876dad40c7d150e9280d6395f925",
+      "original_CI_admission_verified": true,
+      "all_four_full_original_transport_pieces_pinned": true,
+      "full_RVG_downloaded_locally_for_this_authority_update": false
+    }
+  ],
+  "current_stage": 13,
+  "current_checkpoint_sha256": "002d7d40cb122799890bbfc5dfeaf020b5ee4b5e16628aba5a93b35c133003db",
+  "current_instructions": 122147727998,
+  "native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "original_CI_snapshot_roundtrip_and_C46_admission_verified": true,
+  "current_full_transport_pieces_pinned": true,
+  "current_RVG_fresh_local_download_or_local_native_replay_claimed": false,
+  "exact_original_console_SHA256": "b8342a81717b9386c63035594dd33c3c579acab79168d9a31201aaf5ddc26dae",
+  "old_seven_UART_events_byte_identical": true,
+  "new_UART_bytes": 0,
+  "SELinux_enforcing": true,
+  "fresh_live_peripherals_verified": true,
+  "SystemServer": false,
+  "BOOT": false,
+  "usable_UI_or_actual_response_claimed": false
+}

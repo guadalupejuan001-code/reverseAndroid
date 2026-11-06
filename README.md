@@ -7,9 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C87, etapa 12: **121.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo del snapshot y todas las piezas de transporte conservadas y fijadas por SHA-256. Las etapas 1 a 4 coinciden byte por byte con ejecuciones locales independientes; no se atribuye una repetición local a la frontera actual.
-Zygote sigue vivo; el hilo principal está en una espera futex que se está inspeccionando. La lectura aislada de la etapa 8 comprobó su espera real al hijo idmap2; esa espera terminó de forma natural en la etapa 9. SELinux y los tres canales de periféricos siguen verificados. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
-[Admisión original y conservación actual](docs/evidence/c87/stage12-original-CI-authority.json); [hijo real y liberación de la espera](docs/evidence/c87/stage8-original-child-wait-and-natural-release.json); [estado actual](state/latest.json).
+C87, etapa14: **123.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y todas las piezas del snapshot conservadas y fijadas por SHA-256. Las etapas1 a4 coinciden byte por byte con ejecuciones locales independientes; no se atribuye una repetición local a la frontera actual.
+Zygote sigue vivo. Su hilo principal mantiene la misma espera futex durante las etapas12,13 y14. La lectura completa aislada encuentra un único hilo Java ejecutable, el JIT5922, a nice+19. C88 prepara un único ajuste explícito y protegido a nice0 desde esta frontera; la prueba aún no se ha ejecutado. El binario del emulador se conserva. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
+[Admisión original y conservación actual](docs/evidence/c87/stage14-original-CI-authority.json); [espera medida](docs/evidence/c87/stage12-to13-original-futex-and-starved-JIT.json); [prueba C88](docs/c88-guarded-jit-priority.md); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado

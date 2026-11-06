@@ -36,7 +36,7 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
     def test_generated_workflows_keep_the_GitHub_on_trigger(self):
         # PyYAML's default YAML 1.1 loader treats an unquoted on key as True.
         # BaseLoader checks the actual emitted key, including valid unquoted on.
-        for name in ['android-c87-bounded-continuation.yml','retire-replaced-android-reference-runs.yml']:
+        for name in ['android-c88-jit-priority.yml','android-c87-bounded-continuation.yml','retire-replaced-android-reference-runs.yml']:
             path=ROOT/'.github/workflows'/name
             if not path.exists():continue
             with self.subTest(workflow=name):
@@ -46,7 +46,7 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
 
     def workflows(self):
         paths = [ROOT / '.github/workflows/android-c81-systemserver-diagnostic.yml']
-        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml', 'android-c87-bounded-continuation.yml']:
+        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml', 'android-c87-bounded-continuation.yml', 'android-c88-jit-priority.yml']:
             candidate = ROOT / '.github/workflows' / name
             if candidate.exists():
                 paths.append(candidate)
@@ -67,7 +67,7 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
         self.assertIn('r5', run_graph(broken, 3))
 
     def test_preserves_the_actual_stage_before_advancing_or_releasing(self):
-        for cycle,name in [(86,'android-c86-cleanup-priority.yml'),(87,'android-c87-bounded-continuation.yml')]:
+        for cycle,name in [(86,'android-c86-cleanup-priority.yml'),(87,'android-c87-bounded-continuation.yml'),(88,'android-c88-jit-priority.yml')]:
             path=ROOT/'.github/workflows'/name
             if not path.exists():continue
             steps=next(iter(yaml.safe_load(path.read_text())['jobs'].values()))['steps']
