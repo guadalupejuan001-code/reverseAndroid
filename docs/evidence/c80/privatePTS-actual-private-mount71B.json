@@ -1,0 +1,51 @@
+{
+  "schema": "reverseandroid-readonly-multiplexed-console-observation-v1",
+  "raw_console_bytes": 225068,
+  "raw_console_SHA256": "9398af37f3d962f7fbd3607adddc8c486c3450759000b33e7e7caca495cbcc09",
+  "normalized_stdout_SHA256": "e0f23c49835cf7470e0cafe17346b31936d52d74f075bbbe4a74a342a07bc7f7",
+  "only_complete_timestamp_and_TID_tagged_kernel_records_removed": true,
+  "removed_kernel_records": 1534,
+  "original_input_bytes_unchanged": true,
+  "expected_guest_ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "actual_exact_guest_hash_and_path_observed": false,
+  "actual_peer_READY_observed": false,
+  "actual_response_codes": {},
+  "actual_loaded_policy_unchanged_hashes": [],
+  "actual_private_device_filesystem_mounts": [
+    {
+      "source": "devpts",
+      "mountpoint": "/dev/ra-pts",
+      "filesystem": "devpts",
+      "options": [
+        "rw",
+        "fscontext=u:object_r:tmpfs:s0",
+        "rootcontext=u:object_r:device:s0",
+        "seclabel",
+        "nosuid",
+        "noexec",
+        "relatime",
+        "mode=600",
+        "ptmxmode=600"
+      ]
+    }
+  ],
+  "original_HAL_Binder_found": {
+    "android.hardware.oemlock.IOemLock/default": false,
+    "android.hardware.sensors.ISensors/default": false
+  },
+  "original_C46_or_boot_or_UI_gates_modified": false,
+  "boot_or_UI_completion_claimed": false,
+  "checkpoint_SHA256": "d70f073288938813ae467f5a2f512216a1b9d180d26f33c3790754ef72200beb",
+  "instructions": 71000000000,
+  "metadata_artifact_id": 13487844068,
+  "metadata_ZIP_SHA256": "590b52455614dce1d61e8de76992bfa4a8195de40d1bc9f921c96a01ef4d6e02",
+  "all_four_authentic_console_fragments_reconstructed_locally": true,
+  "all_four_raw_fragments_concatenated_match_original_producer_SHA256": true,
+  "independent_readonly_observation_equals_original_CI_observation": true,
+  "live_SELinux_enforcing": true,
+  "zero_new_UART_in_stages2_through4": true,
+  "original_C46_and_all_parts": "docs/evidence/c80/privatepts-eof-control-stage4.json",
+  "primary_modified": false,
+  "peer_provisioning_and_policy_after_hash_still_pending": true
+}

@@ -117,8 +117,16 @@ def main():
         tokens = shlex.split(raw.decode())
         assert tokens[:4] == ['su', '0', 'sh', '-c']
         bodies.append(tokens[4])
+    # Frozen AOSP IOemLock v1, blob977746c4dd669c404e01eec51b438731d649ec1c:
+    # Binder transactions2/3 are the read-only carrier/device getters. Keep
+    # their actual Parcel replies and the peer's real request/reply log.
+    oem = 'android.hardware.oemlock.IOemLock/default'
+    inspection = ('set -e; ' + bodies[1] + "; printf '\\nREVERSE_%s\\n' PTS_OEM_CARRIER_QUERY; "
+                  'service call ' + oem + ' 2; ' +
+                  "printf '\\nREVERSE_%s\\n' PTS_OEM_DEVICE_QUERY; " +
+                  'service call ' + oem + ' 3; cat ' + base + '.log')
     commands = [root(capture, 'PTS_TRANSFER_CAPTURE'), chunks[0] + '\n', chunks[1] + '\n',
-                root(decode + bodies[0], 'PTS_TRANSFER_ACTIVATION'), root(bodies[1], 'PTS_TRANSFER_INSPECT')]
+                root(decode + bodies[0], 'PTS_TRANSFER_ACTIVATION'), root(inspection, 'PTS_TRANSFER_INSPECT')]
     for i in [0, 3, 4]:
         subprocess.run(['bash', '-n'], input=commands[i].encode(), check=True)
     exercise_capture(capture, chunks, data_file, encoded)
@@ -151,6 +159,9 @@ def main():
               'host_actual_PTY_corrupt_prefix_rejected_before_next_read': True,
               'host_exact_production_decode_reconstructs_compiled_ELF': True,
               'host_mount_or_SELinux_provisioning_attempted': False,
+              'OEM_query_AIDL_v1_git_blob_SHA1': '977746c4dd669c404e01eec51b438731d649ec1c',
+              'OEM_Binder_query_transactions': [2, 3],
+              'OEM_setter_transactions_requested': False,
               'source_bound_or_executed': False, 'actual_Android_integration_claimed': False,
               'requires_successful_original_HAL_control_before_adoption': True,
               'requires_newest_canonical_source_SHA_and_count_before_input': True}

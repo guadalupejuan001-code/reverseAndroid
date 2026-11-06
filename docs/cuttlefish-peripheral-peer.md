@@ -122,3 +122,25 @@ every compiled ELF byte. This prepared variant has not run in Android, has no
 source binding and cannot be adopted until the isolated original HAL test
 succeeds. Both acknowledgments of each data phase must be observed before the
 next phase is allowed.
+
+The private mount itself is now observed in the admitted71B isolated state:
+`/dev/ra-pts` is a separate devpts instance with the requested filesystem and
+root labels, `nosuid`, `noexec` and mode0600. Global SELinux is enforcing.
+[The local read-only reconstruction](evidence/c80/privatePTS-actual-private-mount71B.json)
+concatenates all four authenticated console fragments, matches the producer's
+complete raw-console hash and reproduces its mount observation exactly. Peer
+provisioning, actual HAL connections and the final policy hash comparison remain
+pending at that boundary.
+
+The prepared fresh-transfer inspection also keeps real OEM getter replies and
+the peer's corresponding request log. These queries are defined by
+[frozen AOSP IOemLock v1](https://android.googlesource.com/platform/hardware/interfaces/+/refs/heads/main/oemlock/aidl/aidl_api/android.hardware.oemlock/1/android/hardware/oemlock/IOemLock.aidl),
+blob `977746c4dd669c404e01eec51b438731d649ec1c`:
+
+| Binder transaction | Read-only method | Peripheral command |
+| --- | --- | --- |
+| 2 | isOemUnlockAllowedByCarrier | 0 |
+| 3 | isOemUnlockAllowedByDevice | 1 |
+
+No setter transaction is prepared. Actual Android replies still need to be
+observed; the source definition and host protocol vectors do not replace them.
