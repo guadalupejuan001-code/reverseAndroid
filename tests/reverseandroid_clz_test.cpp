@@ -1,8 +1,5 @@
 #include "minimal_guest.hpp"
 #include <iostream>
-#ifdef __aarch64__
-#include <arm_neon.h>
-#endif
 using namespace reverse_pc::guest;
 namespace {
 unsigned checks = 0, cases = 0, hardware_cases = 0;
@@ -45,17 +42,13 @@ void execute(MinimalGuest g,unsigned bits,bool q,unsigned rn,unsigned rd,bool re
   for(unsigned lane=0;lane<(q?128:64)/bits;++lane)expected.lane(lane,bits,oracle(fp.v[rn].lane(lane,bits),bits));
 #ifdef __aarch64__
   // Independent real AArch64 NEON instructions, in addition to the integer oracle.
-  const auto source=fp.v[rn];const auto input=vld1q_u8(reinterpret_cast<const std::uint8_t*>(&source));Vector128 actual;
-  if(q){
-    if(bits==8)vst1q_u8(reinterpret_cast<std::uint8_t*>(&actual),vclzq_u8(input));
-    else if(bits==16)vst1q_u16(reinterpret_cast<std::uint16_t*>(&actual),vclzq_u16(vreinterpretq_u16_u8(input)));
-    else vst1q_u32(reinterpret_cast<std::uint32_t*>(&actual),vclzq_u32(vreinterpretq_u32_u8(input)));
-  }else{
-    const auto lower=vget_low_u8(input);
-    if(bits==8)vst1_u8(reinterpret_cast<std::uint8_t*>(&actual),vclz_u8(lower));
-    else if(bits==16)vst1_u16(reinterpret_cast<std::uint16_t*>(&actual),vclz_u16(vreinterpret_u16_u8(lower)));
-    else vst1_u32(reinterpret_cast<std::uint32_t*>(&actual),vclz_u32(vreinterpret_u32_u8(lower)));
-  }
+  const auto source=fp.v[rn];Vector128 actual;
+  // Fixed architectural assembly avoids a collision between arm_neon.h and
+  // the pinned SoftFloat library's public float16_t/bfloat16_t typedefs.
+#define HARDWARE_CLZ(form) asm volatile("ldr q0, %1\n\tclz v0." form ", v0." form "\n\tstr q0, %0" : "=m"(actual) : "m"(source) : "v0")
+  if(q){if(bits==8){HARDWARE_CLZ("16b");}else if(bits==16){HARDWARE_CLZ("8h");}else{HARDWARE_CLZ("4s");}}
+  else{if(bits==8){HARDWARE_CLZ("8b");}else if(bits==16){HARDWARE_CLZ("4h");}else{HARDWARE_CLZ("2s");}}
+#undef HARDWARE_CLZ
   check(actual.low==expected.low&&actual.high==expected.high,"Real AArch64 CLZ differs from mathematical oracle");++hardware_cases;
 #endif
   if(restore){auto copy=MinimalGuest::from_snapshot(g.snapshot());g.run(1);copy.run(1);check(g.snapshot()==copy.snapshot(),"CLZ restore differs");}else g.run(1);
