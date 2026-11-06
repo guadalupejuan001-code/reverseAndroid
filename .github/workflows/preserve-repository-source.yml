@@ -1,0 +1,33 @@
+name: Preserve verified repository source for workspace recovery
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/preserve-repository-source.yml']
+permissions:
+  contents: read
+jobs:
+  preserve-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false}
+      - name: Verify all original files and archive committed code without git credentials
+        run: |
+          python3 scripts/verify-reverseandroid-import.py
+          mkdir -p build/source-recovery
+          git archive --format=tar HEAD | gzip -n > build/source-recovery/repository.tar.gz
+          python3 - <<'PY'
+          import pathlib,hashlib,json,subprocess
+          p=pathlib.Path('build/source-recovery/repository.tar.gz')
+          d={'schema':'reverseandroid-committed-source-recovery-v1','source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'source_tree':subprocess.check_output(['git','rev-parse','HEAD^{tree}'],text=True).strip(),'archive_sha256':hashlib.file_digest(p.open('rb'),'sha256').hexdigest(),'archive_bytes':p.stat().st_size,'original_870_import_verified':True,'git_credentials_or_dot_git_included':False}
+          (p.parent/'source-manifest.json').write_text(json.dumps(d,indent=2)+'\n')
+          print(json.dumps(d))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reverseandroid-committed-source-recovery
+          path: build/source-recovery
+          retention-days: 90
+          if-no-files-found: error
