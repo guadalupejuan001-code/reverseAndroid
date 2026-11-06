@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "62c8d73f4bebc44b1824b0bafa3d09f691fa5d20f2b00ae3a03b5f47ee0d956b",
-  "instructions": 57000000000,
+  "checkpoint_sha256": "252448f4809218449ebbe57c566f189b0578abb36f6dc6f7bdb9b6bcd8123563",
+  "instructions": 59000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -12,11 +12,11 @@
     "live_process_missing:system_server",
     "live_sys_boot_completed_unverified"
   ],
-  "cycle": "C80",
+  "cycle": "C81",
   "epoch": "C76-lights-port",
-  "stage": 13,
+  "stage": 1,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
-  "execution_commit": "c435ee53ef65e60f00ef2f7fb946c8e53eea8a8f",
+  "execution_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
   "epoch_root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
   "parent_epoch_checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
@@ -31,13 +31,13 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42146302356,
   "independent_reproduction_status": "Original-input complete RVG states independently match at every shared odd boundary from33B through53B. C80 continues as unchanged reference after the explicit C81 fork at57B. No fresh local whole recovery/replay is claimed.",
-  "active_continuation": "C81: same latest57B state, one explicitly authenticated guarded JIT scheduling input, selected after actual ART foreground recovery in isolated control; C80 continues as original-input reference.",
+  "active_continuation": "C81 continues the same57B fork with its one source-bound guarded nice19-to0 input already confirmed by actual console response and original kernel priority120. Further stages contain zero new UART events. Original boot remains pending.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c80-stage-13-artifacts.json",
+  "source_artifact_lock": "state/experiments/c81-stage-1-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
     "checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
@@ -47,15 +47,15 @@
     "historical_only_local_files_lost_after_container_reset": true
   },
   "last_durable_transport_source": {
-    "instructions": 57000000000,
-    "checkpoint_sha256": "62c8d73f4bebc44b1824b0bafa3d09f691fa5d20f2b00ae3a03b5f47ee0d956b",
-    "source_artifact_lock": "state/experiments/c80-stage-13-artifacts.json"
+    "instructions": 59000000000,
+    "checkpoint_sha256": "252448f4809218449ebbe57c566f189b0578abb36f6dc6f7bdb9b6bcd8123563",
+    "source_artifact_lock": "state/experiments/c81-stage-1-artifacts.json"
   },
-  "visual_review_result": "The authenticated original55B frame visibly renders the Android boot logo. Boot completion and interactive UI remain unverified.",
-  "visual_review_evidence": "docs/evidence/c80/original55-frame-review.json",
+  "visual_review_result": "The authentic original C81stage1 frame at59B visibly renders the Android boot logo; usable UI and input response remain pending.",
+  "visual_review_evidence": "docs/evidence/c81/stage1-frame-and-input-review.json",
   "active_continuation_run_id": 42169590905,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c80/stage13-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c81/stage1-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c81-plan.json",
@@ -67,7 +67,14 @@
   "isolated_crash_console_response_evidence": "docs/evidence/c78/actual-crash-console-response.json",
   "peripheral_peer_status": "Corrected ABI2 guest buffered transfer remains in progress; no peer adopted into main.",
   "isolated_JIT_control_evidence": "docs/evidence/c80/jit1156-direct-success.json",
-  "main_priority_input_events": 0,
+  "main_priority_input_events": 1,
   "isolated_JIT_wait_control_plan": "state/experiments/jit1156-wait-control-plan.json",
-  "planned_priority_input_events": 1
+  "planned_priority_input_events": 1,
+  "original_input_reference_after_C81_fork": {
+    "run_id": 42147763604,
+    "stage": 14,
+    "instructions": 59000000000,
+    "checkpoint_sha256": "fff0601e7e3f9c9da79893b2c847c33f775cc7db5ff1830732c026f754b86fd9",
+    "promotion_authority": false
+  }
 }

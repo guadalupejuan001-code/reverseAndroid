@@ -1,0 +1,33 @@
+{
+  "schema": "reverseandroid-original-frame-and-input-review-v1",
+  "checkpoint_sha256": "252448f4809218449ebbe57c566f189b0578abb36f6dc6f7bdb9b6bcd8123563",
+  "instructions": 59000000000,
+  "metadata_artifact": 13480664909,
+  "metadata_archive_SHA256": "391147e06a60c32d7091f42a17bc9aff38970567efa1fbbbd2b532d7102d9493",
+  "PPM_SHA256": "13923ee20ec64fe6f9c75b28e6f90674be0d2951afdaa4a8d4dd33b69a87719e",
+  "RGB_SHA256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb",
+  "actual_original_frame_manually_viewed": true,
+  "original_Android_boot_logo_visible": true,
+  "interactive_UI_not_yet_visible": true,
+  "lossless_PNG_pixel_equality_verified": true,
+  "PNG": "docs/evidence/c81/stage1-original-scanout.png",
+  "frame_counter": 46,
+  "actual_source_bound_UART_event": {
+    "schema": "reverse-modeled-uart-input-v1",
+    "instructions": 57000000000,
+    "counter_subtick": 28,
+    "bytes": 588,
+    "sha256": "800b7d30cdd77b0731c25fca639a4d70e0732acc4a2bcbf0fe652571103a72a2"
+  },
+  "guarded_nice0_console_response_seen": true,
+  "actual_original_kernel_JIT_nice0_observed": true,
+  "JIT_utime_ns": 1070334000,
+  "original_input_reference59B_JIT_utime_ns": 639571000,
+  "main_utime_ns": 23530892000,
+  "main_still_waiting_in_same_futex": true,
+  "boot_completed": false,
+  "system_server_alive": false,
+  "UI_response_verified": false,
+  "SELinux_enforcing": true,
+  "original_C46_booleans_unmodified": true
+}
