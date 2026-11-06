@@ -1,0 +1,44 @@
+{
+  "schema": "reverseandroid-authentic-visual-review-v1",
+  "reviewed_UTC": "2026-11-06T22:29:33.607500+00:00",
+  "source_checkpoint_sha256": "92a25368bc67fb204b74780abb4343210bd13b27eea993e360a29370ac623e11",
+  "instructions": 143147727998,
+  "original_frame_proof": {
+    "schema": "reverse-snapshot-scanout-v1",
+    "status": "scanout_exported",
+    "source_checkpoint_sha256": "92a25368bc67fb204b74780abb4343210bd13b27eea993e360a29370ac623e11",
+    "instructions": 143147727998,
+    "pc": "0xffffffc0802bd864",
+    "frame_counter": 414,
+    "width": 800,
+    "height": 600,
+    "rgb_sha256": "58b20175f42a663fdb8f6c67a56ff460d9a1bcb3fce1e9a3e7dc2b51e0e455c1",
+    "ppm_sha256": "0d93f51647b052762cc45b7501cc126424fdf361dcf651bc01a195b231f1568d",
+    "cpu_instructions_executed": 0,
+    "original_snapshot_unchanged": true,
+    "android_boot_verified": false,
+    "android_display_verified": false
+  },
+  "original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "92a25368bc67fb204b74780abb4343210bd13b27eea993e360a29370ac623e11",
+    "instructions": 143147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "original_metadata_ZIP_SHA256": "348d25bc26a5fb55d5b3e45c0cd8e6a79978f468c0b5ebc162ece8df5dd29958",
+  "PPM_and_original_RGB_hashes_reverified": true,
+  "lossless_preview_RGB_unchanged": true,
+  "observed_content": "Android wordmark boot animation on a black800x600 display; no usable launcher, setup, lockscreen or notification controls visible.",
+  "usable_UI_manually_verified": false,
+  "gesture_response_test_executed": false,
+  "emulator_completion_claimed": false
+}

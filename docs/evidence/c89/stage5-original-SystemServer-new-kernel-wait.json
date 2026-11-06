@@ -1,0 +1,141 @@
+{
+  "schema": "reverseandroid-original-C89-SystemServer-kernel-wait-progress-v1",
+  "checkpoint_sha256": "f5f5b3da24ab64ba644a944d0fa1b156870feb429d1287d9e24f527dca7ffe4e",
+  "instructions": 144147727998,
+  "execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
+  "CI_run_id": 42299162841,
+  "original_SystemServer": {
+    "pid": 7354,
+    "name": "system_server",
+    "task": "0xffffff80224b6540",
+    "state": 8193,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc08682b970",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc08682b970",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc08682ba30",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc08682ba90",
+        "lr": "0xffffffc0812a2cb4",
+        "symbol": "schedule_timeout+0x4c"
+      },
+      {
+        "fp": "0xffffffc08682bb00",
+        "lr": "0xffffffc07aff4378",
+        "symbol": null
+      },
+      {
+        "fp": "0xffffffc08682bb90",
+        "lr": "0xffffffc07afdb098",
+        "symbol": null
+      },
+      {
+        "fp": "0xffffffc08682bd50",
+        "lr": "0xffffffc080238418",
+        "symbol": "__arm64_sys_ioctl+0x164"
+      },
+      {
+        "fp": "0xffffffc08682bde0",
+        "lr": "0xffffffc0800bb2fc",
+        "symbol": "invoke_syscall+0x58"
+      },
+      {
+        "fp": "0xffffffc08682be20",
+        "lr": "0xffffffc0800bb250",
+        "symbol": "do_el0_svc+0x8c"
+      },
+      {
+        "fp": "0xffffffc08682be40",
+        "lr": "0xffffffc08129ea70",
+        "symbol": "el0_svc+0x48"
+      },
+      {
+        "fp": "0xffffffc08682be80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc08682bea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc08682bfe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 7354,
+      "comm": "system_server",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 5629,
+      "argv": [
+        "system_server"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": false
+    },
+    "on_rq": 0,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "535",
+      "nivcsw": "1976",
+      "utime": "3514279000",
+      "stime": "2538164000",
+      "sum_exec_runtime": "5043660000",
+      "vruntime": "52923270650",
+      "exec_start": "2243928825000"
+    }
+  },
+  "previous_original_main_runtime_ns": "4933033000",
+  "runtime_delta_since4_ns": 110627000,
+  "previous_kernel_wait": "futex",
+  "new_actual_kernel_stack": [
+    "__schedule+0x1004",
+    "schedule+0x4c",
+    "schedule_timeout+0x4c",
+    null,
+    null,
+    "__arm64_sys_ioctl+0x164",
+    "invoke_syscall+0x58",
+    "do_el0_svc+0x8c",
+    "el0_svc+0x48",
+    "el0t_64_sync_handler+0x88",
+    "el0t_64_sync+0x1bc",
+    null
+  ],
+  "no_private_ioctl_device_or_Java_wait_cause_inferred": true,
+  "new_UART_bytes": 0,
+  "SELinux_enforcing": true,
+  "original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "f5f5b3da24ab64ba644a944d0fa1b156870feb429d1287d9e24f527dca7ffe4e",
+    "instructions": 144147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "usable_UI_or_response_claimed": false
+}
