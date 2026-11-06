@@ -1,0 +1,121 @@
+{
+  "schema": "reverseandroid-actual-canonical-SystemServer-trace-stop-v1",
+  "checkpoint_SHA256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+  "instructions": 90547727998,
+  "CI_run_id": 42202570182,
+  "metadata_artifact_id": 13497157658,
+  "metadata_archive_SHA256": "643356efd726b28dfd5e6019101e58acc8b96f0c78ebe49474581075a451182e",
+  "actual_SystemServer_task": {
+    "pid": 3386,
+    "name": "system_server",
+    "task": "0xffffff80224a2880",
+    "state": 8,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc0869f3a30",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc0869f3a30",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc0869f3af0",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc0869f3b50",
+        "lr": "0xffffffc0802b937c",
+        "symbol": "ptrace_stop+0x1a8"
+      },
+      {
+        "fp": "0xffffffc0869f3b70",
+        "lr": "0xffffffc0804ad7f8",
+        "symbol": "do_jobctl_trap+0xc0"
+      },
+      {
+        "fp": "0xffffffc0869f3bf0",
+        "lr": "0xffffffc080017754",
+        "symbol": "get_signal.cold+0xfc"
+      },
+      {
+        "fp": "0xffffffc0869f3c30",
+        "lr": "0xffffffc0801b74f0",
+        "symbol": "do_signal+0x60"
+      },
+      {
+        "fp": "0xffffffc0869f3d90",
+        "lr": "0xffffffc0800bceb0",
+        "symbol": "do_notify_resume+0xe0"
+      },
+      {
+        "fp": "0xffffffc0869f3e10",
+        "lr": "0xffffffc08129fcf0",
+        "symbol": "el0_interrupt+0x94"
+      },
+      {
+        "fp": "0xffffffc0869f3e60",
+        "lr": "0xffffffc08129f728",
+        "symbol": "__el0_irq_handler_common+0x18"
+      },
+      {
+        "fp": "0xffffffc0869f3e90",
+        "lr": "0xffffffc08129f704",
+        "symbol": "el0t_64_irq_handler+0x10"
+      },
+      {
+        "fp": "0xffffffc0869f3ea0",
+        "lr": "0xffffffc080012010",
+        "symbol": "el0t_64_irq+0x1bc"
+      },
+      {
+        "fp": "0xffffffc0869f3fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 3386,
+      "comm": "system_server",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 562,
+      "argv": [
+        "system_server"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": false
+    },
+    "on_rq": 0,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "772",
+      "nivcsw": "5998",
+      "utime": "9197198000",
+      "stime": "7425815000",
+      "sum_exec_runtime": "14073776000",
+      "vruntime": "27974741366",
+      "exec_start": "1409298019000"
+    }
+  },
+  "actual_crash_dump_PIDs": [
+    4555,
+    4760,
+    4779,
+    4784,
+    4815
+  ],
+  "original_C46_system_server_alive_verified": false,
+  "task_exit_state": 0,
+  "fatal_process_exit_or_restart_proven": false,
+  "cause_of_trace_stop_not_yet_identified": true,
+  "prior_same_PID_trace_and_natural_resume_reference": "docs/evidence/c81/stage12-producer-boundary.json",
+  "input_or_policy_or_snapshot_edits_to_skip_trace": false,
+  "BOOT_or_usable_UI_claimed": false
+}

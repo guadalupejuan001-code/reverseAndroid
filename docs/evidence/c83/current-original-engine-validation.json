@@ -1,0 +1,12 @@
+{
+  "schema": "reverseandroid-original-reference-validation-v1",
+  "execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
+  "run_id": 42202570186,
+  "original_engine_validation_job": 127841200662,
+  "conclusion": "success",
+  "all_870_files_original_build_native_instruction_decoder_and_admission_suite_passed": true,
+  "historical_continuation_job": 127843608915,
+  "historical_continuation_conclusion": "skipped",
+  "CLZ_extension_validation_remains_separate": "docs/evidence/c83/authenticated-hardware-validation.json",
+  "Android_boot_or_UI_completion_claimed": false
+}

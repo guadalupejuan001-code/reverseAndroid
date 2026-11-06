@@ -1,19 +1,20 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "afe60569b2dd4f1d88542f0df6ac75450c0e6f5dd076cc768e376cecfe592c0d",
-  "instructions": 89547727998,
+  "checkpoint_sha256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+  "instructions": 90547727998,
   "source_boundary_verified": true,
-  "system_server_alive_verified": true,
+  "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
   "scanout_exported": true,
   "ready_for_visual_review": false,
   "android_display_content_verified": false,
   "unresolved": [
+    "live_process_missing:system_server",
     "live_sys_boot_completed_unverified"
   ],
   "cycle": "C83",
   "epoch": "C76-lights-port",
-  "stage": 5,
+  "stage": 6,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
@@ -30,13 +31,13 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42146302356,
   "independent_reproduction_status": "Original C79/C80 complete snapshots match through53B; independent local original execution matches C81 complete61B exactly. C82 is producer-original-admitted with all transport pieces pinned; no fresh local C82 CPU replay is claimed.",
-  "active_continuation": "C83 stage5 fully admitted. Actual peripheral phase3, waiting=False, native events=3, failed=False. Every previous input is retained; waiting stages add zero new UART. Original live BOOT=False; actual usable UI and its response remain unverified.",
+  "active_continuation": "C83 stage6 fully admitted. Actual peripheral phase3, waiting=True, native events=4, failed=False. Every previous input is retained; waiting stages add zero new UART. Original live BOOT=False; actual usable UI and its response remain unverified.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c83-stage-5-artifacts.json",
+  "source_artifact_lock": "state/experiments/c83-stage-6-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/emulator-local-recovery/local-c81-exact61b",
     "checkpoint_sha256": "7d958ef43b44b855cb5ae5cc4ff50cab52bcfe9c3d4d326e850586c0cbf7efea",
@@ -45,15 +46,15 @@
     "proof": "docs/evidence/c81/independent-local-CI-exact61B.json"
   },
   "last_durable_transport_source": {
-    "instructions": 89547727998,
-    "checkpoint_sha256": "afe60569b2dd4f1d88542f0df6ac75450c0e6f5dd076cc768e376cecfe592c0d",
-    "source_artifact_lock": "state/experiments/c83-stage-5-artifacts.json"
+    "instructions": 90547727998,
+    "checkpoint_sha256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+    "source_artifact_lock": "state/experiments/c83-stage-6-artifacts.json"
   },
   "visual_review_result": "The authentic C83 post-CLZ frame at85,047,727,998 shows the original Android wordmark boot animation. Usable UI and actual input response are still pending.",
   "visual_review_evidence": "docs/evidence/c83/after-one-actual-frame-review.json",
   "active_continuation_run_id": 42202570182,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c83/stage5-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c83/stage6-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c83-plan.json",
@@ -90,7 +91,7 @@
   "actual_SystemServer_UID": 1000,
   "isolated_private_PTY_control_run_id": 42184815321,
   "isolated_private_PTY_control_is_promotion_authority": false,
-  "actual_SystemServer_state": 0,
+  "actual_SystemServer_state": 8,
   "last_SystemServer_alive_verified_instructions": 89547727998,
   "SystemServer_diagnostic_plan": "state/experiments/c81-systemserver-diagnostic-plan.json",
   "SystemServer_resumed_after_diagnostic_without_new_primary_input": true,
@@ -101,9 +102,9 @@
   "selected_canonical_continuation": "C83",
   "active_continuation_execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
   "primary_input_and_progress_evidence": "docs/evidence/c82/stage1-actual-source-and-receiver.json",
-  "main_peripheral_input_events": 3,
+  "main_peripheral_input_events": 4,
   "current_primary_peripheral_phase": 3,
-  "current_primary_peripheral_waiting": false,
+  "current_primary_peripheral_waiting": true,
   "last_direct_SystemServer_UID_observation": "docs/evidence/c81/stage13-package-parsing.json",
   "current_primary_peer_ready_verified": false,
   "new_hardware_power_cycle_in_C82": false,
@@ -127,20 +128,20 @@
   "current_primary_hardware_commands_completed": false,
   "independent_primary_full_snapshot_and_console_match": "docs/evidence/c83/stage5-independent-local-CI-match.json",
   "last_readonly_SystemServer_task_observation": {
-    "source_checkpoint_SHA256": "afe60569b2dd4f1d88542f0df6ac75450c0e6f5dd076cc768e376cecfe592c0d",
-    "instructions": 89547727998,
+    "source_checkpoint_SHA256": "acff30448cdaf5fc5f8f79b5716120f4357c7968f8ae9e4468c00474677a75dd",
+    "instructions": 90547727998,
     "PID": 3386,
-    "state": 0,
+    "state": 8,
     "accounting": {
-      "nvcsw": "771",
-      "nivcsw": "5597",
-      "utime": "8258069000",
-      "stime": "6897900000",
-      "sum_exec_runtime": "13047745000",
-      "vruntime": "27312285245",
-      "exec_start": "1396943238000"
+      "nvcsw": "772",
+      "nivcsw": "5998",
+      "utime": "9197198000",
+      "stime": "7425815000",
+      "sum_exec_runtime": "14073776000",
+      "vruntime": "27974741366",
+      "exec_start": "1409298019000"
     },
-    "on_rq": 1,
+    "on_rq": 0,
     "on_cpu": 0,
     "identity": {
       "read_only": true,
@@ -155,5 +156,10 @@
       "launch_signature_verified": false
     },
     "fresh_UID_read_claimed": false
-  }
+  },
+  "current_primary_peer_READY_line_observed": false,
+  "current_primary_peer_live_probe_available": true,
+  "current_primary_peer_alive_observed": false,
+  "current_primary_live_original_OEM_channel": false,
+  "current_primary_live_two_sensor_channels": false
 }
