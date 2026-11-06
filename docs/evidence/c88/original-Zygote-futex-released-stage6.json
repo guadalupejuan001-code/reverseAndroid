@@ -1,0 +1,71 @@
+{
+  "schema": "reverseandroid-original-Zygote-futex-release-v1",
+  "before_checkpoint_sha256": "92c372d4e050e0eeb777a979e5c654ae5d4f1d13d5ec6ef80d4198e8a756f80f",
+  "after_checkpoint_sha256": "a40b7fa2e93e5b49256a9f3a5775f1aa8f93a1b288b4c7198665565000bc64e7",
+  "before_instructions": 128147727998,
+  "after_instructions": 129147727998,
+  "native_run": 42274580377,
+  "execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
+  "same_original_Zygote_PID": 5629,
+  "original_app_process64_argv_verified": true,
+  "before_main": {
+    "pid": 5629,
+    "name": "main",
+    "state": 8193,
+    "exit_state": 0,
+    "accounting": {
+      "nvcsw": "19",
+      "nivcsw": "8768",
+      "utime": "24114666000",
+      "stime": "5035830000",
+      "sum_exec_runtime": "26794720000",
+      "vruntime": "64689290087",
+      "exec_start": "1877255550000"
+    }
+  },
+  "after_main": {
+    "pid": 5629,
+    "name": "main",
+    "state": 0,
+    "exit_state": 0,
+    "accounting": {
+      "nvcsw": "21",
+      "nivcsw": "9335",
+      "utime": "25975983000",
+      "stime": "5105373000",
+      "sum_exec_runtime": "28532484000",
+      "vruntime": "68433272139",
+      "exec_start": "2016122865000"
+    }
+  },
+  "actual_runtime_delta_ns": 1737764000,
+  "prior_guarded_priority_and_thread_transition_evidence": [
+    "actual-guarded-JIT5922-nice0-and-lookup-progress.json",
+    "stage3-original-readonly-JIT-progress.json",
+    "stage5-JIT-wait-and-HeapTaskDaemon-progress.json"
+  ],
+  "after_original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "a40b7fa2e93e5b49256a9f3a5775f1aa8f93a1b288b4c7198665565000bc64e7",
+    "instructions": 129147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": false,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "no_new_UART_in_this_stage": true,
+  "original_seven_events_and_exactly_one_C88_event_preserved": true,
+  "same_validated_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "SELinux_enforcing": true,
+  "original_full_admission_and_all_four_transport_pieces_pinned": true,
+  "local_RVG_download_or_independent_replay_not_claimed": true,
+  "BOOT": false,
+  "SystemServer": false,
+  "usable_UI_or_response_claimed": false
+}

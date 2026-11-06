@@ -60,3 +60,18 @@ evidence that ART is processing different lookup requests. The
 main thread remains in its original futex with unchanged accounting. SystemServer,
 BOOT, usable UI and a real UI response are still unverified. See the linked
 `evidence/c88/actual-guarded-JIT5922-nice0-and-lookup-progress.json`.
+
+## Actual sixth-stage progress
+
+The isolated source5 inspection found JIT5922 asleep at its first voluntary
+switch after1,239,637,000ns, still at nice0. HeapTaskDaemon5923 was then runnable
+with2,358,862,000ns runtime and a saved kernel stack handling a user COW fault.
+All six original thread-list backlinks were verified. No further priority input
+was selected.
+
+The original native sixth stage then admitted129,147,727,998 instructions with
+zero new UART. Main5629 is runnable again and its runtime rose from26,794,720,000ns
+to28,532,484,000ns. Its genuine app_process64 identity remains verified; the
+original wait has been released. SystemServer and BOOT remain unverified at this
+boundary, and no usable UI or response is claimed. See
+`evidence/c88/original-Zygote-futex-released-stage6.json`.

@@ -7,9 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C88, etapa5: **128.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las cuatro piezas del snapshot conservadas y fijadas por SHA-256. **Android confirmó el ajuste de JIT5922 a nice0**, y la lectura independiente del kernel verificó su identidad y prioridad. Su tiempo de ejecución pasó de16ms a392ms y a885ms en la lectura aislada de la etapa3, con operandos de búsqueda de tipos distintos: hay trabajo real de ART. El hilo principal aún mantiene la misma espera futex.
-El motor validado, los siete eventos previos y SELinux se conservan. El único comando nuevo se entregó una vez en la primera etapa; las siguientes no lo reenvían. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
-[Admisión actual](docs/evidence/c88/stage5-original-CI-authority.json); [respuesta real y kernel](docs/evidence/c88/actual-guarded-JIT5922-nice0-and-lookup-progress.json); [prueba C88](docs/c88-guarded-jit-priority.md); [estado actual](state/latest.json).
+C88, etapa6: **129.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las cuatro piezas del snapshot conservadas y fijadas por SHA-256. **El Zygote original salió de su espera futex y vuelve a ejecutar**: el hilo principal ganó1,74 segundos de trabajo en esta etapa.
+Android confirmó el ajuste protegido de JIT5922 a nice0, verificado también en el kernel. Las lecturas aisladas observaron su trabajo de resolución de tipos y después al hilo de memoria de ART ejecutándose. El motor validado, los siete eventos previos y SELinux se conservan; el único comando nuevo se entregó una vez y no se reenvía. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
+[Admisión actual](docs/evidence/c88/stage6-original-CI-authority.json); [liberación real de la espera](docs/evidence/c88/original-Zygote-futex-released-stage6.json); [transición de hilos](docs/evidence/c88/stage5-JIT-wait-and-HeapTaskDaemon-progress.json); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado

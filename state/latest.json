@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "92c372d4e050e0eeb777a979e5c654ae5d4f1d13d5ec6ef80d4198e8a756f80f",
-  "instructions": 128147727998,
+  "checkpoint_sha256": "a40b7fa2e93e5b49256a9f3a5775f1aa8f93a1b288b4c7198665565000bc64e7",
+  "instructions": 129147727998,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -14,7 +14,7 @@
   ],
   "cycle": "C88",
   "epoch": "C76-lights-port",
-  "stage": 5,
+  "stage": 6,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
   "execution_location": "original-native-CI-full-original-admission-and-complete-pinned-transport",
@@ -31,13 +31,13 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42247589579,
   "independent_reproduction_status": "Stages1 through4 independently reproduce every original RVG byte and the entire console. The current original CI boundary has full original admission and all transport pieces pinned; it has not been freshly recovered or independently run locally.",
-  "active_continuation": "C88 stage5: original native admission and all transport pieces verified in CI. Guard success=True; BOOT=False. Usable UI and actual response remain separate.",
+  "active_continuation": "C88 stage6: original native admission and all transport pieces verified in CI. Guard success=True; BOOT=False. Usable UI and actual response remain separate.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c88-stage-5-artifacts.json",
+  "source_artifact_lock": "state/experiments/c88-stage-6-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c87-4",
     "checkpoint_sha256": "bb07089e157a6ad116fa8a0dc3a269293346857af3d15ddabc54f9200e664af2",
@@ -48,17 +48,17 @@
     "archived_original_CI_transport_lock": "state/experiments/c87-stage-4-artifacts.json"
   },
   "last_durable_transport_source": {
-    "instructions": 128147727998,
-    "checkpoint_sha256": "92c372d4e050e0eeb777a979e5c654ae5d4f1d13d5ec6ef80d4198e8a756f80f",
-    "source_artifact_lock": "state/experiments/c88-stage-5-artifacts.json",
-    "original_CI_admission_and_transport_proof": "docs/evidence/c88/stage5-original-CI-authority.json",
+    "instructions": 129147727998,
+    "checkpoint_sha256": "a40b7fa2e93e5b49256a9f3a5775f1aa8f93a1b288b4c7198665565000bc64e7",
+    "source_artifact_lock": "state/experiments/c88-stage-6-artifacts.json",
+    "original_CI_admission_and_transport_proof": "docs/evidence/c88/stage6-original-CI-authority.json",
     "independent_local_native_match": null
   },
   "visual_review_result": "The authentic C83 post-CLZ frame at85,047,727,998 shows the original Android wordmark boot animation. Usable UI and actual input response are still pending.",
   "visual_review_evidence": "docs/evidence/c83/after-one-actual-frame-review.json",
   "active_continuation_run_id": 42274580377,
   "independent_engine_validation_run_id": 42202570186,
-  "latest_boundary_evidence": "docs/evidence/c88/stage5-original-CI-authority.json",
+  "latest_boundary_evidence": "docs/evidence/c88/stage6-original-CI-authority.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c88-plan.json",
@@ -198,7 +198,7 @@
   "original_init_zygote_recovery_verified": true,
   "original_init_recovery_evidence": "docs/evidence/c86/original-init-Zygote-recovery.json",
   "last_original_PID1_zygote_observation": {
-    "checkpoint_sha256": "92c372d4e050e0eeb777a979e5c654ae5d4f1d13d5ec6ef80d4198e8a756f80f",
+    "checkpoint_sha256": "a40b7fa2e93e5b49256a9f3a5775f1aa8f93a1b288b4c7198665565000bc64e7",
     "observations": [
       {
         "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
