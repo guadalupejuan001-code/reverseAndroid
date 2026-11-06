@@ -1,0 +1,281 @@
+{
+  "schema": "reverseandroid-original-SystemServer-startup-v1",
+  "source_checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
+  "instructions": 133147727998,
+  "native_run": 42274580377,
+  "execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
+  "actual_SystemServer": {
+    "pid": 7354,
+    "name": "system_server",
+    "task": "0xffffff80224b6540",
+    "state": 0,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc08682bac0",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc08682bac0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc08682bb80",
+        "lr": "0xffffffc0812a6e34",
+        "symbol": "preempt_schedule_irq+0x4c"
+      },
+      {
+        "fp": "0xffffffc08682bbe0",
+        "lr": "0xffffffc0812a9478",
+        "symbol": "arm64_preempt_schedule_irq+0x30"
+      },
+      {
+        "fp": "0xffffffc08682bc00",
+        "lr": "0xffffffc08129e770",
+        "symbol": "el1_interrupt+0x48"
+      },
+      {
+        "fp": "0xffffffc08682bc10",
+        "lr": "0xffffffc08129e71c",
+        "symbol": "el1h_64_irq_handler+0x18"
+      },
+      {
+        "fp": "0xffffffc08682bc30",
+        "lr": "0xffffffc080011b90",
+        "symbol": "el1h_64_irq+0x7c",
+        "interrupted_pc": "0xffffffc0812b0cd0",
+        "interrupted_symbol": "do_page_fault+0x13c",
+        "interrupted_registers": [
+          "0xffffff8013e3d980",
+          "0x0",
+          "0x11",
+          "0xe000006a653fc3",
+          "0x0",
+          "0x0",
+          "0x0",
+          "0x0",
+          "0x4400",
+          "0x1",
+          "0xffffffc0825ca000",
+          "0x3",
+          "0x0",
+          "0x0",
+          "0x1",
+          "0xffffff8013ca7300",
+          "0xb",
+          "0x718b3fff",
+          "0xffffffc08567d020",
+          "0x9200000b",
+          "0x254",
+          "0x718a4990",
+          "0x718a4990",
+          "0xffffff802ae61900",
+          "0xffffff802ae61900",
+          "0x0",
+          "0xffffff8013e3d900",
+          "0x7",
+          "0xffffff80224b6540",
+          "0xffffffc08682bdc0",
+          "0xffffffc0812b0cac"
+        ]
+      },
+      {
+        "fp": "0xffffffc08682bd70",
+        "lr": "0xffffffc0812b0cd0",
+        "symbol": "do_page_fault+0x13c"
+      },
+      {
+        "fp": "0xffffffc08682bdc0",
+        "lr": "0xffffffc0800bccf8",
+        "symbol": "do_mem_abort+0x54"
+      },
+      {
+        "fp": "0xffffffc08682be20",
+        "lr": "0xffffffc08129eb4c",
+        "symbol": "el0_da+0x54"
+      },
+      {
+        "fp": "0xffffffc08682be70",
+        "lr": "0xffffffc08129e954",
+        "symbol": "el0t_64_sync_handler+0x20"
+      },
+      {
+        "fp": "0xffffffc08682bea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc08682bfe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 7354,
+      "comm": "system_server",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 5629,
+      "argv": [
+        "zygote64"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": false
+    },
+    "on_rq": 1,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "5",
+      "nivcsw": "614",
+      "utime": "699818000",
+      "stime": "1247459000",
+      "sum_exec_runtime": "1783481000",
+      "vruntime": "45252164883",
+      "exec_start": "2078640254000"
+    }
+  },
+  "original_runtime_evidence": {
+    "schema": "reverse-android-runtime-evidence-v1",
+    "checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
+    "instructions": 133147727998,
+    "framework_runtime_verified": false,
+    "sys_boot_completed_live": false,
+    "selinux_enforcing_live": true,
+    "processes": [
+      {
+        "name": "init",
+        "verified": true,
+        "pid": 1
+      },
+      {
+        "name": "zygote64",
+        "verified": true,
+        "pid": 5629,
+        "observed_comm": "main",
+        "identity_basis": "live_argv_executable_parent_and_pid1_service_pid"
+      },
+      {
+        "name": "system_server",
+        "verified": true,
+        "pid": 7354
+      },
+      {
+        "name": "surfaceflinger",
+        "verified": true,
+        "pid": 669
+      }
+    ],
+    "reasons": [
+      "live_sys_boot_completed_unverified"
+    ],
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "original_snapshot_unchanged": true
+  },
+  "original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
+    "instructions": 133147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "original_PID1_service_observations": [
+    {
+      "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+      "vma": "0x7cfdb60000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "odsign.key.done",
+      "value": "1",
+      "serial": 16777218,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+      "vma": "0x7cfdb60000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "odsign.verification.done",
+      "value": "1",
+      "serial": 16777216,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+      "vma": "0x7cfe0e0000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc_debug_pid.zygote",
+      "value": "5629",
+      "serial": 67108866,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:init_service_status_prop:s0",
+      "vma": "0x7cfe120000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc.zygote",
+      "value": "running",
+      "serial": 117440516,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+      "vma": "0x7cfe140000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc.odsign",
+      "value": "stopped",
+      "serial": 117440516,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+      "vma": "0x7cfe140000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc.keystore2",
+      "value": "running",
+      "serial": 117440512,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:apexd_prop:s0",
+      "vma": "0x7f91525000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "apexd.status",
+      "value": "ready",
+      "serial": 83886086,
+      "boot_completed_property_in_ram": false
+    }
+  ],
+  "SELinux_enforcing": true,
+  "all_original_snapshot_admission_and_transport_pins_verified": true,
+  "transport_piece_count": 4,
+  "new_UART_bytes_this_stage": 0,
+  "total_preserved_input_events": 8,
+  "UID_not_yet_independently_measured_in_this_evidence": true,
+  "BOOT": false,
+  "usable_UI_or_response_claimed": false
+}

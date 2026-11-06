@@ -1,12 +1,12 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 9,
-  "source_checkpoint_sha256": "fea4cdb5903d8d6f5c2395a0d2d30f0c4e493096216b8b83155114363e94c62b",
-  "instructions": 132147727998,
-  "source_artifact_lock": "state/experiments/c88-stage-9-artifacts.json",
+  "source_stage": 10,
+  "source_checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
+  "instructions": 133147727998,
+  "source_artifact_lock": "state/experiments/c88-stage-10-artifacts.json",
   "source_execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
   "source_CI_run_id": 42274580377,
-  "source_proof_SHA256": "dda4fea886219c67348b7e257c5f236e6634fb3af7f3acfad14dfdfcd4f6174c",
+  "source_proof_SHA256": "a182242aab630908faa4c1b7cf64924993d7539ee09a7c5e79c68d2f13ccfed3",
   "zygote_PID": 5629,
   "target_JIT_TID": 5922,
   "expected_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
@@ -102,5 +102,6 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Identify actual current original Zygote startup code after main futex release and verify thread progress. Isolated read-only original source admission; zero guest execution and no new input."
+  "purpose": "Independently verify the new original SystemServer7354 identity, parent, actual UID/EUID and current threads, alongside Zygote5629. Full original source admission, read-only, zero guest execution and zero UART.",
+  "system_server_PID": 7354
 }
