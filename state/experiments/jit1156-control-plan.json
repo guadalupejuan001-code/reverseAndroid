@@ -1,0 +1,10 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "bff9cbe2f55ff02a9fb9940380582c4de31f2e4631c3c123e11efef8fa337f03",
+  "source_instructions": 33000000000,
+  "input_file": "jit1156-control-input.txt",
+  "input_sha256": "4c4cf734a2273dc5ad056f8e2fcc34f7e9d708129bbfe59600c8a9106cf09fde",
+  "input_bytes": 525,
+  "scope": "Isolated explicit OS priority experiment. Original read-only probes at32B and33B verify runnable JIT1156, TGID562, UID0, nice+19 and unchanged12,092,000ns runtime. Main has not been proven GC-blocked. The actual console checks owner/name/nice, applies Toybox delta-19 once, verifies nice0, then measures original thread accounting. C79 and C80 retain zero new input. This control is not promotion authority."
+}

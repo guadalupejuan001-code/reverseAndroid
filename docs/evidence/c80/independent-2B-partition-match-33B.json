@@ -1,0 +1,24 @@
+{
+  "schema": "reverseandroid-independent-original-stage-partition-match-v1",
+  "checkpoint_sha256": "bff9cbe2f55ff02a9fb9940380582c4de31f2e4631c3c123e11efef8fa337f03",
+  "instructions": 33000000000,
+  "common_parent_sha256": "0273f0945b27cdab8073384248d41dc8ff21691a85092216cf3a7427f651c5d7",
+  "common_parent_instructions": 31000000000,
+  "C79_run_id": 42146302356,
+  "C79_stages": [
+    2,
+    3
+  ],
+  "C79_each_instruction_budget": 1000000000,
+  "C80_run_id": 42147763604,
+  "C80_stage": 1,
+  "C80_instruction_budget": 2000000000,
+  "native_binary_sha256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "both_producer_original_source_boundaries_verified": true,
+  "all_complete_original_RVG_SHA256_equal": true,
+  "fresh_local_full_replay_not_claimed": true,
+  "native_CPU_clock_seed_RAM_IRQs_and_codecs_unchanged": true,
+  "new_guest_input_events": 0,
+  "android_boot_completed_verified": false,
+  "original_frame_still_identical_black": true
+}
