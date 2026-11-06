@@ -1,0 +1,10 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "ddf23205390c1d128115943a5de58e29952a925e89be280848e932acfb97ac66",
+  "source_instructions": 31500000000,
+  "input_file": "hardware-probe-input.txt",
+  "input_sha256": "88e0e2e443021c2c992310d7ea7709d533260789ce55e9ecf28d5a8b91adf932",
+  "input_bytes": 342,
+  "scope": "Read-only hardware endpoint, exact SELinux file-context and userdebug root-capability inspection on an isolated control. No Android properties, priority, device nodes, mounts or policy are modified. C79 and C80 remain separate with zero new input."
+}

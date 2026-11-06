@@ -1,0 +1,811 @@
+{
+  "schema": "reverseandroid-authenticated-zygote-thread-summary-v1",
+  "read_only": true,
+  "kernel_layout_pinned": true,
+  "checkpoint_sha256": "31dff0e31a01552798d18c46b6925a82cb41298e569a741e87b90cee1697f598",
+  "instructions": 32000000000,
+  "input_unchanged": true,
+  "observer_source_git_blob_sha1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+  "original_observer_file_unchanged": true,
+  "original_CPU_and_codecs_unchanged": true,
+  "source_original_observation_SHA256": "f1620392e1fd2badd940e9b18c56dee55c3504f821cf0ae1995ebd18569b7723",
+  "source_metadata_artifact_id": 13471550997,
+  "source_metadata_ZIP_SHA256": "34070bd595dc8f4c3b8962e261b7351ff50ef7d189d4c96b5116a824d3126676",
+  "original_complete_observation_preserved": true,
+  "zygote": {
+    "pid": 562,
+    "name": "main",
+    "thread_list_verified": true,
+    "thread_count": 6,
+    "user_vma_count": 1892
+  },
+  "threads": [
+    {
+      "pid": 562,
+      "tgid": 562,
+      "name": "main",
+      "state": 258,
+      "exit_state": 0,
+      "priority": 100,
+      "prio": 100,
+      "on_rq": 0,
+      "on_cpu": 0,
+      "accounting": {
+        "utime": "6112065000",
+        "stime": "5176361000",
+        "nvcsw": "664",
+        "nivcsw": "4561",
+        "sum_exec_runtime": "12145127000",
+        "vruntime": "2553637822",
+        "exec_start": "498476384000"
+      },
+      "scheduling": {
+        "read_only": true,
+        "task_and_runqueue_group_match": true,
+        "ancestry_verified": true,
+        "groups": [
+          {
+            "task_group": "0xffffff8002d9e000",
+            "cgroup": "0xffffff8009ed7000",
+            "path": "/top-app",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          },
+          {
+            "task_group": "0xffffffc082828800",
+            "cgroup": "0xffffff8006972040",
+            "path": "/",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        ],
+        "credentials": {
+          "uid": "0",
+          "euid": "0",
+          "gid": "0",
+          "egid": "0"
+        }
+      },
+      "kernel_stack": [
+        {
+          "fp": "0xffffffc086bbb900",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc086bbb9c0",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc086bbba20",
+          "lr": "0xffffffc0812a6f3c",
+          "symbol": "io_schedule+0x30"
+        },
+        {
+          "fp": "0xffffffc086bbba40",
+          "lr": "0xffffffc08014cd3c",
+          "symbol": "folio_wait_bit_common+0x19c"
+        },
+        {
+          "fp": "0xffffffc086bbbac0",
+          "lr": "0xffffffc080149d80",
+          "symbol": "filemap_fault+0x3b4"
+        },
+        {
+          "fp": "0xffffffc086bbbb90",
+          "lr": "0xffffffc0800aaaf4",
+          "symbol": "do_pte_missing+0x2d8"
+        },
+        {
+          "fp": "0xffffffc086bbbc30",
+          "lr": "0xffffffc0800b78ec",
+          "symbol": "handle_mm_fault+0x218"
+        },
+        {
+          "fp": "0xffffffc086bbbd20",
+          "lr": "0xffffffc0812b0cac",
+          "symbol": "do_page_fault+0x118"
+        },
+        {
+          "fp": "0xffffffc086bbbdb0",
+          "lr": "0xffffffc0812b0b78",
+          "symbol": "do_translation_fault+0x38"
+        },
+        {
+          "fp": "0xffffffc086bbbe10",
+          "lr": "0xffffffc0800bccf8",
+          "symbol": "do_mem_abort+0x54"
+        },
+        {
+          "fp": "0xffffffc086bbbe20",
+          "lr": "0xffffffc08129eb4c",
+          "symbol": "el0_da+0x54"
+        },
+        {
+          "fp": "0xffffffc086bbbe70",
+          "lr": "0xffffffc08129e954",
+          "symbol": "el0t_64_sync_handler+0x20"
+        },
+        {
+          "fp": "0xffffffc086bbbea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc086bbbfe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "saved_user_pc": {
+        "address": "0x7261698c",
+        "start": "0x72568000",
+        "end": "0x727b7000",
+        "flags": "0x75",
+        "file": "/system/framework/arm64/boot.oat",
+        "file_offset": "1354124",
+        "dynamic_symbols_unavailable": "The expression evaluated to a falsy value:\n\n  assert.ok(terminated)\n"
+      },
+      "saved_user_lr": {
+        "address": "0x7261362c",
+        "start": "0x72568000",
+        "end": "0x727b7000",
+        "flags": "0x75",
+        "file": "/system/framework/arm64/boot.oat",
+        "file_offset": "1340972",
+        "dynamic_symbols_unavailable": "The expression evaluated to a falsy value:\n\n  assert.ok(terminated)\n"
+      },
+      "syscall": 4294967295
+    },
+    {
+      "pid": 1156,
+      "tgid": 562,
+      "name": "Jit thread pool",
+      "state": 0,
+      "exit_state": 0,
+      "priority": 139,
+      "prio": 139,
+      "on_rq": 1,
+      "on_cpu": 0,
+      "accounting": {
+        "utime": "0",
+        "stime": "7683000",
+        "nvcsw": "1",
+        "nivcsw": "9",
+        "sum_exec_runtime": "12092000",
+        "vruntime": "2743280108",
+        "exec_start": "492263428000"
+      },
+      "scheduling": {
+        "read_only": true,
+        "task_and_runqueue_group_match": true,
+        "ancestry_verified": true,
+        "groups": [
+          {
+            "task_group": "0xffffff8002d9e000",
+            "cgroup": "0xffffff8009ed7000",
+            "path": "/top-app",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          },
+          {
+            "task_group": "0xffffffc082828800",
+            "cgroup": "0xffffff8006972040",
+            "path": "/",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        ],
+        "credentials": {
+          "uid": "0",
+          "euid": "0",
+          "gid": "0",
+          "egid": "0"
+        }
+      },
+      "kernel_stack": [
+        {
+          "fp": "0xffffffc084883b40",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc084883c00",
+          "lr": "0xffffffc0812a6e34",
+          "symbol": "preempt_schedule_irq+0x4c"
+        },
+        {
+          "fp": "0xffffffc084883c60",
+          "lr": "0xffffffc0812a9478",
+          "symbol": "arm64_preempt_schedule_irq+0x30"
+        },
+        {
+          "fp": "0xffffffc084883c80",
+          "lr": "0xffffffc08129e770",
+          "symbol": "el1_interrupt+0x48"
+        },
+        {
+          "fp": "0xffffffc084883c90",
+          "lr": "0xffffffc08129e71c",
+          "symbol": "el1h_64_irq_handler+0x18"
+        },
+        {
+          "fp": "0xffffffc084883cb0",
+          "lr": "0xffffffc080011b90",
+          "symbol": "el1h_64_irq+0x7c"
+        },
+        {
+          "fp": "0xffffffc084883df0",
+          "lr": "0xffffffc0800bb404",
+          "symbol": "syscall_trace_exit+0x70"
+        },
+        {
+          "fp": "0xffffffc084883e30",
+          "lr": "0xffffffc0800bb258",
+          "symbol": "do_el0_svc+0x94"
+        },
+        {
+          "fp": "0xffffffc084883e40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc084883e80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc084883ea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc084883fe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "saved_user_pc": {
+        "address": "0x751a537f20",
+        "start": "0x751a4e9000",
+        "end": "0x751a58d000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "saved_user_lr": {
+        "address": "0x72840c9e98",
+        "start": "0x7283e00000",
+        "end": "0x728465f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "5021336",
+        "dynamic_symbol": null
+      },
+      "syscall": 98
+    },
+    {
+      "pid": 1159,
+      "tgid": 562,
+      "name": "HeapTaskDaemon",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 112,
+      "prio": 112,
+      "on_rq": 0,
+      "on_cpu": 0,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "1",
+        "nivcsw": "1",
+        "sum_exec_runtime": "1417000",
+        "vruntime": "1453996957",
+        "exec_start": "460879855000"
+      },
+      "scheduling": {
+        "read_only": true,
+        "task_and_runqueue_group_match": true,
+        "ancestry_verified": true,
+        "groups": [
+          {
+            "task_group": "0xffffff8002d9e000",
+            "cgroup": "0xffffff8009ed7000",
+            "path": "/top-app",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          },
+          {
+            "task_group": "0xffffffc082828800",
+            "cgroup": "0xffffff8006972040",
+            "path": "/",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        ],
+        "credentials": {
+          "uid": "0",
+          "euid": "0",
+          "gid": "0",
+          "egid": "0"
+        }
+      },
+      "kernel_stack": [
+        {
+          "fp": "0xffffffc084923b20",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc084923be0",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc084923c40",
+          "lr": "0xffffffc08010d478",
+          "symbol": "futex_wait+0x158"
+        },
+        {
+          "fp": "0xffffffc084923d40",
+          "lr": "0xffffffc080230c28",
+          "symbol": "__arm64_sys_futex+0xfc"
+        },
+        {
+          "fp": "0xffffffc084923dd0",
+          "lr": "0xffffffc0800bb2fc",
+          "symbol": "invoke_syscall+0x58"
+        },
+        {
+          "fp": "0xffffffc084923e20",
+          "lr": "0xffffffc0800bb250",
+          "symbol": "do_el0_svc+0x8c"
+        },
+        {
+          "fp": "0xffffffc084923e40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc084923e80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc084923ea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc084923fe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "saved_user_pc": {
+        "address": "0x751a537f20",
+        "start": "0x751a4e9000",
+        "end": "0x751a58d000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "saved_user_lr": {
+        "address": "0x7283e04620",
+        "start": "0x7283e00000",
+        "end": "0x728465f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "2115104",
+        "dynamic_symbol": {
+          "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+          "offset": "0x90",
+          "range_verified": true
+        }
+      },
+      "syscall": 98
+    },
+    {
+      "pid": 1160,
+      "tgid": 562,
+      "name": "ReferenceQueueD",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 112,
+      "prio": 112,
+      "on_rq": 0,
+      "on_cpu": 0,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "2",
+        "nivcsw": "0",
+        "sum_exec_runtime": "1634000",
+        "vruntime": "1453979391",
+        "exec_start": "460629355000"
+      },
+      "scheduling": {
+        "read_only": true,
+        "task_and_runqueue_group_match": true,
+        "ancestry_verified": true,
+        "groups": [
+          {
+            "task_group": "0xffffff8002d9e000",
+            "cgroup": "0xffffff8009ed7000",
+            "path": "/top-app",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          },
+          {
+            "task_group": "0xffffffc082828800",
+            "cgroup": "0xffffff8006972040",
+            "path": "/",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        ],
+        "credentials": {
+          "uid": "0",
+          "euid": "0",
+          "gid": "0",
+          "egid": "0"
+        }
+      },
+      "kernel_stack": [
+        {
+          "fp": "0xffffffc0847bbb20",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc0847bbbe0",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc0847bbc40",
+          "lr": "0xffffffc08010d478",
+          "symbol": "futex_wait+0x158"
+        },
+        {
+          "fp": "0xffffffc0847bbd40",
+          "lr": "0xffffffc080230c28",
+          "symbol": "__arm64_sys_futex+0xfc"
+        },
+        {
+          "fp": "0xffffffc0847bbdd0",
+          "lr": "0xffffffc0800bb2fc",
+          "symbol": "invoke_syscall+0x58"
+        },
+        {
+          "fp": "0xffffffc0847bbe20",
+          "lr": "0xffffffc0800bb250",
+          "symbol": "do_el0_svc+0x8c"
+        },
+        {
+          "fp": "0xffffffc0847bbe40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc0847bbe80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc0847bbea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc0847bbfe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "saved_user_pc": {
+        "address": "0x751a537f20",
+        "start": "0x751a4e9000",
+        "end": "0x751a58d000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "saved_user_lr": {
+        "address": "0x7283e04620",
+        "start": "0x7283e00000",
+        "end": "0x728465f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "2115104",
+        "dynamic_symbol": {
+          "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+          "offset": "0x90",
+          "range_verified": true
+        }
+      },
+      "syscall": 98
+    },
+    {
+      "pid": 1161,
+      "tgid": 562,
+      "name": "FinalizerDaemon",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 112,
+      "prio": 112,
+      "on_rq": 0,
+      "on_cpu": 0,
+      "accounting": {
+        "utime": "0",
+        "stime": "0",
+        "nvcsw": "2",
+        "nivcsw": "1",
+        "sum_exec_runtime": "1661000",
+        "vruntime": "1453971615",
+        "exec_start": "460816901000"
+      },
+      "scheduling": {
+        "read_only": true,
+        "task_and_runqueue_group_match": true,
+        "ancestry_verified": true,
+        "groups": [
+          {
+            "task_group": "0xffffff8002d9e000",
+            "cgroup": "0xffffff8009ed7000",
+            "path": "/top-app",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          },
+          {
+            "task_group": "0xffffffc082828800",
+            "cgroup": "0xffffff8006972040",
+            "path": "/",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        ],
+        "credentials": {
+          "uid": "0",
+          "euid": "0",
+          "gid": "0",
+          "egid": "0"
+        }
+      },
+      "kernel_stack": [
+        {
+          "fp": "0xffffffc084743b20",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc084743be0",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc084743c40",
+          "lr": "0xffffffc08010d478",
+          "symbol": "futex_wait+0x158"
+        },
+        {
+          "fp": "0xffffffc084743d40",
+          "lr": "0xffffffc080230c28",
+          "symbol": "__arm64_sys_futex+0xfc"
+        },
+        {
+          "fp": "0xffffffc084743dd0",
+          "lr": "0xffffffc0800bb2fc",
+          "symbol": "invoke_syscall+0x58"
+        },
+        {
+          "fp": "0xffffffc084743e20",
+          "lr": "0xffffffc0800bb250",
+          "symbol": "do_el0_svc+0x8c"
+        },
+        {
+          "fp": "0xffffffc084743e40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc084743e80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc084743ea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc084743fe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "saved_user_pc": {
+        "address": "0x751a537f20",
+        "start": "0x751a4e9000",
+        "end": "0x751a58d000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "saved_user_lr": {
+        "address": "0x7283e04620",
+        "start": "0x7283e00000",
+        "end": "0x728465f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "2115104",
+        "dynamic_symbol": {
+          "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+          "offset": "0x90",
+          "range_verified": true
+        }
+      },
+      "syscall": 98
+    },
+    {
+      "pid": 1162,
+      "tgid": 562,
+      "name": "FinalizerWatchd",
+      "state": 8193,
+      "exit_state": 0,
+      "priority": 112,
+      "prio": 112,
+      "on_rq": 0,
+      "on_cpu": 0,
+      "accounting": {
+        "utime": "0",
+        "stime": "3774000",
+        "nvcsw": "2",
+        "nivcsw": "2",
+        "sum_exec_runtime": "2490000",
+        "vruntime": "1454050712",
+        "exec_start": "460965243000"
+      },
+      "scheduling": {
+        "read_only": true,
+        "task_and_runqueue_group_match": true,
+        "ancestry_verified": true,
+        "groups": [
+          {
+            "task_group": "0xffffff8002d9e000",
+            "cgroup": "0xffffff8009ed7000",
+            "path": "/top-app",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          },
+          {
+            "task_group": "0xffffffc082828800",
+            "cgroup": "0xffffff8006972040",
+            "path": "/",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        ],
+        "credentials": {
+          "uid": "0",
+          "euid": "0",
+          "gid": "0",
+          "egid": "0"
+        }
+      },
+      "kernel_stack": [
+        {
+          "fp": "0xffffffc08474bb20",
+          "lr": "0xffffffc0812a57c8",
+          "symbol": "__schedule+0x1004"
+        },
+        {
+          "fp": "0xffffffc08474bbe0",
+          "lr": "0xffffffc0812a6bc8",
+          "symbol": "schedule+0x4c"
+        },
+        {
+          "fp": "0xffffffc08474bc40",
+          "lr": "0xffffffc08010d478",
+          "symbol": "futex_wait+0x158"
+        },
+        {
+          "fp": "0xffffffc08474bd40",
+          "lr": "0xffffffc080230c28",
+          "symbol": "__arm64_sys_futex+0xfc"
+        },
+        {
+          "fp": "0xffffffc08474bdd0",
+          "lr": "0xffffffc0800bb2fc",
+          "symbol": "invoke_syscall+0x58"
+        },
+        {
+          "fp": "0xffffffc08474be20",
+          "lr": "0xffffffc0800bb250",
+          "symbol": "do_el0_svc+0x8c"
+        },
+        {
+          "fp": "0xffffffc08474be40",
+          "lr": "0xffffffc08129ea70",
+          "symbol": "el0_svc+0x48"
+        },
+        {
+          "fp": "0xffffffc08474be80",
+          "lr": "0xffffffc08129e9bc",
+          "symbol": "el0t_64_sync_handler+0x88"
+        },
+        {
+          "fp": "0xffffffc08474bea0",
+          "lr": "0xffffffc080011e50",
+          "symbol": "el0t_64_sync+0x1bc"
+        },
+        {
+          "fp": "0xffffffc08474bfe0",
+          "lr": "0x0",
+          "symbol": null
+        }
+      ],
+      "saved_user_pc": {
+        "address": "0x751a537f20",
+        "start": "0x751a4e9000",
+        "end": "0x751a58d000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "saved_user_lr": {
+        "address": "0x7283e04620",
+        "start": "0x7283e00000",
+        "end": "0x728465f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "2115104",
+        "dynamic_symbol": {
+          "name": "_ZN3art17ConditionVariable16WaitHoldingLocksEPNS_6ThreadE",
+          "offset": "0x90",
+          "range_verified": true
+        }
+      },
+      "syscall": 98
+    }
+  ],
+  "interpretation": "Six original Java threads now exist. JIT1156 belongs to Zygote562 and has nice+19; this identity must be reverified before any later action. Main is waiting for IO in boot.oat, while HeapTaskDaemon sleeps. A GC dependency stall is not established at this boundary; no priority input is applied."
+}

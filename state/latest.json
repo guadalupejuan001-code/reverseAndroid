@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "0273f0945b27cdab8073384248d41dc8ff21691a85092216cf3a7427f651c5d7",
-  "instructions": 31000000000,
+  "checkpoint_sha256": "bff9cbe2f55ff02a9fb9940380582c4de31f2e4631c3c123e11efef8fa337f03",
+  "instructions": 33000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -14,7 +14,7 @@
   ],
   "cycle": "C79",
   "epoch": "C76-lights-port",
-  "stage": 1,
+  "stage": 3,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "a201ea14b8143cc099b8068249bbafba238c825d",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
@@ -30,14 +30,14 @@
   "original_870_files_unchanged": true,
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42146302356,
-  "independent_reproduction_status": "Los límites hasta 31 mil millones están admitidos y conservados íntegramente por el productor. El snapshot de 24 mil millones también coincide con la ejecución local. La recuperación local completa de los posteriores no se afirma.",
+  "independent_reproduction_status": "La ejecución de referencia C79 ha admitido y conservado hasta 33 mil millones. C80 ejecuta los mismos bytes del intérprete con el límite original de 2 mil millones por tramo. Se compararán sus endpoints compartidos por SHA-256 completo. La recuperación local completa de estos límites no se afirma.",
   "active_continuation": "C80 continúa la misma época con tramos de 2 mil millones, dentro del límite original. C79 permanece como referencia independiente en tramos de 1 mil millones.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c79-stage-1-artifacts.json",
+  "source_artifact_lock": "state/experiments/c79-stage-3-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
     "checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
@@ -46,20 +46,22 @@
     "raw_current_rvg_archived_losslessly": true
   },
   "last_durable_transport_source": {
-    "instructions": 31000000000,
-    "checkpoint_sha256": "0273f0945b27cdab8073384248d41dc8ff21691a85092216cf3a7427f651c5d7",
-    "source_artifact_lock": "state/experiments/c79-stage-1-artifacts.json"
+    "instructions": 33000000000,
+    "checkpoint_sha256": "bff9cbe2f55ff02a9fb9940380582c4de31f2e4631c3c123e11efef8fa337f03",
+    "source_artifact_lock": "state/experiments/c79-stage-3-artifacts.json"
   },
   "visual_review_result": "El PPM original sigue siendo idéntico por SHA-256 al fotograma negro de 800×600 inspeccionado en 24 mil millones; no acredita interfaz ni arranque completo.",
   "visual_review_evidence": "docs/evidence/c78/local24-original-frame.json",
-  "active_continuation_run_id": null,
+  "active_continuation_run_id": 42147763604,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c79/stage1-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c79/stage3-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c80-plan.json",
   "host_interruption_evidence": "docs/evidence/c78/stage8-host-interruption.json",
   "isolated_crash_log_control_plan": "state/experiments/thread-diagnostic-plan.json",
   "host_compiler_evaluation_run_id": 42144708264,
-  "host_compiler_evaluation_outcome": "Four complete measured RVG hashes match. Speedup 1.050821 is below the required 1.10; candidate not adopted."
+  "host_compiler_evaluation_outcome": "Four complete measured RVG hashes match. Speedup 1.050821 is below the required 1.10; candidate not adopted.",
+  "hardware_probe_plan": "state/experiments/hardware-probe-plan.json",
+  "isolated_crash_console_response_evidence": "docs/evidence/c78/actual-crash-console-response.json"
 }

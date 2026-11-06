@@ -1,0 +1,2 @@
+
+printf '\nREVERSE_%s\n' HW_BEGIN; id; getprop ro.oem_unlock_supported; getprop ro.boot.openthread_node_id; ls -lZ /dev/ptmx /dev/hvc10 /dev/hvc13; grep -E 'hvc(10|13)' /vendor/etc/selinux/vendor_file_contexts; su 0 sh -c 'id; cat /proc/self/attr/current; grep CapEff /proc/self/status; cat /proc/tty/drivers'; printf '\nREVERSE_%s\n' HW_END

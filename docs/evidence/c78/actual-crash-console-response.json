@@ -1,0 +1,28 @@
+{
+  "schema": "reverseandroid-continued-actual-crash-console-response-v1",
+  "checkpoint_sha256": "ddf23205390c1d128115943a5de58e29952a925e89be280848e932acfb97ac66",
+  "instructions": 31500000000,
+  "actual_crash_begin_seen": true,
+  "actual_crash_end_after_begin_seen": true,
+  "combined_console_sha256": "33c40550cb61d016771229147a303cc9e468f7704818c21be4c2878d3dac4013",
+  "control_is_promotion_authority": false,
+  "primary_C79_input_modified": false,
+  "additional_guest_input_events": 0,
+  "prior_input_command_not_resubmitted": true,
+  "execution_run_id": 42146653457,
+  "execution_commit": "3f33dc4536ce4a19b840c24df7074fa3dcc6f1de",
+  "metadata_artifact_id": 13470609374,
+  "metadata_ZIP_SHA256": "590fdf05913d71f8f8b9f50de53e035331aa8dc929102222fb559ed087805684",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "actual_captured_abort_messages": [
+    "Could not connect to oemlock: No such file or directory",
+    "Could not connect to sensors control: No such file or directory",
+    "Check failed: node_id > 0 (node_id=0, 0=0)"
+  ],
+  "oemlock_argv_device": "/dev/hvc10",
+  "ROM_fingerprint": "generic/aosp_cf_arm64_only_phone/vsoc_arm64_only:17/CP2A.260605.016/16644040:userdebug/test-keys",
+  "full_control_transport": "state/experiments/hardware-probe-source-transport.json",
+  "full_control_artifact_lock": "state/experiments/hardware-probe-artifacts.json",
+  "hardware_probe_is_a_new_isolated_diagnostic_input": true,
+  "actual_UI_response_not_claimed": true
+}
