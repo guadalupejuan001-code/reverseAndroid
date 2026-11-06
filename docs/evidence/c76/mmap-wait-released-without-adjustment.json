@@ -1,0 +1,548 @@
+{
+  "schema": "reverseandroid-readonly-memory-wait-progress-v1",
+  "hypothesis": "Persistent priority inversion at Zygote mmap write wait was investigated; later independent noinput execution released the wait.",
+  "priority_adjustment_applied": false,
+  "primary_new_input_events": 0,
+  "proposed_adjusted_branch_executed": false,
+  "control_branch_not_primary_authority": true,
+  "control_budget": 100000000,
+  "control_native_binary_sha256": "2c9f9cb70125125d0c2ce806b2b83c5eb9c49d06c76d97353b12652d17f97767",
+  "observations": [
+    {
+      "label": "source15B",
+      "checkpoint_sha256": "1060c43b4e7a62cf134ef3f39ff7e8b6ff40d45ebf553b544f22d19a5405ba38",
+      "instructions": 15000000000,
+      "input_unchanged": true,
+      "tasks": [
+        {
+          "pid": 34,
+          "name": "khugepaged",
+          "state": 0,
+          "exit_state": 0,
+          "accounting": {
+            "nvcsw": "9",
+            "nivcsw": "12",
+            "utime": "0",
+            "stime": "38660000",
+            "sum_exec_runtime": "33887000",
+            "vruntime": "68906283806",
+            "exec_start": "233999612000"
+          },
+          "stack": [
+            {
+              "fp": "0xffffffc082c9ba80",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc082c9bb40",
+              "lr": "0xffffffc0812a6e34",
+              "symbol": "preempt_schedule_irq+0x4c"
+            },
+            {
+              "fp": "0xffffffc082c9bba0",
+              "lr": "0xffffffc0812a9478",
+              "symbol": "arm64_preempt_schedule_irq+0x30"
+            },
+            {
+              "fp": "0xffffffc082c9bbc0",
+              "lr": "0xffffffc08129e770",
+              "symbol": "el1_interrupt+0x48"
+            },
+            {
+              "fp": "0xffffffc082c9bbd0",
+              "lr": "0xffffffc08129e71c",
+              "symbol": "el1h_64_irq_handler+0x18"
+            },
+            {
+              "fp": "0xffffffc082c9bbf0",
+              "lr": "0xffffffc080011b90",
+              "symbol": "el1h_64_irq+0x7c",
+              "interrupted_pc": "0xffffffc080160474",
+              "interrupted_symbol": "mas_find+0x380",
+              "interrupted_registers": [
+                "0xffffff8014c53800",
+                "0xffffffffffffffff",
+                "0x4",
+                "0x200000",
+                "0x75446e9",
+                "0x1ff",
+                "0x2",
+                "0xffffffc0825cb610",
+                "0xffffff8012f92a08",
+                "0xffffff8012f92a00",
+                "0x1",
+                "0xffffff8012f92800",
+                "0x9",
+                "0x0",
+                "0x1000",
+                "0x1",
+                "0xffffffffffffffff",
+                "0x3f",
+                "0xffffffc082c85018",
+                "0xffffffc082c9bdc0",
+                "0xffffffffffffffff",
+                "0x75447b0fff",
+                "0xffffffc082c9bde8",
+                "0x1",
+                "0xffffffc081983af2",
+                "0xffffff80042b6d00",
+                "0x0",
+                "0xffffff8014c53000",
+                "0x2d2",
+                "0xffffffc082c9bd50",
+                "0xffffffc0806e6b48"
+              ]
+            },
+            {
+              "fp": "0xffffffc082c9bd30",
+              "lr": "0xffffffc080160474",
+              "symbol": "mas_find+0x380"
+            },
+            {
+              "fp": "0xffffffc082c9bd50",
+              "lr": "0xffffffc0806e6b48",
+              "symbol": "khugepaged+0x354"
+            },
+            {
+              "fp": "0xffffffc082c9be10",
+              "lr": "0xffffffc0804c2f14",
+              "symbol": "kthread+0x11c"
+            },
+            {
+              "fp": "0xffffffc082c9be70",
+              "lr": "0xffffffc080247fc0",
+              "symbol": "ret_from_fork+0x10"
+            },
+            {
+              "fp": "0xffffffc082c9bfe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ]
+        },
+        {
+          "pid": 562,
+          "name": "app_process64",
+          "state": 258,
+          "exit_state": 0,
+          "accounting": {
+            "nvcsw": "345",
+            "nivcsw": "916",
+            "utime": "408484000",
+            "stime": "1325242000",
+            "sum_exec_runtime": "2140484000",
+            "vruntime": "24094584",
+            "exec_start": "234634956000"
+          },
+          "stack": [
+            {
+              "fp": "0xffffffc086bbba50",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc086bbbb10",
+              "lr": "0xffffffc0812a6bc8",
+              "symbol": "schedule+0x4c"
+            },
+            {
+              "fp": "0xffffffc086bbbb70",
+              "lr": "0xffffffc0812a6cfc",
+              "symbol": "schedule_preempt_disabled+0x24"
+            },
+            {
+              "fp": "0xffffffc086bbbb90",
+              "lr": "0xffffffc0812a8810",
+              "symbol": "rwsem_down_write_slowpath+0x3b8"
+            },
+            {
+              "fp": "0xffffffc086bbbc10",
+              "lr": "0xffffffc0812a7ca0",
+              "symbol": "down_write_killable+0x94"
+            },
+            {
+              "fp": "0xffffffc086bbbc70",
+              "lr": "0xffffffc080161684",
+              "symbol": "do_mprotect_pkey+0xd8"
+            },
+            {
+              "fp": "0xffffffc086bbbdb0",
+              "lr": "0xffffffc080074464",
+              "symbol": "__arm64_sys_mprotect+0x20"
+            },
+            {
+              "fp": "0xffffffc086bbbe10",
+              "lr": "0xffffffc0800bb2fc",
+              "symbol": "invoke_syscall+0x58"
+            },
+            {
+              "fp": "0xffffffc086bbbe20",
+              "lr": "0xffffffc0800bb250",
+              "symbol": "do_el0_svc+0x8c"
+            },
+            {
+              "fp": "0xffffffc086bbbe40",
+              "lr": "0xffffffc08129ea70",
+              "symbol": "el0_svc+0x48"
+            },
+            {
+              "fp": "0xffffffc086bbbe80",
+              "lr": "0xffffffc08129e9bc",
+              "symbol": "el0t_64_sync_handler+0x88"
+            },
+            {
+              "fp": "0xffffffc086bbbea0",
+              "lr": "0xffffffc080011e50",
+              "symbol": "el0t_64_sync+0x1bc"
+            },
+            {
+              "fp": "0xffffffc086bbbfe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "isolated_noinput15.1B",
+      "checkpoint_sha256": "8130c7096cedf9a3f1a230d4cd68a4d746e1559d4d95606eb065f70a5bd41786",
+      "instructions": 15100000000,
+      "input_unchanged": true,
+      "tasks": [
+        {
+          "pid": 34,
+          "name": "khugepaged",
+          "state": 0,
+          "exit_state": 0,
+          "accounting": {
+            "nvcsw": "9",
+            "nivcsw": "12",
+            "utime": "0",
+            "stime": "38660000",
+            "sum_exec_runtime": "33887000",
+            "vruntime": "68906283806",
+            "exec_start": "233999612000"
+          },
+          "stack": [
+            {
+              "fp": "0xffffffc082c9ba80",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc082c9bb40",
+              "lr": "0xffffffc0812a6e34",
+              "symbol": "preempt_schedule_irq+0x4c"
+            },
+            {
+              "fp": "0xffffffc082c9bba0",
+              "lr": "0xffffffc0812a9478",
+              "symbol": "arm64_preempt_schedule_irq+0x30"
+            },
+            {
+              "fp": "0xffffffc082c9bbc0",
+              "lr": "0xffffffc08129e770",
+              "symbol": "el1_interrupt+0x48"
+            },
+            {
+              "fp": "0xffffffc082c9bbd0",
+              "lr": "0xffffffc08129e71c",
+              "symbol": "el1h_64_irq_handler+0x18"
+            },
+            {
+              "fp": "0xffffffc082c9bbf0",
+              "lr": "0xffffffc080011b90",
+              "symbol": "el1h_64_irq+0x7c",
+              "interrupted_pc": "0xffffffc080160474",
+              "interrupted_symbol": "mas_find+0x380",
+              "interrupted_registers": [
+                "0xffffff8014c53800",
+                "0xffffffffffffffff",
+                "0x4",
+                "0x200000",
+                "0x75446e9",
+                "0x1ff",
+                "0x2",
+                "0xffffffc0825cb610",
+                "0xffffff8012f92a08",
+                "0xffffff8012f92a00",
+                "0x1",
+                "0xffffff8012f92800",
+                "0x9",
+                "0x0",
+                "0x1000",
+                "0x1",
+                "0xffffffffffffffff",
+                "0x3f",
+                "0xffffffc082c85018",
+                "0xffffffc082c9bdc0",
+                "0xffffffffffffffff",
+                "0x75447b0fff",
+                "0xffffffc082c9bde8",
+                "0x1",
+                "0xffffffc081983af2",
+                "0xffffff80042b6d00",
+                "0x0",
+                "0xffffff8014c53000",
+                "0x2d2",
+                "0xffffffc082c9bd50",
+                "0xffffffc0806e6b48"
+              ]
+            },
+            {
+              "fp": "0xffffffc082c9bd30",
+              "lr": "0xffffffc080160474",
+              "symbol": "mas_find+0x380"
+            },
+            {
+              "fp": "0xffffffc082c9bd50",
+              "lr": "0xffffffc0806e6b48",
+              "symbol": "khugepaged+0x354"
+            },
+            {
+              "fp": "0xffffffc082c9be10",
+              "lr": "0xffffffc0804c2f14",
+              "symbol": "kthread+0x11c"
+            },
+            {
+              "fp": "0xffffffc082c9be70",
+              "lr": "0xffffffc080247fc0",
+              "symbol": "ret_from_fork+0x10"
+            },
+            {
+              "fp": "0xffffffc082c9bfe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ]
+        },
+        {
+          "pid": 562,
+          "name": "app_process64",
+          "state": 258,
+          "exit_state": 0,
+          "accounting": {
+            "nvcsw": "345",
+            "nivcsw": "916",
+            "utime": "408484000",
+            "stime": "1325242000",
+            "sum_exec_runtime": "2140484000",
+            "vruntime": "24094584",
+            "exec_start": "234634956000"
+          },
+          "stack": [
+            {
+              "fp": "0xffffffc086bbba50",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc086bbbb10",
+              "lr": "0xffffffc0812a6bc8",
+              "symbol": "schedule+0x4c"
+            },
+            {
+              "fp": "0xffffffc086bbbb70",
+              "lr": "0xffffffc0812a6cfc",
+              "symbol": "schedule_preempt_disabled+0x24"
+            },
+            {
+              "fp": "0xffffffc086bbbb90",
+              "lr": "0xffffffc0812a8810",
+              "symbol": "rwsem_down_write_slowpath+0x3b8"
+            },
+            {
+              "fp": "0xffffffc086bbbc10",
+              "lr": "0xffffffc0812a7ca0",
+              "symbol": "down_write_killable+0x94"
+            },
+            {
+              "fp": "0xffffffc086bbbc70",
+              "lr": "0xffffffc080161684",
+              "symbol": "do_mprotect_pkey+0xd8"
+            },
+            {
+              "fp": "0xffffffc086bbbdb0",
+              "lr": "0xffffffc080074464",
+              "symbol": "__arm64_sys_mprotect+0x20"
+            },
+            {
+              "fp": "0xffffffc086bbbe10",
+              "lr": "0xffffffc0800bb2fc",
+              "symbol": "invoke_syscall+0x58"
+            },
+            {
+              "fp": "0xffffffc086bbbe20",
+              "lr": "0xffffffc0800bb250",
+              "symbol": "do_el0_svc+0x8c"
+            },
+            {
+              "fp": "0xffffffc086bbbe40",
+              "lr": "0xffffffc08129ea70",
+              "symbol": "el0_svc+0x48"
+            },
+            {
+              "fp": "0xffffffc086bbbe80",
+              "lr": "0xffffffc08129e9bc",
+              "symbol": "el0t_64_sync_handler+0x88"
+            },
+            {
+              "fp": "0xffffffc086bbbea0",
+              "lr": "0xffffffc080011e50",
+              "symbol": "el0t_64_sync+0x1bc"
+            },
+            {
+              "fp": "0xffffffc086bbbfe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "independent_noinput16B",
+      "checkpoint_sha256": "81f2b78b4372185df7d8555fd58129c8c4b95b1235fa145126a3cc2089989262",
+      "instructions": 16000000000,
+      "input_unchanged": true,
+      "tasks": [
+        {
+          "pid": 34,
+          "name": "khugepaged",
+          "state": 8193,
+          "exit_state": 0,
+          "accounting": {
+            "nvcsw": "10",
+            "nivcsw": "14",
+            "utime": "0",
+            "stime": "42540000",
+            "sum_exec_runtime": "36381000",
+            "vruntime": "69076540872",
+            "exec_start": "245258692000"
+          },
+          "stack": [
+            {
+              "fp": "0xffffffc082c9bba0",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc082c9bc60",
+              "lr": "0xffffffc0812a6bc8",
+              "symbol": "schedule+0x4c"
+            },
+            {
+              "fp": "0xffffffc082c9bcc0",
+              "lr": "0xffffffc0812a2e9c",
+              "symbol": "schedule_timeout+0x234"
+            },
+            {
+              "fp": "0xffffffc082c9bd30",
+              "lr": "0xffffffc0806e70cc",
+              "symbol": "khugepaged+0x8d8"
+            },
+            {
+              "fp": "0xffffffc082c9be10",
+              "lr": "0xffffffc0804c2f14",
+              "symbol": "kthread+0x11c"
+            },
+            {
+              "fp": "0xffffffc082c9be70",
+              "lr": "0xffffffc080247fc0",
+              "symbol": "ret_from_fork+0x10"
+            },
+            {
+              "fp": "0xffffffc082c9bfe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ]
+        },
+        {
+          "pid": 562,
+          "name": "app_process64",
+          "state": 0,
+          "exit_state": 0,
+          "accounting": {
+            "nvcsw": "348",
+            "nivcsw": "1002",
+            "utime": "633552000",
+            "stime": "1382689000",
+            "sum_exec_runtime": "2403646000",
+            "vruntime": "27130533",
+            "exec_start": "250177549000"
+          },
+          "stack": [
+            {
+              "fp": "0xffffffc086bbb980",
+              "lr": "0xffffffc0812a57c8",
+              "symbol": "__schedule+0x1004"
+            },
+            {
+              "fp": "0xffffffc086bbba40",
+              "lr": "0xffffffc0812a47a4",
+              "symbol": "preempt_schedule+0x60"
+            },
+            {
+              "fp": "0xffffffc086bbbaa0",
+              "lr": "0xffffffc0812af91c",
+              "symbol": "_raw_spin_unlock+0x38"
+            },
+            {
+              "fp": "0xffffffc086bbbac0",
+              "lr": "0xffffffc080202ee4",
+              "symbol": "filemap_map_pages+0x41c"
+            },
+            {
+              "fp": "0xffffffc086bbbb90",
+              "lr": "0xffffffc0800aade0",
+              "symbol": "do_pte_missing+0x5c4"
+            },
+            {
+              "fp": "0xffffffc086bbbc30",
+              "lr": "0xffffffc0800b78ec",
+              "symbol": "handle_mm_fault+0x218"
+            },
+            {
+              "fp": "0xffffffc086bbbd20",
+              "lr": "0xffffffc0812b0cac",
+              "symbol": "do_page_fault+0x118"
+            },
+            {
+              "fp": "0xffffffc086bbbdb0",
+              "lr": "0xffffffc0812b0b78",
+              "symbol": "do_translation_fault+0x38"
+            },
+            {
+              "fp": "0xffffffc086bbbe10",
+              "lr": "0xffffffc0800bccf8",
+              "symbol": "do_mem_abort+0x54"
+            },
+            {
+              "fp": "0xffffffc086bbbe20",
+              "lr": "0xffffffc08129eb4c",
+              "symbol": "el0_da+0x54"
+            },
+            {
+              "fp": "0xffffffc086bbbe70",
+              "lr": "0xffffffc08129e954",
+              "symbol": "el0t_64_sync_handler+0x20"
+            },
+            {
+              "fp": "0xffffffc086bbbea0",
+              "lr": "0xffffffc080011e50",
+              "symbol": "el0t_64_sync+0x1bc"
+            },
+            {
+              "fp": "0xffffffc086bbbfe0",
+              "lr": "0x0",
+              "symbol": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

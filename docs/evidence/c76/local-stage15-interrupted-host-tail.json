@@ -1,0 +1,18 @@
+{
+  "schema": "reverseandroid-unpromoted-host-tail-v1",
+  "source_checkpoint_sha256": "81f2b78b4372185df7d8555fd58129c8c4b95b1235fa145126a3cc2089989262",
+  "source_instructions": 16000000000,
+  "last_reported_instructions": 16899000000,
+  "source_directory": "source-c77-9-ci",
+  "tail_directory": "c76-stage15",
+  "completed_process_outcome_present": false,
+  "completed_original_C46_boundary_present": false,
+  "tail_is_promotion_authority": false,
+  "guest_failure_not_inferred": true,
+  "cgroup_OOM_events_unchanged": {
+    "oom": 2,
+    "oom_kill": 1
+  },
+  "cause": "Unconfirmed host process/session interruption; original source remains fully preserved. Next trial streams host supervisor stderr while preserving the full log.",
+  "no_guest_changes_for_host_logging_trial": true
+}
