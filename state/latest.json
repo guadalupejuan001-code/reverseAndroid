@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "252448f4809218449ebbe57c566f189b0578abb36f6dc6f7bdb9b6bcd8123563",
-  "instructions": 59000000000,
+  "checkpoint_sha256": "7d958ef43b44b855cb5ae5cc4ff50cab52bcfe9c3d4d326e850586c0cbf7efea",
+  "instructions": 61000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -14,7 +14,7 @@
   ],
   "cycle": "C81",
   "epoch": "C76-lights-port",
-  "stage": 1,
+  "stage": 2,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
@@ -37,7 +37,7 @@
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c81-stage-1-artifacts.json",
+  "source_artifact_lock": "state/experiments/c81-stage-2-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
     "checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
@@ -47,15 +47,15 @@
     "historical_only_local_files_lost_after_container_reset": true
   },
   "last_durable_transport_source": {
-    "instructions": 59000000000,
-    "checkpoint_sha256": "252448f4809218449ebbe57c566f189b0578abb36f6dc6f7bdb9b6bcd8123563",
-    "source_artifact_lock": "state/experiments/c81-stage-1-artifacts.json"
+    "instructions": 61000000000,
+    "checkpoint_sha256": "7d958ef43b44b855cb5ae5cc4ff50cab52bcfe9c3d4d326e850586c0cbf7efea",
+    "source_artifact_lock": "state/experiments/c81-stage-2-artifacts.json"
   },
   "visual_review_result": "The authentic original C81stage1 frame at59B visibly renders the Android boot logo; usable UI and input response remain pending.",
   "visual_review_evidence": "docs/evidence/c81/stage1-frame-and-input-review.json",
   "active_continuation_run_id": 42169590905,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c81/stage1-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c81/stage2-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c81-plan.json",
@@ -76,5 +76,6 @@
     "instructions": 59000000000,
     "checkpoint_sha256": "fff0601e7e3f9c9da79893b2c847c33f775cc7db5ff1830732c026f754b86fd9",
     "promotion_authority": false
-  }
+  },
+  "ART_progress_evidence": "docs/evidence/c81/stage2-ART-progress.json"
 }
