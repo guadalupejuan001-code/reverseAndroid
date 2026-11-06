@@ -1,0 +1,40 @@
+{
+  "schema": "reverseandroid-verified-local-recovery-copy-release-v1",
+  "path": "/workspace/scratch/3d8a11a65aa6/investigation/c88-source/current.rvg",
+  "checkpoint_sha256": "5e8ddb757fee6cbc030230f2dfc532dfb2e08648c9e00f4020335f7b28ff109c",
+  "original_C87_run": 42247589579,
+  "preserved_complete_artifacts": [
+    {
+      "id": 13523690141,
+      "name": "reverseandroid-c87-5-metadata",
+      "digest": "sha256:39c5e637299d282b5f225272c6dc26b1a544b48fdf3e67da5bffe60f50e97ea3"
+    },
+    {
+      "id": 13523615153,
+      "name": "reverseandroid-c87-5-002",
+      "digest": "sha256:f550e10a8a9a1ee89cb6808d6649b9e995cb9f82f337937925d45cc7fe56bcb7"
+    },
+    {
+      "id": 13522777282,
+      "name": "reverseandroid-c87-5-001",
+      "digest": "sha256:f6caa92043b7b15c1e31eaf5b1de323cbebf3c3fc9de320f840c328d8c970c62"
+    },
+    {
+      "id": 13522492692,
+      "name": "reverseandroid-c87-5-003",
+      "digest": "sha256:50b22bbfacd02e8d4f35b8c8b49c32e619a2a18b08e705fd13416a8a0f722339"
+    },
+    {
+      "id": 13521878378,
+      "name": "reverseandroid-c87-5-000",
+      "digest": "sha256:1e6ce46e04228e7604527653fb5c828d4aea7b490182df8f2cda1d31e8d0897e"
+    }
+  ],
+  "current_trial_sources_retained": true,
+  "canonical_worker_files_modified": false,
+  "release_only_own_rehydrated_copy": true,
+  "original_bytes": 1996976804,
+  "allocated_bytes_released": 1996984320,
+  "local_recovery_copy_released": true,
+  "checked_at_UTC": "2026-11-06T18:04:05.569664+00:00"
+}

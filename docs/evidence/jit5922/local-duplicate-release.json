@@ -1,0 +1,93 @@
+{
+  "schema": "reverseandroid-verified-local-duplicate-release-v1",
+  "release_only_independently_reproduced_local_copies": true,
+  "latest_stage3_retained": true,
+  "canonical_C87_files_modified": false,
+  "checkpoints_retained_in_complete_original_CI_transports": true,
+  "releases": [
+    {
+      "stage": 1,
+      "path": "/workspace/scratch/3d8a11a65aa6/investigation/jit5922-native/stage-1/current.rvg",
+      "checkpoint_sha256": "a208f9c5879573bb68e5d95a5aba666ec3401b3dcbed95f269581832ff7eb3fd",
+      "CI_run": 42259037815,
+      "preserved_artifacts": [
+        {
+          "id": 13524990820,
+          "name": "reverseandroid-jit5922-control-1-000",
+          "digest": "sha256:7d63c99050699485977bd23b33e92a0c350e5a1e982331f90fd2e446a723c64f",
+          "expired": false
+        },
+        {
+          "id": 13524900933,
+          "name": "reverseandroid-jit5922-control-1-001",
+          "digest": "sha256:4ce1b79753cc28bcf2a8616da1e0b0b1c0dd0a79629091ce5b0a1e18d75511f6",
+          "expired": false
+        },
+        {
+          "id": 13524282347,
+          "name": "reverseandroid-jit5922-control-1-metadata",
+          "digest": "sha256:392a6bd2ed7fa8ff2fe8a055fcffb25179e422ffb2380b7bf94367fb51e74624",
+          "expired": false
+        },
+        {
+          "id": 13524197418,
+          "name": "reverseandroid-jit5922-control-1-002",
+          "digest": "sha256:624f665afcf371a2e53e37b4dde0a1439e75b18cae6f22aafd134804f63c9172",
+          "expired": false
+        },
+        {
+          "id": 13524102543,
+          "name": "reverseandroid-jit5922-control-1-003",
+          "digest": "sha256:9b960dd479cda75bf756e4d8d94a709199385e7dc73e880610486ed545427e49",
+          "expired": false
+        }
+      ],
+      "local_original_bytes": 1996154705,
+      "allocated_bytes_released": 1996161024,
+      "local_snapshot_copy_released": true
+    },
+    {
+      "stage": 2,
+      "path": "/workspace/scratch/3d8a11a65aa6/investigation/jit5922-native/stage-2/current.rvg",
+      "checkpoint_sha256": "7b358773528ecf8fb89c5236863a9f5f83d95e2059d629f7dfbc0b430cce65c6",
+      "CI_run": 42259037815,
+      "preserved_artifacts": [
+        {
+          "id": 13525426205,
+          "name": "reverseandroid-jit5922-control-2-002",
+          "digest": "sha256:381c3f1d45b30b4a10d0bd1b5e12cce5c6a551bca148c1e224fdf0953d862c6c",
+          "expired": false
+        },
+        {
+          "id": 13525351426,
+          "name": "reverseandroid-jit5922-control-2-001",
+          "digest": "sha256:744231587ac96eb27e7ce0dd9fd8f49a845d89bc684af6c2e93947ffb3b60396",
+          "expired": false
+        },
+        {
+          "id": 13525176698,
+          "name": "reverseandroid-jit5922-control-2-003",
+          "digest": "sha256:f1f72ea8262d321e7215baaee19c98bd9ca5dc7af459da12e56b89db22903cf4",
+          "expired": false
+        },
+        {
+          "id": 13524493042,
+          "name": "reverseandroid-jit5922-control-2-metadata",
+          "digest": "sha256:da2435585527a07cb5dcddd670e3095496ed3da3460fde11703f806565efbc00",
+          "expired": false
+        },
+        {
+          "id": 13524483231,
+          "name": "reverseandroid-jit5922-control-2-000",
+          "digest": "sha256:2c1c776f0ec6560d39cdbba4ccf4ea915c4c43e196eea5b769dafc11bc338dd2",
+          "expired": false
+        }
+      ],
+      "local_original_bytes": 1997187632,
+      "allocated_bytes_released": 1997193216,
+      "local_snapshot_copy_released": true
+    }
+  ],
+  "total_allocated_bytes_released": 3993354240,
+  "checked_at_UTC": "2026-11-06T17:42:52.832834+00:00"
+}

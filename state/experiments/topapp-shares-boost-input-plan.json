@@ -1,0 +1,10 @@
+{
+  "schema": "reverseandroid-authenticated-console-input-plan-v1",
+  "purpose": "diagnostic_console",
+  "source_checkpoint_sha256": "6134b364f97612b20233938e1aa22933a14ea2fcaf8ab7a340bf0c28d65e6567",
+  "source_instructions": 116647727998,
+  "input_file": "topapp-shares-boost-input.txt",
+  "input_sha256": "2b9028ef76fba483221e3138e13e8df722193e391d3e093a26acfb181263feff",
+  "input_bytes": 836,
+  "scope": "One explicitly modeled guarded Linux CPU cgroup shares trial from the fully admitted and successful JIT-only stage3. The guest verifies JIT identity, UID, nice0, actual CPU-controller membership and existing shares1024 before asking its own cgroup filesystem for shares16384. Restore1024 before any boot promotion; original C87 and JIT-only continuations remain references."
+}

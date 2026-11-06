@@ -1,0 +1,290 @@
+name: Isolated CPU group scheduling and original Android boot
+'on':
+  push:
+    branches:
+    - experiment/zygote-cfs-shares-20261106
+    paths:
+    - scripts/run-topapp-shares-control.py
+    - state/experiments/topapp-shares*
+    - .github/workflows/android-topapp-shares-control.yml
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-isolated-topapp-shares-control
+  cancel-in-progress: false
+jobs:
+  group-shares:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Verify original import and real-shell boost/restore guards
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 tests/jit5922_priority_control_test.py
+
+        python3 tests/topapp_shares_shell_test.py'
+    - name: Recover exact admitted JIT stage3, original native and immutable media
+      run: 'mkdir -p build
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/topapp-source state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/topapp-shares-artifacts.json
+
+        chmod +x build/reverseandroid/frame build/ic-native/epoch-clz-ic
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/topapp-shares-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/topapp-source
+        > build/topapp-source-preflight.json'
+    - name: 'Top-app stage 1: original bounded execution and guarded reversible group scheduling'
+      id: s1
+      if: success()
+      run: python3 scripts/run-topapp-shares-control.py 1 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 1: preserve every complete admitted checkpoint piece'
+      id: p1
+      if: always() && (steps.s1.outcome == 'success' || steps.s1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-1
+        transport_path: build/topapp-transport-1
+        artifact_prefix: reverseandroid-topapp-control-1
+    - name: 'Top-app stage 1: release earlier host copies after complete preservation'
+      if: success() && steps.s1.outcome == 'success' && steps.p1.outcome == 'success'
+      run: rm -rf build/topapp-source
+    - name: 'Top-app stage 2: original bounded execution and guarded reversible group scheduling'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.stop != 'true' && steps.p1.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 2 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 2: preserve every complete admitted checkpoint piece'
+      id: p2
+      if: always() && (steps.s2.outcome == 'success' || steps.s2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-2
+        transport_path: build/topapp-transport-2
+        artifact_prefix: reverseandroid-topapp-control-2
+    - name: 'Top-app stage 2: release earlier host copies after complete preservation'
+      if: success() && steps.s2.outcome == 'success' && steps.p2.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-1 build/topapp-transport-1
+    - name: 'Top-app stage 3: original bounded execution and guarded reversible group scheduling'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.stop != 'true' && steps.p2.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 3 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 3: preserve every complete admitted checkpoint piece'
+      id: p3
+      if: always() && (steps.s3.outcome == 'success' || steps.s3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-3
+        transport_path: build/topapp-transport-3
+        artifact_prefix: reverseandroid-topapp-control-3
+    - name: 'Top-app stage 3: release earlier host copies after complete preservation'
+      if: success() && steps.s3.outcome == 'success' && steps.p3.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-2 build/topapp-transport-2
+    - name: 'Top-app stage 4: original bounded execution and guarded reversible group scheduling'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.stop != 'true' && steps.p3.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 4 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 4: preserve every complete admitted checkpoint piece'
+      id: p4
+      if: always() && (steps.s4.outcome == 'success' || steps.s4.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-4
+        transport_path: build/topapp-transport-4
+        artifact_prefix: reverseandroid-topapp-control-4
+    - name: 'Top-app stage 4: release earlier host copies after complete preservation'
+      if: success() && steps.s4.outcome == 'success' && steps.p4.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-3 build/topapp-transport-3
+    - name: 'Top-app stage 5: original bounded execution and guarded reversible group scheduling'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.stop != 'true' && steps.p4.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 5 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 5: preserve every complete admitted checkpoint piece'
+      id: p5
+      if: always() && (steps.s5.outcome == 'success' || steps.s5.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-5
+        transport_path: build/topapp-transport-5
+        artifact_prefix: reverseandroid-topapp-control-5
+    - name: 'Top-app stage 5: release earlier host copies after complete preservation'
+      if: success() && steps.s5.outcome == 'success' && steps.p5.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-4 build/topapp-transport-4
+    - name: 'Top-app stage 6: original bounded execution and guarded reversible group scheduling'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.stop != 'true' && steps.p5.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 6 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 6: preserve every complete admitted checkpoint piece'
+      id: p6
+      if: always() && (steps.s6.outcome == 'success' || steps.s6.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-6
+        transport_path: build/topapp-transport-6
+        artifact_prefix: reverseandroid-topapp-control-6
+    - name: 'Top-app stage 6: release earlier host copies after complete preservation'
+      if: success() && steps.s6.outcome == 'success' && steps.p6.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-5 build/topapp-transport-5
+    - name: 'Top-app stage 7: original bounded execution and guarded reversible group scheduling'
+      id: s7
+      if: success() && steps.s6.outcome == 'success' && steps.s6.outputs.stop != 'true' && steps.p6.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 7 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 7: preserve every complete admitted checkpoint piece'
+      id: p7
+      if: always() && (steps.s7.outcome == 'success' || steps.s7.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-7
+        transport_path: build/topapp-transport-7
+        artifact_prefix: reverseandroid-topapp-control-7
+    - name: 'Top-app stage 7: release earlier host copies after complete preservation'
+      if: success() && steps.s7.outcome == 'success' && steps.p7.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-6 build/topapp-transport-6
+    - name: 'Top-app stage 8: original bounded execution and guarded reversible group scheduling'
+      id: s8
+      if: success() && steps.s7.outcome == 'success' && steps.s7.outputs.stop != 'true' && steps.p7.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 8 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 8: preserve every complete admitted checkpoint piece'
+      id: p8
+      if: always() && (steps.s8.outcome == 'success' || steps.s8.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-8
+        transport_path: build/topapp-transport-8
+        artifact_prefix: reverseandroid-topapp-control-8
+    - name: 'Top-app stage 8: release earlier host copies after complete preservation'
+      if: success() && steps.s8.outcome == 'success' && steps.p8.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-7 build/topapp-transport-7
+    - name: 'Top-app stage 9: original bounded execution and guarded reversible group scheduling'
+      id: s9
+      if: success() && steps.s8.outcome == 'success' && steps.s8.outputs.stop != 'true' && steps.p8.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 9 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 9: preserve every complete admitted checkpoint piece'
+      id: p9
+      if: always() && (steps.s9.outcome == 'success' || steps.s9.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-9
+        transport_path: build/topapp-transport-9
+        artifact_prefix: reverseandroid-topapp-control-9
+    - name: 'Top-app stage 9: release earlier host copies after complete preservation'
+      if: success() && steps.s9.outcome == 'success' && steps.p9.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-8 build/topapp-transport-8
+    - name: 'Top-app stage 10: original bounded execution and guarded reversible group scheduling'
+      id: s10
+      if: success() && steps.s9.outcome == 'success' && steps.s9.outputs.stop != 'true' && steps.p9.outcome == 'success'
+      run: python3 scripts/run-topapp-shares-control.py 10 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 10: preserve every complete admitted checkpoint piece'
+      id: p10
+      if: always() && (steps.s10.outcome == 'success' || steps.s10.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-10
+        transport_path: build/topapp-transport-10
+        artifact_prefix: reverseandroid-topapp-control-10
+    - name: 'Top-app stage 10: release earlier host copies after complete preservation'
+      if: success() && steps.s10.outcome == 'success' && steps.p10.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-9 build/topapp-transport-9
+    - name: 'Top-app stage 11: original bounded execution and guarded reversible group scheduling'
+      id: s11
+      if: success() && steps.s10.outcome == 'success' && steps.s10.outputs.stop != 'true' && steps.p10.outcome ==
+        'success'
+      run: python3 scripts/run-topapp-shares-control.py 11 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 11: preserve every complete admitted checkpoint piece'
+      id: p11
+      if: always() && (steps.s11.outcome == 'success' || steps.s11.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-11
+        transport_path: build/topapp-transport-11
+        artifact_prefix: reverseandroid-topapp-control-11
+    - name: 'Top-app stage 11: release earlier host copies after complete preservation'
+      if: success() && steps.s11.outcome == 'success' && steps.p11.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-10 build/topapp-transport-10
+    - name: 'Top-app stage 12: original bounded execution and guarded reversible group scheduling'
+      id: s12
+      if: success() && steps.s11.outcome == 'success' && steps.s11.outputs.stop != 'true' && steps.p11.outcome ==
+        'success'
+      run: python3 scripts/run-topapp-shares-control.py 12 --runtime-root . --source build/topapp-source --output-root
+        evidence/topapp --commit "$GITHUB_SHA"
+    - name: 'Top-app stage 12: preserve every complete admitted checkpoint piece'
+      id: p12
+      if: always() && (steps.s12.outcome == 'success' || steps.s12.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/topapp/stage-12
+        transport_path: build/topapp-transport-12
+        artifact_prefix: reverseandroid-topapp-control-12
+    - name: 'Top-app stage 12: release earlier host copies after complete preservation'
+      if: success() && steps.s12.outcome == 'success' && steps.p12.outcome == 'success'
+      run: rm -rf evidence/topapp/stage-11 build/topapp-transport-11
+    - name: Require original completed boot, actual peripheral links and restored normal group shares
+      if: always()
+      run: 'python3 - <<''PYRESULT''
+
+        import json,pathlib
+
+        p=pathlib.Path(''evidence/topapp/reports/control-state.json'')
+
+        assert p.exists(),''No newly admitted group-control boundary; see preserved diagnostics''
+
+        s=json.loads(p.read_text())
+
+        result={k:s[k] for k in [''checkpoint_sha256'',''instructions'',''boost_reply'',''restore_reply'',''actual_boosted_group_verified'',''actual_original_shares_restored'',''original_system_server_alive'',''original_boot_completed'',''live_peripherals_verified'',''usable_UI_response_verified'',''failed'',''complete'']}
+
+        pathlib.Path(''evidence/topapp/reports/final-outcome.json'').write_text(json.dumps(result,indent=2)+''\n'')
+
+        print(json.dumps(result,indent=2))
+
+        assert not s[''failed''],''Guarded guest shares request failed; admitted state retained''
+
+        assert s[''complete''],''Original completed boot with original shares restored remains incomplete; admitted
+        state retained''
+
+        PYRESULT'
+    - name: Preserve source guards, complete console and actual group-control outcome
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-topapp-control-reports
+        path: 'evidence/topapp/reports
+
+          state/experiments/topapp-shares*
+
+          build/topapp-source-preflight.json'
+        retention-days: 90
+        if-no-files-found: warn
