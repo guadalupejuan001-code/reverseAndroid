@@ -6,6 +6,8 @@ read=lambda p:json.loads(p.read_text())
 digest=lambda p:hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
 plan=read(root/'state/experiments/c89-readonly-progress.json')
 assert plan['guest_execution'] is False and plan['new_UART_input'] is False
+assert digest(root/'tools/reverseandroid-debuggerd-context.mjs')==plan['debuggerd_candidate_module_SHA256']
+assert plan['read_only_debuggerd_context_PID']==plan['system_server_PID']
 assert re.fullmatch(r'[0-9a-f]{64}',plan['source_checkpoint_sha256'])
 assert type(plan['source_stage']) is int and 1<=plan['source_stage']<=16
 assert re.fullmatch(r'state/experiments/c89-stage-[1-9][0-9]?-artifacts.json',plan['source_artifact_lock'])
@@ -47,11 +49,13 @@ elif sys.argv[1:] == ['--report']:
         assert leader['tgid']==leader['pid'] and leader['name']=='system_server' and leader['exit_state']==0
         assert leader['scheduling']['credentials']['uid']=='1000' and leader['scheduling']['credentials']['euid']=='1000'
         assert leader['signals']['real_parent']['pid']==plan['zygote_PID']
+    candidate=leader.get('saved_user_frame',{}).get('debuggerd_signal_candidate')
+    candidate_unverified=leader.get('saved_user_frame',{}).get('debuggerd_signal_candidate_unverified')
     children=[]
     for group in groups:
         leader=next((t for t in group.get('threads',[]) if t['pid']==group['pid']),None)
         if leader and leader.get('signals',{}).get('real_parent',{}).get('pid')==parent['pid']:children.append(group)
-    summary=dict(schema='reverseandroid-original-readonly-current-startup-v1',source_checkpoint_sha256=c['checkpoint_sha256'],instructions=c['instructions'],source_native_execution_commit=(source/'source-commit.txt').read_text().strip(),diagnostic_execution_commit=os.environ['GITHUB_SHA'],source_original_C46_gate=g,whole_original_transport_and_epoch_preflight_verified=True,original_RVG_SHA256_reverified_after_diagnostic=True,guest_instructions_executed_by_diagnostic=0,new_guest_UART_bytes=0,kernel_BTF_layout_verified=True,original_observer_file_unchanged=True,SELinux_enforcing=True,main_zygote=main,target_JIT=target,zygote_group=parent,actual_SystemServer_group=system_server,actual_observed_direct_children=children,all_observed_zygote_or_system_server_groups=[x for x in groups if x['name'] in ['main','zygote64','system_server']],usable_UI_or_response_claimed=False)
+    summary=dict(schema='reverseandroid-original-readonly-current-startup-v1',source_checkpoint_sha256=c['checkpoint_sha256'],instructions=c['instructions'],source_native_execution_commit=(source/'source-commit.txt').read_text().strip(),diagnostic_execution_commit=os.environ['GITHUB_SHA'],source_original_C46_gate=g,whole_original_transport_and_epoch_preflight_verified=True,original_RVG_SHA256_reverified_after_diagnostic=True,guest_instructions_executed_by_diagnostic=0,new_guest_UART_bytes=0,kernel_BTF_layout_verified=True,original_observer_file_unchanged=True,SELinux_enforcing=True,main_zygote=main,target_JIT=target,zygote_group=parent,actual_SystemServer_group=system_server,actual_main_debuggerd_signal_candidate=candidate,actual_main_debuggerd_signal_candidate_unverified=candidate_unverified,actual_observed_direct_children=children,all_observed_zygote_or_system_server_groups=[x for x in groups if x['name'] in ['main','zygote64','system_server']],usable_UI_or_response_claimed=False)
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
     print(json.dumps(dict(instructions=c['instructions'],read_only=True,main_state=main['state'],main_static_priority=main['priority'],source_boot_completed=g['android_boot_completed_verified'])))
 else:raise SystemExit('Expected --prepare or --report')

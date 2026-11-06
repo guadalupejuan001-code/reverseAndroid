@@ -8,6 +8,7 @@ import {enumerateMapleVmas,mountedFilePath,userMemoryReader} from './android_liv
 import {memoryElfSymbols} from './reverseandroid-elf-symbols.mjs';
 import {inspectTaskScheduling} from './reverseandroid-scheduler-group.mjs';
 import {inspectTaskSignals} from './reverseandroid-task-signals.mjs';
+import {readDebuggerdSignalCandidate} from './reverseandroid-debuggerd-context.mjs';
 
 const hx=x=>'0x'+x.toString(16), kernelPointer=x=>x>=0xffff000000000000n;
 export function enumerateThreadPointers({leader,read,task,signal}) {
@@ -109,6 +110,9 @@ function inspectThreads(api,options={}) {
               const raw=pt.orig_x0?read(at+BigInt(pt.orig_x0.offset)):regs[0];
               const address=(m(11)&(1n<<37n))?raw&0x00ffffffffffffffn:raw;
               saved.futex={raw_tagged_address:hx(raw),address:hx(address),TBI0_enabled:Boolean(m(11)&(1n<<37n)),operation:Number(regs[1]),expected:Number(regs[2]&0xffffffffn),observed:memory.read(address,4).readUInt32LE(0),mapping:mapping(address)};
+              if(options.debuggerdContextPID===item.pid)try{
+                saved.debuggerd_signal_candidate=readDebuggerdSignalCandidate({memory,futexAddress:address,leaderPid:item.pid,observedChildTid:saved.futex.observed,mapping});
+              }catch(e){saved.debuggerd_signal_candidate_unverified=e.message;}
             }catch(e){saved.futex_read_error=e.message;}
             try{saved.pc_code_le_hex=memory.read(userPc,64).toString('hex');}catch(e){saved.pc_code_read_error=e.message;}
             candidates.push(saved);
@@ -169,7 +173,9 @@ export async function probeThreads(path,sha,options={}) {
     observer_source_git_blob_sha1:blob,original_observer_file_unchanged:true,original_CPU_and_codecs_unchanged:true};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
-  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>['--all-scheduling','--diagnostic-processes'].includes(x)));
-  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling'),diagnosticProcesses:flags.includes('--diagnostic-processes')});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>['--all-scheduling','--diagnostic-processes'].includes(x)||/^--debuggerd-context-pid=[1-9][0-9]{0,6}$/.test(x)));
+  const candidateFlags=flags.filter(x=>x.startsWith('--debuggerd-context-pid='));assert.ok(candidateFlags.length<=1);
+  const debuggerdContextPID=candidateFlags.length?Number(candidateFlags[0].split('=')[1]):null;
+  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling'),diagnosticProcesses:flags.includes('--diagnostic-processes'),debuggerdContextPID});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
   console.log(JSON.stringify({instructions:result.instructions,groups:result.groups.map(x=>({pid:x.pid,name:x.name,thread_count:x.thread_count,error:x.error})),input_unchanged:true}));
 }
