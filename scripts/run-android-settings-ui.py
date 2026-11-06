@@ -64,12 +64,15 @@ def main():
     if args.stage==1:
         assert not state_file.exists(), 'UI launch may be issued only once'
         source=args.source.resolve(); before=read(source/'checkpoint-frame.json'); gate=read(source/'c46-progress.json')
-        control=read(source/'topapp-control-proof.json')
+        proof_file=pin['control_proof_file']
+        assert proof_file in ['topapp-control-proof.json','foreground-control-proof.json']
+        control=read(source/proof_file)
         assert control['complete'] and control['actual_original_shares_restored'] and control['restore_reply']['success']
         assert boot_complete(True,control['live_peripherals_verified'],gate)
         assert digest(source/'current.rvg') == pin['checkpoint_sha256'] == gate['checkpoint_sha256']
         assert gate['instructions'] == pin['instructions']
-        assert digest(source/'topapp-control-proof.json') == pin['control_proof_SHA256']
+        assert control['checkpoint_sha256'] == pin['checkpoint_sha256'] and control['instructions'] == pin['instructions']
+        assert digest(source/proof_file) == pin['control_proof_SHA256']
         assert digest(source/'console-all.bin') == pin['console_SHA256'] == control['combined_console_SHA256']
         assert before['ppm_sha256'] == pin['before_frame_ppm_SHA256'] == digest(source/'checkpoint-frame.ppm')
         assert before['source_checkpoint_sha256'] == pin['checkpoint_sha256']
@@ -131,8 +134,9 @@ def main():
               if y['credentials']['uid']=='0' and ('--zygote' in y['argv'] or y['argv']==['zygote64']))]
     frame=read(output/'checkpoint-frame.json')
     assert frame['source_checkpoint_sha256']==gate['checkpoint_sha256'] and digest(output/'checkpoint-frame.ppm')==frame['ppm_sha256']
-    candidate=(reply['success'] and len(settings)==len(ss)==1 and boot_complete(True,live,gate)
-               and security['selinux_enforcing'] and security['policy_present']
+    candidate=(reply['success'] and len(settings)==len(ss)==1 and ss[0]['pid']==pin['system_server_PID']
+               and boot_complete(True,live,gate) and security['btf_layout_verified']
+               and security['selinux_initialized'] and security['selinux_enforcing'] and security['policy_present']
                and frame['ppm_sha256']!=state['before_frame_ppm_SHA256'])
     stable=bool(candidate and state['candidate_PID']==settings[0]['pid'] and state['candidate_system_server_PID']==ss[0]['pid'])
     state.update(source=str(output),last_stage=args.stage,checkpoint_sha256=gate['checkpoint_sha256'],instructions=gate['instructions'],
