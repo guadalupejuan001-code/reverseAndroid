@@ -1,0 +1,282 @@
+name: C89 isolated actual Android ANR and SystemServer log read
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c89-isolated-anr-read.yml
+    - state/experiments/c89-anr-read.json
+    - state/experiments/c89-anr-read-artifacts.json
+    - state/experiments/c89-anr-read-input-plan.json
+    - state/experiments/c89-anr-read-input.txt
+    - state/experiments/c89-anr-read-source-console.gz.b64
+    - scripts/c89_isolated_anr_read.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c89-isolated-anr-read
+  cancel-in-progress: false
+jobs:
+  c89-anr-read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate the exact original C89stage4 source for an isolated read-only trace query
+      run: 'mkdir -p build evidence/c89-anr-read-reports
+
+        python3 scripts/verify-reverseandroid-import.py
+
+        python3 tests/c89_isolated_anr_read_test.py
+
+        python3 tests/c88_jit_priority_control_test.py
+
+        python3 tests/c85_peripheral_completion_test.py
+
+        python3 tests/reverseandroid_workflow_phase_guard_test.py
+
+        node --test tests/reverseandroid_console_proof.test.mjs tests/reverseandroid_epoch_input.test.mjs tests/reverseandroid_campaign_input.test.mjs
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py ic-hardware build/ic-hardware state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c89-anr-read state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c89-anr-read-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        chmod +x build/ic-native/epoch-clz-ic build/reverseandroid/frame
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-c89-anr-read > evidence/c89-anr-read-reports/source-original-admission.json
+
+        python3 scripts/c89_isolated_anr_read.py --prepare
+
+        '
+    - id: r1
+      if: success()
+      name: 'Isolated read stage 1: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 1
+
+        '
+    - id: p1
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure') && hashFiles('evidence/c89-anr-read-1/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 1: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-1
+        checkpoint_path: evidence/c89-anr-read-1
+        transport_path: build/c89-anr-read-transport-1
+    - if: success() && steps.r1.outcome == 'success' && steps.p1.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 1: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf build/source-c89-anr-read
+
+        '
+    - id: r2
+      if: success() && steps.r1.outcome == 'success' && steps.p1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+      name: 'Isolated read stage 2: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 2
+
+        '
+    - id: p2
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure') && hashFiles('evidence/c89-anr-read-2/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 2: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-2
+        checkpoint_path: evidence/c89-anr-read-2
+        transport_path: build/c89-anr-read-transport-2
+    - if: success() && steps.r2.outcome == 'success' && steps.p2.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 2: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf evidence/c89-anr-read-1 build/c89-anr-read-transport-1
+
+        '
+    - id: r3
+      if: success() && steps.r2.outcome == 'success' && steps.p2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+      name: 'Isolated read stage 3: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 3
+
+        '
+    - id: p3
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure') && hashFiles('evidence/c89-anr-read-3/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 3: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-3
+        checkpoint_path: evidence/c89-anr-read-3
+        transport_path: build/c89-anr-read-transport-3
+    - if: success() && steps.r3.outcome == 'success' && steps.p3.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 3: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf evidence/c89-anr-read-2 build/c89-anr-read-transport-2
+
+        '
+    - id: r4
+      if: success() && steps.r3.outcome == 'success' && steps.p3.outcome == 'success' && steps.r3.outputs.complete != 'true'
+      name: 'Isolated read stage 4: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 4
+
+        '
+    - id: p4
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure') && hashFiles('evidence/c89-anr-read-4/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 4: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-4
+        checkpoint_path: evidence/c89-anr-read-4
+        transport_path: build/c89-anr-read-transport-4
+    - if: success() && steps.r4.outcome == 'success' && steps.p4.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 4: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf evidence/c89-anr-read-3 build/c89-anr-read-transport-3
+
+        '
+    - id: r5
+      if: success() && steps.r4.outcome == 'success' && steps.p4.outcome == 'success' && steps.r4.outputs.complete != 'true'
+      name: 'Isolated read stage 5: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 5
+
+        '
+    - id: p5
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure') && hashFiles('evidence/c89-anr-read-5/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 5: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-5
+        checkpoint_path: evidence/c89-anr-read-5
+        transport_path: build/c89-anr-read-transport-5
+    - if: success() && steps.r5.outcome == 'success' && steps.p5.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 5: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf evidence/c89-anr-read-4 build/c89-anr-read-transport-4
+
+        '
+    - id: r6
+      if: success() && steps.r5.outcome == 'success' && steps.p5.outcome == 'success' && steps.r5.outputs.complete != 'true'
+      name: 'Isolated read stage 6: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 6
+
+        '
+    - id: p6
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure') && hashFiles('evidence/c89-anr-read-6/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 6: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-6
+        checkpoint_path: evidence/c89-anr-read-6
+        transport_path: build/c89-anr-read-transport-6
+    - if: success() && steps.r6.outcome == 'success' && steps.p6.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 6: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf evidence/c89-anr-read-5 build/c89-anr-read-transport-5
+
+        '
+    - id: r7
+      if: success() && steps.r6.outcome == 'success' && steps.p6.outcome == 'success' && steps.r6.outputs.complete != 'true'
+      name: 'Isolated read stage 7: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 7
+
+        '
+    - id: p7
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure') && hashFiles('evidence/c89-anr-read-7/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 7: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-7
+        checkpoint_path: evidence/c89-anr-read-7
+        transport_path: build/c89-anr-read-transport-7
+    - if: success() && steps.r7.outcome == 'success' && steps.p7.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 7: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf evidence/c89-anr-read-6 build/c89-anr-read-transport-6
+
+        '
+    - id: r8
+      if: success() && steps.r7.outcome == 'success' && steps.p7.outcome == 'success' && steps.r7.outputs.complete != 'true'
+      name: 'Isolated read stage 8: one input in stage1, zero new UART later'
+      run: 'python3 scripts/c89_isolated_anr_read.py 8
+
+        '
+    - id: p8
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure') && hashFiles('evidence/c89-anr-read-8/c46-progress.json')
+        != ''
+      name: 'Isolated ANR read bounded continuation stage 8: preserve every complete original checkpoint piece'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        artifact_prefix: reverseandroid-c89-anr-read-8
+        checkpoint_path: evidence/c89-anr-read-8
+        transport_path: build/c89-anr-read-transport-8
+    - if: success() && steps.r8.outcome == 'success' && steps.p8.outcome == 'success'
+      name: 'Isolated ANR read bounded continuation stage 8: release only earlier host duplicates after complete preservation'
+      run: 'rm -rf evidence/c89-anr-read-7 build/c89-anr-read-transport-7
+
+        '
+    - name: Require the actual completed trace-read reply, without claiming emulator completion
+      if: success()
+      run: 'python3 - <<''PYDONE''
+
+        import json,pathlib
+
+        s=json.loads(pathlib.Path(''evidence/c89-anr-read-reports/control-state.json'').read_text())
+
+        assert s[''completed_read_query''] and not s[''failed'']
+
+        assert len(s[''isolated_new_events''])==1 and s[''primary_or_promotion_authority''] is False
+
+        assert s[''emulator_completion_claimed''] is False
+
+        print(''Read-only isolated query completed; actual content still requires review. This is not boot or UI completion.'')
+
+        PYDONE
+
+        '
+    - if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        if-no-files-found: error
+        name: reverseandroid-c89-anr-read-evidence
+        path: 'evidence/c89-anr-read-reports
+
+          evidence/c89-anr-read-*/*.json
+
+          evidence/c89-anr-read-*/*.log
+
+          evidence/c89-anr-read-*/*.txt
+
+  
+          state/experiments/c89-anr-read-artifacts.json
+
+          build/ic-native/*.json
+
+          build/ic-hardware/*.json
+
+          state/experiments/c89-anr-read.json
+
+          state/experiments/c89-anr-read-input-plan.json
+
+          state/experiments/c89-anr-read-input.txt
+
+          '
+        retention-days: 90

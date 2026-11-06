@@ -1,0 +1,115 @@
+{
+  "schema": "reverseandroid-isolated-ANR-read-plan-v1",
+  "source_stage": 4,
+  "source_checkpoint_sha256": "92a25368bc67fb204b74780abb4343210bd13b27eea993e360a29370ac623e11",
+  "source_instructions": 143147727998,
+  "source_execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
+  "source_original_artifact_lock": "state/experiments/c89-stage-4-artifacts.json",
+  "artifact_lock": "state/experiments/c89-anr-read-artifacts.json",
+  "source_proof_SHA256": "efcaafd6344c18c9a940a67fbca6b7be4fe7697a1ffb4f1c25d75e94311923fc",
+  "inherited_source_events": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    },
+    {
+      "phase": 2,
+      "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 87047727998,
+        "counter_subtick": 26,
+        "bytes": 2837,
+        "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+      }
+    },
+    {
+      "phase": 3,
+      "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 89547727998,
+        "counter_subtick": 26,
+        "bytes": 2103,
+        "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+      }
+    },
+    {
+      "phase": 4,
+      "input_plan": "evidence/c84-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 92547727998,
+        "counter_subtick": 26,
+        "bytes": 2097,
+        "sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7"
+      }
+    },
+    {
+      "phase": 5,
+      "input_plan": "evidence/c86-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 101647727998,
+        "counter_subtick": 26,
+        "bytes": 1000,
+        "sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096"
+      }
+    },
+    {
+      "phase": 6,
+      "input_plan": "evidence/c86-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 104147727998,
+        "counter_subtick": 26,
+        "bytes": 932,
+        "sha256": "8d47dc63c80f12d0eab0e866355225e82bc6a842aeef9a8086d1e5b6da1d86e3"
+      }
+    },
+    {
+      "phase": 7,
+      "input_plan": "evidence/c88-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 123147727998,
+        "counter_subtick": 26,
+        "bytes": 596,
+        "sha256": "70523e6019776b099cb44df08db7042b9cb46fcd154b7b6ac7af4c342369a1e5"
+      }
+    }
+  ],
+  "kernel_SHA256": "f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8",
+  "expected_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "input_plan_file": "state/experiments/c89-anr-read-input-plan.json",
+  "input_bytes": 515,
+  "input_sha256": "75881919d7c60daa1e29018444cdcdb8d7e5fb735d5e0e4cc609dfb5880862a7",
+  "source_console_file": "state/experiments/c89-anr-read-source-console.gz.b64",
+  "source_console_base64_SHA256": "c2c8202a1df3281340ab77864c64fd775d578e2efc62b1436b70562e3684a18c",
+  "source_console_gzip_SHA256": "fa14fe5d0e183fa7362a98074ee23529881c0a1b309f2bb0de1c9cec7f8d8ccc",
+  "source_console_SHA256": "7cf8ba7e7032ef16224731d5f3a9487bb9565d69389a66f94a97bdee2dd6e34e",
+  "source_console_bytes": 3281376,
+  "max_stages": 8,
+  "instruction_budget": 500000000,
+  "host_wall_ms": 900000,
+  "primary_or_promotion_authority": false,
+  "goal": "Read existing actual Android diagnostic output to locate the boot wait. Completion means only a completed read-only console query; it never means emulator boot/UI success."
+}

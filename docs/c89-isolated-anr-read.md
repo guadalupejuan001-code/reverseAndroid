@@ -1,0 +1,9 @@
+# Isolated existing Android trace read
+
+The primary C89 continuation remains unchanged and submits zero new UART bytes. This separate control reads its fully admitted stage4 at `143147727998` instructions, checkpoint `92a25368bc67fb204b74780abb4343210bd13b27eea993e360a29370ac623e11`. It is never primary or promotion authority.
+
+One explicitly authenticated 515-byte console request, SHA-256 `75881919d7c60daa1e29018444cdcdb8d7e5fb735d5e0e4cc609dfb5880862a7`, lists `/data/anr`, reads at most131072 bytes from one existing trace, and reads at most100 SystemServer7354 logcat records with a65536-byte output cap. It changes no file, property, scheduler setting, kernel, memory image or emulator device. The request is delivered only in control stage1; all later stages use literal `-` for no input. The eight primary input events are preserved as inherited evidence and never replayed.
+
+Every control boundary retains full original epoch admission, RVG digest and roundtrip, kernel and enforcing-policy observations, exact parent binding and clean host process completion. All full transport pieces must be preserved before another stage runs or earlier host duplicates are removed. Eight bounded stages may advance at most500 million instructions each; the already validated native binary, original codecs, disk, RAM and counter cadence are preserved.
+
+Only actual ordered `REVERSE_ANR_READ_BEGIN` and `REVERSE_ANR_READ_END RC_0` response lines complete this read query. Shell echoes, partial output, duplicate replies and nonzero results cannot pass. A completed query can return no trace or log record; its actual contents require review. Neither completion of this read nor any state in this isolated branch establishes primary Android boot or UI success.

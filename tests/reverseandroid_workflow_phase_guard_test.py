@@ -10,7 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 def enabled(expression, outcomes, outputs, successful=True):
     value = expression.replace('success()', repr(successful))
     value = re.sub(r"steps\.([rp][0-9]+)\.outcome", lambda m: repr(outcomes.get(m[1], 'skipped')), value)
-    value = re.sub(r"steps\.(r[0-9]+)\.outputs\.complete", lambda m: repr(outputs.get(m[1], '')), value)
+    value = re.sub(r"steps\.(r[0-9]+)\.outputs\.(?:complete|ready)", lambda m: repr(outputs.get(m[1], '')), value)
     assert 'steps.' not in value
     return bool(eval(value.replace('&&', 'and').replace('||', 'or'), {'__builtins__': {}}, {}))
 
@@ -36,7 +36,7 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
     def test_generated_workflows_keep_the_GitHub_on_trigger(self):
         # PyYAML's default YAML 1.1 loader treats an unquoted on key as True.
         # BaseLoader checks the actual emitted key, including valid unquoted on.
-        for name in ['android-c89-zero-input-continuation.yml','android-c88-jit-priority.yml','android-c87-bounded-continuation.yml','retire-replaced-android-reference-runs.yml']:
+        for name in ['android-real-ui-response.yml','android-c89-isolated-anr-read.yml','android-c89-zero-input-continuation.yml','android-c88-jit-priority.yml','android-c87-bounded-continuation.yml','retire-replaced-android-reference-runs.yml']:
             path=ROOT/'.github/workflows'/name
             if not path.exists():continue
             with self.subTest(workflow=name):
@@ -46,7 +46,7 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
 
     def workflows(self):
         paths = [ROOT / '.github/workflows/android-c81-systemserver-diagnostic.yml']
-        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml', 'android-c87-bounded-continuation.yml', 'android-c88-jit-priority.yml', 'android-c89-zero-input-continuation.yml']:
+        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml', 'android-c87-bounded-continuation.yml', 'android-c88-jit-priority.yml', 'android-c89-zero-input-continuation.yml', 'android-c89-isolated-anr-read.yml', 'android-real-ui-response.yml']:
             candidate = ROOT / '.github/workflows' / name
             if candidate.exists():
                 paths.append(candidate)
@@ -67,7 +67,7 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
         self.assertIn('r5', run_graph(broken, 3))
 
     def test_preserves_the_actual_stage_before_advancing_or_releasing(self):
-        for cycle,name in [(86,'android-c86-cleanup-priority.yml'),(87,'android-c87-bounded-continuation.yml'),(88,'android-c88-jit-priority.yml'),(89,'android-c89-zero-input-continuation.yml')]:
+        for prefix,label,name in [('c86','C86','android-c86-cleanup-priority.yml'),('c87','C87','android-c87-bounded-continuation.yml'),('c88','C88','android-c88-jit-priority.yml'),('c89','C89','android-c89-zero-input-continuation.yml'),('c89-anr-read','Isolated ANR read','android-c89-isolated-anr-read.yml'),('ui-response','UI response','android-real-ui-response.yml')]:
             path=ROOT/'.github/workflows'/name
             if not path.exists():continue
             steps=next(iter(yaml.safe_load(path.read_text())['jobs'].values()))['steps']
@@ -75,12 +75,12 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
             runs=[s for s in steps if re.fullmatch(r'r[0-9]+',s.get('id',''))]
             self.assertEqual(len(preserves),len(runs))
             for n,step in enumerate(preserves,1):
-                with self.subTest(cycle=cycle,stage=n):
+                with self.subTest(cycle=prefix,stage=n):
                     self.assertEqual(step['id'],f'p{n}')
                     source=step['with']['checkpoint_path']
-                    self.assertEqual(source,f'evidence/c{cycle}-{n}')
+                    self.assertEqual(source,f'evidence/{prefix}-{n}')
                     self.assertIn(f"hashFiles('{source}/c46-progress.json')",step['if'])
-                    release=next(s for s in steps if s.get('name','').startswith(f'C{cycle} ') and f' stage {n}: release ' in s.get('name',''))
+                    release=next(s for s in steps if s.get('name','').startswith(f'{label} ') and f' stage {n}: release ' in s.get('name',''))
                     self.assertIn(f"steps.p{n}.outcome == 'success'",release['if'])
                     self.assertEqual(run_graph(runs,len(runs)+1,skipped_preservation=n),[f'r{i}' for i in range(1,n+1)])
 
