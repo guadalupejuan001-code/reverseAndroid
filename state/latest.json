@@ -95,7 +95,7 @@
   "SystemServer_diagnostic_plan": "state/experiments/c81-systemserver-diagnostic-plan.json",
   "SystemServer_resumed_after_diagnostic_without_new_primary_input": true,
   "isolated_SystemServer_log_read_run_id": 42190629945,
-  "canonical_fork_pending_first_admission": null,
+  "canonical_fork_pending_first_admission": "C83",
   "C81_is_reference_after_C82_fork": true,
   "planned_peripheral_input_events": 5,
   "selected_canonical_continuation": "C82",
@@ -108,5 +108,15 @@
   "current_primary_peer_ready_verified": false,
   "new_hardware_power_cycle_in_C82": false,
   "failed_native_blocker_evidence": "docs/evidence/c82/stage4-actual-CLZ-blocker.json",
-  "new_ISA_extension_status": "Explicit CLZ candidate tested locally; not yet canonical execution."
+  "new_ISA_extension_status": "CLZ validated against real AArch64 hardware and executed in authentic Android with unchanged image/XI/Ether/effective memory. Independent C83 continuation prepared from original85B; no input replay.",
+  "CLZ_retirement_evidence": "docs/evidence/c83/actual-Android-CLZ-retirement.json",
+  "CLZ_hardware_validation_evidence": "docs/evidence/c83/authenticated-hardware-validation.json",
+  "local_CLZ_validation_candidate": {
+    "source": "/workspace/scratch/bf4ce496066e/emulator-local-recovery/c83-after-one-CLZ",
+    "instructions": 85047727998,
+    "checkpoint_sha256": "d4ca99f595a326dce6ef4b789497ea32aca17faf257a18dd80450cf49eb64098",
+    "native_SHA256": "49ac5fcc19add1f11be3622bcb59306601d4bd89d488785313fb7b37fa5f362e",
+    "new_input_events": 0,
+    "boot_completed": false
+  }
 }

@@ -1,0 +1,53 @@
+{
+  "schema": "reverseandroid-independent-CLZ-hardware-validation-v1",
+  "run_id": 42201487497,
+  "execution_commit": "c7c0d28e53db4bf643f78c5eabe5a452cdc00e48",
+  "both_actual_jobs_succeeded": true,
+  "AArch64_job": 127837579226,
+  "x86_job": 127837579483,
+  "all_artifact_ZIP_SHA256_CRC_safe_paths_and_execution_commit_verified": true,
+  "artifacts": [
+    {
+      "label": "arm",
+      "id": 13494223008,
+      "ZIP_SHA256": "b51dcb818fdf9e24ad648f25b4e94a45a005c2c8de9aed28b305b9eadbb7a9b6",
+      "actual_tests": {
+        "CLZ_cases": 30887,
+        "checks": 1143036,
+        "real_AArch64_hardware_cases": 30887,
+        "mathematical_oracle": true,
+        "all_six_forms": true,
+        "all_register_pairs": true,
+        "exhaustive_B_H_values": true,
+        "FP_traps_and_reserved_rejection": true
+      }
+    },
+    {
+      "label": "x86",
+      "id": 13493933626,
+      "ZIP_SHA256": "999abf2fb3a30d17586738480a9a14aaa56601fface8e9ba23876d6ae6b2a395",
+      "actual_tests": {
+        "CLZ_cases": 30887,
+        "checks": 1112149,
+        "real_AArch64_hardware_cases": 0,
+        "mathematical_oracle": true,
+        "all_six_forms": true,
+        "all_register_pairs": true,
+        "exhaustive_B_H_values": true,
+        "FP_traps_and_reserved_rejection": true
+      }
+    }
+  ],
+  "first_AArch64_attempt": {
+    "run_id": 42201328911,
+    "job_id": 127837046873,
+    "result": "Compile failed before hardware tests because pinned SoftFloat and arm_neon.h both define float16_t/bfloat16_t. The oracle uses exact architectural assembly in the passing run. Original SoftFloat and decoder semantics are unchanged."
+  },
+  "original_870_and_native_admission_validation": {
+    "run_id": 42201328819,
+    "job_id": 127837047340,
+    "execution_commit": "69fa17f4b2e91dad2825138771d6b79c5f920cd9",
+    "conclusion": "success",
+    "historical_continuation_skipped": true
+  }
+}

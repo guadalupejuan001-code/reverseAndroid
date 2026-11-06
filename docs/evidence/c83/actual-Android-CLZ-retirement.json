@@ -1,0 +1,27 @@
+{
+  "schema": "reverseandroid-actual-CLZ-retirement-v1",
+  "before_SHA256": "9b67411e2faefdd2c3e200d4c41157c2513f738fde934cf9d9947651bc47d866",
+  "after_SHA256": "d4ca99f595a326dce6ef4b789497ea32aca17faf257a18dd80450cf49eb64098",
+  "before_instructions": 85047727997,
+  "after_instructions": 85047727998,
+  "original_admission_and_clean_outcomes_verified": true,
+  "actual_input_v0_32bit_lanes": [
+    0,
+    2047,
+    1023,
+    15
+  ],
+  "actual_output_v0_32bit_lanes": [
+    32,
+    21,
+    22,
+    28
+  ],
+  "CLZ_matches_independent_integer_bit_length": true,
+  "integer_registers_flags_other_SIMD_and_FPCR_FPSR_unchanged": true,
+  "immutable_image_XI_Ether_effective_memory_byte_identical": true,
+  "all_machine_bytes_unchanged_except_original_subtick_25_to_26": true,
+  "snapshot_bytes_written_by_verifier": false,
+  "new_UART_input_bytes": 0,
+  "Android_boot_or_usable_UI_claimed": false
+}
