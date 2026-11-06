@@ -1,0 +1,113 @@
+{
+  "schema": "reverseandroid-current-original-Zygote-accounting-v1",
+  "checkpoint_sha256": "fc2a6d4324507cee037902d31165603cad493d47af5f86c60edbb74b383756ce",
+  "instructions": 115147727998,
+  "original_kernel_SHA256": "f722bdd809bfd3485917a564b053b8a6d4938408734091f420c3297a8e3b20c8",
+  "original_kernel_input_unchanged": true,
+  "main": {
+    "pid": 5629,
+    "name": "main",
+    "task": "0xffffff802db95100",
+    "state": 0,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc087733cb0",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc087733cb0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc087733d70",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc087733dd0",
+        "lr": "0xffffffc0800bce9c",
+        "symbol": "do_notify_resume+0xcc"
+      },
+      {
+        "fp": "0xffffffc087733e10",
+        "lr": "0xffffffc08129fcf0",
+        "symbol": "el0_interrupt+0x94"
+      },
+      {
+        "fp": "0xffffffc087733e60",
+        "lr": "0xffffffc08129f728",
+        "symbol": "__el0_irq_handler_common+0x18"
+      },
+      {
+        "fp": "0xffffffc087733e90",
+        "lr": "0xffffffc08129f704",
+        "symbol": "el0t_64_irq_handler+0x10"
+      },
+      {
+        "fp": "0xffffffc087733ea0",
+        "lr": "0xffffffc080012010",
+        "symbol": "el0t_64_irq+0x1bc"
+      },
+      {
+        "fp": "0xffffffc087733fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 5629,
+      "comm": "main",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 1,
+      "argv": [
+        "zygote64"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": false
+    },
+    "on_rq": 1,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "13",
+      "nivcsw": "6050",
+      "utime": "15935722000",
+      "stime": "4179075000",
+      "sum_exec_runtime": "18521441000",
+      "vruntime": "64358237194",
+      "exec_start": "1797189231000"
+    }
+  },
+  "live_PID1_zygote_observations": [
+    {
+      "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+      "vma": "0x7cfe0e0000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc_debug_pid.zygote",
+      "value": "5629",
+      "serial": 67108866,
+      "boot_completed_property_in_ram": false
+    },
+    {
+      "file": "/dev/__properties__/u:object_r:init_service_status_prop:s0",
+      "vma": "0x7cfe120000",
+      "vma_shared": true,
+      "live_pid1_mapping_verified": true,
+      "status": "property_observed",
+      "name": "init.svc.zygote",
+      "value": "running",
+      "serial": 117440516,
+      "boot_completed_property_in_ram": false
+    }
+  ],
+  "SS": false,
+  "BOOT": false,
+  "main_runnable_at_this_boundary": true
+}
