@@ -31,7 +31,7 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42146302356,
   "independent_reproduction_status": "Original C79/C80 complete snapshots match through53B; independent local original execution matches C81 complete61B exactly. C82 is producer-original-admitted with all transport pieces pinned; no fresh local C82 CPU replay is claimed.",
-  "active_continuation": "C83 stage7 fully admitted. Actual peripheral phase3, waiting=True, native events=4, failed=True. Every previous input is retained; waiting stages add zero new UART. Original live BOOT=False; actual usable UI and its response remain unverified.",
+  "active_continuation": "C83 stopped correctly after actual guest syntax error. The highest original-admitted source92,547,727,998 is fully recovered; the corrected C84 input and its entire actual shell argument pass validation. C84 will retain all four old events and retry only corrected activation and inspection; no receiver or data retransfer. Original BOOT/UI remain pending.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
@@ -96,7 +96,7 @@
   "SystemServer_diagnostic_plan": "state/experiments/c81-systemserver-diagnostic-plan.json",
   "SystemServer_resumed_after_diagnostic_without_new_primary_input": true,
   "isolated_SystemServer_log_read_run_id": 42190629945,
-  "canonical_fork_pending_first_admission": null,
+  "canonical_fork_pending_first_admission": "C84",
   "C81_is_reference_after_C82_fork": true,
   "planned_peripheral_input_events": 5,
   "selected_canonical_continuation": "C83",
@@ -162,5 +162,7 @@
   "current_primary_peer_alive_observed": false,
   "current_primary_live_original_OEM_channel": false,
   "current_primary_live_two_sensor_channels": false,
-  "current_original_reference_validation_evidence": "docs/evidence/c83/current-original-engine-validation.json"
+  "current_original_reference_validation_evidence": "docs/evidence/c83/current-original-engine-validation.json",
+  "corrective_campaign_plan": "state/experiments/c84-plan.json",
+  "corrective_campaign_evidence": "docs/c84-corrected-guest-shell.md"
 }

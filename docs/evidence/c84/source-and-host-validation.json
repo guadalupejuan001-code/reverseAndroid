@@ -1,0 +1,112 @@
+{
+  "schema": "reverseandroid-corrective-source-and-host-validation-v1",
+  "source_checkpoint_SHA256": "034f85684668d131f4485b29c28480167710eb0c9c20c4ca638dd4ebb956603d",
+  "source_instructions": 92547727998,
+  "all_four_original_outer_ZIP_and_inner_part_SHA256_verified": true,
+  "whole_original_RVG_SHA256_verified": true,
+  "original_full_epoch_preflight_passed": true,
+  "complete_original_console_authenticated": true,
+  "actual_failed_control_retained_unchanged": true,
+  "actual_restore_on_fully_recovered_source_passed_without_new_input": true,
+  "nested_shell_and_real_argument_oracle_tests": 4,
+  "corrective_state_guards_tests": 7,
+  "workflow_skip_and_terminal_guard_tests_passed": true,
+  "host_full_proposal_actual_PTY_capture_and_corrupt_prefix_rejection_passed": true,
+  "host_exact_compiled_ELF_decode_passed": true,
+  "host_entire_outer_and_actual_inner_shell_arguments_checked": true,
+  "original_870_files_verified": true,
+  "new_guest_corrective_inputs_executed_yet": false,
+  "BOOT_or_UI_claimed": false,
+  "actual_host_proposal": {
+    "schema": "reverseandroid-buffered-privatePTY-full-transfer-proposal-v1",
+    "phases": [
+      {
+        "input_file": "input-0.txt",
+        "input_bytes": 923,
+        "input_sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6",
+        "response_marker": "REVERSE_PTS_TRANSFER_RX_0",
+        "failure_markers": [
+          "REVERSE_PTS_TRANSFER_CAPTURE"
+        ],
+        "data_for_waiting_guest_read": false,
+        "instruction_budget": 1000000000
+      },
+      {
+        "input_file": "input-1.txt",
+        "input_bytes": 3001,
+        "input_sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0",
+        "response_marker": "REVERSE_PTS_TRANSFER_DATA_0",
+        "failure_markers": [
+          "REVERSE_PTS_TRANSFER_CAPTURE"
+        ],
+        "data_for_waiting_guest_read": true,
+        "instruction_budget": 500000000,
+        "response_markers": [
+          "REVERSE_PTS_TRANSFER_DATA_0",
+          "REVERSE_PTS_TRANSFER_RX_1"
+        ],
+        "all_response_markers_required": true
+      },
+      {
+        "input_file": "input-2.txt",
+        "input_bytes": 2837,
+        "input_sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1",
+        "response_marker": "REVERSE_PTS_TRANSFER_DATA_1",
+        "failure_markers": [
+          "REVERSE_PTS_TRANSFER_CAPTURE"
+        ],
+        "data_for_waiting_guest_read": true,
+        "instruction_budget": 500000000,
+        "response_markers": [
+          "REVERSE_PTS_TRANSFER_DATA_1",
+          "REVERSE_PTS_TRANSFER_CAPTURE"
+        ],
+        "all_response_markers_required": true
+      },
+      {
+        "input_file": "input-3.txt",
+        "input_bytes": 2102,
+        "input_sha256": "92de7cc261c168eaee898ea8e0027638854c1a36cb9d6d286c6b18b5c80bdae5",
+        "response_marker": "REVERSE_PTS_TRANSFER_ACTIVATION",
+        "failure_markers": [
+          "REVERSE_PTS_TRANSFER_CAPTURE"
+        ],
+        "data_for_waiting_guest_read": false,
+        "instruction_budget": 1000000000
+      },
+      {
+        "input_file": "input-4.txt",
+        "input_bytes": 937,
+        "input_sha256": "245e0b35b48d0e3d8947f8fb4c585a64b604d4e42d57a08edaed86213c919116",
+        "response_marker": "REVERSE_PTS_TRANSFER_INSPECT",
+        "failure_markers": [
+          "REVERSE_PTS_TRANSFER_CAPTURE"
+        ],
+        "data_for_waiting_guest_read": false,
+        "instruction_budget": 1000000000
+      }
+    ],
+    "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+    "gzip_SHA256": "671fd2b742811b13eb861fb848f5a033989de991561c064caf09e310ee8e0522",
+    "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+    "host_actual_PTY_blocking_capture_and_prefix_hashes_passed": true,
+    "host_actual_PTY_corrupt_prefix_rejected_before_next_read": true,
+    "host_exact_production_decode_reconstructs_compiled_ELF": true,
+    "host_outer_and_actual_inner_shell_syntax_verified": true,
+    "nested_syntax_check_shells": [
+      "sh",
+      "bash"
+    ],
+    "host_mount_or_SELinux_provisioning_attempted": false,
+    "OEM_query_AIDL_v1_git_blob_SHA1": "977746c4dd669c404e01eec51b438731d649ec1c",
+    "OEM_Binder_query_transactions": [
+      2,
+      3
+    ],
+    "OEM_setter_transactions_requested": false,
+    "source_bound_or_executed": false,
+    "actual_Android_integration_claimed": false,
+    "requires_successful_original_HAL_control_before_adoption": true,
+    "requires_newest_canonical_source_SHA_and_count_before_input": true
+  }
+}

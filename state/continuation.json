@@ -11,7 +11,7 @@
   "active_run_id": 42202570182,
   "active_execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
   "immutable_initial_workflow_recipe": "state/experiments/c83-plan.json",
-  "workflow": ".github/workflows/android-c83-clz-resumed-boot.yml",
+  "workflow": ".github/workflows/android-c84-corrected-guest-shell.yml",
   "expected_native_SHA256": "1fdc567bc4790b93285c73917e0462dee1e718e6803af40b289026af29dceb86",
   "explicit_ISA_extension": "AArch64 AdvSIMD CLZ vector",
   "original_870_files_unchanged": true,
@@ -22,5 +22,10 @@
   "current_peripheral_phase": 3,
   "current_peripheral_waiting": true,
   "new_hardware_power_cycle": false,
-  "BOOT_and_usable_UI_still_pending": true
+  "BOOT_and_usable_UI_still_pending": true,
+  "next_corrective_campaign": "C84",
+  "next_corrective_plan": "state/experiments/c84-plan.json",
+  "next_corrective_phase": 4,
+  "prior_failed_phase_preserved": 3,
+  "receiver_or_data_retransfer": false
 }

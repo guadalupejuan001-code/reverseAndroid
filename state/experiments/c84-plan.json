@@ -1,0 +1,171 @@
+{
+  "schema": "reverseandroid-explicit-corrective-console-campaign-v1",
+  "cycle": "C84",
+  "source_checkpoint_sha256": "034f85684668d131f4485b29c28480167710eb0c9c20c4ca638dd4ebb956603d",
+  "source_instructions": 92547727998,
+  "source_stage": 7,
+  "source_run_id": 42202570182,
+  "source_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
+  "source_artifact_lock": "state/experiments/c84-artifacts.json",
+  "validated_original_HAL_control": "docs/evidence/c82/prior-private-HAL-integration.json",
+  "control_metadata_stage": 11,
+  "control_metadata_checkpoint_sha256": "98147b814e71294427f4b682a4db85acc186b5ea20a47c2c8c84fc7a4acdeb34",
+  "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "gzip_SHA256": "671fd2b742811b13eb861fb848f5a033989de991561c064caf09e310ee8e0522",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "phases": [
+    {
+      "input_file": "state/experiments/c82-input-0.txt",
+      "input_bytes": 923,
+      "input_sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6",
+      "response_marker": "REVERSE_PTS_TRANSFER_RX_0",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Start the real root blocking receiver for the validated virtual peripheral; authenticate each ordinary guest-file prefix.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c82-input-1.txt",
+      "input_bytes": 3001,
+      "input_sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0",
+      "response_marker": "REVERSE_PTS_TRANSFER_DATA_0",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PTS_TRANSFER_DATA_0",
+        "REVERSE_PTS_TRANSFER_RX_1"
+      ],
+      "all_response_markers_required": true,
+      "effect": "Deliver first authenticated base64 fragment only to the already waiting root read.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c82-input-2.txt",
+      "input_bytes": 2837,
+      "input_sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1",
+      "response_marker": "REVERSE_PTS_TRANSFER_DATA_1",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PTS_TRANSFER_DATA_1",
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "all_response_markers_required": true,
+      "effect": "Deliver final authenticated base64 fragment; require both file and receiver completion acknowledgments.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c82-input-3.txt",
+      "input_bytes": 2103,
+      "input_sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17",
+      "response_marker": "REVERSE_PTS_TRANSFER_ACTIVATION",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Decode the exact compiled ABI3 ELF; provision the isolated private PTYs and require enforcing1 plus unchanged loaded-policy SHA.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c84-input-activation.txt",
+      "input_bytes": 2097,
+      "input_sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7",
+      "response_marker": "REVERSE_PTS_C84_ACTIVATION",
+      "failure_markers": [],
+      "instruction_budget": 1000000000,
+      "effect": "Correct only the malformed shell argument, retaining the received authenticated file and original policy; activate the validated peripheral."
+    },
+    {
+      "input_file": "state/experiments/c84-input-inspection.txt",
+      "input_bytes": 932,
+      "input_sha256": "8d47dc63c80f12d0eab0e866355225e82bc6a842aeef9a8086d1e5b6da1d86e3",
+      "response_marker": "REVERSE_PTS_C84_INSPECT",
+      "failure_markers": [],
+      "instruction_budget": 1000000000,
+      "effect": "Verify original HAL Binder getters, actual Parcel replies and original peer traffic after corrected activation."
+    }
+  ],
+  "max_stages": 16,
+  "continuation_instruction_budget": 2000000000,
+  "further_UART_after_five_phases": null,
+  "fresh_hardware_power_cycle": false,
+  "logical_RAM_bytes": 2147483648,
+  "instructions_per_tick": 64,
+  "original_seed_unchanged": true,
+  "original_native_SHA256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "original_870_files_unchanged": true,
+  "no_RVG_or_policy_or_property_edits": true,
+  "execute_on_push": false,
+  "inherited_events": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    },
+    {
+      "phase": 2,
+      "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 87047727998,
+        "counter_subtick": 26,
+        "bytes": 2837,
+        "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+      }
+    },
+    {
+      "phase": 3,
+      "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 89547727998,
+        "counter_subtick": 26,
+        "bytes": 2103,
+        "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+      }
+    }
+  ],
+  "inherited_console_SHA256": "459946a26d93762f2f37611d0e834745bcb97ad6d43b1a4e953d033c8c4c8bfd",
+  "source_proof_file": "c83-proof.json",
+  "waiting_instruction_budget": 2000000000,
+  "expected_extended_native_SHA256": "1fdc567bc4790b93285c73917e0462dee1e718e6803af40b289026af29dceb86",
+  "validated_CLZ_commit": "c7c0d28e53db4bf643f78c5eabe5a452cdc00e48",
+  "ISA_extension": "AArch64 AdvSIMD CLZ vector",
+  "extension_SHA256": "1fd924cfab3278faf6550bc8ed54793c426ea3662d97499c0d0e07f6682ea1a4",
+  "original_engine_binary_unchanged": false,
+  "require_live_peripheral_probe_before_completion": true,
+  "source_failed_proof_SHA256": "1c01d143ce26a6f14453c69c7b8f44ff4ea50cbeaca74c2fd6e416f3dc2836d3",
+  "known_failed_input_file": "state/experiments/c82-input-3.txt",
+  "known_failed_input_SHA256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17",
+  "corrected_phase_index": 4,
+  "prior_failed_phase_index": 3,
+  "prior_failed_phase_outcome": "actual RC1 and actual sh syntax error unexpected double semicolon; retained unchanged",
+  "receiver_and_data_retransfer": false
+}

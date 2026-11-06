@@ -56,6 +56,8 @@ El fotograma auténtico anterior de C69 mostró el **logo de inicio de Android e
 
 C68 queda como respaldo. El trabajo conserva el linaje del último checkpoint plenamente admitido. Los cambios de perfil que exigen otro arranque se declaran como nueva época y conservan íntegramente el disco efectivo. Los resultados posteriores se publican como artefactos y en el resumen de cada ejecución. Un check de migración correcto acredita integridad y avance; el arranque completo exige las comprobaciones originales de Android.
 
+[C84](docs/c84-corrected-guest-shell.md) corrige el argumento de consola que bloqueó la activación C83. Conserva el último estado completo y el intento fallido; reintenta solo los dos comandos corregidos, con pruebas de su sintaxis interna real. La transferencia no se repite.
+
 ## Compilar y comprobar
 
 Se requiere Linux, GCC, Python 3.11+, Node 24 y OpenSSL. La dependencia Mundo X se fija en `e2778d962af22f6f1a0794058dd4685fc2573966`, sin modificarla:
@@ -68,7 +70,7 @@ bash scripts/build-reverseandroid-epoch.sh
 bash scripts/build-reverseandroid-clz.sh
 ```
 
-`state/latest.json` registra el último resultado verificado. `state/continuation.json` apunta a la última continuación y conserva desactivado el flujo histórico. `reverseandroid.yml` conserva la validación del motor importado; el flujo de continuación actual es `android-c83-clz-resumed-boot.yml`. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza.
+`state/latest.json` registra el último resultado verificado. `state/continuation.json` apunta a la última continuación y conserva desactivado el flujo histórico. `reverseandroid.yml` conserva la validación del motor importado; el flujo de corrección actual es `android-c84-corrected-guest-shell.yml`. Cada resultado válido se conserva antes del siguiente paso. Los checkpoints se transportan en piezas de hasta 200 MiB, con manifiesto y SHA-256 por pieza.
 
 Con `execute_on_push: false`, el flujo genérico no continúa el antiguo perfil C27. La continuación C83 recupera los artefactos fijados por hash y usa el binario validado `epoch-clz`. La compilación local lo deja en `build/reverseandroid-clz/epoch-clz`; `epoch` conserva el motor de referencia. El ejecutable histórico `native` conserva sus comprobaciones del perfil anterior. Los cambios de documentación no reinician el invitado.
 

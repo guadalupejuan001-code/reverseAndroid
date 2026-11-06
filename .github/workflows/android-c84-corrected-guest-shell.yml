@@ -1,0 +1,614 @@
+name: C84 corrected actual guest shell and original Android continuation
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c84-corrected-guest-shell.yml
+    - state/experiments/c84-plan.json
+    - state/experiments/c84-artifacts.json
+    - state/experiments/c84-input-*.txt
+    - scripts/run-c84-stage.py
+    - scripts/prepare-c84-corrective-state.py
+    - scripts/console_command_syntax.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c84-corrected-guest-shell
+  cancel-in-progress: false
+jobs:
+  c84-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Authenticate latest clean92B, exact prior failure and corrected actual shell arguments
+      run: "python3 scripts/verify-reverseandroid-import.py\nnode --test tests/reverseandroid_console_proof.test.mjs\
+        \ tests/reverseandroid_epoch_input.test.mjs tests/reverseandroid_campaign_input.test.mjs\npython3\
+        \ tests/console_command_syntax_test.py\npython3 tests/c84_corrective_state_test.py\npython3 tests/control_console_phase_test.py\n\
+        python3 tests/reverseandroid_workflow_phase_guard_test.py\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ native-cache build/reverseandroid state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ clz-native build/clz-native state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ clz-hardware build/clz-hardware state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ peripheral-peer build/peripheral-peer state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ campaign-console build/campaign-console state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ seed build/source-c84 state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ media-manifest build/media-input state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ media-aa build/media-input state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ media-ab build/media-input state/experiments/c84-artifacts.json\npython3 scripts/fetch-reverseandroid-artifact.py\
+        \ media-ac build/media-input state/experiments/c84-artifacts.json\npython3 scripts/restore-reverseandroid-media.py\
+        \ build/media-input build/media/android-c27.raw\nchmod +x build/clz-native/epoch-clz build/reverseandroid/frame\n\
+        mkdir -p evidence/c84-reports\npython3 scripts/prepare-peripheral-privatepts-buffered-inputs.py\
+        \ build/peripheral-peer build/c84-regenerated-proposal\npython3 - <<'PYVALIDATE'\nimport pathlib,json,hashlib,sys\n\
+        sys.path.insert(0,'scripts')\nfrom console_command_syntax import extract_su_shell_body,validate_nested_console_command\n\
+        read=lambda p:json.loads(pathlib.Path(p).read_text())\nh=lambda p:hashlib.file_digest(pathlib.Path(p).open('rb'),'sha256').hexdigest()\n\
+        p=read('state/experiments/c84-plan.json')\nassert h('build/clz-native/epoch-clz')==p['expected_extended_native_SHA256']\n\
+        assert h('build/reverseandroid/epoch')==p['original_native_SHA256']\nfor directory,hardware in\
+        \ [('build/clz-native',0),('build/clz-hardware',30887)]:\n d=pathlib.Path(directory);assert (d/'execution-commit.txt').read_text().strip()==p['validated_CLZ_commit']\n\
+        \ t=read(d/'clz-test.json');assert t['CLZ_cases']==30887 and t['real_AArch64_hardware_cases']==hardware\n\
+        \ assert all(t[k] for k in ['mathematical_oracle','all_six_forms','all_register_pairs','exhaustive_B_H_values','FP_traps_and_reserved_rejection'])\n\
+        \ assert read(d/'baseline-refusal.json')['original_exact_opcode_rejected_without_state_change']\n\
+        \ m=read(d/'extension-manifest.json');assert m['extension_SHA256']==p['extension_SHA256']\n assert\
+        \ m['all_870_imported_files_unchanged'] and m['snapshot_codecs_RAM_disk_clock_seed_and_cadence_unchanged']\n\
+        \ assert not m['original_engine_binary_unchanged_claimed']\nassert h('extensions/aarch64-clz.inc')==p['extension_SHA256']\n\
+        for phase,index in zip(p['phases'][4:],[3,4]):\n f=pathlib.Path(phase['input_file']);assert f.stat().st_size==phase['input_bytes']<=4096\
+        \ and h(f)==phase['input_sha256']\n validate_nested_console_command(f.read_bytes())\n assert extract_su_shell_body(f.read_bytes())==extract_su_shell_body(pathlib.Path(f'build/c84-regenerated-proposal/input-{index}.txt').read_bytes())\n\
+        PYVALIDATE\nnode --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight\
+        \ build/source-c84 > evidence/c84-reports/source-admission.json\npython3 scripts/prepare-c84-corrective-state.py\
+        \ build/source-c84 build/campaign-console/evidence/c83-reports/console-all.bin evidence/c84-reports\
+        \ state/experiments/c84-plan.json\n"
+    - name: 'Private PTS stage 1: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r1
+      if: success()
+      run: 'python3 scripts/run-c84-stage.py 1
+
+        '
+    - name: 'Private PTS stage 1: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r1.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-1/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-1/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-1/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 1: preserve every complete original checkpoint piece'
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure') && hashFiles('evidence/c84-1/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-1
+        transport_path: build/c84-transport-1
+        artifact_prefix: reverseandroid-c84-1
+    - name: 'Private PTS stage 1: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r1.outcome == 'success'
+      run: 'rm -rf build/source-c84
+
+        '
+    - name: 'Private PTS stage 2: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r2
+      if: success() && steps.r1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 2
+
+        '
+    - name: 'Private PTS stage 2: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r2.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-2/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-2/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-2/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 2: preserve every complete original checkpoint piece'
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure') && hashFiles('evidence/c84-2/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-2
+        transport_path: build/c84-transport-2
+        artifact_prefix: reverseandroid-c84-2
+    - name: 'Private PTS stage 2: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r2.outcome == 'success'
+      run: 'rm -rf evidence/c84-1 build/c84-transport-1
+
+        '
+    - name: 'Private PTS stage 3: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r3
+      if: success() && steps.r2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 3
+
+        '
+    - name: 'Private PTS stage 3: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r3.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-3/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-3/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-3/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 3: preserve every complete original checkpoint piece'
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure') && hashFiles('evidence/c84-3/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-3
+        transport_path: build/c84-transport-3
+        artifact_prefix: reverseandroid-c84-3
+    - name: 'Private PTS stage 3: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r3.outcome == 'success'
+      run: 'rm -rf evidence/c84-2 build/c84-transport-2
+
+        '
+    - name: 'Private PTS stage 4: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r4
+      if: success() && steps.r3.outcome == 'success' && steps.r3.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 4
+
+        '
+    - name: 'Private PTS stage 4: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r4.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-4/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-4/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-4/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 4: preserve every complete original checkpoint piece'
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure') && hashFiles('evidence/c84-4/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-4
+        transport_path: build/c84-transport-4
+        artifact_prefix: reverseandroid-c84-4
+    - name: 'Private PTS stage 4: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r4.outcome == 'success'
+      run: 'rm -rf evidence/c84-3 build/c84-transport-3
+
+        '
+    - name: 'Private PTS stage 5: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r5
+      if: success() && steps.r4.outcome == 'success' && steps.r4.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 5
+
+        '
+    - name: 'Private PTS stage 5: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r5.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-5/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-5/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-5/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 5: preserve every complete original checkpoint piece'
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure') && hashFiles('evidence/c84-5/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-5
+        transport_path: build/c84-transport-5
+        artifact_prefix: reverseandroid-c84-5
+    - name: 'Private PTS stage 5: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r5.outcome == 'success'
+      run: 'rm -rf evidence/c84-4 build/c84-transport-4
+
+        '
+    - name: 'Private PTS stage 6: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r6
+      if: success() && steps.r5.outcome == 'success' && steps.r5.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 6
+
+        '
+    - name: 'Private PTS stage 6: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r6.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-6/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-6/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-6/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 6: preserve every complete original checkpoint piece'
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure') && hashFiles('evidence/c84-6/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-6
+        transport_path: build/c84-transport-6
+        artifact_prefix: reverseandroid-c84-6
+    - name: 'Private PTS stage 6: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r6.outcome == 'success'
+      run: 'rm -rf evidence/c84-5 build/c84-transport-5
+
+        '
+    - name: 'Private PTS stage 7: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r7
+      if: success() && steps.r6.outcome == 'success' && steps.r6.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 7
+
+        '
+    - name: 'Private PTS stage 7: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r7.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-7/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-7/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-7/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 7: preserve every complete original checkpoint piece'
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure') && hashFiles('evidence/c84-7/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-7
+        transport_path: build/c84-transport-7
+        artifact_prefix: reverseandroid-c84-7
+    - name: 'Private PTS stage 7: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r7.outcome == 'success'
+      run: 'rm -rf evidence/c84-6 build/c84-transport-6
+
+        '
+    - name: 'Private PTS stage 8: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r8
+      if: success() && steps.r7.outcome == 'success' && steps.r7.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 8
+
+        '
+    - name: 'Private PTS stage 8: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r8.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-8/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-8/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-8/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 8: preserve every complete original checkpoint piece'
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure') && hashFiles('evidence/c84-8/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-8
+        transport_path: build/c84-transport-8
+        artifact_prefix: reverseandroid-c84-8
+    - name: 'Private PTS stage 8: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r8.outcome == 'success'
+      run: 'rm -rf evidence/c84-7 build/c84-transport-7
+
+        '
+    - name: 'Private PTS stage 9: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r9
+      if: success() && steps.r8.outcome == 'success' && steps.r8.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 9
+
+        '
+    - name: 'Private PTS stage 9: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r9.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-9/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-9/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-9/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 9: preserve every complete original checkpoint piece'
+      if: always() && (steps.r9.outcome == 'success' || steps.r9.outcome == 'failure') && hashFiles('evidence/c84-9/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-9
+        transport_path: build/c84-transport-9
+        artifact_prefix: reverseandroid-c84-9
+    - name: 'Private PTS stage 9: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r9.outcome == 'success'
+      run: 'rm -rf evidence/c84-8 build/c84-transport-8
+
+        '
+    - name: 'Private PTS stage 10: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r10
+      if: success() && steps.r9.outcome == 'success' && steps.r9.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 10
+
+        '
+    - name: 'Private PTS stage 10: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r10.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-10/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-10/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-10/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 10: preserve every complete original checkpoint piece'
+      if: always() && (steps.r10.outcome == 'success' || steps.r10.outcome == 'failure') && hashFiles('evidence/c84-10/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-10
+        transport_path: build/c84-transport-10
+        artifact_prefix: reverseandroid-c84-10
+    - name: 'Private PTS stage 10: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r10.outcome == 'success'
+      run: 'rm -rf evidence/c84-9 build/c84-transport-9
+
+        '
+    - name: 'Private PTS stage 11: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r11
+      if: success() && steps.r10.outcome == 'success' && steps.r10.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 11
+
+        '
+    - name: 'Private PTS stage 11: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r11.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-11/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-11/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-11/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 11: preserve every complete original checkpoint piece'
+      if: always() && (steps.r11.outcome == 'success' || steps.r11.outcome == 'failure') && hashFiles('evidence/c84-11/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-11
+        transport_path: build/c84-transport-11
+        artifact_prefix: reverseandroid-c84-11
+    - name: 'Private PTS stage 11: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r11.outcome == 'success'
+      run: 'rm -rf evidence/c84-10 build/c84-transport-10
+
+        '
+    - name: 'Private PTS stage 12: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r12
+      if: success() && steps.r11.outcome == 'success' && steps.r11.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 12
+
+        '
+    - name: 'Private PTS stage 12: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r12.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-12/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-12/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-12/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 12: preserve every complete original checkpoint piece'
+      if: always() && (steps.r12.outcome == 'success' || steps.r12.outcome == 'failure') && hashFiles('evidence/c84-12/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-12
+        transport_path: build/c84-transport-12
+        artifact_prefix: reverseandroid-c84-12
+    - name: 'Private PTS stage 12: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r12.outcome == 'success'
+      run: 'rm -rf evidence/c84-11 build/c84-transport-11
+
+        '
+    - name: 'Private PTS stage 13: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r13
+      if: success() && steps.r12.outcome == 'success' && steps.r12.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 13
+
+        '
+    - name: 'Private PTS stage 13: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r13.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-13/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-13/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-13/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 13: preserve every complete original checkpoint piece'
+      if: always() && (steps.r13.outcome == 'success' || steps.r13.outcome == 'failure') && hashFiles('evidence/c84-13/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-13
+        transport_path: build/c84-transport-13
+        artifact_prefix: reverseandroid-c84-13
+    - name: 'Private PTS stage 13: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r13.outcome == 'success'
+      run: 'rm -rf evidence/c84-12 build/c84-transport-12
+
+        '
+    - name: 'Private PTS stage 14: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r14
+      if: success() && steps.r13.outcome == 'success' && steps.r13.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 14
+
+        '
+    - name: 'Private PTS stage 14: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r14.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-14/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-14/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-14/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 14: preserve every complete original checkpoint piece'
+      if: always() && (steps.r14.outcome == 'success' || steps.r14.outcome == 'failure') && hashFiles('evidence/c84-14/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-14
+        transport_path: build/c84-transport-14
+        artifact_prefix: reverseandroid-c84-14
+    - name: 'Private PTS stage 14: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r14.outcome == 'success'
+      run: 'rm -rf evidence/c84-13 build/c84-transport-13
+
+        '
+    - name: 'Private PTS stage 15: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r15
+      if: success() && steps.r14.outcome == 'success' && steps.r14.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 15
+
+        '
+    - name: 'Private PTS stage 15: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r15.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-15/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-15/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-15/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 15: preserve every complete original checkpoint piece'
+      if: always() && (steps.r15.outcome == 'success' || steps.r15.outcome == 'failure') && hashFiles('evidence/c84-15/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-15
+        transport_path: build/c84-transport-15
+        artifact_prefix: reverseandroid-c84-15
+    - name: 'Private PTS stage 15: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r15.outcome == 'success'
+      run: 'rm -rf evidence/c84-14 build/c84-transport-14
+
+        '
+    - name: 'Private PTS stage 16: one bounded admitted CLZ-extension run and at most one authenticated
+        buffered input'
+      id: r16
+      if: success() && steps.r15.outcome == 'success' && steps.r15.outputs.complete != 'true'
+      run: 'python3 scripts/run-c84-stage.py 16
+
+        '
+    - name: 'Private PTS stage 16: inspect original executables and actual reciprocal kernel PTY links'
+      if: success() && steps.r16.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c84-16/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-peripheral-probe.mjs evidence/c84-16/current.rvg
+        "$TASK_ABI2_SHA" evidence/c84-16/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
+
+        '
+    - name: 'Private PTS stage 16: preserve every complete original checkpoint piece'
+      if: always() && (steps.r16.outcome == 'success' || steps.r16.outcome == 'failure') && hashFiles('evidence/c84-16/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c84-16
+        transport_path: build/c84-transport-16
+        artifact_prefix: reverseandroid-c84-16
+    - name: 'Private PTS stage 16: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r16.outcome == 'success'
+      run: 'rm -rf evidence/c84-15 build/c84-transport-15
+
+        '
+    - name: Require actual private mount, unchanged policy, guest ELF, original HAL Binder services and
+        all three distinct real PTY pairs
+      run: 'python3 - <<''PYFINAL''
+
+        import json,pathlib
+
+        s=json.loads(pathlib.Path(''evidence/c84-reports/control-state.json'').read_text())
+
+        assert s[''complete''] and not s[''failed''], ''The actual guest command has not completed successfully''
+
+        plan=json.loads(pathlib.Path(''state/experiments/c84-plan.json'').read_text());assert len(s[''events''])==len(plan[''phases''])==6;assert
+        [x[''phase''] for x in s[''events'']]==list(range(6));assert s[''prior_C83_campaign_failed'']
+        and s[''prior_failed_control_proof_preserved'']
+
+        assert s[''actual_guest_ELF_hash_line_seen''] and s[''actual_AArch64_peer_ready_line_seen'']
+
+        p=pathlib.Path(s[''source'']);g=json.loads((p/''c46-progress.json'').read_text());k=json.loads((p/''kernel-observation.json'').read_text());o=json.loads((p/''peripherals-live-required.json'').read_text())
+
+        assert g[''source_boundary_verified''] and k[''live_kernel_security''][''selinux_enforcing'']
+
+        assert o[''checkpoint_sha256'']==g[''checkpoint_sha256''] and o[''input_unchanged'']
+
+        assert o[''real_AArch64_peer_alive''] and o[''original_oemlock_executable_alive''] and o[''original_sensors_executable_alive'']
+
+        assert o[''OEM_channel_connected_to_actual_peer''] and o[''two_separate_sensor_channels_connected_to_actual_peer'']
+
+        assert all(s[''original_HAL_registration_seen_in_actual_console''].values()), ''Require actual
+        original Binder registrations''
+
+        print(json.dumps({''original_HALs_connected'':True,''original_HALs_registered'':True,''boot_or_UI_completion_claimed'':False,''snapshot_bytes_patched'':False,''prior_failed_attempt_preserved'':True}))
+
+        PYFINAL
+
+
+        python3 - <<''PYPRIVATE''
+
+        import pathlib,json
+
+        s=json.loads(pathlib.Path(''evidence/c84-reports/control-state.json'').read_text());o=json.loads((pathlib.Path(s[''source''])/''peripherals-live-required.json'').read_text());assert
+        s[''actual_private_device_filesystem_mount_seen''];assert s[''actual_loaded_policy_unchanged_hashes''];assert
+        len({p[''PTY_index''] for p in o[''paired_FDs'']})==3;assert len({p[''peer_fd''] for p in o[''paired_FDs'']})==3;print(json.dumps({''actual_private_PTY_instance'':True,''actual_loaded_policy_unchanged'':True,''three_distinct_kernel_PTY_pairs'':True,''snapshot_bytes_patched'':False}))
+
+        PYPRIVATE
+
+
+        python3 - <<''PYBOOT''
+
+        import pathlib,json
+
+        s=json.loads(pathlib.Path(''evidence/c84-reports/control-state.json'').read_text());g=json.loads((pathlib.Path(s[''source''])/''c46-progress.json'').read_text());assert
+        s[''hardware_commands_completed''] and g[''system_server_alive_verified''] and g[''android_boot_completed_verified''];print(json.dumps({''original_boot_completed'':True,''UI_response_still_requires_separate_actual_test'':True}))
+
+        PYBOOT
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-c84-evidence
+        path: 'evidence/c84-reports
+
+          evidence/c84-*/*.json
+
+          evidence/c84-*/*.log
+
+          evidence/c84-*/*.txt
+
+          state/experiments/c84-plan.json
+
+          state/experiments/c84-input-*.txt
+
+          build/c84-regenerated-proposal/*
+
+          build/clz-native/*.json
+
+          build/clz-hardware/*.json
+
+          '
+        retention-days: 90
+        if-no-files-found: error
