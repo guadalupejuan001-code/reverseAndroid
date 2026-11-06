@@ -53,7 +53,7 @@
   },
   "visual_review_result": "The authenticated original55B frame visibly renders the Android boot logo. Boot completion and interactive UI remain unverified.",
   "visual_review_evidence": "docs/evidence/c80/original55-frame-review.json",
-  "active_continuation_run_id": null,
+  "active_continuation_run_id": 42169590905,
   "independent_engine_validation_run_id": 42137711614,
   "latest_boundary_evidence": "docs/evidence/c80/stage13-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
