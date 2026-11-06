@@ -34,7 +34,9 @@ jobs:
 
         python3 tests/jit5922_priority_control_test.py'
     - name: Recover exact original source, native and immutable media
-      run: 'python3 scripts/fetch-reverseandroid-artifact.py seed build/jit5922-source state/experiments/jit5922-control-artifacts.json
+      run: 'mkdir -p build
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/jit5922-source state/experiments/jit5922-control-artifacts.json
 
         python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/jit5922-control-artifacts.json
 
