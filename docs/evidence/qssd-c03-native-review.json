@@ -1,0 +1,112 @@
+{
+  "schema": "reverseandroid-qssd-c03-compatibility-review-v1",
+  "review_date": "2026-11-06",
+  "qssd_commit": "c9dc0ebf3370a4468e14df92fcebb2a90954c448",
+  "qssd_branch": "feature/c03-complete-state-bus-20261106",
+  "emulator_review_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
+  "original_core_pins": {
+    "mundo-x": {
+      "repository": "guadalupejuan001-code/mundo-X",
+      "commit": "e2778d962af22f6f1a0794058dd4685fc2573966"
+    },
+    "reverse-pc": {
+      "repository": "guadalupejuan001-code/REVERSE-PC",
+      "commit": "08c363e6c6855c14026c86046af7183a45f45a98"
+    },
+    "gpu-virtual": {
+      "repository": "guadalupejuan001-code/GPU-VIRTUAL",
+      "commit": "6f9a8affa0b1cee4028f8145922fd6dbdbefbefb"
+    }
+  },
+  "validation_method": "Direct native builds of the five pinned CMake test entry points; CMake and CTest unavailable locally. No implementation changes.",
+  "compiler_flags": [
+    "-std=c++17",
+    "-O2",
+    "-pthread",
+    "-DREVERSE_PC_HAVE_BOUNDED_PRODUCT_IMPORT=1"
+  ],
+  "tests": [
+    {
+      "test": "qssd_bus_tests",
+      "exit_code": 0,
+      "stdout": "{\"state_bus\":\"PASS\",\"checks\":23,\"concurrent_writes\":4000,\"full_graph_consistent\":true,\"archive_deduplicated\":true}\n",
+      "stderr": ""
+    },
+    {
+      "test": "qssd_projection_tests",
+      "exit_code": 0,
+      "stdout": "{\"shared_projection\":\"PASS\",\"three_port_same_value\":true,\"retained_old_versions\":true,\"concurrent_acquisitions\":8000}\n",
+      "stderr": ""
+    },
+    {
+      "test": "qssd_tests",
+      "exit_code": 0,
+      "stdout": "{\"shared_state\":\"PASS\",\"checks\":1240,\"original_cpu_xi\":true,\"original_gpu_c01\":true,\"quantum_handle_views\":true,\"logical_domain_words\":4294967296,\"logical_routing_dense_words\":0,\"explicit_cpu_projection_bytes\":4,\"concurrent_writers\":8,\"stored_ghz_qubits\":1000,\"bell_auxiliaries\":2,\"entangled_non_clifford_trials\":32}\n",
+      "stderr": ""
+    },
+    {
+      "test": "qssd_gpu_original_tests",
+      "exit_code": 0,
+      "stdout": "{\"profile\":\"XGPU-C01\",\"checks\":6343189,\"random_programs\":160,\"million_invocations_exact\":true,\"checkpoint_resume\":true,\"uint32_wrap\":true,\"select_regions\":true,\"failed_instruction_atomic\":true,\"irregular_details_preserved\":1024,\"hardware_gpu_executed\":false,\"ether_integrated\":false,\"failures\":0}\n",
+      "stderr": ""
+    },
+    {
+      "test": "qssd_checkpoint_cli",
+      "exit_code": 0,
+      "stdout": "{\"checkpoint_cli\": \"PASS\", \"mixed_native_state\": true, \"same_three_port_values\": true, \"native_rvpc2_export\": true, \"partial_checkpoint_preserved_previous\": true}\n",
+      "stderr": ""
+    }
+  ],
+  "original_emulator_import_files_verified": 870,
+  "archive_limits": {
+    "encoded_bytes": 67108864,
+    "sections": 512
+  },
+  "original_console": {
+    "source_cycle": "C87",
+    "source_stage": 14,
+    "bytes": 2189814,
+    "sha256": "f08eb8acab1400521c0943359309413d7137cafb9fb386d86882cc032866df5e",
+    "authenticated_against": "state/experiments/c88-plan.json",
+    "response_occurrences_including_duplicates": [
+      {
+        "response": "0x1203",
+        "command": "0x103",
+        "occurrences": 338
+      },
+      {
+        "response": "0x1203",
+        "command": "0x104",
+        "occurrences": 338
+      },
+      {
+        "response": "0x1203",
+        "command": "0x105",
+        "occurrences": 340
+      }
+    ]
+  },
+  "C87_final_reference": {
+    "stage": 16,
+    "run_id": 42247589579,
+    "instructions": 125147727998,
+    "checkpoint_sha256": "365c4a45f0988a442441da1765925ec545db17b6ea674245ba3737af840ba666",
+    "metadata_artifact_id": 13531533942,
+    "metadata_archive_sha256": "432c8846a42ba5ea8ca820b22c53f2be7fe9575e5b1c78d6c0528347ee624877",
+    "native_process_exit_code": 0,
+    "native_stop_reason": "instruction_budget",
+    "system_server_alive": false,
+    "boot_completed": false,
+    "ui_response_verified": false,
+    "zygote_5629_observed_stack": "futex_wait",
+    "futex_owner_identified": false,
+    "GPU_errors_proven_cause_of_boot_wait": false
+  },
+  "decision": "Candidate for a future explicit emulator CPU/GPU state-sharing adapter; no primary boot integration justified by current evidence.",
+  "active_C88_run_untouched": 42274580377,
+  "guest_checkpoints_modified": false,
+  "original_codecs_modified": false,
+  "emulator_qssd_adapter_implemented": false,
+  "emulator_QSSD_speedup_measured": false,
+  "QSSD_Android_boot_claimed": false
+}
