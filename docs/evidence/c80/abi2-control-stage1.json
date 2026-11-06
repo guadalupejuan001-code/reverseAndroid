@@ -1,0 +1,51 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "peripheral-peer-abi2-control",
+  "stage": 1,
+  "run_id": 42166740537,
+  "execution_commit": "17408a20c8433f13e6af5aef1cd95bf3206b7060",
+  "checkpoint_sha256": "60b05fc44cd8db15ed5e347fa41a216effefc502ddfda0c0a093589e581a3c77",
+  "instructions": 54000000000,
+  "metadata_artifact_id": 13479916264,
+  "metadata_archive_sha256": "9d6366ce2bdb4f3d10cf40ed244ea2cf0b15b2ce0cf07d66d64167ea66de6bd9",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": false,
+  "transport_lock": "state/experiments/peripheral-peer-abi2-control-stage1-transport.json",
+  "artifact_lock": "state/experiments/peripheral-peer-abi2-control-stage1-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/peripheral-peer-abi2-control-1",
+    "phase": 1,
+    "waiting": false,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/peripheral-peer-abi2-control-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 53000000000,
+          "counter_subtick": 28,
+          "bytes": 883,
+          "sha256": "90563dea62b153d24d96b9ff7869bf6a6834d413ca58c49924729e3ba8a5826a"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "last_admitted_sha256": "60b05fc44cd8db15ed5e347fa41a216effefc502ddfda0c0a093589e581a3c77",
+    "last_admitted_instructions": 54000000000,
+    "combined_original_console_bytes_sha256": "49d8046268a610541c6814c149b3d15eaa77ae84498387680a980ebdea819f8e",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": false,
+      "android.hardware.sensors.ISensors/default": false
+    },
+    "actual_AArch64_peer_ready_line_seen": false,
+    "actual_guest_ELF_hash_line_seen": false,
+    "control_is_promotion_authority": false,
+    "ELF_SHA256_expected": "46202a6e01e43449a9dce40aa88eb9509e5e41adf20e48c9a6c673aef8ab79da",
+    "all_event_phases_unique": true,
+    "main_C79_C80_modified": false
+  }
+}
