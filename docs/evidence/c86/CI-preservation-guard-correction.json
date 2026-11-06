@@ -1,0 +1,16 @@
+{
+  "schema": "reverseandroid-CI-checkpoint-preservation-path-correction-v1",
+  "prior_execution_commit": "5055208388e512f86a05aa48f3310adb256d8e9b",
+  "prior_run_id": 42229435150,
+  "actual_stage1_native_outcome": "success",
+  "actual_stage1_preservation_outcome": "skipped",
+  "wrong_guard": "hashFiles('evidence/c85-1/c46-progress.json')",
+  "actual_output": "evidence/c86-1",
+  "canonical_local_stage1_original_admission_preserved": true,
+  "local_checkpoint_SHA256": "0a3b708e0abf7586c55a85423b51f21318ab50286bd624846e07ce5e84c6c3e8",
+  "native_executable_guest_source_UART_bytes_and_CPU_recipe_changed": false,
+  "all_16_hash_guards_corrected": true,
+  "next_native_run_and_duplicate_release_require_previous_preservation_success": true,
+  "terminal_skipped_and_preservation_skip_regression_tests_passed": true,
+  "independent_transport_or_state_match_not_yet_claimed": true
+}

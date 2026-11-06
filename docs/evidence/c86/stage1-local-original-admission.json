@@ -1,0 +1,56 @@
+{
+  "schema": "reverseandroid-local-original-admitted-boundary-v1",
+  "cycle": "C86",
+  "stage": 1,
+  "execution_commit": "5055208388e512f86a05aa48f3310adb256d8e9b",
+  "checkpoint_sha256": "0a3b708e0abf7586c55a85423b51f21318ab50286bd624846e07ce5e84c6c3e8",
+  "instructions": 102147727998,
+  "whole_RVG_bytes": 1990661815,
+  "original_admission_passed": true,
+  "clean_native_process": {
+    "schema": "reverse-c08-host-supervision-v1",
+    "status": "process_completed",
+    "trigger": null,
+    "exit_code": 0,
+    "exit_signal": null,
+    "forced_kill": false,
+    "elapsed_ms": 305219,
+    "startup_marker_seen": true,
+    "last_reported_instructions": 102147727998,
+    "reported_instruction_delta": 500000000,
+    "error": null,
+    "logs": {
+      "stdout": {
+        "bytes_seen": 40968,
+        "bytes_stored": 40968,
+        "truncated": false
+      },
+      "stderr": {
+        "bytes_seen": 50366,
+        "bytes_stored": 50366,
+        "truncated": false
+      }
+    },
+    "checkpoint_bytes_modified_by_supervisor": false,
+    "android_boot_verified": false,
+    "android_display_verified": false,
+    "native_android_games_verified": false
+  },
+  "actual_native_UART_event": {
+    "schema": "reverse-modeled-uart-input-v1",
+    "instructions": 101647727998,
+    "counter_subtick": 26,
+    "bytes": 1000,
+    "sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096"
+  },
+  "old_five_events_preserved": true,
+  "phase": 5,
+  "waiting": true,
+  "combined_original_console_SHA256": "45d6e93d7aa2d47ad77ea5f17d07a7b570cbf8abc9d5667df8e1f3cf8500e12f",
+  "system_server_alive": false,
+  "boot_completed": false,
+  "SELinux_enforcing": true,
+  "independent_CI_match_not_yet_claimed": true,
+  "remote_transport_not_yet_pinned": true,
+  "actual_UI_response_claimed": false
+}

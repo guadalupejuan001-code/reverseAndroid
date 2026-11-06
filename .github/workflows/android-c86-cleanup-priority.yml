@@ -69,14 +69,14 @@ jobs:
         \ preflight build/source-c86 > evidence/c86-reports/source-original-admission.json\npython3 scripts/prepare-c86-resume-state.py\
         \ build/source-c86 build/c86-old-console/evidence/c83-reports/console-all.bin build/c86-metadata evidence/c86-reports\
         \ state/experiments/c86-plan.json docs/evidence/c86/source3-cleanup-threads.json\n"
-    - name: 'C86 IC correction stage 1: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 1: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r1
       if: success()
       run: 'python3 scripts/run-c86-stage.py 1
 
         '
-    - name: 'C86 IC correction stage 1: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 1: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r1.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-1/output-contract.json"))["checkpoint_sha256"])'')
@@ -85,27 +85,29 @@ jobs:
         evidence/c86-1/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 1: preserve every complete original checkpoint piece'
-      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure') && hashFiles('evidence/c85-1/c46-progress.json')
+    - name: 'C86 cleanup stage 1: preserve every complete original checkpoint piece'
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure') && hashFiles('evidence/c86-1/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-1
         transport_path: build/c86-transport-1
         artifact_prefix: reverseandroid-c86-1
-    - name: 'C86 IC correction stage 1: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r1.outcome == 'success'
+      id: p1
+    - name: 'C86 cleanup stage 1: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r1.outcome == 'success' && steps.p1.outcome == 'success'
       run: 'rm -rf build/source-c86
 
         '
-    - name: 'C86 IC correction stage 2: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 2: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r2
-      if: success() && steps.r1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+      if: success() && steps.r1.outcome == 'success' && steps.r1.outputs.complete != 'true' && steps.p1.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 2
 
         '
-    - name: 'C86 IC correction stage 2: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 2: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r2.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-2/output-contract.json"))["checkpoint_sha256"])'')
@@ -114,27 +116,29 @@ jobs:
         evidence/c86-2/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 2: preserve every complete original checkpoint piece'
-      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure') && hashFiles('evidence/c85-2/c46-progress.json')
+    - name: 'C86 cleanup stage 2: preserve every complete original checkpoint piece'
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure') && hashFiles('evidence/c86-2/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-2
         transport_path: build/c86-transport-2
         artifact_prefix: reverseandroid-c86-2
-    - name: 'C86 IC correction stage 2: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r2.outcome == 'success'
+      id: p2
+    - name: 'C86 cleanup stage 2: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r2.outcome == 'success' && steps.p2.outcome == 'success'
       run: 'rm -rf evidence/c86-1 build/c86-transport-1
 
         '
-    - name: 'C86 IC correction stage 3: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 3: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r3
-      if: success() && steps.r2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+      if: success() && steps.r2.outcome == 'success' && steps.r2.outputs.complete != 'true' && steps.p2.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 3
 
         '
-    - name: 'C86 IC correction stage 3: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 3: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r3.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-3/output-contract.json"))["checkpoint_sha256"])'')
@@ -143,27 +147,29 @@ jobs:
         evidence/c86-3/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 3: preserve every complete original checkpoint piece'
-      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure') && hashFiles('evidence/c85-3/c46-progress.json')
+    - name: 'C86 cleanup stage 3: preserve every complete original checkpoint piece'
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure') && hashFiles('evidence/c86-3/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-3
         transport_path: build/c86-transport-3
         artifact_prefix: reverseandroid-c86-3
-    - name: 'C86 IC correction stage 3: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r3.outcome == 'success'
+      id: p3
+    - name: 'C86 cleanup stage 3: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r3.outcome == 'success' && steps.p3.outcome == 'success'
       run: 'rm -rf evidence/c86-2 build/c86-transport-2
 
         '
-    - name: 'C86 IC correction stage 4: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 4: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r4
-      if: success() && steps.r3.outcome == 'success' && steps.r3.outputs.complete != 'true'
+      if: success() && steps.r3.outcome == 'success' && steps.r3.outputs.complete != 'true' && steps.p3.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 4
 
         '
-    - name: 'C86 IC correction stage 4: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 4: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r4.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-4/output-contract.json"))["checkpoint_sha256"])'')
@@ -172,27 +178,29 @@ jobs:
         evidence/c86-4/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 4: preserve every complete original checkpoint piece'
-      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure') && hashFiles('evidence/c85-4/c46-progress.json')
+    - name: 'C86 cleanup stage 4: preserve every complete original checkpoint piece'
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure') && hashFiles('evidence/c86-4/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-4
         transport_path: build/c86-transport-4
         artifact_prefix: reverseandroid-c86-4
-    - name: 'C86 IC correction stage 4: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r4.outcome == 'success'
+      id: p4
+    - name: 'C86 cleanup stage 4: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r4.outcome == 'success' && steps.p4.outcome == 'success'
       run: 'rm -rf evidence/c86-3 build/c86-transport-3
 
         '
-    - name: 'C86 IC correction stage 5: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 5: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r5
-      if: success() && steps.r4.outcome == 'success' && steps.r4.outputs.complete != 'true'
+      if: success() && steps.r4.outcome == 'success' && steps.r4.outputs.complete != 'true' && steps.p4.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 5
 
         '
-    - name: 'C86 IC correction stage 5: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 5: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r5.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-5/output-contract.json"))["checkpoint_sha256"])'')
@@ -201,27 +209,29 @@ jobs:
         evidence/c86-5/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 5: preserve every complete original checkpoint piece'
-      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure') && hashFiles('evidence/c85-5/c46-progress.json')
+    - name: 'C86 cleanup stage 5: preserve every complete original checkpoint piece'
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure') && hashFiles('evidence/c86-5/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-5
         transport_path: build/c86-transport-5
         artifact_prefix: reverseandroid-c86-5
-    - name: 'C86 IC correction stage 5: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r5.outcome == 'success'
+      id: p5
+    - name: 'C86 cleanup stage 5: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r5.outcome == 'success' && steps.p5.outcome == 'success'
       run: 'rm -rf evidence/c86-4 build/c86-transport-4
 
         '
-    - name: 'C86 IC correction stage 6: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 6: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r6
-      if: success() && steps.r5.outcome == 'success' && steps.r5.outputs.complete != 'true'
+      if: success() && steps.r5.outcome == 'success' && steps.r5.outputs.complete != 'true' && steps.p5.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 6
 
         '
-    - name: 'C86 IC correction stage 6: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 6: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r6.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-6/output-contract.json"))["checkpoint_sha256"])'')
@@ -230,27 +240,29 @@ jobs:
         evidence/c86-6/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 6: preserve every complete original checkpoint piece'
-      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure') && hashFiles('evidence/c85-6/c46-progress.json')
+    - name: 'C86 cleanup stage 6: preserve every complete original checkpoint piece'
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure') && hashFiles('evidence/c86-6/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-6
         transport_path: build/c86-transport-6
         artifact_prefix: reverseandroid-c86-6
-    - name: 'C86 IC correction stage 6: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r6.outcome == 'success'
+      id: p6
+    - name: 'C86 cleanup stage 6: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r6.outcome == 'success' && steps.p6.outcome == 'success'
       run: 'rm -rf evidence/c86-5 build/c86-transport-5
 
         '
-    - name: 'C86 IC correction stage 7: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 7: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r7
-      if: success() && steps.r6.outcome == 'success' && steps.r6.outputs.complete != 'true'
+      if: success() && steps.r6.outcome == 'success' && steps.r6.outputs.complete != 'true' && steps.p6.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 7
 
         '
-    - name: 'C86 IC correction stage 7: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 7: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r7.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-7/output-contract.json"))["checkpoint_sha256"])'')
@@ -259,27 +271,29 @@ jobs:
         evidence/c86-7/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 7: preserve every complete original checkpoint piece'
-      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure') && hashFiles('evidence/c85-7/c46-progress.json')
+    - name: 'C86 cleanup stage 7: preserve every complete original checkpoint piece'
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure') && hashFiles('evidence/c86-7/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-7
         transport_path: build/c86-transport-7
         artifact_prefix: reverseandroid-c86-7
-    - name: 'C86 IC correction stage 7: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r7.outcome == 'success'
+      id: p7
+    - name: 'C86 cleanup stage 7: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r7.outcome == 'success' && steps.p7.outcome == 'success'
       run: 'rm -rf evidence/c86-6 build/c86-transport-6
 
         '
-    - name: 'C86 IC correction stage 8: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 8: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r8
-      if: success() && steps.r7.outcome == 'success' && steps.r7.outputs.complete != 'true'
+      if: success() && steps.r7.outcome == 'success' && steps.r7.outputs.complete != 'true' && steps.p7.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 8
 
         '
-    - name: 'C86 IC correction stage 8: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 8: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r8.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-8/output-contract.json"))["checkpoint_sha256"])'')
@@ -288,27 +302,29 @@ jobs:
         evidence/c86-8/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 8: preserve every complete original checkpoint piece'
-      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure') && hashFiles('evidence/c85-8/c46-progress.json')
+    - name: 'C86 cleanup stage 8: preserve every complete original checkpoint piece'
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure') && hashFiles('evidence/c86-8/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-8
         transport_path: build/c86-transport-8
         artifact_prefix: reverseandroid-c86-8
-    - name: 'C86 IC correction stage 8: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r8.outcome == 'success'
+      id: p8
+    - name: 'C86 cleanup stage 8: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r8.outcome == 'success' && steps.p8.outcome == 'success'
       run: 'rm -rf evidence/c86-7 build/c86-transport-7
 
         '
-    - name: 'C86 IC correction stage 9: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 9: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r9
-      if: success() && steps.r8.outcome == 'success' && steps.r8.outputs.complete != 'true'
+      if: success() && steps.r8.outcome == 'success' && steps.r8.outputs.complete != 'true' && steps.p8.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 9
 
         '
-    - name: 'C86 IC correction stage 9: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 9: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r9.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-9/output-contract.json"))["checkpoint_sha256"])'')
@@ -317,27 +333,29 @@ jobs:
         evidence/c86-9/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 9: preserve every complete original checkpoint piece'
-      if: always() && (steps.r9.outcome == 'success' || steps.r9.outcome == 'failure') && hashFiles('evidence/c85-9/c46-progress.json')
+    - name: 'C86 cleanup stage 9: preserve every complete original checkpoint piece'
+      if: always() && (steps.r9.outcome == 'success' || steps.r9.outcome == 'failure') && hashFiles('evidence/c86-9/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-9
         transport_path: build/c86-transport-9
         artifact_prefix: reverseandroid-c86-9
-    - name: 'C86 IC correction stage 9: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r9.outcome == 'success'
+      id: p9
+    - name: 'C86 cleanup stage 9: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r9.outcome == 'success' && steps.p9.outcome == 'success'
       run: 'rm -rf evidence/c86-8 build/c86-transport-8
 
         '
-    - name: 'C86 IC correction stage 10: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 10: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r10
-      if: success() && steps.r9.outcome == 'success' && steps.r9.outputs.complete != 'true'
+      if: success() && steps.r9.outcome == 'success' && steps.r9.outputs.complete != 'true' && steps.p9.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 10
 
         '
-    - name: 'C86 IC correction stage 10: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 10: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r10.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-10/output-contract.json"))["checkpoint_sha256"])'')
@@ -346,27 +364,29 @@ jobs:
         evidence/c86-10/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 10: preserve every complete original checkpoint piece'
-      if: always() && (steps.r10.outcome == 'success' || steps.r10.outcome == 'failure') && hashFiles('evidence/c85-10/c46-progress.json')
+    - name: 'C86 cleanup stage 10: preserve every complete original checkpoint piece'
+      if: always() && (steps.r10.outcome == 'success' || steps.r10.outcome == 'failure') && hashFiles('evidence/c86-10/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-10
         transport_path: build/c86-transport-10
         artifact_prefix: reverseandroid-c86-10
-    - name: 'C86 IC correction stage 10: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r10.outcome == 'success'
+      id: p10
+    - name: 'C86 cleanup stage 10: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r10.outcome == 'success' && steps.p10.outcome == 'success'
       run: 'rm -rf evidence/c86-9 build/c86-transport-9
 
         '
-    - name: 'C86 IC correction stage 11: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 11: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r11
-      if: success() && steps.r10.outcome == 'success' && steps.r10.outputs.complete != 'true'
+      if: success() && steps.r10.outcome == 'success' && steps.r10.outputs.complete != 'true' && steps.p10.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 11
 
         '
-    - name: 'C86 IC correction stage 11: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 11: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r11.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-11/output-contract.json"))["checkpoint_sha256"])'')
@@ -375,27 +395,29 @@ jobs:
         evidence/c86-11/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 11: preserve every complete original checkpoint piece'
-      if: always() && (steps.r11.outcome == 'success' || steps.r11.outcome == 'failure') && hashFiles('evidence/c85-11/c46-progress.json')
+    - name: 'C86 cleanup stage 11: preserve every complete original checkpoint piece'
+      if: always() && (steps.r11.outcome == 'success' || steps.r11.outcome == 'failure') && hashFiles('evidence/c86-11/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-11
         transport_path: build/c86-transport-11
         artifact_prefix: reverseandroid-c86-11
-    - name: 'C86 IC correction stage 11: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r11.outcome == 'success'
+      id: p11
+    - name: 'C86 cleanup stage 11: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r11.outcome == 'success' && steps.p11.outcome == 'success'
       run: 'rm -rf evidence/c86-10 build/c86-transport-10
 
         '
-    - name: 'C86 IC correction stage 12: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 12: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r12
-      if: success() && steps.r11.outcome == 'success' && steps.r11.outputs.complete != 'true'
+      if: success() && steps.r11.outcome == 'success' && steps.r11.outputs.complete != 'true' && steps.p11.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 12
 
         '
-    - name: 'C86 IC correction stage 12: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 12: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r12.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-12/output-contract.json"))["checkpoint_sha256"])'')
@@ -404,27 +426,29 @@ jobs:
         evidence/c86-12/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 12: preserve every complete original checkpoint piece'
-      if: always() && (steps.r12.outcome == 'success' || steps.r12.outcome == 'failure') && hashFiles('evidence/c85-12/c46-progress.json')
+    - name: 'C86 cleanup stage 12: preserve every complete original checkpoint piece'
+      if: always() && (steps.r12.outcome == 'success' || steps.r12.outcome == 'failure') && hashFiles('evidence/c86-12/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-12
         transport_path: build/c86-transport-12
         artifact_prefix: reverseandroid-c86-12
-    - name: 'C86 IC correction stage 12: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r12.outcome == 'success'
+      id: p12
+    - name: 'C86 cleanup stage 12: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r12.outcome == 'success' && steps.p12.outcome == 'success'
       run: 'rm -rf evidence/c86-11 build/c86-transport-11
 
         '
-    - name: 'C86 IC correction stage 13: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 13: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r13
-      if: success() && steps.r12.outcome == 'success' && steps.r12.outputs.complete != 'true'
+      if: success() && steps.r12.outcome == 'success' && steps.r12.outputs.complete != 'true' && steps.p12.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 13
 
         '
-    - name: 'C86 IC correction stage 13: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 13: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r13.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-13/output-contract.json"))["checkpoint_sha256"])'')
@@ -433,27 +457,29 @@ jobs:
         evidence/c86-13/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 13: preserve every complete original checkpoint piece'
-      if: always() && (steps.r13.outcome == 'success' || steps.r13.outcome == 'failure') && hashFiles('evidence/c85-13/c46-progress.json')
+    - name: 'C86 cleanup stage 13: preserve every complete original checkpoint piece'
+      if: always() && (steps.r13.outcome == 'success' || steps.r13.outcome == 'failure') && hashFiles('evidence/c86-13/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-13
         transport_path: build/c86-transport-13
         artifact_prefix: reverseandroid-c86-13
-    - name: 'C86 IC correction stage 13: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r13.outcome == 'success'
+      id: p13
+    - name: 'C86 cleanup stage 13: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r13.outcome == 'success' && steps.p13.outcome == 'success'
       run: 'rm -rf evidence/c86-12 build/c86-transport-12
 
         '
-    - name: 'C86 IC correction stage 14: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 14: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r14
-      if: success() && steps.r13.outcome == 'success' && steps.r13.outputs.complete != 'true'
+      if: success() && steps.r13.outcome == 'success' && steps.r13.outputs.complete != 'true' && steps.p13.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 14
 
         '
-    - name: 'C86 IC correction stage 14: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 14: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r14.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-14/output-contract.json"))["checkpoint_sha256"])'')
@@ -462,27 +488,29 @@ jobs:
         evidence/c86-14/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 14: preserve every complete original checkpoint piece'
-      if: always() && (steps.r14.outcome == 'success' || steps.r14.outcome == 'failure') && hashFiles('evidence/c85-14/c46-progress.json')
+    - name: 'C86 cleanup stage 14: preserve every complete original checkpoint piece'
+      if: always() && (steps.r14.outcome == 'success' || steps.r14.outcome == 'failure') && hashFiles('evidence/c86-14/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-14
         transport_path: build/c86-transport-14
         artifact_prefix: reverseandroid-c86-14
-    - name: 'C86 IC correction stage 14: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r14.outcome == 'success'
+      id: p14
+    - name: 'C86 cleanup stage 14: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r14.outcome == 'success' && steps.p14.outcome == 'success'
       run: 'rm -rf evidence/c86-13 build/c86-transport-13
 
         '
-    - name: 'C86 IC correction stage 15: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 15: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r15
-      if: success() && steps.r14.outcome == 'success' && steps.r14.outputs.complete != 'true'
+      if: success() && steps.r14.outcome == 'success' && steps.r14.outputs.complete != 'true' && steps.p14.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 15
 
         '
-    - name: 'C86 IC correction stage 15: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 15: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r15.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-15/output-contract.json"))["checkpoint_sha256"])'')
@@ -491,27 +519,29 @@ jobs:
         evidence/c86-15/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 15: preserve every complete original checkpoint piece'
-      if: always() && (steps.r15.outcome == 'success' || steps.r15.outcome == 'failure') && hashFiles('evidence/c85-15/c46-progress.json')
+    - name: 'C86 cleanup stage 15: preserve every complete original checkpoint piece'
+      if: always() && (steps.r15.outcome == 'success' || steps.r15.outcome == 'failure') && hashFiles('evidence/c86-15/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-15
         transport_path: build/c86-transport-15
         artifact_prefix: reverseandroid-c86-15
-    - name: 'C86 IC correction stage 15: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r15.outcome == 'success'
+      id: p15
+    - name: 'C86 cleanup stage 15: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r15.outcome == 'success' && steps.p15.outcome == 'success'
       run: 'rm -rf evidence/c86-14 build/c86-transport-14
 
         '
-    - name: 'C86 IC correction stage 16: one bounded admitted CLZ-extension run and at most one authenticated buffered
+    - name: 'C86 cleanup stage 16: one bounded original-admitted native run and at most one authenticated buffered
         input'
       id: r16
-      if: success() && steps.r15.outcome == 'success' && steps.r15.outputs.complete != 'true'
+      if: success() && steps.r15.outcome == 'success' && steps.r15.outputs.complete != 'true' && steps.p15.outcome
+        == 'success'
       run: 'python3 scripts/run-c86-stage.py 16
 
         '
-    - name: 'C86 IC correction stage 16: inspect original executables and actual reciprocal kernel PTY links'
+    - name: 'C86 cleanup stage 16: inspect original executables and actual reciprocal kernel PTY links'
       if: success() && steps.r16.outcome == 'success'
       continue-on-error: true
       run: 'TASK_ABI2_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c86-16/output-contract.json"))["checkpoint_sha256"])'')
@@ -520,16 +550,17 @@ jobs:
         evidence/c86-16/peripherals-readonly.json /data/local/tmp/reverseandroid-peer-abi3.elf
 
         '
-    - name: 'C86 IC correction stage 16: preserve every complete original checkpoint piece'
-      if: always() && (steps.r16.outcome == 'success' || steps.r16.outcome == 'failure') && hashFiles('evidence/c85-16/c46-progress.json')
+    - name: 'C86 cleanup stage 16: preserve every complete original checkpoint piece'
+      if: always() && (steps.r16.outcome == 'success' || steps.r16.outcome == 'failure') && hashFiles('evidence/c86-16/c46-progress.json')
         != ''
       uses: ./.github/actions/preserve-android-checkpoint
       with:
         checkpoint_path: evidence/c86-16
         transport_path: build/c86-transport-16
         artifact_prefix: reverseandroid-c86-16
-    - name: 'C86 IC correction stage 16: release only earlier host duplicates after complete preservation'
-      if: success() && steps.r16.outcome == 'success'
+      id: p16
+    - name: 'C86 cleanup stage 16: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r16.outcome == 'success' && steps.p16.outcome == 'success'
       run: 'rm -rf evidence/c86-15 build/c86-transport-15
 
         '
