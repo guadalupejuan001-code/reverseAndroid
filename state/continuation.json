@@ -1,45 +1,99 @@
 {
-  "schema": "reverseandroid-same-epoch-continuation-plan-v1",
-  "cycle": "C81",
-  "epoch": "C76-lights-port",
-  "source_checkpoint_sha256": "62c8d73f4bebc44b1824b0bafa3d09f691fa5d20f2b00ae3a03b5f47ee0d956b",
-  "source_instructions": 57000000000,
+  "schema": "reverseandroid-validated-private-peripheral-same-epoch-adoption-v1",
+  "cycle": "C82",
+  "source_checkpoint_sha256": "12760b2bbb2cf8cb28af23c823ea7d2c663cb79168b1403c69094f8b75c2e6f5",
+  "source_instructions": 83000000000,
   "source_stage": 13,
-  "source_run_id": 42147763604,
-  "source_commit": "c435ee53ef65e60f00ef2f7fb946c8e53eea8a8f",
-  "source_transport": "state/experiments/c80-stage-13-transport.json",
-  "source_artifact_lock": "state/experiments/c81-artifacts.json",
-  "fresh_hardware_power_cycle": false,
-  "instruction_budgets": [
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000,
-    2000000000
+  "source_run_id": 42169590905,
+  "source_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
+  "source_artifact_lock": "state/experiments/c82-artifacts.json",
+  "validated_original_HAL_control": "docs/evidence/c82/prior-private-HAL-integration.json",
+  "control_metadata_stage": 11,
+  "control_metadata_checkpoint_sha256": "98147b814e71294427f4b682a4db85acc186b5ea20a47c2c8c84fc7a4acdeb34",
+  "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "gzip_SHA256": "671fd2b742811b13eb861fb848f5a033989de991561c064caf09e310ee8e0522",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "phases": [
+    {
+      "input_file": "state/experiments/c82-input-0.txt",
+      "input_bytes": 923,
+      "input_sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6",
+      "response_marker": "REVERSE_PTS_TRANSFER_RX_0",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Start the real root blocking receiver for the validated virtual peripheral; authenticate each ordinary guest-file prefix."
+    },
+    {
+      "input_file": "state/experiments/c82-input-1.txt",
+      "input_bytes": 3001,
+      "input_sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0",
+      "response_marker": "REVERSE_PTS_TRANSFER_DATA_0",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PTS_TRANSFER_DATA_0",
+        "REVERSE_PTS_TRANSFER_RX_1"
+      ],
+      "all_response_markers_required": true,
+      "effect": "Deliver first authenticated base64 fragment only to the already waiting root read."
+    },
+    {
+      "input_file": "state/experiments/c82-input-2.txt",
+      "input_bytes": 2837,
+      "input_sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1",
+      "response_marker": "REVERSE_PTS_TRANSFER_DATA_1",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PTS_TRANSFER_DATA_1",
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "all_response_markers_required": true,
+      "effect": "Deliver final authenticated base64 fragment; require both file and receiver completion acknowledgments."
+    },
+    {
+      "input_file": "state/experiments/c82-input-3.txt",
+      "input_bytes": 2103,
+      "input_sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17",
+      "response_marker": "REVERSE_PTS_TRANSFER_ACTIVATION",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Decode the exact compiled ABI3 ELF; provision the isolated private PTYs and require enforcing1 plus unchanged loaded-policy SHA."
+    },
+    {
+      "input_file": "state/experiments/c82-input-4.txt",
+      "input_bytes": 939,
+      "input_sha256": "46667b569856ab07a01b2f8c6e612705363e27432074c5abe759ea20eeef2191",
+      "response_marker": "REVERSE_PTS_TRANSFER_INSPECT",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Verify original Binder services, device labels, read-only OEM getter replies and the real peripheral traffic log."
+    }
   ],
-  "new_uart_input": "state/experiments/c81-priority-input-plan.json",
-  "further_UART_input": null,
-  "adoption_evidence": "docs/evidence/c81/measured-priority-adoption.json",
-  "all_prior_valid_states_preserved": true,
+  "max_stages": 16,
+  "continuation_instruction_budget": 2000000000,
+  "further_UART_after_five_phases": null,
+  "fresh_hardware_power_cycle": false,
+  "logical_RAM_bytes": 2147483648,
+  "instructions_per_tick": 64,
+  "original_seed_unchanged": true,
+  "original_native_SHA256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
   "original_870_files_unchanged": true,
-  "logical_ram_bytes": 2147483648,
-  "counter_instructions_per_tick": 64,
-  "seed": "699e17ffab1ef3618567ee928b25cdc0b6c7feed3d520147e9111c76a751a6cb",
-  "native_binary_sha256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
-  "original_admission_roundtrip_process_kernel_property_gates_unchanged": true,
-  "original_C80_continues_as_reference_after_fork": true,
-  "peripheral_peer_adopted": false,
-  "boot_gate": "Original full C46, actual SystemServer, live PID1 sys.boot_completed=1, enforcing SELinux; then manually inspect authentic UI and bind a real UI response test to its before frame.",
+  "no_RVG_or_policy_or_property_edits": true,
   "execute_on_push": false
 }

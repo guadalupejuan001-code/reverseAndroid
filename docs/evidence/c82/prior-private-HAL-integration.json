@@ -1,0 +1,409 @@
+{
+  "schema": "reverseandroid-authenticated-prior-original-HAL-integration-v1",
+  "metadata_artifact_id": 13490784050,
+  "metadata_ZIP_SHA256": "2a76cb260d2bae24a4115f850e2253d6b2bc0cf28536e3c994666d71cb48cbca",
+  "run_id": 42184815321,
+  "execution_commit": "b5199e17c001f2fffa44485be93df819800dc3d1",
+  "stage": 11,
+  "original_experiment_state": {
+    "source": "evidence/peripheral-privatepts-eof-control-11",
+    "phase": 2,
+    "waiting": false,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/peripheral-privatepts-eof-control-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 67000000000,
+          "counter_subtick": 28,
+          "bytes": 1562,
+          "sha256": "20977832b21232b06ad2c3646e7dad8b6c3cf279972a2649ee707b74794fb4c6"
+        }
+      },
+      {
+        "phase": 1,
+        "input_plan": "evidence/peripheral-privatepts-eof-control-reports/stage-9-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 75000000000,
+          "counter_subtick": 28,
+          "bytes": 650,
+          "sha256": "7d8993436d52216265ffc2e87e4e718a2afa5e929514949f645785fa3b45fb2d"
+        }
+      }
+    ],
+    "complete": true,
+    "failed": false,
+    "last_admitted_sha256": "98147b814e71294427f4b682a4db85acc186b5ea20a47c2c8c84fc7a4acdeb34",
+    "last_admitted_instructions": 78000000000,
+    "combined_original_console_bytes_sha256": "aaa7df28afd0cce6628a0354137568de4e6d4a3255a166b98c73004f1e6fd988",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": true,
+      "android.hardware.sensors.ISensors/default": true
+    },
+    "actual_AArch64_peer_ready_line_seen": true,
+    "actual_guest_ELF_hash_line_seen": true,
+    "actual_private_device_filesystem_mount_seen": true,
+    "actual_loaded_policy_unchanged_hashes": [
+      "e7dc888c8a4c5ae6f48a175ace91e63ab262e64d4d6f6799a015fed5b4c32f97"
+    ],
+    "console_observation": "evidence/peripheral-privatepts-eof-control-11/console-observation.json",
+    "prior_completed_transfer_repeated": false,
+    "admitted_parent_control": "docs/evidence/c80/privatepts-control-stage6.json",
+    "control_is_promotion_authority": false,
+    "ELF_SHA256_expected": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+    "all_event_phases_unique": true,
+    "main_C81_modified": false
+  },
+  "original_HAL_observation": {
+    "schema": "reverseandroid-original-peripheral-HAL-PTY-readonly-v1",
+    "read_only": true,
+    "processes": [
+      {
+        "pid": 3754,
+        "name": "android.hardwar",
+        "task": "0xffffff802dba6540",
+        "exe_path": "/apex/com.google.cf.oemlock/bin/hw/android.hardware.oemlock-service.remote",
+        "argv": [
+          "/apex/com.google.cf.oemlock/bin/hw/android.hardware.oemlock-service.remote",
+          "/dev/hvc10"
+        ],
+        "credentials": {
+          "uid": 1064,
+          "euid": 1064,
+          "gid": 1064,
+          "egid": 1064
+        },
+        "state": 8193,
+        "exit_state": 0,
+        "files": [
+          {
+            "fd": 0,
+            "file_pointer": "0xffffff802f241300",
+            "path": "/dev/null",
+            "rdev": "0x100003"
+          },
+          {
+            "fd": 1,
+            "file_pointer": "0xffffff802f241300",
+            "path": "/dev/null",
+            "rdev": "0x100003"
+          },
+          {
+            "fd": 2,
+            "file_pointer": "0xffffff802f241300",
+            "path": "/dev/null",
+            "rdev": "0x100003"
+          },
+          {
+            "fd": 3,
+            "file_pointer": "0xffffff802f12fe00",
+            "path": "/dev/binderfs/binder",
+            "rdev": "0x1fa00001"
+          },
+          {
+            "fd": 4,
+            "file_pointer": "0xffffff802f12f800",
+            "path": "/dev/ra-pts/0",
+            "rdev": "0x8800000",
+            "tty": {
+              "pointer": "0xffffff8035317400",
+              "linked_pointer": "0xffffff8035316000",
+              "index": 0,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 6,
+            "file_pointer": "0xffffff8035036a00",
+            "path": "/dev/kmsg",
+            "rdev": "0x10000b"
+          }
+        ]
+      },
+      {
+        "pid": 3757,
+        "name": "reverseandroid-",
+        "task": "0xffffff803ba23cc0",
+        "exe_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+        "argv": [
+          "/data/local/tmp/reverseandroid-peer-abi3.elf",
+          "--guest"
+        ],
+        "credentials": {
+          "uid": 0,
+          "euid": 0,
+          "gid": 0,
+          "egid": 0
+        },
+        "state": 1,
+        "exit_state": 0,
+        "files": [
+          {
+            "fd": 0,
+            "file_pointer": "0xffffff802f21bf00",
+            "path": "/dev/null",
+            "rdev": "0x100003"
+          },
+          {
+            "fd": 3,
+            "file_pointer": "0xffffff802f161700",
+            "path": "/dev/ra-pts/ptmx",
+            "rdev": "0x500002",
+            "tty": {
+              "pointer": "0xffffff8035316000",
+              "linked_pointer": "0xffffff8035317400",
+              "index": 0,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 5,
+            "file_pointer": "0xffffff802afa7c00",
+            "path": "/dev/ra-pts/0",
+            "rdev": "0x8800000",
+            "tty": {
+              "pointer": "0xffffff8035317400",
+              "linked_pointer": "0xffffff8035316000",
+              "index": 0,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 6,
+            "file_pointer": "0xffffff802afa7600",
+            "path": "/dev/ra-pts/ptmx",
+            "rdev": "0x500002",
+            "tty": {
+              "pointer": "0xffffff8035317c00",
+              "linked_pointer": "0xffffff8028e0b800",
+              "index": 1,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 7,
+            "file_pointer": "0xffffff802f12ff00",
+            "path": "/dev/ra-pts/1",
+            "rdev": "0x8800001",
+            "tty": {
+              "pointer": "0xffffff8028e0b800",
+              "linked_pointer": "0xffffff8035317c00",
+              "index": 1,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 8,
+            "file_pointer": "0xffffff803528f200",
+            "path": "/dev/ra-pts/ptmx",
+            "rdev": "0x500002",
+            "tty": {
+              "pointer": "0xffffff802f3c0800",
+              "linked_pointer": "0xffffff802f3c0000",
+              "index": 2,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 9,
+            "file_pointer": "0xffffff803528f000",
+            "path": "/dev/ra-pts/2",
+            "rdev": "0x8800002",
+            "tty": {
+              "pointer": "0xffffff802f3c0000",
+              "linked_pointer": "0xffffff802f3c0800",
+              "index": 2,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          }
+        ]
+      },
+      {
+        "pid": 3783,
+        "name": "android.hardwar",
+        "task": "0xffffff803ba20000",
+        "exe_path": "/vendor/bin/hw/android.hardware.sensors-service.multihal",
+        "argv": [
+          "/vendor/bin/hw/android.hardware.sensors-service.multihal"
+        ],
+        "credentials": {
+          "uid": 1000,
+          "euid": 1000,
+          "gid": 1000,
+          "egid": 1000
+        },
+        "state": 8193,
+        "exit_state": 0,
+        "files": [
+          {
+            "fd": 0,
+            "file_pointer": "0xffffff802f38a400",
+            "path": "/dev/null",
+            "rdev": "0x100003"
+          },
+          {
+            "fd": 1,
+            "file_pointer": "0xffffff802f38a400",
+            "path": "/dev/null",
+            "rdev": "0x100003"
+          },
+          {
+            "fd": 2,
+            "file_pointer": "0xffffff802f38a400",
+            "path": "/dev/null",
+            "rdev": "0x100003"
+          },
+          {
+            "fd": 3,
+            "file_pointer": "0xffffff802f02ce00",
+            "path": "/dev/binderfs/binder",
+            "rdev": "0x1fa00001"
+          },
+          {
+            "fd": 5,
+            "file_pointer": "0xffffff802db6cf00",
+            "path": "/dev/ra-pts/1",
+            "rdev": "0x8800001",
+            "tty": {
+              "pointer": "0xffffff8028e0b800",
+              "linked_pointer": "0xffffff8035317c00",
+              "index": 1,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 6,
+            "file_pointer": "0xffffff802db6cc00",
+            "path": "/dev/ra-pts/2",
+            "rdev": "0x8800002",
+            "tty": {
+              "pointer": "0xffffff802f3c0000",
+              "linked_pointer": "0xffffff802f3c0800",
+              "index": 2,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 7,
+            "file_pointer": "0xffffff802db6c900",
+            "path": "/dev/urandom",
+            "rdev": "0x100009"
+          },
+          {
+            "fd": 11,
+            "file_pointer": "0xffffff802db6cf00",
+            "path": "/dev/ra-pts/1",
+            "rdev": "0x8800001",
+            "tty": {
+              "pointer": "0xffffff8028e0b800",
+              "linked_pointer": "0xffffff8035317c00",
+              "index": 1,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          },
+          {
+            "fd": 12,
+            "file_pointer": "0xffffff802db6cc00",
+            "path": "/dev/ra-pts/2",
+            "rdev": "0x8800002",
+            "tty": {
+              "pointer": "0xffffff802f3c0000",
+              "linked_pointer": "0xffffff802f3c0800",
+              "index": 2,
+              "file_and_reciprocal_PTY_backlinks_verified": true
+            }
+          }
+        ]
+      }
+    ],
+    "inspection_errors": [],
+    "original_oemlock_executable_alive": true,
+    "original_sensors_executable_alive": true,
+    "real_AArch64_peer_alive": true,
+    "paired_FDs": [
+      {
+        "HAL_pid": 3754,
+        "HAL_executable": "/apex/com.google.cf.oemlock/bin/hw/android.hardware.oemlock-service.remote",
+        "HAL_fd": 4,
+        "peer_pid": 3757,
+        "peer_fd": 3,
+        "PTY_index": 0,
+        "actual_kernel_PTY_backlinks_verified": true
+      },
+      {
+        "HAL_pid": 3783,
+        "HAL_executable": "/vendor/bin/hw/android.hardware.sensors-service.multihal",
+        "HAL_fd": 5,
+        "peer_pid": 3757,
+        "peer_fd": 6,
+        "PTY_index": 1,
+        "actual_kernel_PTY_backlinks_verified": true
+      },
+      {
+        "HAL_pid": 3783,
+        "HAL_executable": "/vendor/bin/hw/android.hardware.sensors-service.multihal",
+        "HAL_fd": 6,
+        "peer_pid": 3757,
+        "peer_fd": 8,
+        "PTY_index": 2,
+        "actual_kernel_PTY_backlinks_verified": true
+      },
+      {
+        "HAL_pid": 3783,
+        "HAL_executable": "/vendor/bin/hw/android.hardware.sensors-service.multihal",
+        "HAL_fd": 11,
+        "peer_pid": 3757,
+        "peer_fd": 6,
+        "PTY_index": 1,
+        "actual_kernel_PTY_backlinks_verified": true
+      },
+      {
+        "HAL_pid": 3783,
+        "HAL_executable": "/vendor/bin/hw/android.hardware.sensors-service.multihal",
+        "HAL_fd": 12,
+        "peer_pid": 3757,
+        "peer_fd": 8,
+        "PTY_index": 2,
+        "actual_kernel_PTY_backlinks_verified": true
+      }
+    ],
+    "OEM_channel_connected_to_actual_peer": true,
+    "two_separate_sensor_channels_connected_to_actual_peer": true,
+    "boot_or_UI_completion_claimed": false,
+    "expected_peer_executable": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+    "checkpoint_sha256": "98147b814e71294427f4b682a4db85acc186b5ea20a47c2c8c84fc7a4acdeb34",
+    "instructions": 78000000000,
+    "input_unchanged": true,
+    "original_observer_source_git_blob_sha1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c"
+  },
+  "actual_original_gates": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "98147b814e71294427f4b682a4db85acc186b5ea20a47c2c8c84fc7a4acdeb34",
+    "instructions": 78000000000,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": false,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_process_missing:system_server",
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "all_required_actual_integration_checks": {
+    "actual_control_completed": true,
+    "actual_ELF_READY_and_private_mount": true,
+    "original_Binder_registrations": true,
+    "actual_unchanged_loaded_policy": true,
+    "three_live_original_HAL_channels": true,
+    "three_distinct_kernel_pairs": true,
+    "original_control_admission_and_security": true,
+    "clean_control_process": true,
+    "full_checkpoint_binding": true
+  },
+  "old_control_snapshot_is_not_promotion_authority": true,
+  "new_primary_source": "12760b2bbb2cf8cb28af23c823ea7d2c663cb79168b1403c69094f8b75c2e6f5"
+}
