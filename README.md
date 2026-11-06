@@ -7,9 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C87, etapa14: **123.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y todas las piezas del snapshot conservadas y fijadas por SHA-256. Las etapas1 a4 coinciden byte por byte con ejecuciones locales independientes; no se atribuye una repetición local a la frontera actual.
-Zygote sigue vivo. Su hilo principal mantiene la misma espera futex durante las etapas12,13 y14. La lectura completa aislada encuentra un único hilo Java ejecutable, el JIT5922, a nice+19. C88 prepara un único ajuste explícito y protegido a nice0 desde esta frontera; la prueba aún no se ha ejecutado. El binario del emulador se conserva. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
-[Admisión original y conservación actual](docs/evidence/c87/stage14-original-CI-authority.json); [espera medida](docs/evidence/c87/stage12-to13-original-futex-and-starved-JIT.json); [prueba C88](docs/c88-guarded-jit-priority.md); [estado actual](state/latest.json).
+C88, etapa1: **124.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las cuatro piezas del snapshot conservadas y fijadas por SHA-256. El motor validado y los siete eventos previos se mantienen. Se entregó exactamente una vez el comando protegido para JIT5922; **Android aún no ha confirmado el ajuste**, y el hilo principal continúa esperando. Los siguientes tramos no reenvían el comando.
+La rama C87 sin ajuste conserva cinco fronteras con la misma espera y finalizó su presupuesto como referencia. La imagen auténtica revisada sigue mostrando el logotipo de Android. **SystemServer, el arranque completo y la interfaz utilizable siguen pendientes.**
+[Admisión actual](docs/evidence/c88/stage1-original-CI-authority.json); [referencia sin ajuste](docs/evidence/c87/unchanged-futex-through-reference16.json); [prueba C88](docs/c88-guarded-jit-priority.md); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado

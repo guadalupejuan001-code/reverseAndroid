@@ -1,0 +1,23 @@
+{
+  "source": {
+    "schema": "reverse-snapshot-scanout-v1",
+    "status": "scanout_exported",
+    "source_checkpoint_sha256": "bfd5570b222a455343bd6ba7158cfaf857107250108219dc01967aaa6943e523",
+    "instructions": 123147727998,
+    "pc": "0xffffffc080160158",
+    "frame_counter": 316,
+    "width": 800,
+    "height": 600,
+    "rgb_sha256": "469dcee204eeb687d78b3bef4543e31a43d57dda2e0108ee5af1991e679d4051",
+    "ppm_sha256": "e2a4ebc7eabf516047a6d90b8dac6414d7d5383289f9999f63ff909e11d24332",
+    "cpu_instructions_executed": 0,
+    "original_snapshot_unchanged": true,
+    "android_boot_verified": false,
+    "android_display_verified": false
+  },
+  "authentic_image_reviewed": true,
+  "observed_content": "Original Android wordmark on black background; no usable Android home, lock screen, notifications or controls.",
+  "usable_UI": false,
+  "actual_UI_input_tested": false,
+  "no_new_guest_execution_or_input": true
+}

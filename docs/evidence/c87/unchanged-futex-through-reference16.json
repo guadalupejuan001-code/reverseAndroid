@@ -1,0 +1,86 @@
+{
+  "canonical_C88_selected_source_stage": 14,
+  "later_C87_is_reference_only": true,
+  "original_C87_run": 42247589579,
+  "actual_boundaries": [
+    {
+      "stage": 12,
+      "instructions": 121147727998,
+      "checkpoint_sha256": "77a43d489062634841a5b2fbca751e371102d92b403e0f30fc0438da75dfea0d",
+      "main_state": 8193,
+      "main_accounting": {
+        "nvcsw": "19",
+        "nivcsw": "8768",
+        "utime": "24114666000",
+        "stime": "5035830000",
+        "sum_exec_runtime": "26794720000",
+        "vruntime": "64689290087",
+        "exec_start": "1877255550000"
+      }
+    },
+    {
+      "stage": 13,
+      "instructions": 122147727998,
+      "checkpoint_sha256": "002d7d40cb122799890bbfc5dfeaf020b5ee4b5e16628aba5a93b35c133003db",
+      "main_state": 8193,
+      "main_accounting": {
+        "nvcsw": "19",
+        "nivcsw": "8768",
+        "utime": "24114666000",
+        "stime": "5035830000",
+        "sum_exec_runtime": "26794720000",
+        "vruntime": "64689290087",
+        "exec_start": "1877255550000"
+      }
+    },
+    {
+      "stage": 14,
+      "instructions": 123147727998,
+      "checkpoint_sha256": "bfd5570b222a455343bd6ba7158cfaf857107250108219dc01967aaa6943e523",
+      "main_state": 8193,
+      "main_accounting": {
+        "nvcsw": "19",
+        "nivcsw": "8768",
+        "utime": "24114666000",
+        "stime": "5035830000",
+        "sum_exec_runtime": "26794720000",
+        "vruntime": "64689290087",
+        "exec_start": "1877255550000"
+      }
+    },
+    {
+      "stage": 15,
+      "instructions": 124147727998,
+      "checkpoint_sha256": "8ae0cfcad3a404f630fe297304c7b4f3f8767bb49256807fe3091183a5eea0be",
+      "main_state": 8193,
+      "main_accounting": {
+        "nvcsw": "19",
+        "nivcsw": "8768",
+        "utime": "24114666000",
+        "stime": "5035830000",
+        "sum_exec_runtime": "26794720000",
+        "vruntime": "64689290087",
+        "exec_start": "1877255550000"
+      }
+    },
+    {
+      "stage": 16,
+      "instructions": 125147727998,
+      "checkpoint_sha256": "365c4a45f0988a442441da1765925ec545db17b6ea674245ba3737af840ba666",
+      "main_state": 8193,
+      "main_accounting": {
+        "nvcsw": "19",
+        "nivcsw": "8768",
+        "utime": "24114666000",
+        "stime": "5035830000",
+        "sum_exec_runtime": "26794720000",
+        "vruntime": "64689290087",
+        "exec_start": "1877255550000"
+      }
+    }
+  ],
+  "main_futex_and_all_accounting_exactly_unchanged": true,
+  "new_UART_events_in_C87": 0,
+  "C87_final_job_failure_is_missing_real_BOOT_and_SystemServer_after_finite_budget_not_failed_native_admission": true,
+  "last_complete_reference_lock": "state/experiments/c87-stage-16-artifacts.json"
+}
