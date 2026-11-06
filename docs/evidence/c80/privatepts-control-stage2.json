@@ -1,0 +1,53 @@
+{
+  "schema": "reverseandroid-authenticated-CI-producer-boundary-v1",
+  "cycle": "peripheral-privatepts-control",
+  "stage": 2,
+  "run_id": 42177363469,
+  "execution_commit": "ab3d319e1dd185c5a1a408492c785225612e8768",
+  "checkpoint_sha256": "63c771188bfecbe0b00e7ad4f662aaa939e1ce9664d6de1208221d7d0baa64fa",
+  "instructions": 63000000000,
+  "metadata_artifact_id": 13484173276,
+  "metadata_archive_sha256": "48aed04da01e9a48106c7f892564d038bd3df1bc7aa3375b39cf3b7048f933ce",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_or_CPU_replay_claimed": false,
+  "control_is_promotion_authority": false,
+  "transport_lock": "state/experiments/peripheral-privatepts-control-stage2-transport.json",
+  "artifact_lock": "state/experiments/peripheral-privatepts-control-stage2-artifacts.json",
+  "actual_experiment_state": {
+    "source": "evidence/peripheral-privatepts-control-2",
+    "phase": 1,
+    "waiting": false,
+    "events": [
+      {
+        "phase": 0,
+        "input_plan": "evidence/peripheral-privatepts-control-reports/stage-1-input-plan.json",
+        "actual_native_event": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 61000000000,
+          "counter_subtick": 28,
+          "bytes": 704,
+          "sha256": "eb20a2d4e12c16ef73bd2958eba53c5c3c6eaf11846c758739a140429a7d90d0"
+        }
+      }
+    ],
+    "complete": false,
+    "failed": false,
+    "last_admitted_sha256": "63c771188bfecbe0b00e7ad4f662aaa939e1ce9664d6de1208221d7d0baa64fa",
+    "last_admitted_instructions": 63000000000,
+    "combined_original_console_bytes_sha256": "ce3ac5e301a88b5b54d72a7d90ab944fa4736f9184d31c7776a5128cb11de6fe",
+    "original_HAL_registration_seen_in_actual_console": {
+      "android.hardware.oemlock.IOemLock/default": false,
+      "android.hardware.sensors.ISensors/default": false
+    },
+    "actual_AArch64_peer_ready_line_seen": false,
+    "actual_guest_ELF_hash_line_seen": false,
+    "actual_private_device_filesystem_mount_seen": false,
+    "actual_loaded_policy_unchanged_hashes": [],
+    "control_is_promotion_authority": false,
+    "ELF_SHA256_expected": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+    "all_event_phases_unique": true,
+    "main_C81_modified": false
+  }
+}
