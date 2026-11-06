@@ -1,9 +1,11 @@
 name: Retire replaced Android reference runs
-on:
+true:
   push:
-    branches: [main]
-    paths: [.github/workflows/retire-replaced-android-reference-runs.yml]
-  workflow_dispatch:
+    branches:
+    - main
+    paths:
+    - .github/workflows/retire-replaced-android-reference-runs.yml
+  workflow_dispatch: null
 permissions:
   contents: read
   actions: write
@@ -14,24 +16,15 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Verify immutable run heads and cancel only the three replaced reference recipes
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import json,subprocess
-          repository='guadalupejuan001-code/reverseAndroid'
-          expected={
-            42213153593:'adf2a95715806d23882d3ab3cda554fdef8dc279',
-            42223223966:'d0b432631011e8c6789345ecdf0ae04155b303a2',
-            42229435150:'5055208388e512f86a05aa48f3310adb256d8e9b',
-          }
-          for run,head in expected.items():
-              path=f'repos/{repository}/actions/runs/{run}'
-              actual=json.loads(subprocess.check_output(['gh','api',path]))
-              assert actual['head_sha']==head and actual['repository']['full_name']==repository
-              if actual['status']=='completed':
-                  print(json.dumps({'reference_run':run,'already_completed':True}))
-                  continue
-              subprocess.run(['gh','api','--method','POST',path+'/cancel'],check=True,stdout=subprocess.DEVNULL)
-              print(json.dumps({'reference_run':run,'head_verified':True,'cancellation_requested':True}))
-          PY
+    - name: Verify immutable heads and retire only explicitly replaced Android reference recipes
+      shell: bash
+      run: "python3 - <<'PY'\nimport json,subprocess\nrepository='guadalupejuan001-code/reverseAndroid'\nexpected={\n\
+        \  42213153593:'adf2a95715806d23882d3ab3cda554fdef8dc279',\n  42223223966:'d0b432631011e8c6789345ecdf0ae04155b303a2',\n\
+        \  42229435150:'5055208388e512f86a05aa48f3310adb256d8e9b',\n  42231109648:'5bb4a7922bb8d84131dced8358268ee48b2589e3',\n\
+        }\nfor run,head in expected.items():\n    path=f'repos/{repository}/actions/runs/{run}'\n    actual=json.loads(subprocess.check_output(['gh','api',path]))\n\
+        \    assert actual['head_sha']==head and actual['repository']['full_name']==repository\n    if actual['status']=='completed':\n\
+        \        print(json.dumps({'reference_run':run,'already_completed':True}))\n        continue\n    result=subprocess.run(['gh','api','--method','POST',path+'/cancel'],capture_output=True,text=True)\n\
+        \    if result.returncode:\n        fresh=json.loads(subprocess.check_output(['gh','api',path]))\n     \
+        \   if fresh['status']=='completed':\n            print(json.dumps({'reference_run':run,'completed_during_request':True}))\n\
+        \            continue\n        raise RuntimeError(f'Cancellation refused for verified reference {run}')\n\
+        \    print(json.dumps({'reference_run':run,'head_verified':True,'cancellation_requested':True}))\nPY\n"

@@ -1,0 +1,174 @@
+{
+  "schema": "reverseandroid-bootstrap-artifacts-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "artifacts": {
+    "seed": {
+      "transport_manifest": "state/experiments/c86-stage-8-transport.json",
+      "pieces": [
+        {
+          "id": 13516178547,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "0d1715cac04ed56fa1d9ec2758ed58f568c7f2c09299186e7d70089e3386a200"
+        },
+        {
+          "id": 13516783435,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "e43c6f6b9781317dbe39e2b7830bfa7fd57bc661eb3f4a3e90afe470cdc58cb0"
+        },
+        {
+          "id": 13517263547,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "71588d7025b63b3cfc487bf44aa6a4cecee902636da5749bf6022611b1f67c30"
+        },
+        {
+          "id": 13516513435,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "2327b0359f541df0ff58ffb1e00901b0f37c12c7d4926bd647772170dae282dc"
+        }
+      ]
+    },
+    "media-manifest": {
+      "id": 13427116817,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d9cb8cb0448199a76840f02676ccde8cceb02934b4e340a9a218103757689c91"
+    },
+    "media-aa": {
+      "id": 13427701335,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "df9735902d27bad91cec9d93a1ac13980113bbd6fcaa33303366bf420bb79ac0"
+    },
+    "media-ab": {
+      "id": 13427181837,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7aa01e7a17ed14bf23c83425bfc26da7848f253641079427f1a4b6f44ecefff8"
+    },
+    "media-ac": {
+      "id": 13426962020,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ecf54e700e4a1c10a3c101a8fcd8e20aa7a63df7f5cd2456cb662c7117dee789"
+    },
+    "native-cache": {
+      "id": 13466524323,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "c2b848df200cf49b3992b77ef5b3b95589096b38e7a334740400de59780062f9"
+    },
+    "peripheral-peer": {
+      "id": 13482783345,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "c58f67b4ab85a49201c90b7c605777a3be04e21b2a45938890522e620634e74e"
+    },
+    "verified-hardware-control": {
+      "id": 13490784050,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "2a76cb260d2bae24a4115f850e2253d6b2bc0cf28536e3c994666d71cb48cbca"
+    },
+    "clz-native": {
+      "id": 13493933626,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "999abf2fb3a30d17586738480a9a14aaa56601fface8e9ba23876d6ae6b2a395"
+    },
+    "clz-hardware": {
+      "id": 13494223008,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "b51dcb818fdf9e24ad648f25b4e94a45a005c2c8de9aed28b305b9eadbb7a9b6"
+    },
+    "campaign-console": {
+      "id": 13498308696,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "97736578179ced4c8f9680a6205cb7b4b7fd9646e0640aa2944e335d0de1890a"
+    },
+    "ic-native": {
+      "id": 13504365235,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "03e432b4bdf383c9e76a3b3a62a3db3f232204ad56e0d7c02464cca587cdc7cf"
+    },
+    "ic-hardware": {
+      "id": 13504140858,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7c44bd703c6a78d41fd8be99879b4c044a30561a346617da09edee005a720f27"
+    },
+    "c84-console-1": {
+      "id": 13499294086,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d16d22d7b4c49793e3d3d705075a3247fe42fa417d2eafff61e839ad6b48ddb1"
+    },
+    "c84-console-2": {
+      "id": 13501117094,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "69e0c6fc92754ec7af5a7ddb424945b022e06b73970d58a4ef03600716891fac"
+    },
+    "c84-console-3": {
+      "id": 13501414657,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "cf9b0da9998234e37a0b03bf347bf8a5cc5fd4e13de686abf2d0731813fab374"
+    },
+    "c84-console-4": {
+      "id": 13501839966,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "77866942c6afca1b30b0f904f8f9b7b746c7157f9f26d2a14edcab44ba7d61b2"
+    },
+    "c85-console-1": {
+      "id": 13503674427,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "5e952c8d0bc47981193a6da2401f9ac6d5fc3f325e805795e249d95a47ea8a03"
+    },
+    "c85-console-2": {
+      "id": 13505112912,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "46a43cee1127245ed9514ad9775eb28174317b981e2c3ac1b832b9f072d508e1"
+    },
+    "c85-console-3": {
+      "id": 13505524370,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "3379e4027e920cac0f79cc853583e1706df0a718776fae60c3fd7d559e7fe3af"
+    },
+    "c86-console-1": {
+      "id": 13510601848,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "a9560d08c91db41b5dec8ea1bc66a452256c47589c4c580d41b5f844272a58f8"
+    },
+    "c86-console-2": {
+      "id": 13509134314,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "de9f3f5347aab783c75d7c035226631ba94b5671918dc09889cf3453d3c6fe55"
+    },
+    "c86-console-3": {
+      "id": 13512910098,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "f67a8a40534722f15eed46fe657e116aca924b683b0a68ca5558470505cbb7c3"
+    },
+    "c86-console-4": {
+      "id": 13511322938,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "5714b2517b32cf260e21b6bd1a5f44d911c26d65df43aec6da1e5aa9e184495f"
+    },
+    "c86-console-5": {
+      "id": 13515395306,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "f170102263ebe645ea58de89e45fac654f349ddcd11bc2bcf8650267d2029cd8"
+    },
+    "c86-console-6": {
+      "id": 13515252230,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "736e3eb444cdb59a6127b7432aec9cea07942601bb8a7e6972467595245ef4ae"
+    },
+    "c86-console-7": {
+      "id": 13515816467,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ab9cfdf74ff7835202055fcea5dd5dd70775416d243b7dd89d8a98a56fb76b19"
+    },
+    "c86-console-8": {
+      "id": 13517653026,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "0a13d0dab458e1d6998c97f063daa105afbd83f3f62db879f6d62dfe19641d2f"
+    }
+  },
+  "epoch_native_build_required": false,
+  "legacy_native_cache_is_not_the_C76_runner": false,
+  "epoch_native_filename": "epoch-clz-ic",
+  "epoch_native_validation_run": 42221035217,
+  "epoch_native_validation_commit": "dd052d474e5256fbbf4743078b6ec1bc24a56cb8",
+  "original_native_binary_used_as_reference_only": true,
+  "original_engine_binary_unchanged": false,
+  "explicit_IC_IVAU_correction": true
+}

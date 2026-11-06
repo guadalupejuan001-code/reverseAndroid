@@ -35,7 +35,7 @@ def run_graph(runs, terminal, failure=False, skipped_preservation=None):
 class WorkflowPhaseGuardTest(unittest.TestCase):
     def workflows(self):
         paths = [ROOT / '.github/workflows/android-c81-systemserver-diagnostic.yml']
-        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml']:
+        for name in ['android-c82-validated-peripherals.yml', 'android-c83-clz-resumed-boot.yml', 'android-c84-corrected-guest-shell.yml', 'android-c85-ic-ivau-continuation.yml', 'android-c86-cleanup-priority.yml', 'android-c87-bounded-continuation.yml']:
             candidate = ROOT / '.github/workflows' / name
             if candidate.exists():
                 paths.append(candidate)
@@ -55,22 +55,23 @@ class WorkflowPhaseGuardTest(unittest.TestCase):
         broken = [{'id': f'r{n}', 'if': 'success()' + (f" && steps.r{n-1}.outputs.complete != 'true'" if n > 1 else '')} for n in range(1, 9)]
         self.assertIn('r5', run_graph(broken, 3))
 
-    def test_C86_preserves_the_actual_stage_before_advancing_or_releasing(self):
-        path=ROOT/'.github/workflows/android-c86-cleanup-priority.yml'
-        if not path.exists():self.skipTest('C86 not installed')
-        steps=next(iter(yaml.safe_load(path.read_text())['jobs'].values()))['steps']
-        preserves=[s for s in steps if s.get('uses')=='./.github/actions/preserve-android-checkpoint']
-        runs=[s for s in steps if re.fullmatch(r'r[0-9]+',s.get('id',''))]
-        self.assertEqual(len(preserves),len(runs))
-        for n,step in enumerate(preserves,1):
-            with self.subTest(stage=n):
-                self.assertEqual(step['id'],f'p{n}')
-                source=step['with']['checkpoint_path']
-                self.assertEqual(source,f'evidence/c86-{n}')
-                self.assertIn(f"hashFiles('{source}/c46-progress.json')",step['if'])
-                release=next(s for s in steps if s.get('name','').startswith(f'C86 cleanup stage {n}: release'))
-                self.assertIn(f"steps.p{n}.outcome == 'success'",release['if'])
-                self.assertEqual(run_graph(runs,len(runs)+1,skipped_preservation=n),[f'r{i}' for i in range(1,n+1)])
+    def test_preserves_the_actual_stage_before_advancing_or_releasing(self):
+        for cycle,name in [(86,'android-c86-cleanup-priority.yml'),(87,'android-c87-bounded-continuation.yml')]:
+            path=ROOT/'.github/workflows'/name
+            if not path.exists():continue
+            steps=next(iter(yaml.safe_load(path.read_text())['jobs'].values()))['steps']
+            preserves=[s for s in steps if s.get('uses')=='./.github/actions/preserve-android-checkpoint']
+            runs=[s for s in steps if re.fullmatch(r'r[0-9]+',s.get('id',''))]
+            self.assertEqual(len(preserves),len(runs))
+            for n,step in enumerate(preserves,1):
+                with self.subTest(cycle=cycle,stage=n):
+                    self.assertEqual(step['id'],f'p{n}')
+                    source=step['with']['checkpoint_path']
+                    self.assertEqual(source,f'evidence/c{cycle}-{n}')
+                    self.assertIn(f"hashFiles('{source}/c46-progress.json')",step['if'])
+                    release=next(s for s in steps if s.get('name','').startswith(f'C{cycle} ') and f' stage {n}: release ' in s.get('name',''))
+                    self.assertIn(f"steps.p{n}.outcome == 'success'",release['if'])
+                    self.assertEqual(run_graph(runs,len(runs)+1,skipped_preservation=n),[f'r{i}' for i in range(1,n+1)])
 
 
 if __name__ == '__main__':

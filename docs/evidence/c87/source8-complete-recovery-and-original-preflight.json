@@ -1,0 +1,20 @@
+{
+  "schema": "reverseandroid-C87-complete-original-parent-recovery-v1",
+  "source_cycle": "C86",
+  "source_stage": 8,
+  "source_run_id": 42231109648,
+  "source_execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+  "checkpoint_SHA256": "cabadb046fc8f352bdf82d1c8cd1bb07baf66c78bc959a28b28d2968556da7c6",
+  "instructions": 109147727998,
+  "outer_archives_SHA256_CRC_and_safe_paths_verified": true,
+  "inner_piece_sizes_SHA256_and_complete_original_RVG_SHA256_verified": true,
+  "whole_RVG_bytes": 1986615282,
+  "original_epoch_preflight_passed": true,
+  "preflight_report_SHA256": "d3e7f294e1773d63181e09c3c20cd119f69146d6ca43e7976d19f3d16c6f2da0",
+  "local_and_CI_original_RVG_console_and_control_proof_bytes_match": true,
+  "one_truncated_archive_rejected_before_use": true,
+  "retry_full_expected_archive_bytes_SHA256_and_CRC_verified": true,
+  "source_proof_preserved_byte_identical": true,
+  "C87_new_native_execution_claimed": false,
+  "new_UART_bytes": 0
+}

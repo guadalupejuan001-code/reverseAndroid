@@ -1,0 +1,419 @@
+{
+  "schema": "reverseandroid-same-engine-bounded-continuation-v1",
+  "cycle": "C87",
+  "source_checkpoint_sha256": "cabadb046fc8f352bdf82d1c8cd1bb07baf66c78bc959a28b28d2968556da7c6",
+  "source_instructions": 109147727998,
+  "source_stage": 8,
+  "source_run_id": 42231109648,
+  "source_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+  "source_artifact_lock": "state/experiments/c87-artifacts.json",
+  "validated_original_HAL_control": "docs/evidence/c82/prior-private-HAL-integration.json",
+  "control_metadata_stage": 11,
+  "control_metadata_checkpoint_sha256": "98147b814e71294427f4b682a4db85acc186b5ea20a47c2c8c84fc7a4acdeb34",
+  "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "gzip_SHA256": "671fd2b742811b13eb861fb848f5a033989de991561c064caf09e310ee8e0522",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "max_stages": 16,
+  "continuation_instruction_budget": 1000000000,
+  "fresh_hardware_power_cycle": false,
+  "logical_RAM_bytes": 2147483648,
+  "instructions_per_tick": 64,
+  "original_seed_unchanged": true,
+  "original_native_SHA256": "72f53074817c140d79b0f91b20c72900efb5072f6c0b08d00ca58bf6c50ca1fa",
+  "original_870_files_unchanged": true,
+  "no_RVG_or_policy_or_property_edits": true,
+  "execute_on_push": false,
+  "inherited_events": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    },
+    {
+      "phase": 2,
+      "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 87047727998,
+        "counter_subtick": 26,
+        "bytes": 2837,
+        "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+      }
+    },
+    {
+      "phase": 3,
+      "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 89547727998,
+        "counter_subtick": 26,
+        "bytes": 2103,
+        "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+      }
+    }
+  ],
+  "inherited_console_SHA256": "459946a26d93762f2f37611d0e834745bcb97ad6d43b1a4e953d033c8c4c8bfd",
+  "source_proof_file": "c86-proof.json",
+  "waiting_instruction_budget": 1000000000,
+  "expected_extended_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "validated_CLZ_commit": "c7c0d28e53db4bf643f78c5eabe5a452cdc00e48",
+  "ISA_extension": "Retained AArch64 AdvSIMD CLZ and exact EL0 IC IVAU with UCI control",
+  "extension_SHA256": "1fd924cfab3278faf6550bc8ed54793c426ea3662d97499c0d0e07f6682ea1a4",
+  "original_engine_binary_unchanged": false,
+  "require_live_peripheral_probe_before_completion": true,
+  "source_failed_proof_SHA256": "1c01d143ce26a6f14453c69c7b8f44ff4ea50cbeaca74c2fd6e416f3dc2836d3",
+  "known_failed_input_file": "state/experiments/c82-input-3.txt",
+  "known_failed_input_SHA256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17",
+  "corrected_phase_index": 4,
+  "prior_failed_phase_index": 3,
+  "prior_failed_phase_outcome": "actual RC1 and actual sh syntax error unexpected double semicolon; retained unchanged",
+  "receiver_and_data_retransfer": false,
+  "source_control_proof_SHA256": "c4dcc4fbd6fa26139f4b204679412af379a4f3b63722fec884ae578f7b87455d",
+  "source_combined_console_SHA256": "6bd5bd87d65edb21047cd1a25bfe61e935f1f338cbedcd33cd343ed3109793ff",
+  "source_combined_console_bytes": 1416024,
+  "source_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "inherited_source_events": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    },
+    {
+      "phase": 2,
+      "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 87047727998,
+        "counter_subtick": 26,
+        "bytes": 2837,
+        "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+      }
+    },
+    {
+      "phase": 3,
+      "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 89547727998,
+        "counter_subtick": 26,
+        "bytes": 2103,
+        "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+      }
+    },
+    {
+      "phase": 4,
+      "input_plan": "evidence/c84-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 92547727998,
+        "counter_subtick": 26,
+        "bytes": 2097,
+        "sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7"
+      }
+    },
+    {
+      "phase": 5,
+      "input_plan": "evidence/c86-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 101647727998,
+        "counter_subtick": 26,
+        "bytes": 1000,
+        "sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096"
+      }
+    },
+    {
+      "phase": 6,
+      "input_plan": "evidence/c86-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 104147727998,
+        "counter_subtick": 26,
+        "bytes": 932,
+        "sha256": "8d47dc63c80f12d0eab0e866355225e82bc6a842aeef9a8086d1e5b6da1d86e3"
+      }
+    }
+  ],
+  "inherited_source_phase": 7,
+  "inherited_source_waiting": false,
+  "IC_IVAU_validation_run": 42221035217,
+  "validated_IC_IVAU_commit": "dd052d474e5256fbbf4743078b6ec1bc24a56cb8",
+  "IC_IVAU_extension_SHA256": "147947b8fe7da59fc2334bb031ed28fecd86f073025ef9a4f6945377550de19d",
+  "same_epoch_resume_not_rewind": true,
+  "original_init_recovery_must_be_observed": true,
+  "boot_or_UI_success_not_claimed": true,
+  "source_console_stages": [
+    {
+      "stage": 1,
+      "artifact_alias": "c84-console-1",
+      "control_proof_SHA256": "c8b78a60fcaed96b11df5c026c989ed119d7a03eb6a644b34b80efca1d6d48a9",
+      "new_console_SHA256": "c47584999278c2cea5d1fe9628ae4b44b1061270b3fabccaaff3e0fe0f3822da",
+      "combined_console_SHA256": "083f56391ed92aee3d4f12a0cedaab09acc58b99f719b2bfc5a46e5d310eb333",
+      "cycle": "c84",
+      "execution_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+    },
+    {
+      "stage": 2,
+      "artifact_alias": "c84-console-2",
+      "control_proof_SHA256": "455986cdacdef565c0a517df6fdb2934b1e64478f0969a6a75e57cbbe6e06c1b",
+      "new_console_SHA256": "2b053aa5281a13de7ee26d6c067d369f95117dd52c64b00d7c61c13ff44c7ec5",
+      "combined_console_SHA256": "8e23150354d09b073dc85d9c17fe4a564637c34b2e970578285b988886996f50",
+      "cycle": "c84",
+      "execution_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+    },
+    {
+      "stage": 3,
+      "artifact_alias": "c84-console-3",
+      "control_proof_SHA256": "93e8c982dc8b58004f699904c663ddbfadfe3c7c770e942a14ba326388572536",
+      "new_console_SHA256": "622965d2aa8f9ed69a2d77ef18f9d2aa962ae7c16f41cd21c148d46c3f16bd59",
+      "combined_console_SHA256": "80589db9ccd6c8f29fa0e4898bc6b9b3ae3a4d855efd86ab5b35714c6f779193",
+      "cycle": "c84",
+      "execution_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+    },
+    {
+      "stage": 4,
+      "artifact_alias": "c84-console-4",
+      "control_proof_SHA256": "903e857a57c4f6230da89a3f08d8b2458c2e3c285fe2ae7a89ceef3706fc5b6c",
+      "new_console_SHA256": "69755fc37e70e457debde9512e81f511ae9f8464a3b892f52258137b51a325ba",
+      "combined_console_SHA256": "1e8b930ddc08c64bc868466da5a67233105eef9f86f98b1796d67e7894d89476",
+      "cycle": "c84",
+      "execution_commit": "adf2a95715806d23882d3ab3cda554fdef8dc279"
+    },
+    {
+      "cycle": "c85",
+      "stage": 1,
+      "artifact_alias": "c85-console-1",
+      "execution_commit": "d0b432631011e8c6789345ecdf0ae04155b303a2",
+      "control_proof_SHA256": "4fbc6eda98165e5b3b7f8db8faef97085b3ede0f4663f8191ab6923c9b203943",
+      "new_console_SHA256": "3091d03876833d040cc3aeab0b677bbe974ad5260554be18f7016507f18ca872",
+      "combined_console_SHA256": "70d20072530b1739813b32639c8f675102f6411bc8094408de8bed137585c9ea"
+    },
+    {
+      "cycle": "c85",
+      "stage": 2,
+      "artifact_alias": "c85-console-2",
+      "execution_commit": "d0b432631011e8c6789345ecdf0ae04155b303a2",
+      "control_proof_SHA256": "ea6a02198b01f5c3a4f72ab2002df4e2be33a1aec6beb3789af7b15f5492572b",
+      "new_console_SHA256": "579719fccae5320b548120c327fd8e10fbb5f5ea03e5e5c30331a4ea4075e757",
+      "combined_console_SHA256": "f0bf26e1ce712a7ab92ee93733402d8e86c2970eb03cc8a7b3e24a4f356b0089"
+    },
+    {
+      "cycle": "c85",
+      "stage": 3,
+      "artifact_alias": "c85-console-3",
+      "execution_commit": "d0b432631011e8c6789345ecdf0ae04155b303a2",
+      "control_proof_SHA256": "6deca3b1d894a3aa5762fbcc1c7bde49a02264d86cb93958a968acda0c6628b8",
+      "new_console_SHA256": "49620692ea880f6c4394899e69994ae25bbac71f5cfe59f1c9be57b212359ac9",
+      "combined_console_SHA256": "0fe0dd16c9c2a09f204e044e15d62785eeac7530c01c71f6f67fca8c33570e9b"
+    },
+    {
+      "cycle": "c86",
+      "stage": 1,
+      "artifact_alias": "c86-console-1",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "305536863d7d6a4719775f89ab06322f3e3a514da324bc5e9bdde7e105738710",
+      "new_console_SHA256": "d2c6be074c81ecde59bf14fb27ec0ec48eb0b37f6be87e5e9b593de3a210dd60",
+      "combined_console_SHA256": "45d6e93d7aa2d47ad77ea5f17d07a7b570cbf8abc9d5667df8e1f3cf8500e12f"
+    },
+    {
+      "cycle": "c86",
+      "stage": 2,
+      "artifact_alias": "c86-console-2",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "14b6008f4c983005996bfafe2ef498e3e85cfb42c6f284b2fb05f9795d846b13",
+      "new_console_SHA256": "3b1bf88fac9fc2928c4d98ce17d9724f4bad421d4046779674cf71ffa9d08dda",
+      "combined_console_SHA256": "c1fe9fb8d84e7b33c31a601a6d74cc47ffe472280f75d16b21ba7d33a9152099"
+    },
+    {
+      "cycle": "c86",
+      "stage": 3,
+      "artifact_alias": "c86-console-3",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "0cadd0b780463e43697408ab4fce85b5ebb64a0b0d520211ca78bb2226ee25e5",
+      "new_console_SHA256": "b1d2f737ed5cc7cfc09d93a08f76552a386d6f35986e54c6f8cacff4d9871da7",
+      "combined_console_SHA256": "9434bd48505f904578d36db3826ce37a23185a7fcf1c4e67905c17a2a18850b8"
+    },
+    {
+      "cycle": "c86",
+      "stage": 4,
+      "artifact_alias": "c86-console-4",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "6df8d8938399fbe65cd8b46218bf149d17eebb22b39bb077b5a65ef8d1aa335c",
+      "new_console_SHA256": "be2e3a97804d2ee615c343067062faa7b7440d16e90049af75a7c60cf36693b9",
+      "combined_console_SHA256": "5a5b4ae2498e75887f7c255990cc3e33c6fbf482d844e1ee5135c616b4fe5c05"
+    },
+    {
+      "cycle": "c86",
+      "stage": 5,
+      "artifact_alias": "c86-console-5",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "c6acad0b05bd24276572bcc7a771b6698d883bd910a18423d911b1c804143655",
+      "new_console_SHA256": "5141e302cfc8f175c5848c44520a9a8f7c61363f5708b1abe8a5d8d02ed2a5de",
+      "combined_console_SHA256": "7a2d1b3e7944c0e4f224beb211acad2aa16d4f93a74746c9bab5768b2354bff5"
+    },
+    {
+      "cycle": "c86",
+      "stage": 6,
+      "artifact_alias": "c86-console-6",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "6c6bc0b79b768d25b70a660b80914fd55f1e9c4ad337cb0e244b24dfd9c0c56b",
+      "new_console_SHA256": "369e9340d1f657ffe8a47af68a0affd7cbc3883d593725fc347a14bf4cf75856",
+      "combined_console_SHA256": "d1b218459a3f9607f573c857ef1504244276bfd26994d8ae725c8a834c6a6f01"
+    },
+    {
+      "cycle": "c86",
+      "stage": 7,
+      "artifact_alias": "c86-console-7",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "43b1072bc79013d13e1ae1187607d014ac91750e7c91be3bd33905cc441f6d8f",
+      "new_console_SHA256": "7cc4ebfbdb6c0da9ea550d020fd0c80e7fd372c42aec13a74f2a3a8dd346382e",
+      "combined_console_SHA256": "5a4bd3f5f990f8b8aa07c576d959cb4245bbfeef7960066e186698a1315c037c"
+    },
+    {
+      "cycle": "c86",
+      "stage": 8,
+      "artifact_alias": "c86-console-8",
+      "execution_commit": "5bb4a7922bb8d84131dced8358268ee48b2589e3",
+      "control_proof_SHA256": "c4dcc4fbd6fa26139f4b204679412af379a4f3b63722fec884ae578f7b87455d",
+      "new_console_SHA256": "4c1ec3eef6d1548f046764a6ebb05739f9ac9d23924026d62b3f4010af7b28ff",
+      "combined_console_SHA256": "6bd5bd87d65edb21047cd1a25bfe61e935f1f338cbedcd33cd343ed3109793ff"
+    }
+  ],
+  "source_base_C83_console_SHA256": "459946a26d93762f2f37611d0e834745bcb97ad6d43b1a4e953d033c8c4c8bfd",
+  "C85_after_stage3_is_reference_after_explicit_C86_input_selection": true,
+  "source_epoch_SHA256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+  "expected_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "inherited_phases": [
+    {
+      "input_file": "state/experiments/c82-input-0.txt",
+      "input_bytes": 923,
+      "input_sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6",
+      "response_marker": "REVERSE_PTS_TRANSFER_RX_0",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Start the real root blocking receiver for the validated virtual peripheral; authenticate each ordinary guest-file prefix.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c82-input-1.txt",
+      "input_bytes": 3001,
+      "input_sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0",
+      "response_marker": "REVERSE_PTS_TRANSFER_DATA_0",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PTS_TRANSFER_DATA_0",
+        "REVERSE_PTS_TRANSFER_RX_1"
+      ],
+      "all_response_markers_required": true,
+      "effect": "Deliver first authenticated base64 fragment only to the already waiting root read.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c82-input-2.txt",
+      "input_bytes": 2837,
+      "input_sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1",
+      "response_marker": "REVERSE_PTS_TRANSFER_DATA_1",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": true,
+      "instruction_budget": 500000000,
+      "response_markers": [
+        "REVERSE_PTS_TRANSFER_DATA_1",
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "all_response_markers_required": true,
+      "effect": "Deliver final authenticated base64 fragment; require both file and receiver completion acknowledgments.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c82-input-3.txt",
+      "input_bytes": 2103,
+      "input_sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17",
+      "response_marker": "REVERSE_PTS_TRANSFER_ACTIVATION",
+      "failure_markers": [
+        "REVERSE_PTS_TRANSFER_CAPTURE"
+      ],
+      "data_for_waiting_guest_read": false,
+      "instruction_budget": 1000000000,
+      "effect": "Decode the exact compiled ABI3 ELF; provision the isolated private PTYs and require enforcing1 plus unchanged loaded-policy SHA.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c84-input-activation.txt",
+      "input_bytes": 2097,
+      "input_sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7",
+      "response_marker": "REVERSE_PTS_C84_ACTIVATION",
+      "failure_markers": [],
+      "instruction_budget": 1000000000,
+      "effect": "Correct only the malformed shell argument, retaining the received authenticated file and original policy; activate the validated peripheral.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c86-input-cleanup.txt",
+      "input_bytes": 1000,
+      "input_sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096",
+      "response_marker": "REVERSE_PTS_C86_CLEANUP",
+      "failure_markers": [],
+      "instruction_budget": 500000000,
+      "effect": "Guard exact TID3387 TGID562 root PF_EXITING nice19, then relative renice -19 using ordinary Android syscalls; verify nice0 or natural task disappearance.",
+      "inherited_not_replayed": true
+    },
+    {
+      "input_file": "state/experiments/c84-input-inspection.txt",
+      "input_bytes": 932,
+      "input_sha256": "8d47dc63c80f12d0eab0e866355225e82bc6a842aeef9a8086d1e5b6da1d86e3",
+      "response_marker": "REVERSE_PTS_C84_INSPECT",
+      "failure_markers": [],
+      "instruction_budget": 1000000000,
+      "effect": "Verify original HAL Binder getters, actual Parcel replies and original peer traffic after corrected activation.",
+      "inherited_not_replayed": true
+    }
+  ],
+  "initial_instruction_budget": 1000000000,
+  "new_UART_input_planned": false,
+  "selected_native_binary_unchanged": true,
+  "C86_after_selected_parent_is_reference_after_C87_budget_selection": true,
+  "original_host_wall_limit_ms": 900000
+}

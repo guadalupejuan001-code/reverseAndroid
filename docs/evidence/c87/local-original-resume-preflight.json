@@ -1,0 +1,16 @@
+{
+  "schema": "reverseandroid-C87-exact-bounded-continuation-resume-v1",
+  "source_checkpoint_sha256": "cabadb046fc8f352bdf82d1c8cd1bb07baf66c78bc959a28b28d2968556da7c6",
+  "instructions": 109147727998,
+  "original_proof_bytes_preserved": true,
+  "original_events_preserved": 7,
+  "phase": 7,
+  "waiting": false,
+  "entire_console_SHA256": "6bd5bd87d65edb21047cd1a25bfe61e935f1f338cbedcd33cd343ed3109793ff",
+  "new_UART_input_bytes": 0,
+  "snapshot_bytes_unchanged": true,
+  "native_binary_unchanged": true,
+  "guest_clock_seed_RAM_disk_IRQ_and_codecs_unchanged": true,
+  "only_future_host_instruction_budget_reduced": true,
+  "new_native_execution_not_yet_claimed": true
+}
