@@ -45,3 +45,33 @@ The workflow is isolated to its experiment branch, preserves a full
 checkpoint before advancing, and stops when the original boot plus current
 peripheral checks pass. Authentic display inspection and a separately bound
 UI response test remain subsequent requirements.
+
+## Measured result through stage 2
+
+The local original-engine replay and the independent CI run
+[42259037815](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42259037815)
+produced identical complete snapshots at both the first 500-million boundary
+and the next one-billion boundary. Console bytes, framebuffer bytes and the
+original kernel observation also match. Stage 2 is at 115,647,727,998
+instructions with SHA-256
+`7b358773528ecf8fb89c5236863a9f5f83d95e2059d629f7dfbc0b430cce65c6`.
+
+Android emitted `REVERSE_JIT5922_CONTROL_DONE NICE_0`. A fresh, read-only
+original-kernel probe independently finds the same kernel task pointer,
+TGID 5629, TID 5922, name and UID 0, with normal/static priority 120
+(nice 0). Its user/system CPU counters increased by 15,372,000 ns from
+the selected source, and its saved user PC advanced into `libart.so`.
+The scheduler runtime increased by 12,953,000 ns. Both counter types are
+reported separately because Linux accounting is sampled at this boundary.
+
+The original C46 gate and the producer's live peripheral checks pass.
+The outer shell's final RC marker is still pending at this stage.
+SystemServer, live completed boot and usable UI response remain unverified.
+This measurement establishes that the guarded scheduling change executed
+and the JIT advanced; completed-boot acceleration has not been measured.
+
+See [the complete measurement and producer bindings](evidence/jit5922/stage2-independent-results.json).
+The full fresh thread observation is preserved as authenticated gzip/base64
+transport in `evidence/jit5922/stage2-threads-readonly-transport.json`.
+This transport encodes a read-only report and does not change any guest
+memory, executable, snapshot format or continuation pointer.
