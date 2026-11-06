@@ -1,0 +1,55 @@
+{
+  "schema": "reverseandroid-original-admitted-independent-local-stage-v1",
+  "stage": 3,
+  "execution_commit": "ef1c5b6560d9fd04b45810c6f422e997d806fbc8",
+  "full_RVG_SHA256_verified": "5be95618ce361776f364bb3179df675cca924e84277f84f8b9aeecb9d7836017",
+  "instructions": 87047727998,
+  "new_UART_bytes": 0,
+  "actual_transfer_ack_codes": {
+    "PTS_TRANSFER_RX_0": [
+      0
+    ],
+    "PTS_TRANSFER_DATA_0": [
+      0
+    ],
+    "PTS_TRANSFER_RX_1": [
+      0
+    ]
+  },
+  "actual_phase": 2,
+  "waiting": false,
+  "original_admission_and_clean_exit_verified": true,
+  "all_prior_native_events_retained": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    }
+  ],
+  "boot_completed": false,
+  "system_server_alive": true,
+  "SELinux_enforcing": true,
+  "usable_UI_verified": false,
+  "CI_producer_whole_snapshot_SHA256_matches": true,
+  "CI_run_id": 42202570182,
+  "CI_stage3_metadata_artifact": 13496012587,
+  "CI_transport_lock": "state/experiments/c83-stage-3-artifacts.json",
+  "entire_original_console_SHA256_also_matches": "3d0f55e01d086a57c2f90e69eab5f0a753f176db1f8eb4d23600946ccd7c3b50"
+}

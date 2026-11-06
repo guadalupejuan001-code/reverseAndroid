@@ -34,6 +34,15 @@
       "whole_RVG_SHA256": "d4ca99f595a326dce6ef4b789497ea32aca17faf257a18dd80450cf49eb64098",
       "local_complete_RVG_bytes": 1970774310,
       "CI_transport_lock": "state/experiments/c83-stage-2-artifacts.json"
+    },
+    {
+      "stage": 3,
+      "instructions": 87047727998,
+      "whole_RVG_SHA256": "5be95618ce361776f364bb3179df675cca924e84277f84f8b9aeecb9d7836017",
+      "local_complete_RVG_bytes": 1973892009,
+      "CI_transport_lock": "state/experiments/c83-stage-3-artifacts.json",
+      "entire_original_console_SHA256_also_matches": "3d0f55e01d086a57c2f90e69eab5f0a753f176db1f8eb4d23600946ccd7c3b50",
+      "actual_first_fragment_success_and_next_receiver_ready": true
     }
   ]
 }
