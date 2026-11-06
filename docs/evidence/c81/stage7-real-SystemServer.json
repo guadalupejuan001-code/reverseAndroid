@@ -1,0 +1,351 @@
+{
+  "schema": "reverseandroid-real-SystemServer-identity-v1",
+  "checkpoint_SHA256": "1155df22529b4e1942f0fb27b636d8db938842cf8ed3ffe9f818c3d5874b71a4",
+  "instructions": 71000000000,
+  "original_C46_SystemServer_gate": true,
+  "actual_original_process": {
+    "read_only": true,
+    "pid": 3386,
+    "comm": "system_server",
+    "exe_path": "/system/bin/app_process64",
+    "parent_pid": 562,
+    "argv": [
+      "system_server"
+    ],
+    "argv_verified": true,
+    "launch_signature_verified": false,
+    "state": 0,
+    "exit_state": 0,
+    "has_user_mm": true
+  },
+  "actual_original_thread": {
+    "pid": 3386,
+    "tgid": 3386,
+    "name": "system_server",
+    "task": "0xffffff80224a2880",
+    "state": 0,
+    "exit_state": 0,
+    "on_rq": 1,
+    "on_cpu": 0,
+    "priority": 118,
+    "current": false,
+    "context_may_be_stale": false,
+    "kernel_pc": "__switch_to+0x144",
+    "kernel_stack": [
+      {
+        "fp": "0xffffffc0869f3cb0",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc0869f3d70",
+        "lr": "0xffffffc0812a6bc8",
+        "symbol": "schedule+0x4c"
+      },
+      {
+        "fp": "0xffffffc0869f3dd0",
+        "lr": "0xffffffc0800bce9c",
+        "symbol": "do_notify_resume+0xcc"
+      },
+      {
+        "fp": "0xffffffc0869f3e10",
+        "lr": "0xffffffc08129fcf0",
+        "symbol": "el0_interrupt+0x94"
+      },
+      {
+        "fp": "0xffffffc0869f3e60",
+        "lr": "0xffffffc08129f728",
+        "symbol": "__el0_irq_handler_common+0x18"
+      },
+      {
+        "fp": "0xffffffc0869f3e90",
+        "lr": "0xffffffc08129f704",
+        "symbol": "el0t_64_irq_handler+0x10"
+      },
+      {
+        "fp": "0xffffffc0869f3ea0",
+        "lr": "0xffffffc080012010",
+        "symbol": "el0t_64_irq+0x1bc"
+      },
+      {
+        "fp": "0xffffffc0869f3fe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "accounting": {
+      "utime": "1012519000",
+      "stime": "2857553000",
+      "nvcsw": "110",
+      "nivcsw": "2082",
+      "sum_exec_runtime": "4526879000",
+      "vruntime": "14545913254",
+      "exec_start": "1106989861000"
+    },
+    "policy": 0,
+    "prio": 118,
+    "normal_prio": 118,
+    "rt_priority": 0,
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e840",
+          "cgroup": "0xffffff8009ad1800",
+          "path": "/foreground",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      }
+    },
+    "saved_frame_read_errors": [
+      {
+        "stack_bytes": 32768,
+        "error": "Android observer: unmapped virtual address"
+      },
+      {
+        "stack_bytes": 65536,
+        "error": "Android observer: unmapped virtual address"
+      }
+    ],
+    "saved_user_frame": {
+      "stack_bytes": 16384,
+      "syscall": 4294967295,
+      "pc": {
+        "address": "0x75463ec2f0",
+        "start": "0x75463d8000",
+        "end": "0x7546544000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/bin/linker64",
+        "file_offset": "410352",
+        "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+      },
+      "sp": "0x7ffe190370",
+      "fp": "0x7ffe1903d0",
+      "lr": {
+        "address": "0x75463ebee0",
+        "start": "0x75463d8000",
+        "end": "0x7546544000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/bin/linker64",
+        "file_offset": "409312",
+        "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+      },
+      "args": [
+        "0x71552a0b2e",
+        "0x0",
+        "0x7ffe190438",
+        "0x7ffe190780",
+        "0x727945504b766d00",
+        "0x6d764b50457972"
+      ],
+      "registers": [
+        "0x71552a0b2e",
+        "0x0",
+        "0x7ffe190438",
+        "0x7ffe190780",
+        "0x727945504b766d00",
+        "0x6d764b50457972",
+        "0x6d764b50457972",
+        "0x751621703d",
+        "0x1f",
+        "0x29",
+        "0x1a",
+        "0x0",
+        "0x754639fac8",
+        "0x71552a0b2e",
+        "0x753a058820",
+        "0x10",
+        "0x754654d8a0",
+        "0x7546465e40",
+        "0x75458dc000",
+        "0x28",
+        "0xc3997e75",
+        "0x291b18b",
+        "0x753a053000",
+        "0x18",
+        "0x2f",
+        "0x0",
+        "0x753a053000",
+        "0xa46c62e8",
+        "0x0",
+        "0x7ffe1903d0",
+        "0x75463ebee0"
+      ],
+      "pstate": "0x80000000",
+      "user_stack": [
+        {
+          "fp": "0x7ffe1903d0",
+          "return_pc": {
+            "address": "0x75463ebee0",
+            "start": "0x75463d8000",
+            "end": "0x7546544000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "409312",
+            "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+          }
+        },
+        {
+          "fp": "0x7ffe190440",
+          "return_pc": {
+            "address": "0x75463e9d44",
+            "start": "0x75463d8000",
+            "end": "0x7546544000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "400708",
+            "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+          }
+        },
+        {
+          "fp": "0x7ffe190590",
+          "return_pc": {
+            "address": "0x75463e1340",
+            "start": "0x75463d8000",
+            "end": "0x7546544000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "365376",
+            "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+          }
+        },
+        {
+          "fp": "0x7ffe190990",
+          "return_pc": {
+            "address": "0x75464079b0",
+            "start": "0x75463d8000",
+            "end": "0x7546544000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "522672",
+            "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+          }
+        },
+        {
+          "fp": "0x7ffe191b50",
+          "return_pc": {
+            "address": "0x7546407410",
+            "start": "0x75463d8000",
+            "end": "0x7546544000",
+            "flags": "0x75",
+            "file": "/apex/com.android.runtime/bin/linker64",
+            "file_offset": "521232",
+            "dynamic_symbols_unavailable": "Invalid or inaccessible user page"
+          }
+        },
+        {
+          "fp": "0x7ffe191bb0",
+          "return_pc": {
+            "address": "0x7542446148",
+            "start": "0x7542446000",
+            "end": "0x754244a000",
+            "flags": "0x1800000000000075",
+            "file": "/apex/com.android.runtime/lib64/bionic/libdl.so",
+            "file_offset": "16712",
+            "dynamic_symbol": {
+              "name": "android_dlopen_ext",
+              "offset": "0x18",
+              "range_verified": true
+            }
+          }
+        },
+        {
+          "fp": "0x7ffe191be0",
+          "return_pc": {
+            "address": "0x751c7eb5c4",
+            "start": "0x751c7d9000",
+            "end": "0x751c7f1000",
+            "flags": "0x75",
+            "file": "/apex/com.android.art/lib64/libnativeloader.so",
+            "file_offset": "124356",
+            "dynamic_symbol": {
+              "name": "_ZNK7android21NativeLoaderNamespace4LoadEPKc",
+              "offset": "0x94",
+              "range_verified": true
+            }
+          }
+        },
+        {
+          "fp": "0x7ffe191d80",
+          "return_pc": {
+            "address": "0x751c7da14c",
+            "start": "0x751c7d9000",
+            "end": "0x751c7f1000",
+            "flags": "0x75",
+            "file": "/apex/com.android.art/lib64/libnativeloader.so",
+            "file_offset": "53580",
+            "dynamic_symbol": {
+              "name": "OpenNativeLibrary",
+              "offset": "0xc0c",
+              "range_verified": true
+            }
+          }
+        },
+        {
+          "fp": "0x7ffe191f60",
+          "return_pc": {
+            "address": "0x7284097084",
+            "start": "0x7283e00000",
+            "end": "0x728465f000",
+            "flags": "0x20000075",
+            "file": "/apex/com.android.art/lib64/libart.so",
+            "file_offset": "4812932",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        },
+        {
+          "fp": "0x7ffe1920c0",
+          "return_pc": {
+            "address": "0x725752f964",
+            "start": "0x725752e000",
+            "end": "0x7257532000",
+            "flags": "0x75",
+            "file": "/apex/com.android.art/lib64/libopenjdkjvm.so",
+            "file_offset": "22884",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        },
+        {
+          "fp": "0x7ffe192160",
+          "return_pc": {
+            "address": "0x727b0fa8",
+            "start": "0x72568000",
+            "end": "0x727b7000",
+            "flags": "0x75",
+            "file": "/system/framework/arm64/boot.oat",
+            "file_offset": "3035048",
+            "dynamic_symbols_unavailable": "User page not present"
+          }
+        },
+        {
+          "fp": "0x7ffe1923e0",
+          "return_pc": null
+        }
+      ],
+      "pc_code_le_hex": "56430191490740f90801150a285968f86927ca1a0a25d39a0825c99a4801080a88fe073648ab43a9690bc89a28ed089b587968b8f8fdff34f9031f2aeb031f2a"
+    }
+  },
+  "SELinux_enforcing": true,
+  "all_parts_and_original_full_admission": "docs/evidence/c81/stage7-producer-boundary.json",
+  "boot_completed_still_unverified": true,
+  "usable_UI_and_input_response_still_unverified": true,
+  "additional_UART_this_stage": 0
+}

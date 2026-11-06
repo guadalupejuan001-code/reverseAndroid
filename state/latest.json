@@ -1,20 +1,19 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "b3e5422c703a137202c5927d246701d03f617d8a77a9724e05f501ad1bf37d46",
-  "instructions": 69000000000,
+  "checkpoint_sha256": "1155df22529b4e1942f0fb27b636d8db938842cf8ed3ffe9f818c3d5874b71a4",
+  "instructions": 71000000000,
   "source_boundary_verified": true,
-  "system_server_alive_verified": false,
+  "system_server_alive_verified": true,
   "android_boot_completed_verified": false,
   "scanout_exported": true,
   "ready_for_visual_review": false,
   "android_display_content_verified": false,
   "unresolved": [
-    "live_process_missing:system_server",
     "live_sys_boot_completed_unverified"
   ],
   "cycle": "C81",
   "epoch": "C76-lights-port",
-  "stage": 6,
+  "stage": 7,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "0d1c40854787a5d9d6325929261abf15e8e98314",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
@@ -37,7 +36,7 @@
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c81-stage-6-artifacts.json",
+  "source_artifact_lock": "state/experiments/c81-stage-7-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/emulator-local-recovery/local-c81-exact61b",
     "checkpoint_sha256": "7d958ef43b44b855cb5ae5cc4ff50cab52bcfe9c3d4d326e850586c0cbf7efea",
@@ -46,15 +45,15 @@
     "proof": "docs/evidence/c81/independent-local-CI-exact61B.json"
   },
   "last_durable_transport_source": {
-    "instructions": 69000000000,
-    "checkpoint_sha256": "b3e5422c703a137202c5927d246701d03f617d8a77a9724e05f501ad1bf37d46",
-    "source_artifact_lock": "state/experiments/c81-stage-6-artifacts.json"
+    "instructions": 71000000000,
+    "checkpoint_sha256": "1155df22529b4e1942f0fb27b636d8db938842cf8ed3ffe9f818c3d5874b71a4",
+    "source_artifact_lock": "state/experiments/c81-stage-7-artifacts.json"
   },
   "visual_review_result": "The authentic original C81stage1 frame at59B visibly renders the Android boot logo; usable UI and input response remain pending.",
   "visual_review_evidence": "docs/evidence/c81/stage1-frame-and-input-review.json",
   "active_continuation_run_id": 42169590905,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c81/stage6-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c81/stage7-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c81-plan.json",
@@ -76,7 +75,7 @@
     "checkpoint_sha256": "fff0601e7e3f9c9da79893b2c847c33f775cc7db5ff1830732c026f754b86fd9",
     "promotion_authority": false
   },
-  "ART_progress_evidence": "docs/evidence/c81/stage6-child-progress.json",
+  "ART_progress_evidence": "docs/evidence/c81/stage7-real-SystemServer.json",
   "historical_local_sources": [
     {
       "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
@@ -86,5 +85,7 @@
       "raw_current_rvg_archived_losslessly": true,
       "historical_only_local_files_lost_after_container_reset": true
     }
-  ]
+  ],
+  "actual_SystemServer_PID": 3386,
+  "actual_SystemServer_UID": 1000
 }
