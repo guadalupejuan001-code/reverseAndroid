@@ -1,0 +1,74 @@
+{
+  "schema": "reverseandroid-original-main-progress-v1",
+  "native_run": 42274580377,
+  "execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
+  "observations": [
+    {
+      "stage": 5,
+      "checkpoint_sha256": "92c372d4e050e0eeb777a979e5c654ae5d4f1d13d5ec6ef80d4198e8a756f80f",
+      "instructions": 128147727998,
+      "original_main": {
+        "pid": 5629,
+        "name": "main",
+        "state": 8193,
+        "exit_state": 0,
+        "accounting": {
+          "nvcsw": "19",
+          "nivcsw": "8768",
+          "utime": "24114666000",
+          "stime": "5035830000",
+          "sum_exec_runtime": "26794720000",
+          "vruntime": "64689290087",
+          "exec_start": "1877255550000"
+        }
+      },
+      "new_UART_bytes": 0
+    },
+    {
+      "stage": 6,
+      "checkpoint_sha256": "a40b7fa2e93e5b49256a9f3a5775f1aa8f93a1b288b4c7198665565000bc64e7",
+      "instructions": 129147727998,
+      "original_main": {
+        "pid": 5629,
+        "name": "main",
+        "state": 0,
+        "exit_state": 0,
+        "accounting": {
+          "nvcsw": "21",
+          "nivcsw": "9335",
+          "utime": "25975983000",
+          "stime": "5105373000",
+          "sum_exec_runtime": "28532484000",
+          "vruntime": "68433272139",
+          "exec_start": "2016122865000"
+        }
+      },
+      "new_UART_bytes": 0
+    },
+    {
+      "stage": 7,
+      "checkpoint_sha256": "54870a5a96a1ed7e02fe056e04fbc30e0286ec0fba6c56c96ebcf4bd06f40dbd",
+      "instructions": 130147727998,
+      "original_main": {
+        "pid": 5629,
+        "name": "main",
+        "state": 0,
+        "exit_state": 0,
+        "accounting": {
+          "nvcsw": "24",
+          "nivcsw": "9881",
+          "utime": "27520721000",
+          "stime": "5382135000",
+          "sum_exec_runtime": "30206985000",
+          "vruntime": "68555878387",
+          "exec_start": "2031734867000"
+        }
+      },
+      "new_UART_bytes": 0
+    }
+  ],
+  "complete_original_admission_and_full_transport_pins": true,
+  "BOOT": false,
+  "SystemServer": false,
+  "usable_UI_or_response_claimed": false
+}
