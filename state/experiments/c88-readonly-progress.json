@@ -1,12 +1,12 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 10,
-  "source_checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
-  "instructions": 133147727998,
-  "source_artifact_lock": "state/experiments/c88-stage-10-artifacts.json",
+  "source_stage": 14,
+  "source_checkpoint_sha256": "f66fc3c823a908b2d47a93d7efa50a904a4e9ac77b75da2e87052cdbd4fdbf2c",
+  "instructions": 137147727998,
+  "source_artifact_lock": "state/experiments/c88-stage-14-artifacts.json",
   "source_execution_commit": "6b586622b7ddd9655c932cfc987a45b78550d190",
   "source_CI_run_id": 42274580377,
-  "source_proof_SHA256": "a182242aab630908faa4c1b7cf64924993d7539ee09a7c5e79c68d2f13ccfed3",
+  "source_proof_SHA256": "39822ad57a9bd9da3b26766e693dfa2dbfa83aa2d355bb5ac3cc5610b36566c3",
   "zygote_PID": 5629,
   "target_JIT_TID": 5922,
   "expected_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
@@ -102,6 +102,6 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Independently verify the new original SystemServer7354 identity, parent, actual UID/EUID and current threads, alongside Zygote5629. Full original source admission, read-only, zero guest execution and zero UART.",
+  "purpose": "Identify the original SystemServer7354 current startup code, actual thread work and any actual waits; verify UID/EUID1000 and parent5629. Full original checkpoint admission, read-only, no guest execution or UART.",
   "system_server_PID": 7354
 }
