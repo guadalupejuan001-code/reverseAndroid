@@ -18,5 +18,16 @@
   "completed_transfer_will_not_be_repeated": true,
   "new_control_plan": "state/experiments/peripheral-privatepts-eof-control-plan.json",
   "new_control_has_not_yet_passed": true,
-  "canonical_main_modified": false
+  "canonical_main_modified": false,
+  "guest_actual_EOF_read_now_confirmed": {
+    "checkpoint_SHA256": "87a4e2e3b48c02d0c300c153748e860ddb168f8f0d4f9d1ca5afff0c0fdc65a6",
+    "instructions": 68000000000,
+    "raw_console_SHA256": "81995bb33a85dcadb9b6936d0d346ef259b64c744a71bc3513624de8206973fc",
+    "actual_response": "REVERSE_PTS_ENFORCE_EOF READ_1 VALUE_1",
+    "metadata_artifact_id": 13487362395,
+    "metadata_ZIP_SHA256": "813613fbdcf916dceb5aaefe2d775bc3b5765802c3e78cb170290ce9eb3928de",
+    "original_C46_and_all_parts": "docs/evidence/c80/privatepts-eof-control-stage1.json",
+    "new_input_events": 1,
+    "actual_peer_activation_or_HAL_integration_claimed": false
+  }
 }
