@@ -7,9 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C88, etapa11: **134.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las 4 piezas del snapshot conservadas y fijadas por SHA-256. **SystemServer original está vivo.** El arranque completo y la interfaz utilizable siguen pendientes.
+C88, etapa12: **135.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las 4 piezas del snapshot conservadas y fijadas por SHA-256. **SystemServer original está vivo.** El arranque completo y la interfaz utilizable siguen pendientes.
 Android confirmó el ajuste protegido de JIT5922 a nice0; las lecturas independientes verificaron la prioridad y el trabajo posterior de ART. El único comando nuevo se entregó una vez en la etapa1. Las siguientes no lo reenvían. El motor validado, los siete eventos previos y SELinux se conservan. Los tres canales de periféricos están verificados de nuevo.
-[Admisión actual](docs/evidence/c88/stage11-original-CI-authority.json); [liberación real de la espera](docs/evidence/c88/original-Zygote-futex-released-stage6.json); [prueba de interfaz preparada](docs/real-ui-response.md); [estado actual](state/latest.json).
+[Admisión actual](docs/evidence/c88/stage12-original-CI-authority.json); [liberación real de la espera](docs/evidence/c88/original-Zygote-futex-released-stage6.json); [prueba de interfaz preparada](docs/real-ui-response.md); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado

@@ -1,0 +1,53 @@
+{
+  "schema": "reverseandroid-checkpoint-transport-v1",
+  "compression": "tar+gzip",
+  "parts": [
+    {
+      "file": "checkpoint.part-000",
+      "bytes": 209715200,
+      "sha256": "d9dbbb233125b07c5c8716a8d7b76d4f1b6db82a66ea2b513ab393b88bdab63c"
+    },
+    {
+      "file": "checkpoint.part-001",
+      "bytes": 209715200,
+      "sha256": "027234caa12765adeb1c29547c8b616e5225d4ed6d34fc0abf076d197fcf3d5d"
+    },
+    {
+      "file": "checkpoint.part-002",
+      "bytes": 209715200,
+      "sha256": "756b7e5a6e367e8bf6b087199b9c7a479136aae982829abf670816f3261af019"
+    },
+    {
+      "file": "checkpoint.part-003",
+      "bytes": 68796142,
+      "sha256": "53553265dfdd19dd01dcf4c777ee1a577f183a3a3ac04f0755800654954fe98f"
+    }
+  ],
+  "source_contract": {
+    "schema": "reverseandroid-epoch-source-v1",
+    "checkpoint_sha256": "184d83d4d9607a0b03e1716e7820c42b57ffaa3ddd84df2bfe63d704791ee54b",
+    "report_file": "current.json",
+    "report_sha256": "9e3a1526853ce8b69c123934fa1f45d9f77dcea42d27fe7a5670f0dc89e3f72b",
+    "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+    "instructions": 135147727998,
+    "epoch_original_init_verified": true,
+    "initialized_hardware_root": false,
+    "result_sha256": "83511670a6f5478f825935dc9926661685e7ef16a15271d232912596b4875028",
+    "process_sha256": "7205e68301ff90cad902f23006d533ad98decf1288abc9752f48e07a294c5e24",
+    "source_commit": "6b586622b7ddd9655c932cfc987a45b78550d190"
+  },
+  "progress": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "184d83d4d9607a0b03e1716e7820c42b57ffaa3ddd84df2bfe63d704791ee54b",
+    "instructions": 135147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_sys_boot_completed_unverified"
+    ]
+  }
+}
