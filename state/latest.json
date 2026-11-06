@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "d0664776e46f04001329f16100fc76fee589ce7cb4f259f2bef980c566029a43",
-  "instructions": 147147727998,
+  "checkpoint_sha256": "0b6e3b4b19b49c5eba71d14a1b10215fbfc6fcabf5e772bf9c157122f696121d",
+  "instructions": 148147727998,
   "source_boundary_verified": true,
   "system_server_alive_verified": true,
   "android_boot_completed_verified": false,
@@ -13,7 +13,7 @@
   ],
   "cycle": "C89",
   "epoch": "C76-lights-port",
-  "stage": 8,
+  "stage": 9,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
   "execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
   "execution_location": "original-native-CI-full-original-admission-and-complete-pinned-transport",
@@ -30,13 +30,13 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42247589579,
   "independent_reproduction_status": "Stages1 through4 independently reproduce every original RVG byte and the entire console. The current original CI boundary has full original admission and all transport pieces pinned; it has not been freshly recovered or independently run locally.",
-  "active_continuation": "C89 stage8: original full admission and all transport pieces verified. Zero new UART. BOOT=False; usable UI and actual gesture response still require actual verification.",
+  "active_continuation": "C89 stage9: original full admission and all transport pieces verified. Zero new UART. BOOT=False; usable UI and actual gesture response still require actual verification.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c89-stage-8-artifacts.json",
+  "source_artifact_lock": "state/experiments/c89-stage-9-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/reverseAndroid/evidence/c87-4",
     "checkpoint_sha256": "bb07089e157a6ad116fa8a0dc3a269293346857af3d15ddabc54f9200e664af2",
@@ -47,17 +47,17 @@
     "archived_original_CI_transport_lock": "state/experiments/c87-stage-4-artifacts.json"
   },
   "last_durable_transport_source": {
-    "instructions": 147147727998,
-    "checkpoint_sha256": "d0664776e46f04001329f16100fc76fee589ce7cb4f259f2bef980c566029a43",
-    "source_artifact_lock": "state/experiments/c89-stage-8-artifacts.json",
-    "original_CI_admission_and_transport_proof": "docs/evidence/c89/stage8-original-CI-authority.json",
+    "instructions": 148147727998,
+    "checkpoint_sha256": "0b6e3b4b19b49c5eba71d14a1b10215fbfc6fcabf5e772bf9c157122f696121d",
+    "source_artifact_lock": "state/experiments/c89-stage-9-artifacts.json",
+    "original_CI_admission_and_transport_proof": "docs/evidence/c89/stage9-original-CI-authority.json",
     "independent_local_native_match": null
   },
   "visual_review_result": "The authentic C89stage4 frame at143,147,727,998 instructions still shows the Android wordmark boot animation. Usable UI and actual gesture response remain pending.",
   "visual_review_evidence": "docs/evidence/c89/stage4-authentic-frame-review.json",
   "active_continuation_run_id": 42299162841,
   "independent_engine_validation_run_id": 42202570186,
-  "latest_boundary_evidence": "docs/evidence/c89/stage8-original-CI-authority.json",
+  "latest_boundary_evidence": "docs/evidence/c89/stage9-original-CI-authority.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
   "active_continuation_plan": "state/experiments/c89-plan.json",
@@ -243,8 +243,10 @@
     "UID": 1000,
     "EUID": 1000,
     "parent_PID": 5629,
-    "checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
-    "evidence": "docs/evidence/c88/stage10-original-SystemServer-UID1000-and-threads.json"
+    "checkpoint_sha256": "f1f6b245cd42c10369dd21379a8f1321f5dda8340fb9970e8e01655a30edea5b",
+    "instructions": 146147727998,
+    "evidence": "docs/evidence/c89/stage7-independent-mmap-unlocked-and-package-progress.json",
+    "historical_observation_not_claimed_fresh_for_later_boundaries": true
   },
   "next_zero_input_continuation_plan": "state/experiments/c89-plan.json"
 }

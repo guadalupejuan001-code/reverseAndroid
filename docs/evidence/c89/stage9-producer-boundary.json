@@ -1,0 +1,34 @@
+{
+  "stage": 9,
+  "instructions": 148147727998,
+  "checkpoint_sha256": "0b6e3b4b19b49c5eba71d14a1b10215fbfc6fcabf5e772bf9c157122f696121d",
+  "parent_checkpoint_sha256": "d0664776e46f04001329f16100fc76fee589ce7cb4f259f2bef980c566029a43",
+  "metadata_artifact_id": 13547582590,
+  "metadata_ZIP_SHA256": "a360e5f146fbf634f53436e62f321a68ac357232ea82ee6e08e610711ab770b9",
+  "original_native_full_admission_and_snapshot_roundtrip": true,
+  "entire_console_SHA256": "ebdfbbb9343afc9a93e2af359747c3f298dc63776423755f07a5c8a0160f9dd4",
+  "all_full_transport_pieces_pinned": true,
+  "transport_piece_count": 4,
+  "new_UART_bytes": 0,
+  "all_previous_events_preserved": true,
+  "original_SystemServer": [
+    {
+      "pid": 7354,
+      "state": 0,
+      "exit_state": 0,
+      "accounting": {
+        "nvcsw": "658",
+        "nivcsw": "2604",
+        "utime": "5003536000",
+        "stime": "3237644000",
+        "sum_exec_runtime": "6629789000",
+        "vruntime": "55655985076",
+        "exec_start": "2313231853000"
+      }
+    }
+  ],
+  "SystemServer": true,
+  "BOOT": false,
+  "fresh_live_peripherals_verified": true,
+  "usable_UI_or_response_claimed": false
+}
