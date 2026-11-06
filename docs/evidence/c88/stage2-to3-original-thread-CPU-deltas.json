@@ -1,0 +1,217 @@
+{
+  "schema": "reverseandroid-original-thread-accounting-difference-v1",
+  "from_checkpoint_sha256": "e2b02ffe56d5bcb7b1f5acd03514ca49103879d739bd7bc68abb65c93aa329a7",
+  "to_checkpoint_sha256": "cfc20928dc14d1b0ac9d2941e6c23cabec61e1f15e0f38380a3d3b13fb747a34",
+  "from_instructions": 125147727998,
+  "to_instructions": 126147727998,
+  "guest_instructions_executed_by_diagnostic": 0,
+  "new_UART_bytes": 0,
+  "both_full_original_sources_admitted_and_digests_verified": true,
+  "only_threads_present_in_both_observations_listed": true,
+  "newly_created_or_exited_threads_excluded_not_a_total_CPU_usage_measurement": true,
+  "largest_observed_shared_thread_deltas": [
+    {
+      "TGID": 1,
+      "group": "init",
+      "TID": 1,
+      "name": "init",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 1162154000
+    },
+    {
+      "TGID": 858,
+      "group": "bootanimation",
+      "TID": 2257,
+      "name": "Thread<00>",
+      "observed_static_priority": 116,
+      "delta_sum_exec_runtime_ns": 1102641000
+    },
+    {
+      "TGID": 6813,
+      "group": "mediacodeclist_",
+      "TID": 6906,
+      "name": "binder:6813_1",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 900424000
+    },
+    {
+      "TGID": 669,
+      "group": "surfaceflinger",
+      "TID": 2279,
+      "name": "binder:669_3",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 585908000
+    },
+    {
+      "TGID": 5629,
+      "group": "main",
+      "TID": 5922,
+      "name": "Jit thread pool",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 492515000
+    },
+    {
+      "TGID": 594,
+      "group": "android.hardwar",
+      "TID": 834,
+      "name": "android.hardwar",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 405936000
+    },
+    {
+      "TGID": 927,
+      "group": "mediaswcodec",
+      "TID": 1894,
+      "name": "binder:927_3",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 389989000
+    },
+    {
+      "TGID": 927,
+      "group": "mediaswcodec",
+      "TID": 927,
+      "name": "mediaswcodec",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 341806000
+    },
+    {
+      "TGID": 927,
+      "group": "mediaswcodec",
+      "TID": 1817,
+      "name": "binder:927_2",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 299478000
+    },
+    {
+      "TGID": 374,
+      "group": "logd",
+      "TID": 424,
+      "name": "logd.klogd",
+      "observed_static_priority": 130,
+      "delta_sum_exec_runtime_ns": 191864000
+    },
+    {
+      "TGID": 20,
+      "group": "rcuop/0",
+      "TID": 20,
+      "name": "rcuop/0",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 151467000
+    },
+    {
+      "TGID": 430,
+      "group": "jbd2/dm-17-8",
+      "TID": 430,
+      "name": "jbd2/dm-17-8",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 121773000
+    },
+    {
+      "TGID": 1,
+      "group": "init",
+      "TID": 88,
+      "name": "init",
+      "observed_static_priority": 100,
+      "delta_sum_exec_runtime_ns": 110364000
+    },
+    {
+      "TGID": 377,
+      "group": "servicemanager",
+      "TID": 377,
+      "name": "servicemanager",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 90881000
+    },
+    {
+      "TGID": 4645,
+      "group": "kworker/u4:2",
+      "TID": 4645,
+      "name": "kworker/u4:2",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 78374000
+    },
+    {
+      "TGID": 858,
+      "group": "bootanimation",
+      "TID": 2208,
+      "name": "BootAnimation",
+      "observed_static_priority": 116,
+      "delta_sum_exec_runtime_ns": 73903000
+    },
+    {
+      "TGID": 5672,
+      "group": "kworker/0:1",
+      "TID": 5672,
+      "name": "kworker/0:1",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 55453000
+    },
+    {
+      "TGID": 858,
+      "group": "bootanimation",
+      "TID": 2258,
+      "name": "BootAnimation",
+      "observed_static_priority": 116,
+      "delta_sum_exec_runtime_ns": 48171000
+    },
+    {
+      "TGID": 374,
+      "group": "logd",
+      "TID": 405,
+      "name": "logd.writer",
+      "observed_static_priority": 130,
+      "delta_sum_exec_runtime_ns": 40028000
+    },
+    {
+      "TGID": 6001,
+      "group": "kworker/0:4",
+      "TID": 6001,
+      "name": "kworker/0:4",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 35073000
+    },
+    {
+      "TGID": 669,
+      "group": "surfaceflinger",
+      "TID": 669,
+      "name": "surfaceflinger",
+      "observed_static_priority": 112,
+      "delta_sum_exec_runtime_ns": 33560000
+    },
+    {
+      "TGID": 18,
+      "group": "rcu_preempt",
+      "TID": 18,
+      "name": "rcu_preempt",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 21778000
+    },
+    {
+      "TGID": 19,
+      "group": "rcuog/0",
+      "TID": 19,
+      "name": "rcuog/0",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 20016000
+    },
+    {
+      "TGID": 438,
+      "group": "tombstoned",
+      "TID": 438,
+      "name": "tombstoned",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 19300000
+    },
+    {
+      "TGID": 647,
+      "group": "android.hardwar",
+      "TID": 1837,
+      "name": "binder:647_2",
+      "observed_static_priority": 120,
+      "delta_sum_exec_runtime_ns": 17685000
+    }
+  ],
+  "actual_JIT_delta_ns": 492515000,
+  "main_still_in_original_futex": true,
+  "new_priority_change_proposed_by_this_diagnostic": false
+}
