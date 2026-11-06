@@ -1,0 +1,40 @@
+{
+  "schema": "reverseandroid-verified-local-copy-release-v1",
+  "path": "/workspace/scratch/3d8a11a65aa6/investigation/topapp-shares-native/stage-2/current.rvg",
+  "checkpoint_sha256": "fc991e83e1a73b61e85473ab402745441d181bb0482657e7454dd05c3df68cb1",
+  "CI_run": 42265960158,
+  "independently_reproduced_complete_original_state": true,
+  "original_kernel_thread_probe_console_frame_bytes_match": true,
+  "preserved_artifacts": [
+    {
+      "id": 13528561423,
+      "name": "reverseandroid-topapp-control-2-003",
+      "digest": "sha256:4073fb05ab611c507df8c72b7b0a2349fb7ca9d0d504fe9a61ddf0d01671e851"
+    },
+    {
+      "id": 13527647467,
+      "name": "reverseandroid-topapp-control-2-001",
+      "digest": "sha256:29b7a94a10bf8cbc9e366e6a3ebdf53276fe8ff1515854ad9681b51bfe0308e2"
+    },
+    {
+      "id": 13527049832,
+      "name": "reverseandroid-topapp-control-2-metadata",
+      "digest": "sha256:1d341395a040ce454e1cf225a80b15f537cf960bf323122753d98232adaa0089"
+    },
+    {
+      "id": 13527009818,
+      "name": "reverseandroid-topapp-control-2-002",
+      "digest": "sha256:b1af35179032265a2e3f6ad2c1ef3175bbec460be003611e1a80de33036e1b04"
+    },
+    {
+      "id": 13526999837,
+      "name": "reverseandroid-topapp-control-2-000",
+      "digest": "sha256:1c388e3cfde6b3a44b2310a6645b48472ffcdd82f09b2ef596e6ce8c07f0668c"
+    }
+  ],
+  "current_and_previous_trial_checkpoints_retained": true,
+  "canonical_worker_files_modified": false,
+  "allocated_bytes_released": 1997742080,
+  "local_copy_released": true,
+  "checked_at_UTC": "2026-11-06T18:23:55.808907+00:00"
+}

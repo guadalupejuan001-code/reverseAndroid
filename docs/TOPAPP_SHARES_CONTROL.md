@@ -82,3 +82,34 @@ Sources:
 - [Linux CFS group scheduling](https://www.kernel.org/doc/html/latest/scheduler/sched-design-CFS.html#group-scheduler-extensions-to-cfs)
 - [AOSP CPU controller mount configuration](https://android.googlesource.com/platform/system/core/+/master/libprocessgroup/profiles/cgroups.json)
 - [Android cgroup abstraction](https://source.android.com/docs/core/perf/cgroups)
+
+## Actual SystemServer reached
+
+CI stage6 admits complete state121,647,727,998, SHA-256
+`572a9be831d34e944d9b46b870615bc001a6957777499c5fc7de4553feefa18e`.
+The original C46 gate verifies actual `system_server`: PID6512, UID/EUID1000,
+parent Zygote5629, `/system/bin/app_process64`, authenticated argv
+`["system_server"]`, ten live threads and no exit state. SELinux remains
+enforcing, original RAM/codecs/counter/IRQ are unchanged and all original
+required peripheral links pass.
+
+The same SystemServer survives the next billion instructions at stage7,
+with eleven threads and independently advancing CPU accounting. The main
+thread is runnable in linker64/munmap; its new system-server-init worker is
+runnable in boot-core-libart.oat. These observations show actual runtime
+progress; they do not establish completed service initialization. Android
+has naturally moved the process to `/foreground`, with its original1024
+shares, while Zygote's tested `/top-app` group remains at16384.
+
+Live PID1 `sys.boot_completed=1`, normal group-weight restoration and usable
+UI response remain unverified. The full producer bindings, original-file
+hashes, actual process observations and security observations are retained
+in [the SystemServer milestone](evidence/topapp/actual-systemserver-stage6-and7.json).
+
+The local stage5 attempt ended without a process outcome or original
+admission. It is quarantined, never selected as a source. The host cgroup
+has an8GiB limit and recorded OOM kills, but per-process attribution is
+unavailable; Android guest failure has not been established. Independent
+CI reproduces the first four entire local states and advances through
+original admitted stages5–7. Further native execution uses the independent
+runner to avoid memory contention on the shared host.
