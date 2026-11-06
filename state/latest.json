@@ -1,7 +1,7 @@
 {
   "schema": "reverse-c46-android-continuation-v1",
-  "checkpoint_sha256": "d6dac69ed45885396c06c06c9ddb516085b5b1f0384d41f5b2315daebb40ac19",
-  "instructions": 30000000000,
+  "checkpoint_sha256": "0273f0945b27cdab8073384248d41dc8ff21691a85092216cf3a7427f651c5d7",
+  "instructions": 31000000000,
   "source_boundary_verified": true,
   "system_server_alive_verified": false,
   "android_boot_completed_verified": false,
@@ -12,11 +12,11 @@
     "live_process_missing:system_server",
     "live_sys_boot_completed_unverified"
   ],
-  "cycle": "C78",
+  "cycle": "C79",
   "epoch": "C76-lights-port",
-  "stage": 7,
+  "stage": 1,
   "execution_repository": "guadalupejuan001-code/reverseAndroid",
-  "execution_commit": "6c4fe6d4bf7840b5de89dfdfd820e01ea0e64387",
+  "execution_commit": "a201ea14b8143cc099b8068249bbafba238c825d",
   "execution_location": "independent-CI-producer-verified-all-transport-pinned",
   "epoch_root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
   "parent_epoch_checkpoint_sha256": "7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec",
@@ -29,15 +29,15 @@
   "actual_port_evidence": "docs/evidence/c76/local-stage1-lights-readonly.json",
   "original_870_files_unchanged": true,
   "canonical_local_source": null,
-  "independent_reproduction_run_id": 42137711600,
-  "independent_reproduction_status": "El snapshot completo de 24 mil millones coincide por SHA-256 con la ejecución local. Los límites originales posteriores hasta30 mil millones están admitidos por el productor y tienen todas sus piezas fijadas. Su recuperación local completa no se afirma.",
-  "active_continuation": "C79 reanuda desde este límite completo de C78, conservando la época, sin reinicio ni entrada UART nueva.",
+  "independent_reproduction_run_id": 42146302356,
+  "independent_reproduction_status": "Los límites hasta 31 mil millones están admitidos y conservados íntegramente por el productor. El snapshot de 24 mil millones también coincide con la ejecución local. La recuperación local completa de los posteriores no se afirma.",
+  "active_continuation": "C80 continúa la misma época con tramos de 2 mil millones, dentro del límite original. C79 permanece como referencia independiente en tramos de 1 mil millones.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
   "lights_service_live_pid": 652,
   "lights_vsock_listener_port_verified": 6900,
-  "source_artifact_lock": "state/experiments/c78-stage-7-artifacts.json",
+  "source_artifact_lock": "state/experiments/c79-stage-1-artifacts.json",
   "last_local_admitted_source": {
     "directory": "/workspace/scratch/bf4ce496066e/evidence/c76-stage18-retry1",
     "checkpoint_sha256": "3b639a482bc0e6dbdfa4562d98d471d331a8043402e26e55edb9143478eeb55f",
@@ -46,19 +46,20 @@
     "raw_current_rvg_archived_losslessly": true
   },
   "last_durable_transport_source": {
-    "instructions": 30000000000,
-    "checkpoint_sha256": "d6dac69ed45885396c06c06c9ddb516085b5b1f0384d41f5b2315daebb40ac19",
-    "source_artifact_lock": "state/experiments/c78-stage-7-artifacts.json"
+    "instructions": 31000000000,
+    "checkpoint_sha256": "0273f0945b27cdab8073384248d41dc8ff21691a85092216cf3a7427f651c5d7",
+    "source_artifact_lock": "state/experiments/c79-stage-1-artifacts.json"
   },
   "visual_review_result": "El PPM original sigue siendo idéntico por SHA-256 al fotograma negro de 800×600 inspeccionado en 24 mil millones; no acredita interfaz ni arranque completo.",
   "visual_review_evidence": "docs/evidence/c78/local24-original-frame.json",
   "active_continuation_run_id": null,
   "independent_engine_validation_run_id": 42137711614,
-  "latest_boundary_evidence": "docs/evidence/c78/stage7-producer-boundary.json",
+  "latest_boundary_evidence": "docs/evidence/c79/stage1-producer-boundary.json",
   "host_compiler_experiment": "state/experiments/host-pgo-plan.json",
   "host_compiler_candidate_is_primary": false,
-  "active_continuation_plan": "state/experiments/c79-plan.json",
+  "active_continuation_plan": "state/experiments/c80-plan.json",
   "host_interruption_evidence": "docs/evidence/c78/stage8-host-interruption.json",
   "isolated_crash_log_control_plan": "state/experiments/thread-diagnostic-plan.json",
-  "host_compiler_evaluation_run_id": 42144708264
+  "host_compiler_evaluation_run_id": 42144708264,
+  "host_compiler_evaluation_outcome": "Four complete measured RVG hashes match. Speedup 1.050821 is below the required 1.10; candidate not adopted."
 }
