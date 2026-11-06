@@ -6,11 +6,11 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 
 ## Último resultado verificado
 
-La época corregida C76/C77 ha admitido **22.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. El último límite completo pasó todas las comprobaciones originales en CI y sus piezas están conservadas. Los snapshots locales completos de 19 y 20 mil millones coinciden por SHA-256 con la ejecución independiente.
+La época corregida C76/C77 ha admitido **23.000.000.000 instrucciones**, conservando el disco efectivo del arranque anterior. El último límite completo pasó todas las comprobaciones originales en CI; se recuperaron todas sus piezas y se verificó de nuevo el snapshot completo. Los snapshots locales completos de 19 y 20 mil millones coinciden por SHA-256 con la ejecución independiente.
 
 El servicio de luces **PID 652 está vivo y escucha realmente en el puerto VSOCK 6900**: se comprobaron su descriptor, los enlaces del socket y el estado `TCP_LISTEN` con el BTF del kernel original. [Evidencia auténtica](docs/evidence/c76/stage16-lights-vsock-readonly.json). SurfaceFlinger PID 669 también está ejecutándose; Zygote ya aparece como `zygote64` y SELinux permanece activo.
 
-El arranque completo y la interfaz siguen pendientes. Una [prueba aislada de consola](docs/evidence/c76/actual-console-response-control.json) ya recibió una respuesta generada por Android sin modificar el checkpoint principal. [C77 continúa la misma época](.github/workflows/android-c77-continued-epoch.yml), sin reiniciar la CPU.
+El arranque completo y la interfaz siguen pendientes. Una [prueba aislada de consola](docs/evidence/c76/actual-console-response-control.json) ya recibió una respuesta generada por Android sin modificar el checkpoint principal. [C78 continúa la misma época](.github/workflows/android-c78-continued-epoch.yml), sin reiniciar la CPU.
 
 [C75, etapa 6](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42098763084) conserva **`system_server` vivo, PID 3340**, a **88.895.950.532 instrucciones**, con checkpoint `7ecff7c2d460c582eeb3cbdf47fdd6686790cff2add75cd6c7437af7c9b9c3ec`. Pasó la [recuperación y admisión originales](docs/evidence/c75/independent-final-recovery.json). Android todavía no ha completado el arranque.
 

@@ -1,0 +1,14 @@
+{
+  "run_id": 42123644091,
+  "status": "completed",
+  "conclusion": "failure",
+  "all16native_admission_stages_passed": true,
+  "all16complete_transport_preservation_stages_passed": true,
+  "only_failed_step": "Require original Android boot conditions and a frame for visual review",
+  "reason": "Actual full Android boot remains pending; successful boundaries remain fully preserved.",
+  "final_checkpoint_sha256": "e6beaed954011ff958b2bf9c9a4b4463bc3ee7b9fea2560e6a812d20497926fc",
+  "final_instructions": 23000000000,
+  "original_870_files_unchanged": true,
+  "latest_whole_transport_recovered_locally": true,
+  "final_boot_failure_is_not_a_native_admission_failure": true
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "reverseandroid-original-epoch-checkpoint-recovery-v1",
+  "cycle": "C77",
+  "stage": 16,
+  "run_id": 42123644091,
+  "execution_commit": "75ba5471cc113f627598ded21904b5387f35d94d",
+  "checkpoint_sha256": "e6beaed954011ff958b2bf9c9a4b4463bc3ee7b9fea2560e6a812d20497926fc",
+  "instructions": 23000000000,
+  "all_archive_and_part_SHA256_verified": true,
+  "complete_original_snapshot_SHA256_verified": true,
+  "original_epoch_preflight_passed": true,
+  "producer_source_boundary_verified": true,
+  "fresh_local_independent_CPU_replay_not_claimed": true,
+  "boot_completed_verified": false,
+  "transport_lock": "state/experiments/c77-stage-16-transport.json",
+  "artifact_lock": "state/experiments/c77-stage-16-artifacts.json",
+  "no_reset_or_guest_input": true,
+  "metadata_artifact_id": 13466561717,
+  "metadata_archive_sha256": "aa21af80b4b5387e5980d34fdf818f333f9dee98424428637b5d181c1f0fd376"
+}

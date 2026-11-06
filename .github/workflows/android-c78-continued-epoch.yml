@@ -1,0 +1,1661 @@
+name: Android C78 continued corrected boot epoch
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c78-continued-epoch.yml
+    - state/experiments/c78-plan.json
+    - state/experiments/c78-artifacts.json
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c78-campaign
+  cancel-in-progress: false
+jobs:
+  c78-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        repository: guadalupejuan001-code/mundo-X
+        ref: e2778d962af22f6f1a0794058dd4685fc2573966
+        path: deps/mundo-x
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Build and validate the unchanged engine and explicit epoch runner
+      run: 'bash scripts/build-reverseandroid.sh
+
+        bash scripts/build-reverseandroid-epoch.sh
+
+        mkdir -p evidence/c78-reports
+
+        '
+    - name: Preserve the tested original epoch runner and decoder for future continuations
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-c78-tested-epoch-native
+        path: 'build/reverseandroid/epoch
+
+          build/reverseandroid/frame
+
+          build/reverseandroid/power-cycle
+
+          build/reverseandroid/*.json
+
+          build/reverseandroid/*.tap
+
+          build/reverseandroid/*sha256*.txt'
+        retention-days: 90
+        if-no-files-found: error
+    - name: Recover the latest pinned complete C77 boundary without resetting the guest
+      run: 'python3 scripts/fetch-reverseandroid-artifact.py seed build/source state/experiments/c78-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c78-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c78-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c78-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c78-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw > evidence/c78-reports/disk.json
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source > evidence/c78-reports/source-admission.json
+
+        '
+    - name: 'C78 stage 1: continue and fully admit the same boot epoch'
+      id: s1
+      if: success()
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run build/source evidence/c78-1
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-1.json
+
+        cp evidence/c78-1/kernel-observation.json evidence/c78-reports/kernel-1.json
+
+        cp evidence/c78-1/console-new.txt evidence/c78-reports/console-1.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-1'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 1: preserve every complete original checkpoint piece'
+      if: success() && steps.s1.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-1
+        transport_path: build/c78-transport-1
+        artifact_prefix: reverseandroid-c78-stage-1
+    - name: Verify the exact source pin and compare the first complete snapshot when independently known
+      if: success() && steps.s1.outcome == 'success'
+      run: "python3 - <<'PYCOMPARE'\nimport json\nplan=json.load(open('state/experiments/c78-plan.json'))\nsource=json.load(open('evidence/c78-1/input-contract.json'))\n\
+        actual=json.load(open('evidence/c78-1/c46-progress.json'))\nassert source['checkpoint_sha256']==plan['source_checkpoint_sha256']\n\
+        assert source['instructions']==plan['source_instructions']\nassert actual['source_boundary_verified']\n\
+        if 'expected_first_full_checkpoint_sha256' in plan:\n    assert actual['instructions']==plan['expected_first_instructions']\n\
+        \    assert actual['checkpoint_sha256']==plan['expected_first_full_checkpoint_sha256']\nPYCOMPARE\n"
+    - name: Release recovered input host copy after the first complete continued state was preserved
+      if: success() && steps.s1.outcome == 'success'
+      run: 'rm -rf build/source
+
+        '
+    - name: 'C78 stage 2: continue and fully admit the same boot epoch'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-1 evidence/c78-2
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-2.json
+
+        cp evidence/c78-2/kernel-observation.json evidence/c78-reports/kernel-2.json
+
+        cp evidence/c78-2/console-new.txt evidence/c78-reports/console-2.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-2'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 2: preserve every complete original checkpoint piece'
+      if: success() && steps.s2.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-2
+        transport_path: build/c78-transport-2
+        artifact_prefix: reverseandroid-c78-stage-2
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s2.outcome == 'success'
+      run: 'rm -rf evidence/c78-1 build/c78-transport-1
+
+        '
+    - name: 'C78 stage 3: continue and fully admit the same boot epoch'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-2 evidence/c78-3
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-3.json
+
+        cp evidence/c78-3/kernel-observation.json evidence/c78-reports/kernel-3.json
+
+        cp evidence/c78-3/console-new.txt evidence/c78-reports/console-3.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-3'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 3: preserve every complete original checkpoint piece'
+      if: success() && steps.s3.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-3
+        transport_path: build/c78-transport-3
+        artifact_prefix: reverseandroid-c78-stage-3
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s3.outcome == 'success'
+      run: 'rm -rf evidence/c78-2 build/c78-transport-2
+
+        '
+    - name: 'C78 stage 4: continue and fully admit the same boot epoch'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-3 evidence/c78-4
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-4.json
+
+        cp evidence/c78-4/kernel-observation.json evidence/c78-reports/kernel-4.json
+
+        cp evidence/c78-4/console-new.txt evidence/c78-reports/console-4.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-4'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 4: inspect real lights service without modifying guest state'
+      if: success() && steps.s4.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-4/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-4/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-4/lights-readonly.json
+
+        cp evidence/c78-4/lights-readonly.json evidence/c78-reports/lights-4.json
+
+        '
+    - name: 'C78 stage 4: inspect original Java threads without changing the guest'
+      if: success() && steps.s4.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-4/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-4/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-4/threads-readonly.json
+
+        cp evidence/c78-4/threads-readonly.json evidence/c78-reports/threads-4.json
+
+        '
+    - name: 'C78 stage 4: preserve every complete original checkpoint piece'
+      if: success() && steps.s4.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-4
+        transport_path: build/c78-transport-4
+        artifact_prefix: reverseandroid-c78-stage-4
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s4.outcome == 'success'
+      run: 'rm -rf evidence/c78-3 build/c78-transport-3
+
+        '
+    - name: 'C78 stage 5: continue and fully admit the same boot epoch'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-4 evidence/c78-5
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-5.json
+
+        cp evidence/c78-5/kernel-observation.json evidence/c78-reports/kernel-5.json
+
+        cp evidence/c78-5/console-new.txt evidence/c78-reports/console-5.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-5'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 5: preserve every complete original checkpoint piece'
+      if: success() && steps.s5.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-5
+        transport_path: build/c78-transport-5
+        artifact_prefix: reverseandroid-c78-stage-5
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s5.outcome == 'success'
+      run: 'rm -rf evidence/c78-4 build/c78-transport-4
+
+        '
+    - name: 'C78 stage 6: continue and fully admit the same boot epoch'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-5 evidence/c78-6
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-6.json
+
+        cp evidence/c78-6/kernel-observation.json evidence/c78-reports/kernel-6.json
+
+        cp evidence/c78-6/console-new.txt evidence/c78-reports/console-6.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-6'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 6: preserve every complete original checkpoint piece'
+      if: success() && steps.s6.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-6
+        transport_path: build/c78-transport-6
+        artifact_prefix: reverseandroid-c78-stage-6
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s6.outcome == 'success'
+      run: 'rm -rf evidence/c78-5 build/c78-transport-5
+
+        '
+    - name: 'C78 stage 7: continue and fully admit the same boot epoch'
+      id: s7
+      if: success() && steps.s6.outcome == 'success' && steps.s6.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-6 evidence/c78-7
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-7.json
+
+        cp evidence/c78-7/kernel-observation.json evidence/c78-reports/kernel-7.json
+
+        cp evidence/c78-7/console-new.txt evidence/c78-reports/console-7.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-7'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 7: preserve every complete original checkpoint piece'
+      if: success() && steps.s7.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-7
+        transport_path: build/c78-transport-7
+        artifact_prefix: reverseandroid-c78-stage-7
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s7.outcome == 'success'
+      run: 'rm -rf evidence/c78-6 build/c78-transport-6
+
+        '
+    - name: 'C78 stage 8: continue and fully admit the same boot epoch'
+      id: s8
+      if: success() && steps.s7.outcome == 'success' && steps.s7.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-7 evidence/c78-8
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-8.json
+
+        cp evidence/c78-8/kernel-observation.json evidence/c78-reports/kernel-8.json
+
+        cp evidence/c78-8/console-new.txt evidence/c78-reports/console-8.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-8'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 8: inspect real lights service without modifying guest state'
+      if: success() && steps.s8.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-8/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-8/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-8/lights-readonly.json
+
+        cp evidence/c78-8/lights-readonly.json evidence/c78-reports/lights-8.json
+
+        '
+    - name: 'C78 stage 8: inspect original Java threads without changing the guest'
+      if: success() && steps.s8.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-8/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-8/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-8/threads-readonly.json
+
+        cp evidence/c78-8/threads-readonly.json evidence/c78-reports/threads-8.json
+
+        '
+    - name: 'C78 stage 8: preserve every complete original checkpoint piece'
+      if: success() && steps.s8.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-8
+        transport_path: build/c78-transport-8
+        artifact_prefix: reverseandroid-c78-stage-8
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s8.outcome == 'success'
+      run: 'rm -rf evidence/c78-7 build/c78-transport-7
+
+        '
+    - name: 'C78 stage 9: continue and fully admit the same boot epoch'
+      id: s9
+      if: success() && steps.s8.outcome == 'success' && steps.s8.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-8 evidence/c78-9
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-9.json
+
+        cp evidence/c78-9/kernel-observation.json evidence/c78-reports/kernel-9.json
+
+        cp evidence/c78-9/console-new.txt evidence/c78-reports/console-9.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-9'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 9: preserve every complete original checkpoint piece'
+      if: success() && steps.s9.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-9
+        transport_path: build/c78-transport-9
+        artifact_prefix: reverseandroid-c78-stage-9
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s9.outcome == 'success'
+      run: 'rm -rf evidence/c78-8 build/c78-transport-8
+
+        '
+    - name: 'C78 stage 10: continue and fully admit the same boot epoch'
+      id: s10
+      if: success() && steps.s9.outcome == 'success' && steps.s9.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-9 evidence/c78-10
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-10.json
+
+        cp evidence/c78-10/kernel-observation.json evidence/c78-reports/kernel-10.json
+
+        cp evidence/c78-10/console-new.txt evidence/c78-reports/console-10.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-10'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 10: preserve every complete original checkpoint piece'
+      if: success() && steps.s10.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-10
+        transport_path: build/c78-transport-10
+        artifact_prefix: reverseandroid-c78-stage-10
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s10.outcome == 'success'
+      run: 'rm -rf evidence/c78-9 build/c78-transport-9
+
+        '
+    - name: 'C78 stage 11: continue and fully admit the same boot epoch'
+      id: s11
+      if: success() && steps.s10.outcome == 'success' && steps.s10.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-10 evidence/c78-11
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-11.json
+
+        cp evidence/c78-11/kernel-observation.json evidence/c78-reports/kernel-11.json
+
+        cp evidence/c78-11/console-new.txt evidence/c78-reports/console-11.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-11'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 11: preserve every complete original checkpoint piece'
+      if: success() && steps.s11.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-11
+        transport_path: build/c78-transport-11
+        artifact_prefix: reverseandroid-c78-stage-11
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s11.outcome == 'success'
+      run: 'rm -rf evidence/c78-10 build/c78-transport-10
+
+        '
+    - name: 'C78 stage 12: continue and fully admit the same boot epoch'
+      id: s12
+      if: success() && steps.s11.outcome == 'success' && steps.s11.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-11 evidence/c78-12
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-12.json
+
+        cp evidence/c78-12/kernel-observation.json evidence/c78-reports/kernel-12.json
+
+        cp evidence/c78-12/console-new.txt evidence/c78-reports/console-12.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-12'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 12: inspect real lights service without modifying guest state'
+      if: success() && steps.s12.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-12/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-12/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-12/lights-readonly.json
+
+        cp evidence/c78-12/lights-readonly.json evidence/c78-reports/lights-12.json
+
+        '
+    - name: 'C78 stage 12: inspect original Java threads without changing the guest'
+      if: success() && steps.s12.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-12/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-12/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-12/threads-readonly.json
+
+        cp evidence/c78-12/threads-readonly.json evidence/c78-reports/threads-12.json
+
+        '
+    - name: 'C78 stage 12: preserve every complete original checkpoint piece'
+      if: success() && steps.s12.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-12
+        transport_path: build/c78-transport-12
+        artifact_prefix: reverseandroid-c78-stage-12
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s12.outcome == 'success'
+      run: 'rm -rf evidence/c78-11 build/c78-transport-11
+
+        '
+    - name: 'C78 stage 13: continue and fully admit the same boot epoch'
+      id: s13
+      if: success() && steps.s12.outcome == 'success' && steps.s12.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-12 evidence/c78-13
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-13.json
+
+        cp evidence/c78-13/kernel-observation.json evidence/c78-reports/kernel-13.json
+
+        cp evidence/c78-13/console-new.txt evidence/c78-reports/console-13.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-13'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 13: preserve every complete original checkpoint piece'
+      if: success() && steps.s13.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-13
+        transport_path: build/c78-transport-13
+        artifact_prefix: reverseandroid-c78-stage-13
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s13.outcome == 'success'
+      run: 'rm -rf evidence/c78-12 build/c78-transport-12
+
+        '
+    - name: 'C78 stage 14: continue and fully admit the same boot epoch'
+      id: s14
+      if: success() && steps.s13.outcome == 'success' && steps.s13.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-13 evidence/c78-14
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-14.json
+
+        cp evidence/c78-14/kernel-observation.json evidence/c78-reports/kernel-14.json
+
+        cp evidence/c78-14/console-new.txt evidence/c78-reports/console-14.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-14'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 14: preserve every complete original checkpoint piece'
+      if: success() && steps.s14.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-14
+        transport_path: build/c78-transport-14
+        artifact_prefix: reverseandroid-c78-stage-14
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s14.outcome == 'success'
+      run: 'rm -rf evidence/c78-13 build/c78-transport-13
+
+        '
+    - name: 'C78 stage 15: continue and fully admit the same boot epoch'
+      id: s15
+      if: success() && steps.s14.outcome == 'success' && steps.s14.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-14 evidence/c78-15
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-15.json
+
+        cp evidence/c78-15/kernel-observation.json evidence/c78-reports/kernel-15.json
+
+        cp evidence/c78-15/console-new.txt evidence/c78-reports/console-15.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-15'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 15: preserve every complete original checkpoint piece'
+      if: success() && steps.s15.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-15
+        transport_path: build/c78-transport-15
+        artifact_prefix: reverseandroid-c78-stage-15
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s15.outcome == 'success'
+      run: 'rm -rf evidence/c78-14 build/c78-transport-14
+
+        '
+    - name: 'C78 stage 16: continue and fully admit the same boot epoch'
+      id: s16
+      if: success() && steps.s15.outcome == 'success' && steps.s15.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-15 evidence/c78-16
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-16.json
+
+        cp evidence/c78-16/kernel-observation.json evidence/c78-reports/kernel-16.json
+
+        cp evidence/c78-16/console-new.txt evidence/c78-reports/console-16.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-16'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 16: inspect real lights service without modifying guest state'
+      if: success() && steps.s16.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-16/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-16/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-16/lights-readonly.json
+
+        cp evidence/c78-16/lights-readonly.json evidence/c78-reports/lights-16.json
+
+        '
+    - name: 'C78 stage 16: inspect original Java threads without changing the guest'
+      if: success() && steps.s16.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-16/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-16/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-16/threads-readonly.json
+
+        cp evidence/c78-16/threads-readonly.json evidence/c78-reports/threads-16.json
+
+        '
+    - name: 'C78 stage 16: preserve every complete original checkpoint piece'
+      if: success() && steps.s16.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-16
+        transport_path: build/c78-transport-16
+        artifact_prefix: reverseandroid-c78-stage-16
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s16.outcome == 'success'
+      run: 'rm -rf evidence/c78-15 build/c78-transport-15
+
+        '
+    - name: 'C78 stage 17: continue and fully admit the same boot epoch'
+      id: s17
+      if: success() && steps.s16.outcome == 'success' && steps.s16.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-16 evidence/c78-17
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-17.json
+
+        cp evidence/c78-17/kernel-observation.json evidence/c78-reports/kernel-17.json
+
+        cp evidence/c78-17/console-new.txt evidence/c78-reports/console-17.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-17'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 17: preserve every complete original checkpoint piece'
+      if: success() && steps.s17.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-17
+        transport_path: build/c78-transport-17
+        artifact_prefix: reverseandroid-c78-stage-17
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s17.outcome == 'success'
+      run: 'rm -rf evidence/c78-16 build/c78-transport-16
+
+        '
+    - name: 'C78 stage 18: continue and fully admit the same boot epoch'
+      id: s18
+      if: success() && steps.s17.outcome == 'success' && steps.s17.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-17 evidence/c78-18
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-18.json
+
+        cp evidence/c78-18/kernel-observation.json evidence/c78-reports/kernel-18.json
+
+        cp evidence/c78-18/console-new.txt evidence/c78-reports/console-18.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-18'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 18: preserve every complete original checkpoint piece'
+      if: success() && steps.s18.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-18
+        transport_path: build/c78-transport-18
+        artifact_prefix: reverseandroid-c78-stage-18
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s18.outcome == 'success'
+      run: 'rm -rf evidence/c78-17 build/c78-transport-17
+
+        '
+    - name: 'C78 stage 19: continue and fully admit the same boot epoch'
+      id: s19
+      if: success() && steps.s18.outcome == 'success' && steps.s18.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-18 evidence/c78-19
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-19.json
+
+        cp evidence/c78-19/kernel-observation.json evidence/c78-reports/kernel-19.json
+
+        cp evidence/c78-19/console-new.txt evidence/c78-reports/console-19.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-19'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 19: preserve every complete original checkpoint piece'
+      if: success() && steps.s19.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-19
+        transport_path: build/c78-transport-19
+        artifact_prefix: reverseandroid-c78-stage-19
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s19.outcome == 'success'
+      run: 'rm -rf evidence/c78-18 build/c78-transport-18
+
+        '
+    - name: 'C78 stage 20: continue and fully admit the same boot epoch'
+      id: s20
+      if: success() && steps.s19.outcome == 'success' && steps.s19.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-19 evidence/c78-20
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-20.json
+
+        cp evidence/c78-20/kernel-observation.json evidence/c78-reports/kernel-20.json
+
+        cp evidence/c78-20/console-new.txt evidence/c78-reports/console-20.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-20'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 20: inspect real lights service without modifying guest state'
+      if: success() && steps.s20.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-20/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-20/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-20/lights-readonly.json
+
+        cp evidence/c78-20/lights-readonly.json evidence/c78-reports/lights-20.json
+
+        '
+    - name: 'C78 stage 20: inspect original Java threads without changing the guest'
+      if: success() && steps.s20.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-20/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-20/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-20/threads-readonly.json
+
+        cp evidence/c78-20/threads-readonly.json evidence/c78-reports/threads-20.json
+
+        '
+    - name: 'C78 stage 20: preserve every complete original checkpoint piece'
+      if: success() && steps.s20.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-20
+        transport_path: build/c78-transport-20
+        artifact_prefix: reverseandroid-c78-stage-20
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s20.outcome == 'success'
+      run: 'rm -rf evidence/c78-19 build/c78-transport-19
+
+        '
+    - name: 'C78 stage 21: continue and fully admit the same boot epoch'
+      id: s21
+      if: success() && steps.s20.outcome == 'success' && steps.s20.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-20 evidence/c78-21
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-21.json
+
+        cp evidence/c78-21/kernel-observation.json evidence/c78-reports/kernel-21.json
+
+        cp evidence/c78-21/console-new.txt evidence/c78-reports/console-21.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-21'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 21: preserve every complete original checkpoint piece'
+      if: success() && steps.s21.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-21
+        transport_path: build/c78-transport-21
+        artifact_prefix: reverseandroid-c78-stage-21
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s21.outcome == 'success'
+      run: 'rm -rf evidence/c78-20 build/c78-transport-20
+
+        '
+    - name: 'C78 stage 22: continue and fully admit the same boot epoch'
+      id: s22
+      if: success() && steps.s21.outcome == 'success' && steps.s21.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-21 evidence/c78-22
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-22.json
+
+        cp evidence/c78-22/kernel-observation.json evidence/c78-reports/kernel-22.json
+
+        cp evidence/c78-22/console-new.txt evidence/c78-reports/console-22.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-22'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 22: preserve every complete original checkpoint piece'
+      if: success() && steps.s22.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-22
+        transport_path: build/c78-transport-22
+        artifact_prefix: reverseandroid-c78-stage-22
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s22.outcome == 'success'
+      run: 'rm -rf evidence/c78-21 build/c78-transport-21
+
+        '
+    - name: 'C78 stage 23: continue and fully admit the same boot epoch'
+      id: s23
+      if: success() && steps.s22.outcome == 'success' && steps.s22.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-22 evidence/c78-23
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-23.json
+
+        cp evidence/c78-23/kernel-observation.json evidence/c78-reports/kernel-23.json
+
+        cp evidence/c78-23/console-new.txt evidence/c78-reports/console-23.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-23'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 23: preserve every complete original checkpoint piece'
+      if: success() && steps.s23.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-23
+        transport_path: build/c78-transport-23
+        artifact_prefix: reverseandroid-c78-stage-23
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s23.outcome == 'success'
+      run: 'rm -rf evidence/c78-22 build/c78-transport-22
+
+        '
+    - name: 'C78 stage 24: continue and fully admit the same boot epoch'
+      id: s24
+      if: success() && steps.s23.outcome == 'success' && steps.s23.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-23 evidence/c78-24
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-24.json
+
+        cp evidence/c78-24/kernel-observation.json evidence/c78-reports/kernel-24.json
+
+        cp evidence/c78-24/console-new.txt evidence/c78-reports/console-24.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-24'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 24: inspect real lights service without modifying guest state'
+      if: success() && steps.s24.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-24/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-24/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-24/lights-readonly.json
+
+        cp evidence/c78-24/lights-readonly.json evidence/c78-reports/lights-24.json
+
+        '
+    - name: 'C78 stage 24: inspect original Java threads without changing the guest'
+      if: success() && steps.s24.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-24/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-24/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-24/threads-readonly.json
+
+        cp evidence/c78-24/threads-readonly.json evidence/c78-reports/threads-24.json
+
+        '
+    - name: 'C78 stage 24: preserve every complete original checkpoint piece'
+      if: success() && steps.s24.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-24
+        transport_path: build/c78-transport-24
+        artifact_prefix: reverseandroid-c78-stage-24
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s24.outcome == 'success'
+      run: 'rm -rf evidence/c78-23 build/c78-transport-23
+
+        '
+    - name: 'C78 stage 25: continue and fully admit the same boot epoch'
+      id: s25
+      if: success() && steps.s24.outcome == 'success' && steps.s24.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-24 evidence/c78-25
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-25.json
+
+        cp evidence/c78-25/kernel-observation.json evidence/c78-reports/kernel-25.json
+
+        cp evidence/c78-25/console-new.txt evidence/c78-reports/console-25.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-25'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 25: preserve every complete original checkpoint piece'
+      if: success() && steps.s25.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-25
+        transport_path: build/c78-transport-25
+        artifact_prefix: reverseandroid-c78-stage-25
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s25.outcome == 'success'
+      run: 'rm -rf evidence/c78-24 build/c78-transport-24
+
+        '
+    - name: 'C78 stage 26: continue and fully admit the same boot epoch'
+      id: s26
+      if: success() && steps.s25.outcome == 'success' && steps.s25.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-25 evidence/c78-26
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-26.json
+
+        cp evidence/c78-26/kernel-observation.json evidence/c78-reports/kernel-26.json
+
+        cp evidence/c78-26/console-new.txt evidence/c78-reports/console-26.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-26'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 26: preserve every complete original checkpoint piece'
+      if: success() && steps.s26.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-26
+        transport_path: build/c78-transport-26
+        artifact_prefix: reverseandroid-c78-stage-26
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s26.outcome == 'success'
+      run: 'rm -rf evidence/c78-25 build/c78-transport-25
+
+        '
+    - name: 'C78 stage 27: continue and fully admit the same boot epoch'
+      id: s27
+      if: success() && steps.s26.outcome == 'success' && steps.s26.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-26 evidence/c78-27
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-27.json
+
+        cp evidence/c78-27/kernel-observation.json evidence/c78-reports/kernel-27.json
+
+        cp evidence/c78-27/console-new.txt evidence/c78-reports/console-27.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-27'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 27: preserve every complete original checkpoint piece'
+      if: success() && steps.s27.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-27
+        transport_path: build/c78-transport-27
+        artifact_prefix: reverseandroid-c78-stage-27
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s27.outcome == 'success'
+      run: 'rm -rf evidence/c78-26 build/c78-transport-26
+
+        '
+    - name: 'C78 stage 28: continue and fully admit the same boot epoch'
+      id: s28
+      if: success() && steps.s27.outcome == 'success' && steps.s27.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-27 evidence/c78-28
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-28.json
+
+        cp evidence/c78-28/kernel-observation.json evidence/c78-reports/kernel-28.json
+
+        cp evidence/c78-28/console-new.txt evidence/c78-reports/console-28.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-28'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 28: inspect real lights service without modifying guest state'
+      if: success() && steps.s28.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-28/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-28/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-28/lights-readonly.json
+
+        cp evidence/c78-28/lights-readonly.json evidence/c78-reports/lights-28.json
+
+        '
+    - name: 'C78 stage 28: inspect original Java threads without changing the guest'
+      if: success() && steps.s28.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-28/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-28/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-28/threads-readonly.json
+
+        cp evidence/c78-28/threads-readonly.json evidence/c78-reports/threads-28.json
+
+        '
+    - name: 'C78 stage 28: preserve every complete original checkpoint piece'
+      if: success() && steps.s28.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-28
+        transport_path: build/c78-transport-28
+        artifact_prefix: reverseandroid-c78-stage-28
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s28.outcome == 'success'
+      run: 'rm -rf evidence/c78-27 build/c78-transport-27
+
+        '
+    - name: 'C78 stage 29: continue and fully admit the same boot epoch'
+      id: s29
+      if: success() && steps.s28.outcome == 'success' && steps.s28.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-28 evidence/c78-29
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-29.json
+
+        cp evidence/c78-29/kernel-observation.json evidence/c78-reports/kernel-29.json
+
+        cp evidence/c78-29/console-new.txt evidence/c78-reports/console-29.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-29'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 29: preserve every complete original checkpoint piece'
+      if: success() && steps.s29.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-29
+        transport_path: build/c78-transport-29
+        artifact_prefix: reverseandroid-c78-stage-29
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s29.outcome == 'success'
+      run: 'rm -rf evidence/c78-28 build/c78-transport-28
+
+        '
+    - name: 'C78 stage 30: continue and fully admit the same boot epoch'
+      id: s30
+      if: success() && steps.s29.outcome == 'success' && steps.s29.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-29 evidence/c78-30
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-30.json
+
+        cp evidence/c78-30/kernel-observation.json evidence/c78-reports/kernel-30.json
+
+        cp evidence/c78-30/console-new.txt evidence/c78-reports/console-30.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-30'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 30: preserve every complete original checkpoint piece'
+      if: success() && steps.s30.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-30
+        transport_path: build/c78-transport-30
+        artifact_prefix: reverseandroid-c78-stage-30
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s30.outcome == 'success'
+      run: 'rm -rf evidence/c78-29 build/c78-transport-29
+
+        '
+    - name: 'C78 stage 31: continue and fully admit the same boot epoch'
+      id: s31
+      if: success() && steps.s30.outcome == 'success' && steps.s30.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-30 evidence/c78-31
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-31.json
+
+        cp evidence/c78-31/kernel-observation.json evidence/c78-reports/kernel-31.json
+
+        cp evidence/c78-31/console-new.txt evidence/c78-reports/console-31.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-31'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 31: preserve every complete original checkpoint piece'
+      if: success() && steps.s31.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-31
+        transport_path: build/c78-transport-31
+        artifact_prefix: reverseandroid-c78-stage-31
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s31.outcome == 'success'
+      run: 'rm -rf evidence/c78-30 build/c78-transport-30
+
+        '
+    - name: 'C78 stage 32: continue and fully admit the same boot epoch'
+      id: s32
+      if: success() && steps.s31.outcome == 'success' && steps.s31.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-31 evidence/c78-32
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-32.json
+
+        cp evidence/c78-32/kernel-observation.json evidence/c78-reports/kernel-32.json
+
+        cp evidence/c78-32/console-new.txt evidence/c78-reports/console-32.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-32'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 32: inspect real lights service without modifying guest state'
+      if: success() && steps.s32.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-32/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-32/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-32/lights-readonly.json
+
+        cp evidence/c78-32/lights-readonly.json evidence/c78-reports/lights-32.json
+
+        '
+    - name: 'C78 stage 32: inspect original Java threads without changing the guest'
+      if: success() && steps.s32.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-32/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-32/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-32/threads-readonly.json
+
+        cp evidence/c78-32/threads-readonly.json evidence/c78-reports/threads-32.json
+
+        '
+    - name: 'C78 stage 32: preserve every complete original checkpoint piece'
+      if: success() && steps.s32.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-32
+        transport_path: build/c78-transport-32
+        artifact_prefix: reverseandroid-c78-stage-32
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s32.outcome == 'success'
+      run: 'rm -rf evidence/c78-31 build/c78-transport-31
+
+        '
+    - name: 'C78 stage 33: continue and fully admit the same boot epoch'
+      id: s33
+      if: success() && steps.s32.outcome == 'success' && steps.s32.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-32 evidence/c78-33
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-33.json
+
+        cp evidence/c78-33/kernel-observation.json evidence/c78-reports/kernel-33.json
+
+        cp evidence/c78-33/console-new.txt evidence/c78-reports/console-33.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-33'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 33: preserve every complete original checkpoint piece'
+      if: success() && steps.s33.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-33
+        transport_path: build/c78-transport-33
+        artifact_prefix: reverseandroid-c78-stage-33
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s33.outcome == 'success'
+      run: 'rm -rf evidence/c78-32 build/c78-transport-32
+
+        '
+    - name: 'C78 stage 34: continue and fully admit the same boot epoch'
+      id: s34
+      if: success() && steps.s33.outcome == 'success' && steps.s33.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-33 evidence/c78-34
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-34.json
+
+        cp evidence/c78-34/kernel-observation.json evidence/c78-reports/kernel-34.json
+
+        cp evidence/c78-34/console-new.txt evidence/c78-reports/console-34.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-34'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 34: preserve every complete original checkpoint piece'
+      if: success() && steps.s34.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-34
+        transport_path: build/c78-transport-34
+        artifact_prefix: reverseandroid-c78-stage-34
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s34.outcome == 'success'
+      run: 'rm -rf evidence/c78-33 build/c78-transport-33
+
+        '
+    - name: 'C78 stage 35: continue and fully admit the same boot epoch'
+      id: s35
+      if: success() && steps.s34.outcome == 'success' && steps.s34.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-34 evidence/c78-35
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-35.json
+
+        cp evidence/c78-35/kernel-observation.json evidence/c78-reports/kernel-35.json
+
+        cp evidence/c78-35/console-new.txt evidence/c78-reports/console-35.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-35'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 35: preserve every complete original checkpoint piece'
+      if: success() && steps.s35.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-35
+        transport_path: build/c78-transport-35
+        artifact_prefix: reverseandroid-c78-stage-35
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s35.outcome == 'success'
+      run: 'rm -rf evidence/c78-34 build/c78-transport-34
+
+        '
+    - name: 'C78 stage 36: continue and fully admit the same boot epoch'
+      id: s36
+      if: success() && steps.s35.outcome == 'success' && steps.s35.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-35 evidence/c78-36
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-36.json
+
+        cp evidence/c78-36/kernel-observation.json evidence/c78-reports/kernel-36.json
+
+        cp evidence/c78-36/console-new.txt evidence/c78-reports/console-36.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-36'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 36: inspect real lights service without modifying guest state'
+      if: success() && steps.s36.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-36/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-36/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-36/lights-readonly.json
+
+        cp evidence/c78-36/lights-readonly.json evidence/c78-reports/lights-36.json
+
+        '
+    - name: 'C78 stage 36: inspect original Java threads without changing the guest'
+      if: success() && steps.s36.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-36/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-36/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-36/threads-readonly.json
+
+        cp evidence/c78-36/threads-readonly.json evidence/c78-reports/threads-36.json
+
+        '
+    - name: 'C78 stage 36: preserve every complete original checkpoint piece'
+      if: success() && steps.s36.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-36
+        transport_path: build/c78-transport-36
+        artifact_prefix: reverseandroid-c78-stage-36
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s36.outcome == 'success'
+      run: 'rm -rf evidence/c78-35 build/c78-transport-35
+
+        '
+    - name: 'C78 stage 37: continue and fully admit the same boot epoch'
+      id: s37
+      if: success() && steps.s36.outcome == 'success' && steps.s36.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-36 evidence/c78-37
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-37.json
+
+        cp evidence/c78-37/kernel-observation.json evidence/c78-reports/kernel-37.json
+
+        cp evidence/c78-37/console-new.txt evidence/c78-reports/console-37.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-37'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 37: preserve every complete original checkpoint piece'
+      if: success() && steps.s37.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-37
+        transport_path: build/c78-transport-37
+        artifact_prefix: reverseandroid-c78-stage-37
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s37.outcome == 'success'
+      run: 'rm -rf evidence/c78-36 build/c78-transport-36
+
+        '
+    - name: 'C78 stage 38: continue and fully admit the same boot epoch'
+      id: s38
+      if: success() && steps.s37.outcome == 'success' && steps.s37.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-37 evidence/c78-38
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-38.json
+
+        cp evidence/c78-38/kernel-observation.json evidence/c78-reports/kernel-38.json
+
+        cp evidence/c78-38/console-new.txt evidence/c78-reports/console-38.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-38'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 38: preserve every complete original checkpoint piece'
+      if: success() && steps.s38.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-38
+        transport_path: build/c78-transport-38
+        artifact_prefix: reverseandroid-c78-stage-38
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s38.outcome == 'success'
+      run: 'rm -rf evidence/c78-37 build/c78-transport-37
+
+        '
+    - name: 'C78 stage 39: continue and fully admit the same boot epoch'
+      id: s39
+      if: success() && steps.s38.outcome == 'success' && steps.s38.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-38 evidence/c78-39
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-39.json
+
+        cp evidence/c78-39/kernel-observation.json evidence/c78-reports/kernel-39.json
+
+        cp evidence/c78-39/console-new.txt evidence/c78-reports/console-39.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-39'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 39: preserve every complete original checkpoint piece'
+      if: success() && steps.s39.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-39
+        transport_path: build/c78-transport-39
+        artifact_prefix: reverseandroid-c78-stage-39
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s39.outcome == 'success'
+      run: 'rm -rf evidence/c78-38 build/c78-transport-38
+
+        '
+    - name: 'C78 stage 40: continue and fully admit the same boot epoch'
+      id: s40
+      if: success() && steps.s39.outcome == 'success' && steps.s39.outputs.ready != 'true'
+      run: 'node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs run evidence/c78-39 evidence/c78-40
+        build/reverseandroid/epoch build/media/android-c27.raw build/reverseandroid/frame "$(git rev-parse HEAD)"
+        1000000000 > evidence/c78-reports/stage-40.json
+
+        cp evidence/c78-40/kernel-observation.json evidence/c78-reports/kernel-40.json
+
+        cp evidence/c78-40/console-new.txt evidence/c78-reports/console-40.txt
+
+        python3 - <<''PYVERIFY''
+
+        import pathlib,json,hashlib,shutil
+
+        p=pathlib.Path(''evidence/c78-40'');g=json.load(open(p/''c46-progress.json''));assert g[''source_boundary_verified''];assert
+        hashlib.file_digest(open(p/''current.rvg'',''rb''),''sha256'').hexdigest()==g[''checkpoint_sha256''];shutil.rmtree(p/''native/journal'')
+
+        PYVERIFY
+
+        '
+    - name: 'C78 stage 40: inspect real lights service without modifying guest state'
+      if: success() && steps.s40.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_SOURCE_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-40/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-lights-probe.mjs evidence/c78-40/current.rvg "$TASK_SOURCE_SHA"
+        evidence/c78-40/lights-readonly.json
+
+        cp evidence/c78-40/lights-readonly.json evidence/c78-reports/lights-40.json
+
+        '
+    - name: 'C78 stage 40: inspect original Java threads without changing the guest'
+      if: success() && steps.s40.outcome == 'success'
+      continue-on-error: true
+      run: 'TASK_THREAD_SHA=$(python3 -c ''import json;print(json.load(open("evidence/c78-40/output-contract.json"))["checkpoint_sha256"])'')
+
+        node --max-old-space-size=5000 tools/reverseandroid-thread-probe.mjs evidence/c78-40/current.rvg "$TASK_THREAD_SHA"
+        evidence/c78-40/threads-readonly.json
+
+        cp evidence/c78-40/threads-readonly.json evidence/c78-reports/threads-40.json
+
+        '
+    - name: 'C78 stage 40: preserve every complete original checkpoint piece'
+      if: success() && steps.s40.outcome == 'success'
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c78-40
+        transport_path: build/c78-transport-40
+        artifact_prefix: reverseandroid-c78-stage-40
+    - name: Release only previous host copies after all current transport pieces were preserved
+      if: success() && steps.s40.outcome == 'success'
+      run: 'rm -rf evidence/c78-39 build/c78-transport-39
+
+        '
+    - name: Require original Android boot conditions and a frame for visual review
+      run: 'node --input-type=module <<''NODE''
+
+        import assert from ''node:assert/strict'';import {existsSync,readFileSync} from ''node:fs'';
+
+        const available=Array.from({length:40},(_,i)=>`evidence/c78-${i+1}`).filter(p=>existsSync(p+''/c46-progress.json''));assert.ok(available.length);
+
+        const last=available.at(-1),gate=JSON.parse(readFileSync(last+''/c46-progress.json'')),result=JSON.parse(readFileSync(last+''/result.json''));
+
+        assert.equal(result.epoch_original_init_verified,true);assert.equal(gate.android_boot_completed_verified,true,''Actual
+        Android boot remains pending; preserve this admitted boundary and continue debugging'');assert.equal(gate.ready_for_visual_review,true);
+
+        NODE
+
+        '
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-c78-boot-evidence
+        path: 'evidence/c78-reports
+
+          evidence/c78-*/*.json
+
+          evidence/c78-*/*.txt
+
+          evidence/c78-*/*.log
+
+          evidence/c78-*/*.ppm
+
+          build/reverseandroid/*.json
+
+          build/reverseandroid/*.tap
+
+          build/reverseandroid/*sha256*.txt'
+        retention-days: 90
+        if-no-files-found: error
