@@ -1,0 +1,33 @@
+name: Cuttlefish peripheral wire and real PTY verification
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'native/cuttlefish-peripheral-*'
+      - 'tests/cuttlefish-peripheral-*'
+      - 'scripts/build-cuttlefish-peripheral-peer.sh'
+      - '.github/workflows/cuttlefish-peripheral-peer.yml'
+permissions:
+  contents: read
+jobs:
+  peripheral-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {persist-credentials: false}
+      - name: Verify the entire original emulator import
+        run: python3 scripts/verify-reverseandroid-import.py
+      - name: Test literal wire vectors, real PTY I/O, persistence and build static AArch64 peer
+        run: |
+          command -v clang ld.lld
+          bash scripts/build-cuttlefish-peripheral-peer.sh
+          git rev-parse HEAD > build/cuttlefish-peripheral-peer/execution-commit.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: cuttlefish-peripheral-peer-verified-build
+          path: build/cuttlefish-peripheral-peer
+          retention-days: 90
+          if-no-files-found: error

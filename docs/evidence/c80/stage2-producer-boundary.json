@@ -1,0 +1,18 @@
+{
+  "schema": "reverseandroid-authenticated-producer-epoch-boundary-v1",
+  "cycle": "C80",
+  "stage": 2,
+  "run_id": 42147763604,
+  "execution_commit": "c435ee53ef65e60f00ef2f7fb946c8e53eea8a8f",
+  "checkpoint_sha256": "d7321c21f13179a9bfb10960b5a07a5e8849a3e3f6532059e16de6bbd14c4471",
+  "instructions": 35000000000,
+  "metadata_artifact_id": 13471968803,
+  "metadata_archive_sha256": "bd80863fbf32225d73f6441acd376c9effed68f5af4bbb351b830f7ddbdc0877",
+  "producer_original_source_boundary_verified": true,
+  "all_transport_pieces_preserved_and_pinned": true,
+  "fresh_local_whole_transport_recovery_pending": true,
+  "fresh_local_independent_CPU_replay_not_claimed": true,
+  "transport_lock": "state/experiments/c80-stage-2-transport.json",
+  "artifact_lock": "state/experiments/c80-stage-2-artifacts.json",
+  "android_boot_completed_verified": false
+}

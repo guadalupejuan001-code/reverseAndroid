@@ -1,0 +1,28 @@
+{
+  "schema": "reverseandroid-isolated-guarded-JIT-priority-control-v1",
+  "run_id": 42152828939,
+  "execution_commit": "1a7541fa4ad90f0dca94c074476d735e269659f7",
+  "checkpoint_sha256": "b939a7688e0992dc4d70deaa71dc99d933cac17fe9b44611b9634bb242ef98aa",
+  "instructions": 35000000000,
+  "metadata_id": 13473638508,
+  "metadata_archive_sha256": "bb2e1cba1283072d9d4aef95bec8b391806869513c93892724e3d108cfde11a1",
+  "ZIP_SHA256_and_CRC_verified": true,
+  "producer_original_C46_and_clean_outcome_verified": true,
+  "all_transport_pieces_pinned": true,
+  "actual_nice0_console_result": true,
+  "actual_kernel_pid": 1156,
+  "actual_kernel_tgid": 562,
+  "actual_kernel_priority": 120,
+  "actual_kernel_accounting": {
+    "utime": "7622000",
+    "stime": "11541000",
+    "nvcsw": "1",
+    "nivcsw": "12",
+    "sum_exec_runtime": "23221000",
+    "vruntime": "2776743466",
+    "exec_start": "543246706000"
+  },
+  "original_main_C79_C80_priority_changed": false,
+  "control_is_promotion_authority": false,
+  "fresh_local_recovery_or_replay_claimed": false
+}
