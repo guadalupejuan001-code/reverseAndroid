@@ -1,0 +1,230 @@
+{
+  "schema": "reverseandroid-original-readonly-ART-and-preopt-progress-v1",
+  "cycle": "C90",
+  "source_stage": 3,
+  "source_checkpoint_SHA256": "cb8c217de063d420f402dd66aaf86c0fae26b6245a5b6fc767a0c66f0a110109",
+  "instructions": 158147727998,
+  "diagnostic_execution_commit": "b86c3f2ec87cb2937d4333c9373b2407eee9a979",
+  "diagnostic_run": 42320794683,
+  "diagnostic_job": 128244585491,
+  "artifact_id": 13552637681,
+  "artifact_ZIP_SHA256": "bde13ebd1bd2017dc2f0bf0ad42fc7ad9fd195de407eea8b555f6a456a861a13",
+  "full_original_source_preflight_and_RVG_digest_after_observation_verified": true,
+  "guest_instructions_executed": 0,
+  "new_UART_bytes": 0,
+  "original_kernel_BTF_and_thread_backlinks_verified": true,
+  "SystemServer_thread_count": 55,
+  "actual_selected_SystemServer_threads": [
+    {
+      "pid": 7354,
+      "name": "system_server",
+      "state": 0,
+      "static_priority": 118,
+      "normal_nice": -2,
+      "CPU_runtime_ns": "14851928000",
+      "CPU_delta_since_C89stage16_ns": 58950000,
+      "actual_saved_user_PC": {
+        "address": "0x73da5dba68",
+        "start": "0x73d9e00000",
+        "end": "0x73da65f000",
+        "flags": "0x20000075",
+        "file": "/apex/com.android.art/lib64/libart.so",
+        "file_offset": "10336872",
+        "dynamic_symbols_unavailable": "User page not present"
+      },
+      "actual_saved_syscall": 4294967295,
+      "actual_saved_args": [
+        "0xb40000758be2cbd0",
+        "0x7fce395d20",
+        "0x7fce395e30",
+        "0x7fce395ac8",
+        "0x4",
+        "0x4"
+      ],
+      "kernel_stack": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "do_notify_resume+0xcc",
+        "el0_interrupt+0x94",
+        "__el0_irq_handler_common+0x18",
+        "el0t_64_irq_handler+0x10",
+        "el0t_64_irq+0x1bc",
+        null
+      ],
+      "UID_EUID": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      }
+    },
+    {
+      "pid": 7414,
+      "name": "Jit thread pool",
+      "state": 8193,
+      "static_priority": 129,
+      "normal_nice": 9,
+      "CPU_runtime_ns": "330660000",
+      "CPU_delta_since_C89stage16_ns": 304000,
+      "actual_saved_user_PC": {
+        "address": "0x76a4976f20",
+        "start": "0x76a4928000",
+        "end": "0x76a49cc000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "700192",
+        "dynamic_symbol": {
+          "name": "syscall",
+          "offset": "0x20",
+          "range_verified": true
+        }
+      },
+      "actual_saved_syscall": 98,
+      "actual_saved_args": [
+        "0xb40000747be06588",
+        "0x80",
+        "0x7",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "kernel_stack": [
+        "__schedule+0x1004",
+        "schedule+0x4c",
+        "futex_wait+0x158",
+        "__arm64_sys_futex+0xfc",
+        "invoke_syscall+0x58",
+        "do_el0_svc+0x8c",
+        "el0_svc+0x48",
+        "el0t_64_sync_handler+0x88"
+      ],
+      "UID_EUID": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      }
+    },
+    {
+      "pid": 7415,
+      "name": "HeapTaskDaemon",
+      "state": 0,
+      "static_priority": 124,
+      "normal_nice": 4,
+      "CPU_runtime_ns": "6192776000",
+      "CPU_delta_since_C89stage16_ns": 16954000,
+      "actual_saved_user_PC": {
+        "address": "0x76a49b63c8",
+        "start": "0x76a4928000",
+        "end": "0x76a49cc000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+        "file_offset": "959432",
+        "dynamic_symbol": {
+          "name": "madvise",
+          "offset": "0x8",
+          "range_verified": true
+        }
+      },
+      "actual_saved_syscall": 233,
+      "actual_saved_args": [
+        "0x22465000",
+        "0x11000",
+        "0x4",
+        "0x10",
+        "0x0",
+        "0x28"
+      ],
+      "kernel_stack": [
+        "__schedule+0x1004",
+        "preempt_schedule+0x60",
+        "free_unref_folios+0x460",
+        "folios_put_refs+0x234",
+        "free_pages_and_swap_cache+0x120",
+        "tlb_finish_mmu+0x218",
+        "zap_page_range_single+0x10c",
+        "madvise_vma_behavior.cold+0x48"
+      ],
+      "UID_EUID": {
+        "uid": "1000",
+        "euid": "1000",
+        "gid": "1000",
+        "egid": "1000"
+      }
+    }
+  ],
+  "actual_copy_workers": [
+    {
+      "pid": 8850,
+      "command_line": [
+        "cp",
+        "/postinstall/product/priv-app/StatementService/oat/arm64/StatementService.vdex",
+        "/data/dalvik-cache/arm64/product@priv-app@StatementService@StatementService.apk@classes.vdex.tmp"
+      ],
+      "state": 0,
+      "policy": 0,
+      "static_priority": 100,
+      "normal_nice": -20,
+      "actual_parent": {
+        "task": "0xffffff8049d1a880",
+        "pid": 8848,
+        "tgid": 8848,
+        "name": "cppreopts.sh"
+      },
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      },
+      "actual_saved_user_PC": {
+        "address": "0x758e966824",
+        "start": "0x758e89b000",
+        "end": "0x758e9e3000",
+        "flags": "0x1800000000000075",
+        "file": "/system/lib64/libcrypto.so",
+        "file_offset": "1357860",
+        "dynamic_symbol": null
+      }
+    },
+    {
+      "pid": 8854,
+      "command_line": [
+        "cp",
+        "/postinstall/system/app/BasicDreams/oat/arm64/BasicDreams.odex",
+        "/data/dalvik-cache/arm64/system@app@BasicDreams@BasicDreams.apk@classes.dex.tmp"
+      ],
+      "state": 0,
+      "policy": 0,
+      "static_priority": 100,
+      "normal_nice": -20,
+      "actual_parent": {
+        "task": "0xffffff8049d23cc0",
+        "pid": 8852,
+        "tgid": 8852,
+        "name": "cppreopts.sh"
+      },
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      },
+      "actual_saved_user_PC": {
+        "address": "0x70dd396ec8",
+        "start": "0x70dd38b000",
+        "end": "0x70dd4f7000",
+        "flags": "0x75",
+        "file": "/apex/com.android.runtime/bin/linker64",
+        "file_offset": "376520",
+        "dynamic_symbol": null
+      }
+    }
+  ],
+  "cppreopts_shells": 34,
+  "previous_stage23_copy_workers_no_longer_listed": true,
+  "main_not_in_previous_futex": true,
+  "current_native_execution_or_priority_change_selected": false,
+  "original_BOOT": false,
+  "usable_UI_or_response_claimed": false
+}
