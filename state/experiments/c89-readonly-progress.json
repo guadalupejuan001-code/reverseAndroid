@@ -1,12 +1,12 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 15,
-  "source_checkpoint_sha256": "74ac5c113c02dfeaa766f98ede9434d98465eae3c55e27240bc70a36f7ac4f29",
-  "instructions": 154147727998,
-  "source_artifact_lock": "state/experiments/c89-stage-15-artifacts.json",
+  "source_stage": 16,
+  "source_checkpoint_sha256": "253e51d9fd821f11b0c0f08e4721e5be7a50f6597fb4ea92e970a98ba4d2b2ea",
+  "instructions": 155147727998,
+  "source_artifact_lock": "state/experiments/c89-stage-16-artifacts.json",
   "source_execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
   "source_CI_run_id": 42299162841,
-  "source_proof_SHA256": "0a1ee463663c1c1ae685b79468e9d2b3398538bdd5f298e4cfc992aea1c8996b",
+  "source_proof_SHA256": "818575b95250267e5405d7e904270ed2c36294df419e07724babe3ce7122df17",
   "zygote_PID": 5629,
   "target_JIT_TID": 5922,
   "system_server_PID": 7354,
@@ -103,10 +103,12 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Read bounded pathname and descriptor identity/position for the exact current SystemServer7354 syscall. Source15 kernel stack reaches readlinkat/proc_self_get_link. No file contents are read by this observer; preserve unverified context explicitly. Zero guest execution/UART.",
+  "purpose": "Read bounded retained GPU control-queue bytes and actual resource identities at the latest original C89stage16. Explicitly do not treat reused descriptors as historical execution or infer an allocation failure. No GPU/native/codec change; zero guest execution and zero UART.",
   "read_only_debuggerd_context_PID": 7354,
   "debuggerd_candidate_module_SHA256": "5d4edd7dcd4f394b2f9ba84c4a697a05b621d072ad3b34ee3ba16afb171469cd",
   "mmap_lock_module_SHA256": "6aaa5ace7d9f0f72bd3dc96865eb9d618d805d8034e73a3bc596edb4228c6563",
   "read_only_io_context_PID": 7354,
-  "syscall_io_module_SHA256": "784ece25edd523812e58275a37695e1dfdab2ecf1087b95c428ede9bbf59d580"
+  "syscall_io_module_SHA256": "784ece25edd523812e58275a37695e1dfdab2ecf1087b95c428ede9bbf59d580",
+  "read_only_gpu_queues": true,
+  "gpu_queue_module_SHA256": "2702077a8d975b04ff69e3436907370c65bf2225a7363d1a71eb3071f279c3d7"
 }

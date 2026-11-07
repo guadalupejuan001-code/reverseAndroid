@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,statSync,writeFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
-import {resolve} from 'node:path';
+import {resolve,dirname} from 'node:path';
 import {enumerateMapleVmas,mountedFilePath,userMemoryReader} from './android_live_property.mjs';
 import {memoryElfSymbols} from './reverseandroid-elf-symbols.mjs';
 import {inspectTaskScheduling} from './reverseandroid-scheduler-group.mjs';
@@ -11,6 +11,8 @@ import {inspectTaskSignals} from './reverseandroid-task-signals.mjs';
 import {readDebuggerdSignalCandidate} from './reverseandroid-debuggerd-context.mjs';
 import {inspectMmapLock} from './reverseandroid-mmap-lock.mjs';
 import {inspectSavedSyscallIO} from './reverseandroid-syscall-io.mjs';
+import {inspectGpuBacking} from './android_gpu_backing_evidence.mjs';
+import {inspectGpuControlQueue} from './reverseandroid-gpu-queue.mjs';
 
 const hx=x=>'0x'+x.toString(16), kernelPointer=x=>x>=0xffff000000000000n;
 export function enumerateThreadPointers({leader,read,task,signal}) {
@@ -173,18 +175,24 @@ export async function probeThreads(path,sha,options={}) {
   const patched=source.replace(marker,hook+marker).replace(/from (['"])(\.\/[^'"]+)\1/g,(_,quote,spec)=>'from '+quote+new URL(spec,originalUrl).href+quote);
   const {observeAndroidKernel}=await import('data:text/javascript;base64,'+Buffer.from(patched).toString('base64'));
   assert.ok(statSync(path).size<=2147483648);
+  const gpu=options.gpuQueues?await inspectGpuBacking(dirname(path)):null;
+  if(gpu)assert.equal(gpu.checkpoint_sha256,sha);
   let threads;const bytes=readFileSync(path);
-  const proof=observeAndroidKernel(bytes,sha,{maxSnapshotBytes:2147483648,liveProperties:true,zygoteProbe:true,schedulerProbe:true,extraReadOnlyProbe:api=>{threads=inspectThreads(api,options);}});
+  const proof=observeAndroidKernel(bytes,sha,{maxSnapshotBytes:2147483648,liveProperties:true,zygoteProbe:true,schedulerProbe:true,extraReadOnlyProbe:api=>{
+    threads=inspectThreads(api,options);
+    if(gpu)try{threads.gpu_control_queue=inspectGpuControlQueue({...gpu,physicalByte:api.physical});}
+      catch(e){threads.gpu_control_queue_unverified=e.message;}
+  }});
   assert.ok(threads);assert.equal(proof.input_unchanged,true);
   return {...threads,checkpoint_sha256:proof.checkpoint_sha256,instructions:proof.instructions,input_unchanged:true,
     observer_source_git_blob_sha1:blob,original_observer_file_unchanged:true,original_CPU_and_codecs_unchanged:true};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
-  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>['--all-scheduling','--diagnostic-processes'].includes(x)||/^--debuggerd-context-pid=[1-9][0-9]{0,6}$/.test(x)||/^--io-context-pid=[1-9][0-9]{0,6}$/.test(x)));
+  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>['--all-scheduling','--diagnostic-processes','--gpu-queues'].includes(x)||/^--debuggerd-context-pid=[1-9][0-9]{0,6}$/.test(x)||/^--io-context-pid=[1-9][0-9]{0,6}$/.test(x)));
   const candidateFlags=flags.filter(x=>x.startsWith('--debuggerd-context-pid='));assert.ok(candidateFlags.length<=1);
   const debuggerdContextPID=candidateFlags.length?Number(candidateFlags[0].split('=')[1]):null;
   const ioFlags=flags.filter(x=>x.startsWith('--io-context-pid='));assert.ok(ioFlags.length<=1);
   const ioContextPID=ioFlags.length?Number(ioFlags[0].split('=')[1]):null;
-  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling'),diagnosticProcesses:flags.includes('--diagnostic-processes'),debuggerdContextPID,ioContextPID});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling'),diagnosticProcesses:flags.includes('--diagnostic-processes'),debuggerdContextPID,ioContextPID,gpuQueues:flags.includes('--gpu-queues')});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
   console.log(JSON.stringify({instructions:result.instructions,groups:result.groups.map(x=>({pid:x.pid,name:x.name,thread_count:x.thread_count,error:x.error})),input_unchanged:true}));
 }
