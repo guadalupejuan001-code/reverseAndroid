@@ -7,10 +7,9 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 ## Último resultado verificado
 
 <!-- current-runtime -->
-C89, etapa16: **155.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las 4 piezas del snapshot conservadas y fijadas por SHA-256. **SystemServer está verificado como vivo.** El arranque completo y la interfaz utilizable siguen pendientes.
+C90, etapa1: **156.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las 4 piezas del snapshot conservadas y fijadas por SHA-256. **SystemServer está verificado como vivo.** El arranque completo y la interfaz utilizable siguen pendientes.
 Esta continuación entrega **cero UART nuevo en todas sus etapas**. Conserva los 8 eventos del historial y todos los bytes anteriores de consola. Se mantienen el motor validado, el disco,2GiB lógicos, el reloj, la semilla, la cadencia, los códecs y SELinux. La interfaz utilizable y la respuesta significativa a un gesto real aún requieren prueba.
-[Admisión actual](docs/evidence/c89/stage16-original-CI-authority.json); [continuación sin entradas](docs/c89-zero-input-continuation.md); [prueba de interfaz preparada](docs/real-ui-response.md); [estado actual](state/latest.json).
-Continuación C90 seleccionada desde este estado; primera admisión pendiente. [Plan](state/experiments/c90-plan.json).
+[Admisión actual](docs/evidence/c90/stage1-original-CI-authority.json); [continuación sin entradas](docs/c90-zero-input-continuation.md); [prueba de interfaz preparada](docs/real-ui-response.md); [estado actual](state/latest.json).
 <!-- /current-runtime -->
 
 ### Historial conservado
