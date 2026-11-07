@@ -224,7 +224,7 @@
   "cppreopts_shells": 34,
   "previous_stage23_copy_workers_no_longer_listed": true,
   "main_not_in_previous_futex": true,
-  "current_native_execution_or_priority_change_selected": false,
   "original_BOOT": false,
-  "usable_UI_or_response_claimed": false
+  "usable_UI_or_response_claimed": false,
+  "new_native_binary_or_priority_change_selected": false
 }
