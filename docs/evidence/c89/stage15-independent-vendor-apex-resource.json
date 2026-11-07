@@ -1,0 +1,214 @@
+{
+  "schema": "reverseandroid-original-current-syscall-resource-v1",
+  "source_checkpoint_sha256": "74ac5c113c02dfeaa766f98ede9434d98465eae3c55e27240bc70a36f7ac4f29",
+  "instructions": 154147727998,
+  "diagnostic_execution_commit": "7e9901e74b0e7600353a11b92001663891799de5",
+  "diagnostic_run": 42316666696,
+  "diagnostic_job": 128230831345,
+  "artifact_id": 13551162273,
+  "artifact_ZIP_SHA256": "0ee3770bafb3a9c25397387e5cbf37036179cfb0892d422662c9b30156240877",
+  "guest_instructions_executed": 0,
+  "new_UART_bytes": 0,
+  "full_original_source_preflight_and_after_observation_RVG_digest_verified": true,
+  "actual_main_saved_frame": {
+    "stack_bytes": 16384,
+    "syscall": 78,
+    "pc": {
+      "address": "0x76a49b6cc8",
+      "start": "0x76a4928000",
+      "end": "0x76a49cc000",
+      "flags": "0x75",
+      "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "file_offset": "961736",
+      "dynamic_symbol": {
+        "name": "readlinkat",
+        "offset": "0x8",
+        "range_verified": true
+      }
+    },
+    "sp": "0x7fce392920",
+    "fp": "0x7fce393a50",
+    "lr": {
+      "address": "0x76a4962db0",
+      "start": "0x76a4928000",
+      "end": "0x76a49cc000",
+      "flags": "0x75",
+      "file": "/apex/com.android.runtime/lib64/bionic/libc.so",
+      "file_offset": "617904",
+      "dynamic_symbol": {
+        "name": "realpath",
+        "offset": "0xb0",
+        "range_verified": true
+      }
+    },
+    "args": [
+      "0xffffff9c",
+      "0x7fce393a20",
+      "0x7fce392a20",
+      "0xfff",
+      "0xffffffffffffffff",
+      "0x4"
+    ],
+    "registers": [
+      "0xffffff9c",
+      "0x7fce393a20",
+      "0x7fce392a20",
+      "0xfff",
+      "0xffffffffffffffff",
+      "0x4",
+      "0x31",
+      "0x2f64662f666c6573",
+      "0x4e",
+      "0x688fdc1b9f3dec07",
+      "0x33",
+      "0x2",
+      "0x7fce392554",
+      "0x73da343ab0",
+      "0x10",
+      "0x0",
+      "0x76a49d0120",
+      "0x76a49b6cc0",
+      "0x76a62c8000",
+      "0x85",
+      "0x7fce395b18",
+      "0x7fce392a20",
+      "0x76a6c21300",
+      "0x76a6c21300",
+      "0x7",
+      "0x76a6c21300",
+      "0x1",
+      "0xb40000757be0ac70",
+      "0x49",
+      "0x7fce393a50",
+      "0x76a4962db0"
+    ],
+    "pstate": "0x0",
+    "user_stack": [
+      {
+        "fp": "0x7fce393a50",
+        "return_pc": {
+          "address": "0x73a5d1a918",
+          "start": "0x73a5d16000",
+          "end": "0x73a5d36000",
+          "flags": "0x1000000000000075",
+          "file": "/apex/com.android.art/lib64/libopenjdk.so",
+          "file_offset": "133400",
+          "dynamic_symbols_unavailable": "User page not present"
+        }
+      },
+      {
+        "fp": "0x7fce395ab0",
+        "return_pc": {
+          "address": "0x73a5d1e72c",
+          "start": "0x73a5d16000",
+          "end": "0x73a5d36000",
+          "flags": "0x1000000000000075",
+          "file": "/apex/com.android.art/lib64/libopenjdk.so",
+          "file_offset": "149292",
+          "dynamic_symbols_unavailable": "User page not present"
+        }
+      },
+      {
+        "fp": "0x7fce396b20",
+        "return_pc": {
+          "address": "0x71f943c0",
+          "start": "0x71d4c000",
+          "end": "0x71f9b000",
+          "flags": "0x75",
+          "file": "/system/framework/arm64/boot.oat",
+          "file_offset": "3032000",
+          "dynamic_symbols_unavailable": "User page not present"
+        }
+      },
+      {
+        "fp": "0x7fce396d28",
+        "return_pc": null
+      }
+    ],
+    "syscall_io": {
+      "read_only": true,
+      "syscall_number": 78,
+      "argument0_source": "pt_regs.orig_x0",
+      "original_argument0": "0xffffff9c",
+      "path_argument": {
+        "raw_address": "0x7fce393a20",
+        "address": "0x7fce393a20",
+        "bytes": 17,
+        "raw_hex": "2f70726f632f73656c662f66642f313333",
+        "display_utf8": "/proc/self/fd/133",
+        "directory_fd_signed": "-100"
+      },
+      "proc_self_fd_target": {
+        "read_only": true,
+        "kernel_BTF_layout_verified": true,
+        "fd": 133,
+        "table_capacity": 256,
+        "open": true,
+        "file": "0xffffff801de88900",
+        "position_signed": "0",
+        "file_mode_raw": "0x84000",
+        "file_flags_raw": "0x200000",
+        "path": "/vendor/apex/com.google.cf.confirmationui.apex",
+        "inode": "0xffffff8006e858c8",
+        "inode_number": "8420132",
+        "inode_mode_raw": "0x81a4",
+        "inode_size_signed": "647168"
+      }
+    },
+    "pc_code_le_hex": "1ffc3fb1a2a9c954c0035fd61f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d51f2003d5882280d2010000d4"
+  },
+  "actual_syscall_io": {
+    "read_only": true,
+    "syscall_number": 78,
+    "argument0_source": "pt_regs.orig_x0",
+    "original_argument0": "0xffffff9c",
+    "path_argument": {
+      "raw_address": "0x7fce393a20",
+      "address": "0x7fce393a20",
+      "bytes": 17,
+      "raw_hex": "2f70726f632f73656c662f66642f313333",
+      "display_utf8": "/proc/self/fd/133",
+      "directory_fd_signed": "-100"
+    },
+    "proc_self_fd_target": {
+      "read_only": true,
+      "kernel_BTF_layout_verified": true,
+      "fd": 133,
+      "table_capacity": 256,
+      "open": true,
+      "file": "0xffffff801de88900",
+      "position_signed": "0",
+      "file_mode_raw": "0x84000",
+      "file_flags_raw": "0x200000",
+      "path": "/vendor/apex/com.google.cf.confirmationui.apex",
+      "inode": "0xffffff8006e858c8",
+      "inode_number": "8420132",
+      "inode_mode_raw": "0x81a4",
+      "inode_size_signed": "647168"
+    }
+  },
+  "actual_UID1000_main_credentials": {
+    "uid": "1000",
+    "euid": "1000",
+    "gid": "1000",
+    "egid": "1000"
+  },
+  "descriptor_position_not_used_to_infer_a_wait": true,
+  "source13_same_descriptor_number_not_assumed_same_file": true,
+  "file_contents_not_read_by_observer": true,
+  "original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "74ac5c113c02dfeaa766f98ede9434d98465eae3c55e27240bc70a36f7ac4f29",
+    "instructions": 154147727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "usable_UI_or_response_claimed": false
+}

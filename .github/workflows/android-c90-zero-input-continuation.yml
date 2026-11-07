@@ -1,0 +1,379 @@
+name: C90 original Android zero-input bounded continuation
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/android-c90-zero-input-continuation.yml
+    - state/experiments/c90-plan.json
+    - state/experiments/c90-artifacts.json
+    - state/experiments/c90-source-console.gz.b64
+    - scripts/zero_input_continuation.py
+    - scripts/prepare-zero-input-continuation-state.py
+    - scripts/run-zero-input-continuation-stage.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c90-bounded-continuation
+  cancel-in-progress: false
+jobs:
+  c90-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Admit the selected complete original source, unchanged native and entire previous console/input history
+      run: |
+        mkdir -p build evidence/c90-reports
+        python3 scripts/verify-reverseandroid-import.py
+        python3 tests/zero_input_continuation_test.py
+        python3 tests/c88_jit_priority_control_test.py
+        python3 tests/c85_peripheral_completion_test.py
+        python3 tests/reverseandroid_workflow_phase_guard_test.py
+        node --test tests/reverseandroid_console_proof.test.mjs tests/reverseandroid_epoch_input.test.mjs tests/reverseandroid_campaign_input.test.mjs
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/c90-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/c90-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py ic-hardware build/ic-hardware state/experiments/c90-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c90 state/experiments/c90-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/c90-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/c90-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/c90-artifacts.json
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/c90-artifacts.json
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+        chmod +x build/ic-native/epoch-clz-ic build/reverseandroid/frame
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-c90 > evidence/c90-reports/source-original-admission.json
+        python3 scripts/prepare-zero-input-continuation-state.py state/experiments/c90-plan.json build/source-c90 evidence/c90-reports
+    - name: 'C90 bounded continuation stage 1: zero new UART with original full admission'
+      id: r1
+      if: success()
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 1
+    - name: 'C90 bounded continuation stage 1: preserve every complete original checkpoint piece'
+      id: p1
+      if: always() && (steps.r1.outcome == 'success' || steps.r1.outcome == 'failure') && hashFiles('evidence/c90-1/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-1
+        transport_path: build/c90-transport-1
+        artifact_prefix: reverseandroid-c90-1
+    - name: 'C90 bounded continuation stage 1: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r1.outcome == 'success' && steps.p1.outcome == 'success'
+      run: |
+        rm -rf build/source-c90
+    - name: 'C90 bounded continuation stage 2: zero new UART with original full admission'
+      id: r2
+      if: success() && steps.r1.outcome == 'success' && steps.p1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 2
+    - name: 'C90 bounded continuation stage 2: preserve every complete original checkpoint piece'
+      id: p2
+      if: always() && (steps.r2.outcome == 'success' || steps.r2.outcome == 'failure') && hashFiles('evidence/c90-2/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-2
+        transport_path: build/c90-transport-2
+        artifact_prefix: reverseandroid-c90-2
+    - name: 'C90 bounded continuation stage 2: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r2.outcome == 'success' && steps.p2.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-1 build/c90-transport-1
+    - name: 'C90 bounded continuation stage 3: zero new UART with original full admission'
+      id: r3
+      if: success() && steps.r2.outcome == 'success' && steps.p2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 3
+    - name: 'C90 bounded continuation stage 3: preserve every complete original checkpoint piece'
+      id: p3
+      if: always() && (steps.r3.outcome == 'success' || steps.r3.outcome == 'failure') && hashFiles('evidence/c90-3/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-3
+        transport_path: build/c90-transport-3
+        artifact_prefix: reverseandroid-c90-3
+    - name: 'C90 bounded continuation stage 3: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r3.outcome == 'success' && steps.p3.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-2 build/c90-transport-2
+    - name: 'C90 bounded continuation stage 4: zero new UART with original full admission'
+      id: r4
+      if: success() && steps.r3.outcome == 'success' && steps.p3.outcome == 'success' && steps.r3.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 4
+    - name: 'C90 bounded continuation stage 4: preserve every complete original checkpoint piece'
+      id: p4
+      if: always() && (steps.r4.outcome == 'success' || steps.r4.outcome == 'failure') && hashFiles('evidence/c90-4/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-4
+        transport_path: build/c90-transport-4
+        artifact_prefix: reverseandroid-c90-4
+    - name: 'C90 bounded continuation stage 4: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r4.outcome == 'success' && steps.p4.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-3 build/c90-transport-3
+    - name: 'C90 bounded continuation stage 5: zero new UART with original full admission'
+      id: r5
+      if: success() && steps.r4.outcome == 'success' && steps.p4.outcome == 'success' && steps.r4.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 5
+    - name: 'C90 bounded continuation stage 5: preserve every complete original checkpoint piece'
+      id: p5
+      if: always() && (steps.r5.outcome == 'success' || steps.r5.outcome == 'failure') && hashFiles('evidence/c90-5/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-5
+        transport_path: build/c90-transport-5
+        artifact_prefix: reverseandroid-c90-5
+    - name: 'C90 bounded continuation stage 5: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r5.outcome == 'success' && steps.p5.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-4 build/c90-transport-4
+    - name: 'C90 bounded continuation stage 6: zero new UART with original full admission'
+      id: r6
+      if: success() && steps.r5.outcome == 'success' && steps.p5.outcome == 'success' && steps.r5.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 6
+    - name: 'C90 bounded continuation stage 6: preserve every complete original checkpoint piece'
+      id: p6
+      if: always() && (steps.r6.outcome == 'success' || steps.r6.outcome == 'failure') && hashFiles('evidence/c90-6/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-6
+        transport_path: build/c90-transport-6
+        artifact_prefix: reverseandroid-c90-6
+    - name: 'C90 bounded continuation stage 6: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r6.outcome == 'success' && steps.p6.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-5 build/c90-transport-5
+    - name: 'C90 bounded continuation stage 7: zero new UART with original full admission'
+      id: r7
+      if: success() && steps.r6.outcome == 'success' && steps.p6.outcome == 'success' && steps.r6.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 7
+    - name: 'C90 bounded continuation stage 7: preserve every complete original checkpoint piece'
+      id: p7
+      if: always() && (steps.r7.outcome == 'success' || steps.r7.outcome == 'failure') && hashFiles('evidence/c90-7/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-7
+        transport_path: build/c90-transport-7
+        artifact_prefix: reverseandroid-c90-7
+    - name: 'C90 bounded continuation stage 7: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r7.outcome == 'success' && steps.p7.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-6 build/c90-transport-6
+    - name: 'C90 bounded continuation stage 8: zero new UART with original full admission'
+      id: r8
+      if: success() && steps.r7.outcome == 'success' && steps.p7.outcome == 'success' && steps.r7.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 8
+    - name: 'C90 bounded continuation stage 8: preserve every complete original checkpoint piece'
+      id: p8
+      if: always() && (steps.r8.outcome == 'success' || steps.r8.outcome == 'failure') && hashFiles('evidence/c90-8/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-8
+        transport_path: build/c90-transport-8
+        artifact_prefix: reverseandroid-c90-8
+    - name: 'C90 bounded continuation stage 8: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r8.outcome == 'success' && steps.p8.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-7 build/c90-transport-7
+    - name: 'C90 bounded continuation stage 9: zero new UART with original full admission'
+      id: r9
+      if: success() && steps.r8.outcome == 'success' && steps.p8.outcome == 'success' && steps.r8.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 9
+    - name: 'C90 bounded continuation stage 9: preserve every complete original checkpoint piece'
+      id: p9
+      if: always() && (steps.r9.outcome == 'success' || steps.r9.outcome == 'failure') && hashFiles('evidence/c90-9/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-9
+        transport_path: build/c90-transport-9
+        artifact_prefix: reverseandroid-c90-9
+    - name: 'C90 bounded continuation stage 9: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r9.outcome == 'success' && steps.p9.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-8 build/c90-transport-8
+    - name: 'C90 bounded continuation stage 10: zero new UART with original full admission'
+      id: r10
+      if: success() && steps.r9.outcome == 'success' && steps.p9.outcome == 'success' && steps.r9.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 10
+    - name: 'C90 bounded continuation stage 10: preserve every complete original checkpoint piece'
+      id: p10
+      if: always() && (steps.r10.outcome == 'success' || steps.r10.outcome == 'failure') && hashFiles('evidence/c90-10/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-10
+        transport_path: build/c90-transport-10
+        artifact_prefix: reverseandroid-c90-10
+    - name: 'C90 bounded continuation stage 10: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r10.outcome == 'success' && steps.p10.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-9 build/c90-transport-9
+    - name: 'C90 bounded continuation stage 11: zero new UART with original full admission'
+      id: r11
+      if: success() && steps.r10.outcome == 'success' && steps.p10.outcome == 'success' && steps.r10.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 11
+    - name: 'C90 bounded continuation stage 11: preserve every complete original checkpoint piece'
+      id: p11
+      if: always() && (steps.r11.outcome == 'success' || steps.r11.outcome == 'failure') && hashFiles('evidence/c90-11/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-11
+        transport_path: build/c90-transport-11
+        artifact_prefix: reverseandroid-c90-11
+    - name: 'C90 bounded continuation stage 11: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r11.outcome == 'success' && steps.p11.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-10 build/c90-transport-10
+    - name: 'C90 bounded continuation stage 12: zero new UART with original full admission'
+      id: r12
+      if: success() && steps.r11.outcome == 'success' && steps.p11.outcome == 'success' && steps.r11.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 12
+    - name: 'C90 bounded continuation stage 12: preserve every complete original checkpoint piece'
+      id: p12
+      if: always() && (steps.r12.outcome == 'success' || steps.r12.outcome == 'failure') && hashFiles('evidence/c90-12/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-12
+        transport_path: build/c90-transport-12
+        artifact_prefix: reverseandroid-c90-12
+    - name: 'C90 bounded continuation stage 12: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r12.outcome == 'success' && steps.p12.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-11 build/c90-transport-11
+    - name: 'C90 bounded continuation stage 13: zero new UART with original full admission'
+      id: r13
+      if: success() && steps.r12.outcome == 'success' && steps.p12.outcome == 'success' && steps.r12.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 13
+    - name: 'C90 bounded continuation stage 13: preserve every complete original checkpoint piece'
+      id: p13
+      if: always() && (steps.r13.outcome == 'success' || steps.r13.outcome == 'failure') && hashFiles('evidence/c90-13/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-13
+        transport_path: build/c90-transport-13
+        artifact_prefix: reverseandroid-c90-13
+    - name: 'C90 bounded continuation stage 13: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r13.outcome == 'success' && steps.p13.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-12 build/c90-transport-12
+    - name: 'C90 bounded continuation stage 14: zero new UART with original full admission'
+      id: r14
+      if: success() && steps.r13.outcome == 'success' && steps.p13.outcome == 'success' && steps.r13.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 14
+    - name: 'C90 bounded continuation stage 14: preserve every complete original checkpoint piece'
+      id: p14
+      if: always() && (steps.r14.outcome == 'success' || steps.r14.outcome == 'failure') && hashFiles('evidence/c90-14/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-14
+        transport_path: build/c90-transport-14
+        artifact_prefix: reverseandroid-c90-14
+    - name: 'C90 bounded continuation stage 14: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r14.outcome == 'success' && steps.p14.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-13 build/c90-transport-13
+    - name: 'C90 bounded continuation stage 15: zero new UART with original full admission'
+      id: r15
+      if: success() && steps.r14.outcome == 'success' && steps.p14.outcome == 'success' && steps.r14.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 15
+    - name: 'C90 bounded continuation stage 15: preserve every complete original checkpoint piece'
+      id: p15
+      if: always() && (steps.r15.outcome == 'success' || steps.r15.outcome == 'failure') && hashFiles('evidence/c90-15/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-15
+        transport_path: build/c90-transport-15
+        artifact_prefix: reverseandroid-c90-15
+    - name: 'C90 bounded continuation stage 15: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r15.outcome == 'success' && steps.p15.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-14 build/c90-transport-14
+    - name: 'C90 bounded continuation stage 16: zero new UART with original full admission'
+      id: r16
+      if: success() && steps.r15.outcome == 'success' && steps.p15.outcome == 'success' && steps.r15.outputs.complete != 'true'
+      run: |
+        python3 scripts/run-zero-input-continuation-stage.py state/experiments/c90-plan.json 16
+    - name: 'C90 bounded continuation stage 16: preserve every complete original checkpoint piece'
+      id: p16
+      if: always() && (steps.r16.outcome == 'success' || steps.r16.outcome == 'failure') && hashFiles('evidence/c90-16/c46-progress.json')
+        != ''
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/c90-16
+        transport_path: build/c90-transport-16
+        artifact_prefix: reverseandroid-c90-16
+    - name: 'C90 bounded continuation stage 16: release only earlier host duplicates after complete preservation'
+      if: success() && steps.r16.outcome == 'success' && steps.p16.outcome == 'success'
+      run: |
+        rm -rf evidence/c90-15 build/c90-transport-15
+    - name: Require genuine original BOOT1, live SystemServer, enforcing policy and fresh actual peripherals
+      if: success()
+      run: |
+        python3 - <<'PYFINAL'
+        import json,pathlib,sys
+        sys.path.insert(0,'scripts')
+        from c88_jit_priority_control import read,parse_reply
+        from c85_peripheral_completion import verify_live_peripherals,boot_complete
+        from zero_input_continuation import validate
+        p=read('state/experiments/c90-plan.json');validate(p)
+        s=read('evidence/c90-reports/control-state.json');d=pathlib.Path(s['source']);g=read(d/'c46-progress.json');k=read(d/'kernel-observation.json')
+        assert s['complete'] and not s['failed'] and s['zero_input_continuation_campaign']=='c90'
+        assert s['actual_campaign_new_events']==0 and s['events']==p['inherited_source_events']
+        assert s['phase']==len(s['events']) and s['waiting'] is False
+        assert parse_reply(pathlib.Path('evidence/c90-reports/console-all.bin').read_bytes())['guard_succeeded']
+        assert verify_live_peripherals(read(d/'peripherals-live-required.json'),read(d/'console-observation.json'),g['checkpoint_sha256'])
+        assert boot_complete(True,True,g) and k['live_kernel_security']['selinux_enforcing']
+        assert read(d/'host-policy.json')['native_binary_sha256']==p['expected_native_SHA256']
+        print(json.dumps({'original_BOOT_completed':True,'original_SystemServer_live':True,'SELinux_enforcing':True,'new_UART_bytes':0,'actual_UI_and_gesture_still_require_separate_test':True}))
+        PYFINAL
+    - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      if: always()
+      with:
+        name: reverseandroid-c90-evidence
+        path: |
+          evidence/c90-reports
+          evidence/c90-*/*.json
+          evidence/c90-*/*.log
+          evidence/c90-*/*.txt
+          state/experiments/c90-plan.json
+          state/experiments/c90-artifacts.json
+          build/ic-native/*.json
+          build/ic-hardware/*.json
+        retention-days: 90
+        if-no-files-found: error
