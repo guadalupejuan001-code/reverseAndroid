@@ -53,8 +53,8 @@
     "original_CI_admission_and_transport_proof": "docs/evidence/c90/stage1-original-CI-authority.json",
     "independent_local_native_match": null
   },
-  "visual_review_result": "The authentic C89stage4 frame at143,147,727,998 instructions still shows the Android wordmark boot animation. Usable UI and actual gesture response remain pending.",
-  "visual_review_evidence": "docs/evidence/c89/stage4-authentic-frame-review.json",
+  "visual_review_result": "The authentic C90stage1 frame at156147727998 instructions shows the Android wordmark on black. Usable UI and real gesture response remain pending.",
+  "visual_review_evidence": "docs/evidence/c90/stage1-authentic-frame-review.json",
   "active_continuation_run_id": 42317967033,
   "independent_engine_validation_run_id": 42202570186,
   "latest_boundary_evidence": "docs/evidence/c90/stage1-original-CI-authority.json",

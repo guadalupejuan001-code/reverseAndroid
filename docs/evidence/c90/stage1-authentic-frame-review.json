@@ -1,0 +1,21 @@
+{
+  "schema": "reverseandroid-authentic-frame-manual-review-v1",
+  "cycle": "C90",
+  "stage": 1,
+  "checkpoint_SHA256": "abd2e1f6651e49830f03c931402a312fc1c9638cc6eaa47fb01231a47750eed0",
+  "instructions": 156147727998,
+  "frame_counter": 502,
+  "width": 800,
+  "height": 600,
+  "original_PPM_SHA256": "13923ee20ec64fe6f9c75b28e6f90674be0d2951afdaa4a8d4dd33b69a87719e",
+  "original_RGB_SHA256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb",
+  "metadata_artifact_id": 13552395401,
+  "metadata_ZIP_SHA256": "c475a48e3774a229f4c43bdd275c2553fe4b49ffb645e5d3dd7019a9a43108ea",
+  "native_CPU_instructions_executed_for_export": 0,
+  "original_snapshot_unchanged": true,
+  "PNG_conversion_lossless_RGB_verified": true,
+  "observed_display": "White Android wordmark on black,800x600. No usable launcher or setup screen.",
+  "usable_UI_verified": false,
+  "meaningful_real_gesture_response_verified": false,
+  "original_BOOT": false
+}
