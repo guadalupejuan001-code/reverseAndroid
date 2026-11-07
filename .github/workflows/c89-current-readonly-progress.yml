@@ -1,4 +1,4 @@
-name: C89 current original read-only startup inspection
+name: Current original read-only startup inspection
 
 'on':
   push:
@@ -41,7 +41,7 @@ jobs:
         env:
           TASK_READONLY_SHA: ${{ steps.source.outputs.sha }}
         run: |
-          node --max-old-space-size=3500 tools/reverseandroid-thread-probe.mjs build/source-current-readonly/current.rvg "$TASK_READONLY_SHA" evidence/c89-current-readonly-progress/threads.json --all-scheduling --diagnostic-processes --debuggerd-context-pid=7354 --io-context-pid=7354 --gpu-queues > evidence/c89-current-readonly-progress/observer-summary.json
+          node --max-old-space-size=3500 tools/reverseandroid-thread-probe.mjs build/source-current-readonly/current.rvg "$TASK_READONLY_SHA" evidence/c89-current-readonly-progress/threads.json --all-scheduling --diagnostic-processes --debuggerd-context-pid=7354 --io-context-pid=7354 --gpu-queues --copy-processes > evidence/c89-current-readonly-progress/observer-summary.json
           python3 scripts/report-c89-readonly-progress.py --report
           python3 scripts/verify-reverseandroid-import.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

@@ -43,6 +43,7 @@ function inspectThreads(api,options={}) {
   const pt=members(type('pt_regs')),ptSize=type('pt_regs').type,mmFields=members(type('mm_struct'));
   const unsigned=(p,key,n=4)=>read(p+BigInt(task[key].offset),n);
   const selected=tasks.filter(t=>t.zygote_startup||/bootanim|surfaceflinger|^(sh|su|printf|id|cat|toybox|renice)$/.test(t.name)
+    ||options.copyProcesses&&(/^(cp|cppreopts\.sh)$/.test(t.name)||/^preopt2cache/.test(t.name))
     ||options.diagnosticProcesses&&/^(init|main|crash_dump64|tombstoned|logd|logcat|debuggerd|idmap2)$/.test(t.name));
   const result={schema:'reverseandroid-thread-probe-v1',read_only:true,groups:[],kernel_layout_pinned:true};
   for(const leaderItem of selected) {
@@ -188,11 +189,11 @@ export async function probeThreads(path,sha,options={}) {
     observer_source_git_blob_sha1:blob,original_observer_file_unchanged:true,original_CPU_and_codecs_unchanged:true};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
-  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>['--all-scheduling','--diagnostic-processes','--gpu-queues'].includes(x)||/^--debuggerd-context-pid=[1-9][0-9]{0,6}$/.test(x)||/^--io-context-pid=[1-9][0-9]{0,6}$/.test(x)));
+  const [path,sha,output,...flags]=process.argv.slice(2);assert.ok(path&&sha&&output);assert.ok(flags.every(x=>['--all-scheduling','--diagnostic-processes','--gpu-queues','--copy-processes'].includes(x)||/^--debuggerd-context-pid=[1-9][0-9]{0,6}$/.test(x)||/^--io-context-pid=[1-9][0-9]{0,6}$/.test(x)));
   const candidateFlags=flags.filter(x=>x.startsWith('--debuggerd-context-pid='));assert.ok(candidateFlags.length<=1);
   const debuggerdContextPID=candidateFlags.length?Number(candidateFlags[0].split('=')[1]):null;
   const ioFlags=flags.filter(x=>x.startsWith('--io-context-pid='));assert.ok(ioFlags.length<=1);
   const ioContextPID=ioFlags.length?Number(ioFlags[0].split('=')[1]):null;
-  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling'),diagnosticProcesses:flags.includes('--diagnostic-processes'),debuggerdContextPID,ioContextPID,gpuQueues:flags.includes('--gpu-queues')});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+  const result=await probeThreads(path,sha,{allScheduling:flags.includes('--all-scheduling'),diagnosticProcesses:flags.includes('--diagnostic-processes'),debuggerdContextPID,ioContextPID,gpuQueues:flags.includes('--gpu-queues'),copyProcesses:flags.includes('--copy-processes')});writeFileSync(output,JSON.stringify(result,null,2)+'\n');
   console.log(JSON.stringify({instructions:result.instructions,groups:result.groups.map(x=>({pid:x.pid,name:x.name,thread_count:x.thread_count,error:x.error})),input_unchanged:true}));
 }
