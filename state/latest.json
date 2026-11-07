@@ -30,7 +30,7 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42247589579,
   "independent_reproduction_status": "Stages1 through4 independently reproduce every original RVG byte and the entire console. The current original CI boundary has full original admission and all transport pieces pinned; it has not been freshly recovered or independently run locally.",
-  "active_continuation": "C90 stage6: original full admission and all transport pieces verified. Zero new UART. BOOT=False; usable UI and actual gesture response still require actual verification.",
+  "active_continuation": "C90 completed six fully admitted checkpoints. Stage7 failed at the explicit2GiB host snapshot bound, with no new ISA fault. Source6 remains canonical. A bounded larger host transport candidate awaits independent byte-equality and actual larger-checkpoint validation; BOOT and usable UI remain pending.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
@@ -167,7 +167,7 @@
   "current_original_reference_validation_evidence": "docs/evidence/c83/current-original-engine-validation.json",
   "corrective_campaign_plan": "state/experiments/c84-plan.json",
   "corrective_campaign_evidence": "docs/c84-corrected-guest-shell.md",
-  "current_campaign_failed": false,
+  "current_campaign_failed": true,
   "prior_actual_C83_failed_activation_preserved": true,
   "new_corrective_input_events": 1,
   "fresh_local_whole_transport_recovery_or_native_replay_current_boundary": false,
@@ -249,5 +249,15 @@
     "historical_observation_not_claimed_fresh_for_later_boundaries": true
   },
   "next_zero_input_continuation_plan": "state/experiments/c90-plan.json",
-  "next_selected_continuation": "C90"
+  "next_selected_continuation": "C90",
+  "current_host_transport_blocker": {
+    "failed_stage": 7,
+    "actual_error": "Guest snapshot exceeds configured host transport capacity",
+    "old_host_RVG_bound_bytes": 2147483648,
+    "evidence": "docs/evidence/c90/stage7-host-transport-capacity-failure.json",
+    "validation_plan": "state/experiments/host-transport-plan.json",
+    "candidate_host_RVG_bound_bytes": 4026531840,
+    "candidate_not_yet_adopted": true
+  },
+  "next_host_validation_plan": "state/experiments/host-transport-plan.json"
 }

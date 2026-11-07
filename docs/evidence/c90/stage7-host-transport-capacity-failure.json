@@ -1,0 +1,54 @@
+{
+  "schema": "reverseandroid-original-native-host-transport-capacity-failure-v1",
+  "cycle": "C90",
+  "failed_stage": 7,
+  "execution_commit": "bea171f38356e681ac08d31669b5c81c6cbcd2cc",
+  "run": 42317967033,
+  "job": 128235203464,
+  "native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "evidence_artifact_id": 13552864044,
+  "evidence_ZIP_SHA256": "4f3965b76bf2d28b462d4502109dc6c708003dbb82bb98034f09ebdf64b01916",
+  "actual_error": "Guest snapshot exceeds configured host transport capacity",
+  "configured_host_snapshot_capacity_bytes": 2147483648,
+  "host_process_outcome": {
+    "schema": "reverse-c08-host-supervision-v1",
+    "status": "process_failed",
+    "trigger": null,
+    "exit_code": 1,
+    "exit_signal": null,
+    "forced_kill": false,
+    "elapsed_ms": 119480,
+    "startup_marker_seen": true,
+    "last_reported_instructions": 161437727998,
+    "reported_instruction_delta": 290000000,
+    "error": null,
+    "logs": {
+      "stdout": {
+        "bytes_seen": 0,
+        "bytes_stored": 0,
+        "truncated": false
+      },
+      "stderr": {
+        "bytes_seen": 4107,
+        "bytes_stored": 4107,
+        "truncated": false
+      }
+    },
+    "checkpoint_bytes_modified_by_supervisor": false,
+    "android_boot_verified": false,
+    "android_display_verified": false,
+    "native_android_games_verified": false
+  },
+  "last_observed_heartbeat_instructions": 161437727998,
+  "heartbeat_is_not_an_admitted_boundary": true,
+  "failed_tail_is_not_canonical": true,
+  "last_fully_admitted_cycle": "C90",
+  "last_fully_admitted_stage": 6,
+  "last_fully_admitted_instructions": 161147727998,
+  "last_fully_admitted_checkpoint_SHA256": "c8a2aa15bca412139973343813570a07d8f11d9fb7318a884cd64d45025f5714",
+  "source_artifact_lock": "state/experiments/c90-stage-6-artifacts.json",
+  "new_UART_bytes": 0,
+  "logical_RAM_disk_seed_clock_cadence_IRQ_codecs_unchanged": true,
+  "ISA_failure_not_observed": true,
+  "BOOT_or_usable_UI_claimed": false
+}

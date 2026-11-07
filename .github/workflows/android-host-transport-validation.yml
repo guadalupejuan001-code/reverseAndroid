@@ -1,0 +1,113 @@
+name: Validate bounded larger host snapshots with unchanged guest state
+'on':
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/android-host-transport-validation.yml
+      - state/experiments/host-transport-plan.json
+      - scripts/prepare-host-transport.py
+      - scripts/build-reverseandroid-host-transport.sh
+      - scripts/validate-host-transport.py
+      - tools/reverseandroid-host-rvg-reader.mjs
+      - tools/reverseandroid-host-transport-preload.mjs
+      - tools/reverseandroid-host-kernel-observer.mjs
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Build the host policy copy and require original decoder and architecture checks
+        run: |
+          mkdir -p build evidence/host-transport-validation
+          cat /proc/meminfo > evidence/host-transport-validation/host-meminfo.txt
+          df -h > evidence/host-transport-validation/host-disk.txt
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          python3 scripts/verify-reverseandroid-import.py
+          node --test tests/reverseandroid_host_rvg_reader.test.mjs
+          bash scripts/build-reverseandroid-host-transport.sh
+          echo "$GITHUB_SHA" > build/host-transport-native/execution-commit.txt
+      - name: Recover exact original sources, original native and original disk
+        run: |
+          python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/c90-stage-6-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/c90-stage-6-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/host-canonical/source state/experiments/c90-stage-6-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/host-control/source state/experiments/c89-stage-15-artifacts.json
+          for name in media-manifest media-aa media-ab media-ac; do
+            python3 scripts/fetch-reverseandroid-artifact.py "$name" build/media-input state/experiments/c90-stage-6-artifacts.json
+          done
+          python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+          chmod +x build/ic-native/epoch-clz-ic build/reverseandroid/frame
+      - name: Execute the unchanged native control and retain original full admission
+        id: baseline
+        run: python3 scripts/validate-host-transport.py --baseline
+      - name: Preserve the complete original control snapshot
+        if: always() && steps.baseline.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/host-control-baseline
+          transport_path: build/host-control-transport
+          artifact_prefix: reverseandroid-host-transport-control
+      - name: Require every RVG byte and original observation to match the old native
+        run: python3 scripts/validate-host-transport.py --candidate
+      - name: Cross the actual old host limit with full original admission and fresh peripherals
+        id: large
+        run: python3 scripts/validate-host-transport.py --large
+      - name: Preserve every piece of the complete larger original checkpoint
+        if: always() && steps.large.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/host-large
+          transport_path: build/host-large-transport
+          artifact_prefix: reverseandroid-host-transport-large
+      - name: Bind all actual controls and the larger admission to the new host policy
+        run: |
+          python3 scripts/verify-reverseandroid-import.py
+          python3 scripts/validate-host-transport.py --report
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-host-transport-native
+          path: |
+            build/host-transport-native/*.json
+            build/host-transport-native/*.txt
+            build/host-transport-native/*.sha256
+            build/host-transport-native/epoch-clz-ic-host
+            build/host-transport-native/frame
+          retention-days: 90
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-host-transport-validation
+          path: |
+            evidence/host-transport-validation
+            evidence/host-control-*/*.json
+            evidence/host-control-*/*.log
+            evidence/host-control-*/*.txt
+            evidence/host-large/*.json
+            evidence/host-large/*.log
+            evidence/host-large/*.txt
+            build/host-transport-runtime/host-transport-manifest.json
+            state/experiments/host-transport-plan.json
+          retention-days: 90
+          if-no-files-found: error

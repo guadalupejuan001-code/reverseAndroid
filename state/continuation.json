@@ -75,5 +75,16 @@
     "plan": "state/experiments/c90-plan.json",
     "new_UART_bytes": 0,
     "native_started": false
-  }
+  },
+  "active_run_status": "completed_failure_at_host_snapshot_capacity_stage7",
+  "current_host_transport_blocker": {
+    "failed_stage": 7,
+    "actual_error": "Guest snapshot exceeds configured host transport capacity",
+    "old_host_RVG_bound_bytes": 2147483648,
+    "evidence": "docs/evidence/c90/stage7-host-transport-capacity-failure.json",
+    "validation_plan": "state/experiments/host-transport-plan.json",
+    "candidate_host_RVG_bound_bytes": 4026531840,
+    "candidate_not_yet_adopted": true
+  },
+  "next_host_validation_plan": "state/experiments/host-transport-plan.json"
 }

@@ -10,6 +10,7 @@ La base C68 completa procede de [REVERSE-PC, commit 37f5b461](https://github.com
 C90, etapa6: **161.147.727.998 instrucciones** admitidas por la ejecución original en CI, con roundtrip completo y las 4 piezas del snapshot conservadas y fijadas por SHA-256. **SystemServer está verificado como vivo.** El arranque completo y la interfaz utilizable siguen pendientes.
 Esta continuación entrega **cero UART nuevo en todas sus etapas**. Conserva los 8 eventos del historial y todos los bytes anteriores de consola. Se mantienen el motor validado, el disco,2GiB lógicos, el reloj, la semilla, la cadencia, los códecs y SELinux. La interfaz utilizable y la respuesta significativa a un gesto real aún requieren prueba.
 [Admisión actual](docs/evidence/c90/stage6-original-CI-authority.json); [continuación sin entradas](docs/c90-zero-input-continuation.md); [prueba de interfaz preparada](docs/real-ui-response.md); [estado actual](state/latest.json).
+La etapa7 se detuvo al guardar el snapshot por el límite de transporte del host. Este último estado admitido sigue siendo válido. [Fallo observado](docs/evidence/c90/stage7-host-transport-capacity-failure.json); [validación del transporte ampliado](state/experiments/host-transport-plan.json).
 <!-- /current-runtime -->
 
 ### Historial conservado
