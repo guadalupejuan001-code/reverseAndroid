@@ -1,0 +1,743 @@
+{
+  "schema": "reverseandroid-systemserver-foreground-allocation-observation-v1",
+  "source_stage": 8,
+  "source_admission_run": 42265960158,
+  "observations": [
+    {
+      "stage": 6,
+      "instructions": 121647727998,
+      "checkpoint_sha256": "572a9be831d34e944d9b46b870615bc001a6957777499c5fc7de4553feefa18e",
+      "thread_count": 10,
+      "threads": [
+        {
+          "pid": 6512,
+          "name": "system_server",
+          "state": 0,
+          "accounting": {
+            "utime": "754716000",
+            "stime": "1260509000",
+            "nvcsw": "8",
+            "nivcsw": "451",
+            "sum_exec_runtime": "1844597000",
+            "vruntime": "43429926117",
+            "exec_start": "1898596368000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6557,
+          "name": "Signal Catcher",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "1",
+            "sum_exec_runtime": "1758000",
+            "vruntime": "43355646481",
+            "exec_start": "1893166905000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6559,
+          "name": "perfetto_hprof_",
+          "state": 1,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "2196000",
+            "vruntime": "43355749613",
+            "exec_start": "1893396635000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6560,
+          "name": "Jit thread pool",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "0",
+            "sum_exec_runtime": "2198000",
+            "vruntime": "43392110640",
+            "exec_start": "1896761529000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6561,
+          "name": "HeapTaskDaemon",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "3881000",
+            "nvcsw": "2",
+            "nivcsw": "2",
+            "sum_exec_runtime": "5649000",
+            "vruntime": "43408229014",
+            "exec_start": "1897755035000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6562,
+          "name": "ReferenceQueueD",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "1",
+            "sum_exec_runtime": "2581000",
+            "vruntime": "43362270016",
+            "exec_start": "1894718599000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6563,
+          "name": "FinalizerDaemon",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "2",
+            "nivcsw": "1",
+            "sum_exec_runtime": "2616000",
+            "vruntime": "43363123268",
+            "exec_start": "1894741788000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6564,
+          "name": "FinalizerWatchd",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "1",
+            "sum_exec_runtime": "1582000",
+            "vruntime": "43362771838",
+            "exec_start": "1894854694000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6571,
+          "name": "binder:6512_1",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "1670000",
+            "vruntime": "43404698950",
+            "exec_start": "1897529800000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6579,
+          "name": "TracingMuxer",
+          "state": 0,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "3",
+            "sum_exec_runtime": "5557000",
+            "vruntime": "43428985290",
+            "exec_start": "1898662029000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        }
+      ],
+      "threads_probe_SHA256": "6d0c4594fb8deb4ab4d39ad04ac34d1b2d228a731377544c146562dbb74fac63"
+    },
+    {
+      "stage": 7,
+      "instructions": 122647727998,
+      "checkpoint_sha256": "5f930594589d55447e53ee7e463472dbe983c14b2ba9c18d61597cc2f9edb3e5",
+      "thread_count": 11,
+      "threads": [
+        {
+          "pid": 6512,
+          "name": "system_server",
+          "state": 0,
+          "accounting": {
+            "utime": "843408000",
+            "stime": "1437869000",
+            "nvcsw": "10",
+            "nivcsw": "545",
+            "sum_exec_runtime": "2074043000",
+            "vruntime": "43583369897",
+            "exec_start": "1914245059000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6557,
+          "name": "Signal Catcher",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "1",
+            "sum_exec_runtime": "1758000",
+            "vruntime": "43355646481",
+            "exec_start": "1893166905000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6559,
+          "name": "perfetto_hprof_",
+          "state": 1,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "2196000",
+            "vruntime": "43355749613",
+            "exec_start": "1893396635000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6560,
+          "name": "Jit thread pool",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "0",
+            "sum_exec_runtime": "2198000",
+            "vruntime": "43392110640",
+            "exec_start": "1896761529000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6561,
+          "name": "HeapTaskDaemon",
+          "state": 0,
+          "accounting": {
+            "utime": "3839000",
+            "stime": "3881000",
+            "nvcsw": "3",
+            "nivcsw": "3",
+            "sum_exec_runtime": "9610000",
+            "vruntime": "43582672542",
+            "exec_start": "1913450285000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6562,
+          "name": "ReferenceQueueD",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "1",
+            "sum_exec_runtime": "2581000",
+            "vruntime": "43362270016",
+            "exec_start": "1894718599000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6563,
+          "name": "FinalizerDaemon",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "2",
+            "nivcsw": "1",
+            "sum_exec_runtime": "2616000",
+            "vruntime": "43363123268",
+            "exec_start": "1894741788000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6564,
+          "name": "FinalizerWatchd",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "1",
+            "sum_exec_runtime": "1582000",
+            "vruntime": "43362771838",
+            "exec_start": "1894854694000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6571,
+          "name": "binder:6512_1",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "1670000",
+            "vruntime": "43404698950",
+            "exec_start": "1897529800000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6579,
+          "name": "TracingMuxer",
+          "state": 1,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "5",
+            "nivcsw": "3",
+            "sum_exec_runtime": "7704000",
+            "vruntime": "43431132290",
+            "exec_start": "1898808544000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6582,
+          "name": "system-server-i",
+          "state": 0,
+          "accounting": {
+            "utime": "154287000",
+            "stime": "46263000",
+            "nvcsw": "2",
+            "nivcsw": "88",
+            "sum_exec_runtime": "200131000",
+            "vruntime": "43583858954",
+            "exec_start": "1914337160000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        }
+      ],
+      "threads_probe_SHA256": "94220d463b84068fb0b2689c091a892741a7d4fb07f5ba86ac4ef00a53717404"
+    },
+    {
+      "stage": 8,
+      "instructions": 123647727998,
+      "checkpoint_sha256": "66b59d8fdd967c93800f072f15bb2b265050aeb231620d5819cff3591745f5fd",
+      "thread_count": 11,
+      "threads": [
+        {
+          "pid": 6512,
+          "name": "system_server",
+          "state": 258,
+          "accounting": {
+            "utime": "920382000",
+            "stime": "1572606000",
+            "nvcsw": "12",
+            "nivcsw": "607",
+            "sum_exec_runtime": "2250285000",
+            "vruntime": "43697210139",
+            "exec_start": "1927654207000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6557,
+          "name": "Signal Catcher",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "1",
+            "sum_exec_runtime": "1758000",
+            "vruntime": "43355646481",
+            "exec_start": "1893166905000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6559,
+          "name": "perfetto_hprof_",
+          "state": 1,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "2196000",
+            "vruntime": "43355749613",
+            "exec_start": "1893396635000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6560,
+          "name": "Jit thread pool",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "0",
+            "sum_exec_runtime": "2198000",
+            "vruntime": "43392110640",
+            "exec_start": "1896761529000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6561,
+          "name": "HeapTaskDaemon",
+          "state": 0,
+          "accounting": {
+            "utime": "161641000",
+            "stime": "3881000",
+            "nvcsw": "4",
+            "nivcsw": "46",
+            "sum_exec_runtime": "125217000",
+            "vruntime": "43862534381",
+            "exec_start": "1929975390000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6562,
+          "name": "ReferenceQueueD",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "1",
+            "sum_exec_runtime": "2581000",
+            "vruntime": "43362270016",
+            "exec_start": "1894718599000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6563,
+          "name": "FinalizerDaemon",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "2",
+            "nivcsw": "1",
+            "sum_exec_runtime": "2616000",
+            "vruntime": "43363123268",
+            "exec_start": "1894741788000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6564,
+          "name": "FinalizerWatchd",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "3",
+            "nivcsw": "1",
+            "sum_exec_runtime": "1582000",
+            "vruntime": "43362771838",
+            "exec_start": "1894854694000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6571,
+          "name": "binder:6512_1",
+          "state": 8193,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "1",
+            "nivcsw": "0",
+            "sum_exec_runtime": "1670000",
+            "vruntime": "43404698950",
+            "exec_start": "1897529800000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6579,
+          "name": "TracingMuxer",
+          "state": 1,
+          "accounting": {
+            "utime": "0",
+            "stime": "0",
+            "nvcsw": "5",
+            "nivcsw": "3",
+            "sum_exec_runtime": "7704000",
+            "vruntime": "43431132290",
+            "exec_start": "1898808544000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        },
+        {
+          "pid": 6582,
+          "name": "system-server-i",
+          "state": 8193,
+          "accounting": {
+            "utime": "342598000",
+            "stime": "54016000",
+            "nvcsw": "4",
+            "nivcsw": "144",
+            "sum_exec_runtime": "351173000",
+            "vruntime": "43683311232",
+            "exec_start": "1926734325000"
+          },
+          "group": {
+            "task_group": "0xffffff8002d9e840",
+            "cgroup": "0xffffff8009ad1800",
+            "path": "/foreground",
+            "shares_raw": "1048576",
+            "quota_raw": "18446744073709551615",
+            "period_raw": "100000000"
+          }
+        }
+      ],
+      "threads_probe_SHA256": "71d5aa3ba17b7519b5895aee01589bd504d29b3a68207ff1fbfa67b1c57314fc"
+    }
+  ],
+  "main_runtime_increment_stage7_to8_ns": 176242000,
+  "stage8_main_wait": "mprotect mmap write semaphore in linker64",
+  "stage8_HeapTaskDaemon_runnable": true,
+  "kernel_clock_RAM_seed_codecs_and_IRQ_unchanged": true,
+  "group_trial_is_not_a_completed_boot_speedup_claim": true
+}

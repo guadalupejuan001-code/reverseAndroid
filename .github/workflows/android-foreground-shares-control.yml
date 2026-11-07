@@ -1,0 +1,347 @@
+name: Actual SystemServer foreground CPU-group control and original boot
+'on':
+  push:
+    branches:
+    - experiment/systemserver-foreground-20261106
+    paths:
+    - state/experiments/foreground-shares-artifacts.json
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-systemserver-foreground-control
+  cancel-in-progress: false
+jobs:
+  foreground:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Verify original import and exact Foreground guards
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 tests/jit5922_priority_control_test.py
+
+        python3 tests/topapp_shares_shell_test.py
+
+        python3 tests/foreground_shares_shell_test.py'
+    - name: Recover the authenticated Foreground source, original native and immutable media
+      run: 'mkdir -p build
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/foreground-source state/experiments/foreground-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/foreground-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/foreground-shares-artifacts.json
+
+        chmod +x build/reverseandroid/frame build/ic-native/epoch-clz-ic
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/foreground-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/foreground-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/foreground-shares-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/foreground-shares-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/foreground-source
+        > build/foreground-source-preflight.json'
+    - name: 'Foreground stage 1: original bounded run and source-bound reversible shares'
+      id: s1
+      if: success()
+      run: python3 scripts/run-foreground-shares-control.py 1 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 1: preserve all complete admitted checkpoint pieces'
+      id: p1
+      if: always() && (steps.s1.outcome == 'success' || steps.s1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-1
+        transport_path: build/foreground-transport-1
+        artifact_prefix: reverseandroid-foreground-control-1
+    - name: 'Foreground stage 1: release prior runner copies after full preservation'
+      if: success() && steps.s1.outcome == 'success' && steps.p1.outcome == 'success'
+      run: rm -rf build/foreground-source
+    - name: 'Foreground stage 2: original bounded run and source-bound reversible shares'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.stop != 'true' && steps.p1.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 2 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 2: preserve all complete admitted checkpoint pieces'
+      id: p2
+      if: always() && (steps.s2.outcome == 'success' || steps.s2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-2
+        transport_path: build/foreground-transport-2
+        artifact_prefix: reverseandroid-foreground-control-2
+    - name: 'Foreground stage 2: release prior runner copies after full preservation'
+      if: success() && steps.s2.outcome == 'success' && steps.p2.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-1 build/foreground-transport-1
+    - name: 'Foreground stage 3: original bounded run and source-bound reversible shares'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.stop != 'true' && steps.p2.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 3 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 3: preserve all complete admitted checkpoint pieces'
+      id: p3
+      if: always() && (steps.s3.outcome == 'success' || steps.s3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-3
+        transport_path: build/foreground-transport-3
+        artifact_prefix: reverseandroid-foreground-control-3
+    - name: 'Foreground stage 3: release prior runner copies after full preservation'
+      if: success() && steps.s3.outcome == 'success' && steps.p3.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-2 build/foreground-transport-2
+    - name: 'Foreground stage 4: original bounded run and source-bound reversible shares'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.stop != 'true' && steps.p3.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 4 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 4: preserve all complete admitted checkpoint pieces'
+      id: p4
+      if: always() && (steps.s4.outcome == 'success' || steps.s4.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-4
+        transport_path: build/foreground-transport-4
+        artifact_prefix: reverseandroid-foreground-control-4
+    - name: 'Foreground stage 4: release prior runner copies after full preservation'
+      if: success() && steps.s4.outcome == 'success' && steps.p4.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-3 build/foreground-transport-3
+    - name: 'Foreground stage 5: original bounded run and source-bound reversible shares'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.stop != 'true' && steps.p4.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 5 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 5: preserve all complete admitted checkpoint pieces'
+      id: p5
+      if: always() && (steps.s5.outcome == 'success' || steps.s5.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-5
+        transport_path: build/foreground-transport-5
+        artifact_prefix: reverseandroid-foreground-control-5
+    - name: 'Foreground stage 5: release prior runner copies after full preservation'
+      if: success() && steps.s5.outcome == 'success' && steps.p5.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-4 build/foreground-transport-4
+    - name: 'Foreground stage 6: original bounded run and source-bound reversible shares'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.stop != 'true' && steps.p5.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 6 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 6: preserve all complete admitted checkpoint pieces'
+      id: p6
+      if: always() && (steps.s6.outcome == 'success' || steps.s6.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-6
+        transport_path: build/foreground-transport-6
+        artifact_prefix: reverseandroid-foreground-control-6
+    - name: 'Foreground stage 6: release prior runner copies after full preservation'
+      if: success() && steps.s6.outcome == 'success' && steps.p6.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-5 build/foreground-transport-5
+    - name: 'Foreground stage 7: original bounded run and source-bound reversible shares'
+      id: s7
+      if: success() && steps.s6.outcome == 'success' && steps.s6.outputs.stop != 'true' && steps.p6.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 7 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 7: preserve all complete admitted checkpoint pieces'
+      id: p7
+      if: always() && (steps.s7.outcome == 'success' || steps.s7.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-7
+        transport_path: build/foreground-transport-7
+        artifact_prefix: reverseandroid-foreground-control-7
+    - name: 'Foreground stage 7: release prior runner copies after full preservation'
+      if: success() && steps.s7.outcome == 'success' && steps.p7.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-6 build/foreground-transport-6
+    - name: 'Foreground stage 8: original bounded run and source-bound reversible shares'
+      id: s8
+      if: success() && steps.s7.outcome == 'success' && steps.s7.outputs.stop != 'true' && steps.p7.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 8 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 8: preserve all complete admitted checkpoint pieces'
+      id: p8
+      if: always() && (steps.s8.outcome == 'success' || steps.s8.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-8
+        transport_path: build/foreground-transport-8
+        artifact_prefix: reverseandroid-foreground-control-8
+    - name: 'Foreground stage 8: release prior runner copies after full preservation'
+      if: success() && steps.s8.outcome == 'success' && steps.p8.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-7 build/foreground-transport-7
+    - name: 'Foreground stage 9: original bounded run and source-bound reversible shares'
+      id: s9
+      if: success() && steps.s8.outcome == 'success' && steps.s8.outputs.stop != 'true' && steps.p8.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 9 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 9: preserve all complete admitted checkpoint pieces'
+      id: p9
+      if: always() && (steps.s9.outcome == 'success' || steps.s9.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-9
+        transport_path: build/foreground-transport-9
+        artifact_prefix: reverseandroid-foreground-control-9
+    - name: 'Foreground stage 9: release prior runner copies after full preservation'
+      if: success() && steps.s9.outcome == 'success' && steps.p9.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-8 build/foreground-transport-8
+    - name: 'Foreground stage 10: original bounded run and source-bound reversible shares'
+      id: s10
+      if: success() && steps.s9.outcome == 'success' && steps.s9.outputs.stop != 'true' && steps.p9.outcome == 'success'
+      run: python3 scripts/run-foreground-shares-control.py 10 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 10: preserve all complete admitted checkpoint pieces'
+      id: p10
+      if: always() && (steps.s10.outcome == 'success' || steps.s10.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-10
+        transport_path: build/foreground-transport-10
+        artifact_prefix: reverseandroid-foreground-control-10
+    - name: 'Foreground stage 10: release prior runner copies after full preservation'
+      if: success() && steps.s10.outcome == 'success' && steps.p10.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-9 build/foreground-transport-9
+    - name: 'Foreground stage 11: original bounded run and source-bound reversible shares'
+      id: s11
+      if: success() && steps.s10.outcome == 'success' && steps.s10.outputs.stop != 'true' && steps.p10.outcome ==
+        'success'
+      run: python3 scripts/run-foreground-shares-control.py 11 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 11: preserve all complete admitted checkpoint pieces'
+      id: p11
+      if: always() && (steps.s11.outcome == 'success' || steps.s11.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-11
+        transport_path: build/foreground-transport-11
+        artifact_prefix: reverseandroid-foreground-control-11
+    - name: 'Foreground stage 11: release prior runner copies after full preservation'
+      if: success() && steps.s11.outcome == 'success' && steps.p11.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-10 build/foreground-transport-10
+    - name: 'Foreground stage 12: original bounded run and source-bound reversible shares'
+      id: s12
+      if: success() && steps.s11.outcome == 'success' && steps.s11.outputs.stop != 'true' && steps.p11.outcome ==
+        'success'
+      run: python3 scripts/run-foreground-shares-control.py 12 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 12: preserve all complete admitted checkpoint pieces'
+      id: p12
+      if: always() && (steps.s12.outcome == 'success' || steps.s12.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-12
+        transport_path: build/foreground-transport-12
+        artifact_prefix: reverseandroid-foreground-control-12
+    - name: 'Foreground stage 12: release prior runner copies after full preservation'
+      if: success() && steps.s12.outcome == 'success' && steps.p12.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-11 build/foreground-transport-11
+    - name: 'Foreground stage 13: original bounded run and source-bound reversible shares'
+      id: s13
+      if: success() && steps.s12.outcome == 'success' && steps.s12.outputs.stop != 'true' && steps.p12.outcome ==
+        'success'
+      run: python3 scripts/run-foreground-shares-control.py 13 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 13: preserve all complete admitted checkpoint pieces'
+      id: p13
+      if: always() && (steps.s13.outcome == 'success' || steps.s13.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-13
+        transport_path: build/foreground-transport-13
+        artifact_prefix: reverseandroid-foreground-control-13
+    - name: 'Foreground stage 13: release prior runner copies after full preservation'
+      if: success() && steps.s13.outcome == 'success' && steps.p13.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-12 build/foreground-transport-12
+    - name: 'Foreground stage 14: original bounded run and source-bound reversible shares'
+      id: s14
+      if: success() && steps.s13.outcome == 'success' && steps.s13.outputs.stop != 'true' && steps.p13.outcome ==
+        'success'
+      run: python3 scripts/run-foreground-shares-control.py 14 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 14: preserve all complete admitted checkpoint pieces'
+      id: p14
+      if: always() && (steps.s14.outcome == 'success' || steps.s14.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-14
+        transport_path: build/foreground-transport-14
+        artifact_prefix: reverseandroid-foreground-control-14
+    - name: 'Foreground stage 14: release prior runner copies after full preservation'
+      if: success() && steps.s14.outcome == 'success' && steps.p14.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-13 build/foreground-transport-13
+    - name: 'Foreground stage 15: original bounded run and source-bound reversible shares'
+      id: s15
+      if: success() && steps.s14.outcome == 'success' && steps.s14.outputs.stop != 'true' && steps.p14.outcome ==
+        'success'
+      run: python3 scripts/run-foreground-shares-control.py 15 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 15: preserve all complete admitted checkpoint pieces'
+      id: p15
+      if: always() && (steps.s15.outcome == 'success' || steps.s15.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-15
+        transport_path: build/foreground-transport-15
+        artifact_prefix: reverseandroid-foreground-control-15
+    - name: 'Foreground stage 15: release prior runner copies after full preservation'
+      if: success() && steps.s15.outcome == 'success' && steps.p15.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-14 build/foreground-transport-14
+    - name: 'Foreground stage 16: original bounded run and source-bound reversible shares'
+      id: s16
+      if: success() && steps.s15.outcome == 'success' && steps.s15.outputs.stop != 'true' && steps.p15.outcome ==
+        'success'
+      run: python3 scripts/run-foreground-shares-control.py 16 --runtime-root . --source build/foreground-source
+        --output-root evidence/foreground --commit "$GITHUB_SHA"
+    - name: 'Foreground stage 16: preserve all complete admitted checkpoint pieces'
+      id: p16
+      if: always() && (steps.s16.outcome == 'success' || steps.s16.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/foreground/stage-16
+        transport_path: build/foreground-transport-16
+        artifact_prefix: reverseandroid-foreground-control-16
+    - name: 'Foreground stage 16: release prior runner copies after full preservation'
+      if: success() && steps.s16.outcome == 'success' && steps.p16.outcome == 'success'
+      run: rm -rf evidence/foreground/stage-15 build/foreground-transport-15
+    - name: Require original completed boot, real peripherals and actual normal shares restored in both groups
+      if: always()
+      run: 'python3 - <<''PYRESULT''
+
+        import json,pathlib
+
+        s=json.loads(pathlib.Path(''evidence/foreground/reports/control-state.json'').read_text())
+
+        assert s[''complete''] and not s[''failed''] and s[''original_boot_completed'']
+
+        assert s[''original_system_server_alive''] and s[''live_peripherals_verified''] and s[''actual_original_shares_restored'']
+
+        assert s[''restore_reply''][''success''] and not s[''usable_UI_response_verified'']
+
+        print(json.dumps(s,indent=2))
+
+        PYRESULT'
+    - name: Preserve exact control requests, full console and original source evidence
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-foreground-control-reports
+        path: evidence/foreground/reports/
+        retention-days: 90
+        if-no-files-found: error

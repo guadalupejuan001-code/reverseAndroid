@@ -1,0 +1,2 @@
+
+su 0 sh -c 'f=/dev/cpuctl/foreground/cpu.shares; t=/dev/cpuctl/top-app/cpu.shares; IFS= read -r a < "$f"; IFS= read -r b < "$t"; [ "$a" = 16384 ] && [ "$b" = 16384 ] || exit 91; printf "%s\n" 1024 > "$f" || exit 92; printf "%s\n" 1024 > "$t" || exit 93; IFS= read -r a < "$f"; IFS= read -r b < "$t"; [ "$a" = 1024 ] && [ "$b" = 1024 ] || exit 94; printf "\nREVERSE_%s SHARES_%s\n" CFS_FOREGROUND_RESTORE_DONE "$a"'; r=$?; printf '\nREVERSE_%s RC_%s\n' CFS_FOREGROUND_RESTORE_RESULT "$r"
