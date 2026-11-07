@@ -32,7 +32,7 @@ jobs:
           mkdir -p build evidence/c89-current-readonly-progress
           python3 scripts/verify-reverseandroid-import.py
           node --check tools/reverseandroid-thread-probe.mjs
-          node --test tests/reverseandroid_debuggerd_context.test.mjs tests/reverseandroid_mmap_lock.test.mjs
+          node --test tests/reverseandroid_debuggerd_context.test.mjs tests/reverseandroid_mmap_lock.test.mjs tests/reverseandroid_syscall_io.test.mjs
           python3 scripts/report-c89-readonly-progress.py --prepare
       - name: Admit the full original checkpoint without executing guest instructions
         run: |
@@ -41,7 +41,7 @@ jobs:
         env:
           TASK_READONLY_SHA: ${{ steps.source.outputs.sha }}
         run: |
-          node --max-old-space-size=3500 tools/reverseandroid-thread-probe.mjs build/source-current-readonly/current.rvg "$TASK_READONLY_SHA" evidence/c89-current-readonly-progress/threads.json --all-scheduling --diagnostic-processes --debuggerd-context-pid=7354 > evidence/c89-current-readonly-progress/observer-summary.json
+          node --max-old-space-size=3500 tools/reverseandroid-thread-probe.mjs build/source-current-readonly/current.rvg "$TASK_READONLY_SHA" evidence/c89-current-readonly-progress/threads.json --all-scheduling --diagnostic-processes --debuggerd-context-pid=7354 --io-context-pid=7354 > evidence/c89-current-readonly-progress/observer-summary.json
           python3 scripts/report-c89-readonly-progress.py --report
           python3 scripts/verify-reverseandroid-import.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

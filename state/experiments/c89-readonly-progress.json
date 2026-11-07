@@ -1,12 +1,12 @@
 {
   "schema": "reverseandroid-original-readonly-startup-plan-v1",
-  "source_stage": 13,
-  "source_checkpoint_sha256": "cf9056408b1691c9d7e92758124b029dbd0f193afeb652d9cd53bccd560f13cd",
-  "instructions": 152147727998,
-  "source_artifact_lock": "state/experiments/c89-stage-13-artifacts.json",
+  "source_stage": 15,
+  "source_checkpoint_sha256": "74ac5c113c02dfeaa766f98ede9434d98465eae3c55e27240bc70a36f7ac4f29",
+  "instructions": 154147727998,
+  "source_artifact_lock": "state/experiments/c89-stage-15-artifacts.json",
   "source_execution_commit": "9474e5435f59fefb384e0ba6fcb141c1ff327888",
   "source_CI_run_id": 42299162841,
-  "source_proof_SHA256": "5e853ab74905b7fd5a5f13f1602c41ab0a4b5fe15015562b511020e9330049b1",
+  "source_proof_SHA256": "0a1ee463663c1c1ae685b79468e9d2b3398538bdd5f298e4cfc992aea1c8996b",
   "zygote_PID": 5629,
   "target_JIT_TID": 5922,
   "system_server_PID": 7354,
@@ -103,8 +103,10 @@
   ],
   "guest_execution": false,
   "new_UART_input": false,
-  "purpose": "Inspect exact current SystemServer7354 user PC/registers, caller stack and all thread identities after five runnable main boundaries, comparing with source7 package-parser activity. Check concrete code/thread changes rather than infer boot from CPU totals. Zero guest execution, zero UART.",
+  "purpose": "Read bounded pathname and descriptor identity/position for the exact current SystemServer7354 syscall. Source15 kernel stack reaches readlinkat/proc_self_get_link. No file contents are read by this observer; preserve unverified context explicitly. Zero guest execution/UART.",
   "read_only_debuggerd_context_PID": 7354,
   "debuggerd_candidate_module_SHA256": "5d4edd7dcd4f394b2f9ba84c4a697a05b621d072ad3b34ee3ba16afb171469cd",
-  "mmap_lock_module_SHA256": "6aaa5ace7d9f0f72bd3dc96865eb9d618d805d8034e73a3bc596edb4228c6563"
+  "mmap_lock_module_SHA256": "6aaa5ace7d9f0f72bd3dc96865eb9d618d805d8034e73a3bc596edb4228c6563",
+  "read_only_io_context_PID": 7354,
+  "syscall_io_module_SHA256": "784ece25edd523812e58275a37695e1dfdab2ecf1087b95c428ede9bbf59d580"
 }
