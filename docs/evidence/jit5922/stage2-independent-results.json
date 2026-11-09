@@ -1,0 +1,195 @@
+{
+  "schema": "reverseandroid-jit5922-independent-measurement-v1",
+  "source_checkpoint_sha256": "5e8ddb757fee6cbc030230f2dfc532dfb2e08648c9e00f4020335f7b28ff109c",
+  "source_instructions": 114147727998,
+  "original_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "original_runtime_execution_commit": "96fd295255a181ce30bcd32d50deaabf9a227e45",
+  "independent_CI_execution_commit": "0f691eba73e4475405461fe9c2180909daa3c56f",
+  "CI_run": 42259037815,
+  "new_UART_events": 1,
+  "new_UART_SHA256": "70523e6019776b099cb44df08db7042b9cb46fcd154b7b6ac7af4c342369a1e5",
+  "stages": [
+    {
+      "stage": 1,
+      "original_native_result": {
+        "schema": "reverseandroid-epoch-result-v1",
+        "checkpoint_sha256": "a208f9c5879573bb68e5d95a5aba666ec3401b3dcbed95f269581832ff7eb3fd",
+        "input_checkpoint_sha256": "5e8ddb757fee6cbc030230f2dfc532dfb2e08648c9e00f4020335f7b28ff109c",
+        "instructions": 114647727998,
+        "advanced_instructions": 500000000,
+        "epoch_original_init_verified": true,
+        "execution_progress_accepted": true,
+        "guest_kernel_panic": false,
+        "guest_boot_failure": false,
+        "guest_terminal_failure": false,
+        "guest_reboot_requested": false,
+        "guest_failure_signals": [],
+        "android_boot_verified": false,
+        "external_uart_input": {
+          "schema": "reverse-modeled-uart-input-v1",
+          "instructions": 114147727998,
+          "counter_subtick": 26,
+          "bytes": 596,
+          "sha256": "70523e6019776b099cb44df08db7042b9cb46fcd154b7b6ac7af4c342369a1e5"
+        },
+        "input_purpose": "diagnostic_console"
+      },
+      "original_admission": {
+        "schema": "reverse-c46-android-continuation-v1",
+        "checkpoint_sha256": "a208f9c5879573bb68e5d95a5aba666ec3401b3dcbed95f269581832ff7eb3fd",
+        "instructions": 114647727998,
+        "source_boundary_verified": true,
+        "system_server_alive_verified": false,
+        "android_boot_completed_verified": false,
+        "scanout_exported": true,
+        "ready_for_visual_review": false,
+        "android_display_content_verified": false,
+        "unresolved": [
+          "live_process_missing:system_server",
+          "live_sys_boot_completed_unverified"
+        ]
+      },
+      "independent_producer_metadata_artifact_id": 13524282347,
+      "producer_metadata_ZIP_SHA256": "392a6bd2ed7fa8ff2fe8a055fcffb25179e422ffb2380b7bf94367fb51e74624",
+      "independent_local_and_CI_complete_state_match": true,
+      "independent_local_and_CI_files_SHA256": {
+        "console-new.txt": "8ac5557c89eb170e281e716edc29f7e0608de08cfa80ef53af575cd75bf6e979",
+        "checkpoint-frame.ppm": "70614e417361dd768d5a79ec815f35583ce657755c579f8ebbead115cd31ab7c",
+        "kernel-observation.json": "3b4677448d6fb9b8fd9bcd7f98234779799f5cf60b74f301dc1de31a0aee6b64"
+      },
+      "producer_live_peripherals_verified": true
+    },
+    {
+      "stage": 2,
+      "original_native_result": {
+        "schema": "reverseandroid-epoch-result-v1",
+        "checkpoint_sha256": "7b358773528ecf8fb89c5236863a9f5f83d95e2059d629f7dfbc0b430cce65c6",
+        "input_checkpoint_sha256": "a208f9c5879573bb68e5d95a5aba666ec3401b3dcbed95f269581832ff7eb3fd",
+        "instructions": 115647727998,
+        "advanced_instructions": 1000000000,
+        "epoch_original_init_verified": true,
+        "execution_progress_accepted": true,
+        "guest_kernel_panic": false,
+        "guest_boot_failure": false,
+        "guest_terminal_failure": false,
+        "guest_reboot_requested": false,
+        "guest_failure_signals": [],
+        "android_boot_verified": false
+      },
+      "original_admission": {
+        "schema": "reverse-c46-android-continuation-v1",
+        "checkpoint_sha256": "7b358773528ecf8fb89c5236863a9f5f83d95e2059d629f7dfbc0b430cce65c6",
+        "instructions": 115647727998,
+        "source_boundary_verified": true,
+        "system_server_alive_verified": false,
+        "android_boot_completed_verified": false,
+        "scanout_exported": true,
+        "ready_for_visual_review": false,
+        "android_display_content_verified": false,
+        "unresolved": [
+          "live_process_missing:system_server",
+          "live_sys_boot_completed_unverified"
+        ]
+      },
+      "independent_producer_metadata_artifact_id": 13524493042,
+      "producer_metadata_ZIP_SHA256": "da2435585527a07cb5dcddd670e3095496ed3da3460fde11703f806565efbc00",
+      "independent_local_and_CI_complete_state_match": true,
+      "independent_local_and_CI_files_SHA256": {
+        "console-new.txt": "57dcef8ba5ef9000820c9002bc5572b6d059e319a739317328791cd68f763960",
+        "checkpoint-frame.ppm": "70614e417361dd768d5a79ec815f35583ce657755c579f8ebbead115cd31ab7c",
+        "kernel-observation.json": "b0f82e1cba00b8d9603d3a8104f4fbb610960f5c8941a82c6fa1ece927911b50"
+      },
+      "producer_live_peripherals_verified": true
+    }
+  ],
+  "fresh_original_observer": {
+    "read_only": true,
+    "input_unchanged": true,
+    "checkpoint_sha256": "7b358773528ecf8fb89c5236863a9f5f83d95e2059d629f7dfbc0b430cce65c6",
+    "instructions": 115647727998,
+    "pinned_original_observer_source_git_blob_SHA1": "9f72798c437126cb0cbb2b678a5ec80ea81b251c",
+    "full_extracted_probe_SHA256": "5abe75dd775b11e1279c5a6027de4f54334a803bd6dd6c86e5430ba078c53b4b",
+    "full_probe_transport": "stage2-threads-readonly-transport.json",
+    "same_task_identity_verified": true,
+    "target": {
+      "pid": 5922,
+      "tgid": 5629,
+      "name": "Jit thread pool",
+      "task": "0xffffff8028c79440",
+      "state": 0,
+      "exit_state": 0
+    },
+    "nice_before": 19,
+    "nice_after": 0,
+    "normal_prio_before": 139,
+    "normal_prio_after": 120,
+    "before_CPU_ns": {
+      "utime": "3693000",
+      "stime": "0",
+      "nvcsw": "0",
+      "nivcsw": "4",
+      "sum_exec_runtime": "2485000",
+      "vruntime": "64327526293",
+      "exec_start": "1757227625000"
+    },
+    "after_CPU_ns": {
+      "utime": "15189000",
+      "stime": "3876000",
+      "nvcsw": "0",
+      "nivcsw": "9",
+      "sum_exec_runtime": "15438000",
+      "vruntime": "64367383418",
+      "exec_start": "1803598761000"
+    },
+    "CPU_delta_ns": {
+      "utime": 11496000,
+      "stime": 3876000,
+      "sum_exec_runtime": 12953000
+    },
+    "new_saved_user_PC": {
+      "address": "0x73da0c9c60",
+      "start": "0x73d9e00000",
+      "end": "0x73da65f000",
+      "flags": "0x20000075",
+      "file": "/apex/com.android.art/lib64/libart.so",
+      "file_offset": "5020768",
+      "dynamic_symbol": null
+    },
+    "scheduling": {
+      "read_only": true,
+      "task_and_runqueue_group_match": true,
+      "ancestry_verified": true,
+      "groups": [
+        {
+          "task_group": "0xffffff8002d9e000",
+          "cgroup": "0xffffff8009ed7000",
+          "path": "/top-app",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        },
+        {
+          "task_group": "0xffffffc082828800",
+          "cgroup": "0xffffff8006972040",
+          "path": "/",
+          "shares_raw": "1048576",
+          "quota_raw": "18446744073709551615",
+          "period_raw": "100000000"
+        }
+      ],
+      "credentials": {
+        "uid": "0",
+        "euid": "0",
+        "gid": "0",
+        "egid": "0"
+      }
+    }
+  },
+  "actual_guest_reply_observed": "REVERSE_JIT5922_CONTROL_DONE NICE_0",
+  "guard_final_RC_seen_at_stage2": false,
+  "original_system_server_alive_verified": false,
+  "original_boot_completed_verified": false,
+  "usable_UI_response_verified": false,
+  "complete_boot_acceleration_quantified": false,
+  "original_C87_unchanged_input_reference_retained": true
+}

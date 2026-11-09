@@ -1,0 +1,333 @@
+name: Isolated guarded JIT5922 priority and original Android continuation
+'on':
+  push:
+    branches:
+    - experiment/jit5922-control-20261106
+    paths:
+    - scripts/run-jit5922-control.py
+    - state/experiments/jit5922-control*
+    - .github/workflows/android-jit5922-control.yml
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-isolated-jit5922-control
+  cancel-in-progress: false
+jobs:
+  guarded-priority:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 24.22.1
+    - name: Verify original import and the guarded priority regression checks
+      run: 'python3 scripts/verify-reverseandroid-import.py
+
+        python3 tests/jit5922_priority_control_test.py'
+    - name: Recover exact original source, native and immutable media
+      run: 'mkdir -p build
+
+        python3 scripts/fetch-reverseandroid-artifact.py seed build/jit5922-source state/experiments/jit5922-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/jit5922-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/jit5922-control-artifacts.json
+
+        chmod +x build/reverseandroid/frame build/ic-native/epoch-clz-ic
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-manifest build/media-input state/experiments/jit5922-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-aa build/media-input state/experiments/jit5922-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ab build/media-input state/experiments/jit5922-control-artifacts.json
+
+        python3 scripts/fetch-reverseandroid-artifact.py media-ac build/media-input state/experiments/jit5922-control-artifacts.json
+
+        python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+
+        node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/jit5922-source > build/jit5922-source-preflight.json'
+    - name: 'JIT5922 stage 1: original bounded execution and one total guarded priority input'
+      id: s1
+      if: success()
+      run: python3 scripts/run-jit5922-control.py 1 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 1: preserve every complete admitted checkpoint part'
+      id: p1
+      if: always() && (steps.s1.outcome == 'success' || steps.s1.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-1
+        transport_path: build/jit5922-transport-1
+        artifact_prefix: reverseandroid-jit5922-control-1
+    - name: 'JIT5922 stage 1: release earlier host copies after complete preservation'
+      if: success() && steps.s1.outcome == 'success' && steps.p1.outcome == 'success'
+      run: rm -rf build/jit5922-source
+    - name: 'JIT5922 stage 2: original bounded execution and one total guarded priority input'
+      id: s2
+      if: success() && steps.s1.outcome == 'success' && steps.s1.outputs.stop != 'true' && steps.p1.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 2 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 2: preserve every complete admitted checkpoint part'
+      id: p2
+      if: always() && (steps.s2.outcome == 'success' || steps.s2.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-2
+        transport_path: build/jit5922-transport-2
+        artifact_prefix: reverseandroid-jit5922-control-2
+    - name: 'JIT5922 stage 2: release earlier host copies after complete preservation'
+      if: success() && steps.s2.outcome == 'success' && steps.p2.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-1 build/jit5922-transport-1
+    - name: 'JIT5922 stage 3: original bounded execution and one total guarded priority input'
+      id: s3
+      if: success() && steps.s2.outcome == 'success' && steps.s2.outputs.stop != 'true' && steps.p2.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 3 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 3: preserve every complete admitted checkpoint part'
+      id: p3
+      if: always() && (steps.s3.outcome == 'success' || steps.s3.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-3
+        transport_path: build/jit5922-transport-3
+        artifact_prefix: reverseandroid-jit5922-control-3
+    - name: 'JIT5922 stage 3: release earlier host copies after complete preservation'
+      if: success() && steps.s3.outcome == 'success' && steps.p3.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-2 build/jit5922-transport-2
+    - name: 'JIT5922 stage 4: original bounded execution and one total guarded priority input'
+      id: s4
+      if: success() && steps.s3.outcome == 'success' && steps.s3.outputs.stop != 'true' && steps.p3.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 4 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 4: preserve every complete admitted checkpoint part'
+      id: p4
+      if: always() && (steps.s4.outcome == 'success' || steps.s4.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-4
+        transport_path: build/jit5922-transport-4
+        artifact_prefix: reverseandroid-jit5922-control-4
+    - name: 'JIT5922 stage 4: release earlier host copies after complete preservation'
+      if: success() && steps.s4.outcome == 'success' && steps.p4.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-3 build/jit5922-transport-3
+    - name: 'JIT5922 stage 5: original bounded execution and one total guarded priority input'
+      id: s5
+      if: success() && steps.s4.outcome == 'success' && steps.s4.outputs.stop != 'true' && steps.p4.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 5 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 5: preserve every complete admitted checkpoint part'
+      id: p5
+      if: always() && (steps.s5.outcome == 'success' || steps.s5.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-5
+        transport_path: build/jit5922-transport-5
+        artifact_prefix: reverseandroid-jit5922-control-5
+    - name: 'JIT5922 stage 5: release earlier host copies after complete preservation'
+      if: success() && steps.s5.outcome == 'success' && steps.p5.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-4 build/jit5922-transport-4
+    - name: 'JIT5922 stage 6: original bounded execution and one total guarded priority input'
+      id: s6
+      if: success() && steps.s5.outcome == 'success' && steps.s5.outputs.stop != 'true' && steps.p5.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 6 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 6: preserve every complete admitted checkpoint part'
+      id: p6
+      if: always() && (steps.s6.outcome == 'success' || steps.s6.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-6
+        transport_path: build/jit5922-transport-6
+        artifact_prefix: reverseandroid-jit5922-control-6
+    - name: 'JIT5922 stage 6: release earlier host copies after complete preservation'
+      if: success() && steps.s6.outcome == 'success' && steps.p6.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-5 build/jit5922-transport-5
+    - name: 'JIT5922 stage 7: original bounded execution and one total guarded priority input'
+      id: s7
+      if: success() && steps.s6.outcome == 'success' && steps.s6.outputs.stop != 'true' && steps.p6.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 7 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 7: preserve every complete admitted checkpoint part'
+      id: p7
+      if: always() && (steps.s7.outcome == 'success' || steps.s7.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-7
+        transport_path: build/jit5922-transport-7
+        artifact_prefix: reverseandroid-jit5922-control-7
+    - name: 'JIT5922 stage 7: release earlier host copies after complete preservation'
+      if: success() && steps.s7.outcome == 'success' && steps.p7.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-6 build/jit5922-transport-6
+    - name: 'JIT5922 stage 8: original bounded execution and one total guarded priority input'
+      id: s8
+      if: success() && steps.s7.outcome == 'success' && steps.s7.outputs.stop != 'true' && steps.p7.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 8 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 8: preserve every complete admitted checkpoint part'
+      id: p8
+      if: always() && (steps.s8.outcome == 'success' || steps.s8.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-8
+        transport_path: build/jit5922-transport-8
+        artifact_prefix: reverseandroid-jit5922-control-8
+    - name: 'JIT5922 stage 8: release earlier host copies after complete preservation'
+      if: success() && steps.s8.outcome == 'success' && steps.p8.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-7 build/jit5922-transport-7
+    - name: 'JIT5922 stage 9: original bounded execution and one total guarded priority input'
+      id: s9
+      if: success() && steps.s8.outcome == 'success' && steps.s8.outputs.stop != 'true' && steps.p8.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 9 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 9: preserve every complete admitted checkpoint part'
+      id: p9
+      if: always() && (steps.s9.outcome == 'success' || steps.s9.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-9
+        transport_path: build/jit5922-transport-9
+        artifact_prefix: reverseandroid-jit5922-control-9
+    - name: 'JIT5922 stage 9: release earlier host copies after complete preservation'
+      if: success() && steps.s9.outcome == 'success' && steps.p9.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-8 build/jit5922-transport-8
+    - name: 'JIT5922 stage 10: original bounded execution and one total guarded priority input'
+      id: s10
+      if: success() && steps.s9.outcome == 'success' && steps.s9.outputs.stop != 'true' && steps.p9.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 10 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 10: preserve every complete admitted checkpoint part'
+      id: p10
+      if: always() && (steps.s10.outcome == 'success' || steps.s10.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-10
+        transport_path: build/jit5922-transport-10
+        artifact_prefix: reverseandroid-jit5922-control-10
+    - name: 'JIT5922 stage 10: release earlier host copies after complete preservation'
+      if: success() && steps.s10.outcome == 'success' && steps.p10.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-9 build/jit5922-transport-9
+    - name: 'JIT5922 stage 11: original bounded execution and one total guarded priority input'
+      id: s11
+      if: success() && steps.s10.outcome == 'success' && steps.s10.outputs.stop != 'true' && steps.p10.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 11 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 11: preserve every complete admitted checkpoint part'
+      id: p11
+      if: always() && (steps.s11.outcome == 'success' || steps.s11.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-11
+        transport_path: build/jit5922-transport-11
+        artifact_prefix: reverseandroid-jit5922-control-11
+    - name: 'JIT5922 stage 11: release earlier host copies after complete preservation'
+      if: success() && steps.s11.outcome == 'success' && steps.p11.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-10 build/jit5922-transport-10
+    - name: 'JIT5922 stage 12: original bounded execution and one total guarded priority input'
+      id: s12
+      if: success() && steps.s11.outcome == 'success' && steps.s11.outputs.stop != 'true' && steps.p11.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 12 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 12: preserve every complete admitted checkpoint part'
+      id: p12
+      if: always() && (steps.s12.outcome == 'success' || steps.s12.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-12
+        transport_path: build/jit5922-transport-12
+        artifact_prefix: reverseandroid-jit5922-control-12
+    - name: 'JIT5922 stage 12: release earlier host copies after complete preservation'
+      if: success() && steps.s12.outcome == 'success' && steps.p12.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-11 build/jit5922-transport-11
+    - name: 'JIT5922 stage 13: original bounded execution and one total guarded priority input'
+      id: s13
+      if: success() && steps.s12.outcome == 'success' && steps.s12.outputs.stop != 'true' && steps.p12.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 13 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 13: preserve every complete admitted checkpoint part'
+      id: p13
+      if: always() && (steps.s13.outcome == 'success' || steps.s13.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-13
+        transport_path: build/jit5922-transport-13
+        artifact_prefix: reverseandroid-jit5922-control-13
+    - name: 'JIT5922 stage 13: release earlier host copies after complete preservation'
+      if: success() && steps.s13.outcome == 'success' && steps.p13.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-12 build/jit5922-transport-12
+    - name: 'JIT5922 stage 14: original bounded execution and one total guarded priority input'
+      id: s14
+      if: success() && steps.s13.outcome == 'success' && steps.s13.outputs.stop != 'true' && steps.p13.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 14 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 14: preserve every complete admitted checkpoint part'
+      id: p14
+      if: always() && (steps.s14.outcome == 'success' || steps.s14.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-14
+        transport_path: build/jit5922-transport-14
+        artifact_prefix: reverseandroid-jit5922-control-14
+    - name: 'JIT5922 stage 14: release earlier host copies after complete preservation'
+      if: success() && steps.s14.outcome == 'success' && steps.p14.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-13 build/jit5922-transport-13
+    - name: 'JIT5922 stage 15: original bounded execution and one total guarded priority input'
+      id: s15
+      if: success() && steps.s14.outcome == 'success' && steps.s14.outputs.stop != 'true' && steps.p14.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 15 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 15: preserve every complete admitted checkpoint part'
+      id: p15
+      if: always() && (steps.s15.outcome == 'success' || steps.s15.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-15
+        transport_path: build/jit5922-transport-15
+        artifact_prefix: reverseandroid-jit5922-control-15
+    - name: 'JIT5922 stage 15: release earlier host copies after complete preservation'
+      if: success() && steps.s15.outcome == 'success' && steps.p15.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-14 build/jit5922-transport-14
+    - name: 'JIT5922 stage 16: original bounded execution and one total guarded priority input'
+      id: s16
+      if: success() && steps.s15.outcome == 'success' && steps.s15.outputs.stop != 'true' && steps.p15.outcome == 'success'
+      run: python3 scripts/run-jit5922-control.py 16 --source build/jit5922-source --output-root evidence/jit5922 --commit
+        "$GITHUB_SHA"
+    - name: 'JIT5922 stage 16: preserve every complete admitted checkpoint part'
+      id: p16
+      if: always() && (steps.s16.outcome == 'success' || steps.s16.outcome == 'failure')
+      uses: ./.github/actions/preserve-android-checkpoint
+      with:
+        checkpoint_path: evidence/jit5922/stage-16
+        transport_path: build/jit5922-transport-16
+        artifact_prefix: reverseandroid-jit5922-control-16
+    - name: 'JIT5922 stage 16: release earlier host copies after complete preservation'
+      if: success() && steps.s16.outcome == 'success' && steps.p16.outcome == 'success'
+      run: rm -rf evidence/jit5922/stage-15 build/jit5922-transport-15
+    - name: Report actual priority and original boot outcomes separately
+      if: always()
+      run: "python3 - <<'PYRESULT'\nimport json,pathlib\np=pathlib.Path('evidence/jit5922/reports/control-state.json')\nassert\
+        \ p.exists(),'No fully admitted control boundary; see preserved reports'\ns=json.loads(p.read_text());print(json.dumps(s,indent=2))\n\
+        assert not s['failed'],'Actual guarded priority command failed; admitted state preserved'\nassert s['guard_succeeded'],'Priority\
+        \ result still pending; admitted state preserved'\nwith open('evidence/jit5922/reports/final-outcome.json','w') as\
+        \ f:\n json.dump({'guard_succeeded':s['guard_succeeded'],'original_system_server_alive':s['original_system_server_alive'],'original_boot_completed':s['original_boot_completed'],'live_peripherals_verified':s['live_peripherals_verified'],'usable_UI_response_verified':False,'checkpoint_sha256':s['checkpoint_sha256'],'instructions':s['instructions']},f,indent=2)\n\
+        PYRESULT"
+    - name: Preserve complete console, source guards, exact plans and control evidence
+      if: always()
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: reverseandroid-jit5922-control-reports
+        path: 'evidence/jit5922/reports
+
+          state/experiments/jit5922-control*
+
+          build/jit5922-source-preflight.json'
+        retention-days: 90
+        if-no-files-found: warn
