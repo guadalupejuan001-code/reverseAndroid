@@ -1,0 +1,61 @@
+name: C91D0 read-only boot blocker diagnosis
+'on':
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/android-c91d0-boot-blocker.yml
+      - scripts/c91d0_boot_blocker.py
+      - tests/c91d0_boot_blocker_test.py
+      - state/experiments/c91d0-plan.json
+      - state/experiments/c91d0-stage5-artifacts.json
+      - state/experiments/c91d0-stage5-transport.json
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c91d0-readonly-diagnosis
+  cancel-in-progress: false
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify source lease and reject any preserved C91 stage 6
+        run: |
+          python3 -m unittest tests/c91d0_boot_blocker_test.py
+          python3 scripts/c91d0_boot_blocker.py preflight
+      - name: Prepare the already validated large-snapshot observer
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          python3 scripts/prepare-host-transport.py build/host-transport-runtime
+          python3 scripts/fetch-reverseandroid-artifact.py host-native build/host-native state/experiments/c91d0-stage5-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py host-validation build/host-validation state/experiments/c91d0-stage5-artifacts.json
+          python3 scripts/prepare-host-observer.py build/host-observer-runtime
+      - name: Recover the fully preserved C91 stage 5 without executing it
+        run: |
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c91d0 state/experiments/c91d0-stage5-artifacts.json
+          mkdir -p evidence/c91d0
+          node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c91d0 > evidence/c91d0/source-preflight.json
+      - name: Deep read-only Binder scheduler property and process observation
+        run: |
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             build/source-c91d0/current.rvg             62ebfa1c5dfc9a8ed081d8028ef3f73d07e1854ad085f6c6461e239ed692f210             4026531840             --live-properties --binder-probe --scheduler-probe --zygote-probe             > evidence/c91d0/stage5-kernel-deep.json
+          python3 scripts/c91d0_boot_blocker.py diagnose build/source-c91d0 evidence/c91d0/stage5-kernel-deep.json
+          sha256sum evidence/c91d0/* > evidence/c91d0/SHA256SUMS
+      - name: Preserve C91D0 diagnosis
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reverseandroid-c91d0-diagnosis
+          path: evidence/c91d0
+          if-no-files-found: error
