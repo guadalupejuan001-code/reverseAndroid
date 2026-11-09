@@ -122,7 +122,7 @@ jobs:
       - name: C91D3-0 baseline scheduler, properties and starvation metrics
         run: |
           node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             build/source-c91d3/current.rvg 771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe 4026531840             --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/baseline-kernel.json
-          node --max-old-space-size=5000 tools/reverseandroid-host-property-probe.mjs             build/source-c91d3/current.rvg 771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe             evidence/c91d3-reports/baseline-properties.json
+          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             build/source-c91d3/current.rvg 771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe             evidence/c91d3-reports/baseline-properties.json
           python3 - <<'PY'
           import collections,json,pathlib
           P=json.load(open('state/experiments/c91d3-plan.json'))
@@ -166,7 +166,7 @@ jobs:
           node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs run             build/source-c91d3 evidence/c91d3-1 build/host-native/epoch-clz-ic-host build/media/android-c27.raw build/host-native/frame             "$GITHUB_SHA" 1000000000 evidence/c91d3-reports/input-plan.json 900000             > evidence/c91d3-reports/stage1-run.json
           SHA="$(python3 -c 'import json;print(json.load(open("evidence/c91d3-1/output-contract.json"))["checkpoint_sha256"])')"
           node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             evidence/c91d3-1/current.rvg "$SHA" 4026531840 --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/stage1-kernel.json
-          node --max-old-space-size=5000 tools/reverseandroid-host-property-probe.mjs             evidence/c91d3-1/current.rvg "$SHA" evidence/c91d3-reports/stage1-properties.json
+          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             evidence/c91d3-1/current.rvg "$SHA" evidence/c91d3-reports/stage1-properties.json
           python3 - <<'PY'
           import hashlib,json,pathlib
           source=pathlib.Path('evidence/c91d3-reports/source-console.bin').read_bytes()
@@ -192,7 +192,7 @@ jobs:
           node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs run             evidence/c91d3-1 evidence/c91d3-2 build/host-native/epoch-clz-ic-host build/media/android-c27.raw build/host-native/frame             "$GITHUB_SHA" 1000000000 - 900000             > evidence/c91d3-reports/stage2-run.json
           SHA="$(python3 -c 'import json;print(json.load(open("evidence/c91d3-2/output-contract.json"))["checkpoint_sha256"])')"
           node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             evidence/c91d3-2/current.rvg "$SHA" 4026531840 --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/stage2-kernel.json
-          node --max-old-space-size=5000 tools/reverseandroid-host-property-probe.mjs             evidence/c91d3-2/current.rvg "$SHA" evidence/c91d3-reports/stage2-properties.json
+          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             evidence/c91d3-2/current.rvg "$SHA" evidence/c91d3-reports/stage2-properties.json
           python3 - <<'PY'
           import hashlib,json,pathlib
           source=pathlib.Path('evidence/c91d3-1/cumulative-console.bin').read_bytes()
