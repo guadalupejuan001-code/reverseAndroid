@@ -62,7 +62,7 @@ The initial recipe is immutable evidence of this recovery. For a future restart,
 read `state/latest.json` and `state/continuation.json` and select the newest fully
 admitted checkpoint, preserving the validated host profile and full input history.
 
-## Actual resumed and preserved boundary
+## First resumed and preserved boundary
 
 [C90R run 42587296800](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42587296800),
 at commit `ceb722e62ebc720fa33133761a188199e91a59a5`, recovered the original source,
@@ -114,3 +114,20 @@ verify every tool's bytes against the validated manifest. Use the derived
 source together with the selected native and frame exporter. The historical
 preflight retains its original 2 GiB limit. The logical guest RAM remains 2 GiB;
 the 3840 MiB setting applies to host snapshot file capacity.
+
+## Latest preserved boundary and observer failure
+
+C90R subsequently admitted and completely preserved stages 2, 3, 4 and 5,
+reaching **165447727998 instructions** at stage 5. Each has a separate transport
+lock, original proof and authenticated cumulative console in `state/experiments`.
+The [stage 5 authority](evidence/c90r/stage5-original-CI-authority.json) is the
+latest admitted boundary of this campaign.
+
+Stage 6's native process completed, but its kernel observer failed while reading
+the memory section. The full original admission did not finish, so the stage 6
+tail is diagnostic only. The original error and host reproduction are retained
+in [stage 6 failure evidence](evidence/c90r/stage6-host-observer-failure.json).
+
+[C91](c91-host-observer-recovery.md) selects the preserved stage 5 as its source
+and corrects only the derived host delimiter reader. The C90R initial recipe,
+validated native and all prior admitted checkpoints remain preserved.

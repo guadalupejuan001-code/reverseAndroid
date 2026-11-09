@@ -1,0 +1,14 @@
+{
+  "schema": "reverse-c46-android-continuation-v1",
+  "checkpoint_sha256": "7c00c86bb9af645fe7a6f416f63c0145351234ec20d749c2bf5b3dd30f5dd802",
+  "instructions": 165447727998,
+  "source_boundary_verified": true,
+  "system_server_alive_verified": true,
+  "android_boot_completed_verified": false,
+  "scanout_exported": true,
+  "ready_for_visual_review": false,
+  "android_display_content_verified": false,
+  "unresolved": [
+    "live_sys_boot_completed_unverified"
+  ]
+}

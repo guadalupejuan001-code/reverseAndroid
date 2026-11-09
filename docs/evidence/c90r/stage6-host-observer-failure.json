@@ -1,0 +1,108 @@
+{
+  "schema": "reverseandroid-c90r-stage6-host-observer-failure-v1",
+  "producer_run_id": 42587296800,
+  "producer_execution_commit": "ceb722e62ebc720fa33133761a188199e91a59a5",
+  "diagnostic_artifact_id": 13662892142,
+  "diagnostic_artifact_ZIP_SHA256": "1347e635490533837c7dc6567bb3f132acde759ed48f66990a40e819e8e1adb2",
+  "local_diagnostic_ZIP_SHA256_and_CRC_verified": true,
+  "last_fully_admitted_source": {
+    "cycle": "C90R",
+    "stage": 5,
+    "instructions": 165447727998,
+    "checkpoint_sha256": "7c00c86bb9af645fe7a6f416f63c0145351234ec20d749c2bf5b3dd30f5dd802",
+    "source_artifact_lock": "state/experiments/c90r-stage-5-artifacts.json"
+  },
+  "failed_stage": 6,
+  "failed_stage_original_process": {
+    "schema": "reverse-c08-host-supervision-v1",
+    "status": "process_completed",
+    "trigger": null,
+    "exit_code": 0,
+    "exit_signal": null,
+    "forced_kill": false,
+    "elapsed_ms": 462842,
+    "startup_marker_seen": true,
+    "last_reported_instructions": 166447727998,
+    "reported_instruction_delta": 1000000000,
+    "error": null,
+    "logs": {
+      "stdout": {
+        "bytes_seen": 4246,
+        "bytes_stored": 4246,
+        "truncated": false
+      },
+      "stderr": {
+        "bytes_seen": 16584,
+        "bytes_stored": 16584,
+        "truncated": false
+      }
+    },
+    "checkpoint_bytes_modified_by_supervisor": false,
+    "android_boot_verified": false,
+    "android_display_verified": false,
+    "native_android_games_verified": false
+  },
+  "failed_stage_output_contract": {
+    "schema": "reverseandroid-epoch-source-v1",
+    "checkpoint_sha256": "7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b",
+    "report_file": "current.json",
+    "report_sha256": "490ff9ae8d061ca7de30291d75839d4d26187c2d6b4edf2242e3ff3f382bdf99",
+    "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+    "instructions": 166447727998,
+    "epoch_original_init_verified": true,
+    "initialized_hardware_root": false,
+    "result_sha256": "046f066ac3dc97df8a62c77ca60359f46ece966d7a5bc60e5fc26dc63766922a",
+    "process_sha256": "7706044a16ff2216e1863026d0541fc0ff4f153ed9025d0aa0ee790a7b79ac65",
+    "source_commit": "ceb722e62ebc720fa33133761a188199e91a59a5"
+  },
+  "failed_stage_report_provenance": {
+    "experiment": "c76-lights-port-epoch",
+    "epoch_root_checkpoint_sha256": "a39f886c126c9695024c29d5cef315d90739d39415da521e1f5e4f4e42228288",
+    "input_checkpoint_sha256": "7c00c86bb9af645fe7a6f416f63c0145351234ec20d749c2bf5b3dd30f5dd802",
+    "input_report_sha256": "16855569cec2f4e4f5b7cd554530ba6a886c96a9cc7293abb9b67eb3b9186d3d",
+    "snapshot_round_trip_verified": true,
+    "source_epoch_init_verified": true,
+    "host_snapshot_transport_bytes": 4026531840,
+    "host_transport_policy_serialized": false,
+    "source_cpu_modified_before_resume": false,
+    "new_uart_input_bytes": 0,
+    "live_android_properties_written": false,
+    "timing_seed_origin": "checkpoint",
+    "timing_seed_sha256": "699e17ffab1ef3618567ee928b25cdc0b6c7feed3d520147e9111c76a751a6cb",
+    "disk_sha256": "4c2eaf3fa7d81e9649072fc81f0651f4129bd9f41d4a9f9964cc627741a7b92e"
+  },
+  "failed_stage_metadata_SHA256": {
+    "process-outcome.json": "7706044a16ff2216e1863026d0541fc0ff4f153ed9025d0aa0ee790a7b79ac65",
+    "current.json": "490ff9ae8d061ca7de30291d75839d4d26187c2d6b4edf2242e3ff3f382bdf99",
+    "result.json": "046f066ac3dc97df8a62c77ca60359f46ece966d7a5bc60e5fc26dc63766922a",
+    "output-contract.json": "a84d872a1e3221276751fa257f80e8aceec75a8d33a47c09e8d46291a3c15578",
+    "kernel-observation.json.log": "df1456347b4f6cf5a77966d86dec970d6f979cf2274b265b63fd272351f31c33"
+  },
+  "actual_error_log": "Error: Oversized RVG memory record\n    at rvgMemoryLines (file:///home/runner/work/reverseAndroid/reverseAndroid/build/host-transport-runtime/tools/rvg_memory_lines.mjs:6:32)\n    at rvgMemoryLines.next (<anonymous>)\n    at observeAndroidKernel (file:///home/runner/work/reverseAndroid/reverseAndroid/build/host-transport-runtime/tools/android_kernel_observer.mjs:37:12)\n    at file:///home/runner/work/reverseAndroid/reverseAndroid/build/host-transport-runtime/tools/reverseandroid-host-kernel-observer.mjs:12:30\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n",
+  "original_C46_admission_completed": false,
+  "complete_failed_RVG_transport_preserved": false,
+  "failed_tail_is_canonical": false,
+  "failed_tail_is_continuation_source": false,
+  "locally_reproduced_host_problem": {
+    "node": "24.22.1",
+    "numeric_Buffer_indexOf_uses_signed_32bit_offsets_and_results": true,
+    "actual_buffer_bytes": 2147532805,
+    "newline_position": 2147500024,
+    "original_result": -2147467272,
+    "original_reader_throws": "Oversized RVG memory record",
+    "original_record_limit_bytes": 16384,
+    "original_maximum_configurable_limit_bytes": 65536,
+    "valid_maximum_P_record_bytes": 9240,
+    "correction": "Search bounded zero-copy views and decode local offsets; retain the exact record bounds and validation semantics."
+  },
+  "selected_corrected_reader": "extensions/host-memory-lines/rvg_memory_lines.mjs",
+  "selected_corrected_reader_SHA256": "9235a0743c701e909acc159b8cf3aff1a8ff765268ed644f55bddbf1804939b8",
+  "selected_host_observer_manifest": "docs/evidence/c91/selected-host-observer-manifest.json",
+  "selected_host_observer_manifest_SHA256": "0580564f9cff84a7aa7edd155cc08f203fd897de0a62b0481f9ce0f201d5d647",
+  "native_binary_changed": false,
+  "guest_snapshot_patching": false,
+  "guest_property_injection": false,
+  "new_UART_bytes": 0,
+  "requires_fresh_replay_from_C90R_stage5_and_full_original_admission": true,
+  "native_failed_tail_SHA256_is_only_a_determinism_check": true
+}

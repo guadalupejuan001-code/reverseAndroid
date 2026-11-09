@@ -1,0 +1,20 @@
+{
+  "schema": "reverseandroid-authentic-frame-review-v1",
+  "cycle": "C90R",
+  "stage": 5,
+  "checkpoint_sha256": "7c00c86bb9af645fe7a6f416f63c0145351234ec20d749c2bf5b3dd30f5dd802",
+  "instructions": 165447727998,
+  "metadata_artifact_id": 13662381264,
+  "metadata_ZIP_SHA256": "ef9ba2215e692176a767befccb7eda560f6fd41cf2a860d15fb36bf1d61c6d06",
+  "original_PPM_SHA256": "13923ee20ec64fe6f9c75b28e6f90674be0d2951afdaa4a8d4dd33b69a87719e",
+  "original_RGB_SHA256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb",
+  "width": 800,
+  "height": 600,
+  "frame_counter": 502,
+  "original_PPM_hash_verified_before_visual_inspection": true,
+  "observed": "Android wordmark in white on black; no launcher, settings screen or interactive controls visible.",
+  "same_original_RGB_SHA256_as_C90R_stage1": true,
+  "usable_UI_verified": false,
+  "gesture_response_verified": false,
+  "guest_state_modified": false
+}
