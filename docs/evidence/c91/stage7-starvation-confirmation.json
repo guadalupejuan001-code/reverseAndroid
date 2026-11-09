@@ -66,5 +66,28 @@
       "boot properties",
       "snapshot bytes"
     ]
+  },
+  "console_classification": {
+    "fatal_or_kernel_panic_lines": 0,
+    "selinux_denials": 0,
+    "failure_lines": 2,
+    "failure_lines_are_duplicate_activity_missing": true,
+    "binder_lines": 4,
+    "slow_IServiceManager_getService2_ms": 14391,
+    "classification": {
+      "fatal": [],
+      "probably_blocking": [
+        "SystemServer receives zero runtime while runnable",
+        "cppreopts-family fsync executes at nice -20 CFS weight",
+        "activity service remains unpublished"
+      ],
+      "secondary": [
+        "IServiceManager getService2 latency 14391ms",
+        "BootAnimation remains visible"
+      ],
+      "noise_or_duplicate": [
+        "duplicated log lines in captured console"
+      ]
+    }
   }
 }
