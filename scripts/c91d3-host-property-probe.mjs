@@ -60,8 +60,8 @@ async function probe(path,sha,names){
   const blob=createHash('sha1').update('blob '+Buffer.byteLength(source)+'\0').update(source).digest('hex');assert.equal(blob,pin.git_blob_sha1);
   const marker=" check(createHash('sha256').update(bytes).digest('hex')===originalSha,'observation mutated input');";
   assert.equal(source.split(marker).length,2,'Unique read-only observer completion marker required');
-  const hook=' options?.extraReadOnlyProbe?.({read,text,types,type,members,resolveType,kernel,tasks,task,currentTask,u,m,translate,physical,phys64,nearest,btfString:str});\\n';
-  const patched=source.replace(marker,hook+marker).replace(/from (['"])(\\.\\/[^'"]+)\\1/g,(_,q,s)=>'from '+q+new URL(s,originalUrl).href+q);
+  const hook=' options?.extraReadOnlyProbe?.({read,text,types,type,members,resolveType,kernel,tasks,task,currentTask,u,m,translate,physical,phys64,nearest,btfString:str});\n';
+  const patched=source.replace(marker,hook+marker).replace(/from (['"])(\.\/[^'"]+)\1/g,(_,q,s)=>'from '+q+new URL(s,originalUrl).href+q);
   const {observeAndroidKernel}=await import('data:text/javascript;base64,'+Buffer.from(patched).toString('base64'));
   let selected;const bytes=readFileSync(path);
   const proof=observeAndroidKernel(bytes,sha,{maxSnapshotBytes:HOST_RVG_CAP,liveProperties:true,extraReadOnlyProbe:api=>{selected=inspect(api,names);}});
