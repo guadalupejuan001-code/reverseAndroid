@@ -81,7 +81,7 @@ jobs:
           chmod +x build/host-native/epoch-clz-ic-host build/host-native/frame
           python3 scripts/prepare-host-transport.py build/host-transport-runtime
           python3 scripts/prepare-host-observer.py build/host-observer-runtime --plan state/experiments/c91-plan.json
-          cp build/host-observer-runtime/tools/c91d3-host-property-probe.mjs build/host-observer-runtime/tools/c91d3-host-property-probe.mjs
+          cp scripts/c91d3-host-property-probe.mjs build/host-observer-runtime/tools/c91d3-host-property-probe.mjs
           node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c91d3 > evidence/c91d3-reports/source-admission.json
           python3 - <<'PY'
           import base64,gzip,hashlib,json,pathlib
