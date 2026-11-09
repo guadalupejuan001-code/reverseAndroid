@@ -16,6 +16,7 @@ class HostThreadProbe4GTest(unittest.TestCase):
         self.assertEqual(body,original.replace("2147483648","4026531840"))
         self.assertEqual(body.count("4026531840"),2)
         self.assertIn("original_observer_file_unchanged:true",body)
+        self.assertEqual(derived.count("reverseandroid-host-transport-preload.mjs"),1)
         self.assertIn("read_only:true",body)
 
 if __name__=="__main__":unittest.main()
