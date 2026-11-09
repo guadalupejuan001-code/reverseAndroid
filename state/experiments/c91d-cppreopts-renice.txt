@@ -1,0 +1,23 @@
+su 0 sh -c '
+[ "$(cat /proc/7354/comm 2>/dev/null)" = system_server ] || exit 41
+roots="$(pidof cppreopts.sh 2>/dev/null)" || exit 42
+[ -n "$roots" ] || exit 43
+printf "\nREVERSE_C91D_PRE SYS_CPPREOPT_%s SVC_CPPREOPTS_%s BOOT_%s BOOTANIM_%s\n" "$(getprop sys.cppreopt)" "$(getprop init.svc.cppreopts)" "$(getprop sys.boot_completed)" "$(getprop init.svc.bootanim)"
+count=0
+for n in cppreopts.sh cp mv fsync log; do
+  for p in $(pidof "$n" 2>/dev/null); do
+    [ -r "/proc/$p/stat" ] || continue
+    IFS= read -r line < "/proc/$p/stat" || continue
+    rest=${line#*) }; set -- $rest; ni=${17}
+    case "$ni" in -[0-9]*|[0-9]*) ;; *) exit 44;; esac
+    delta=$((19-ni))
+    if [ "$delta" -gt 0 ]; then renice -n "$delta" -p "$p" >/dev/null || exit 45; fi
+    IFS= read -r line < "/proc/$p/stat" || exit 46
+    rest=${line#*) }; set -- $rest
+    [ "${17}" = 19 ] || exit 47
+    count=$((count+1))
+  done
+done
+[ "$count" -ge 50 ] || exit 48
+printf "\nREVERSE_C91D_CPPREOPTS_RENICE_DONE COUNT_%s\n" "$count"
+'; r=$?; printf '\nREVERSE_C91D_CPPREOPTS_RENICE_RESULT RC_%s\n' "$r"
