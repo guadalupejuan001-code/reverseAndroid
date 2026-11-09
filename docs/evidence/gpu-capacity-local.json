@@ -1,0 +1,90 @@
+{
+  "schema": "reverseandroid-local-capacity-and-qssd-validation-v1",
+  "original_baseline_build_passed": true,
+  "all_original_imports_verified": 870,
+  "QSSD_commit": "c9dc0ebf3370a4468e14df92fcebb2a90954c448",
+  "actual_Android_replay": "passed run42287095161 at code commit ab01b7fc5d4cba099133b250d5cca36e130ad0de; see gpu-capacity-actual-android.json",
+  "control": {
+    "protocol_fixture_only": true,
+    "checks": 21,
+    "resource_capacity": 4,
+    "resource7_create_response": 4609,
+    "resource8_create_response": 4609,
+    "logical_RAM_bytes": 2147483648,
+    "native_snapshot_bytes": 21407,
+    "whole_state_restore": true,
+    "android_boot_verified": false
+  },
+  "candidate": {
+    "protocol_fixture_only": true,
+    "checks": 145,
+    "resource_capacity": 16,
+    "resource7_create_response": 4352,
+    "resource8_create_response": 4352,
+    "logical_RAM_bytes": 2147483648,
+    "native_snapshot_bytes": 24013,
+    "whole_state_restore": true,
+    "android_boot_verified": false
+  },
+  "old-decoder-refusal": {
+    "old_decoder_refuses_new_GPU_subformat": true
+  },
+  "qssd-bridge": {
+    "qssd_complete_native_VM_bridge": "PASS",
+    "checks": 25,
+    "logical_RAM_bytes": 2147483648,
+    "whole_original_snapshots_retained": true,
+    "concurrent_word_queries": 1000,
+    "native_GPU_renderer_acceleration_claimed": false,
+    "android_boot_verified": false
+  },
+  "original-qssd": {
+    "state_bus": "PASS",
+    "checks": 23,
+    "concurrent_writes": 4000,
+    "full_graph_consistent": true,
+    "archive_deduplicated": true
+  },
+  "original-pci": {
+    "checks": 3259,
+    "pci_ecam": true,
+    "virtio_block_read_write": true,
+    "immutable_disk_sha256": "ef8e658fd8b98c096ddfdad7aca166bb33a2f4dd91f16d5681e395113105d42e",
+    "gpu_2d_pixels_verified": true,
+    "cpu_graphics_program": true,
+    "quantum_display_alias": true,
+    "width": 128,
+    "height": 96,
+    "state_authority": "original XI/Ether",
+    "android_boot": false,
+    "android_games": false
+  },
+  "legacy-control": {
+    "protocol_fixture_only": true,
+    "checks": 38,
+    "checkpoint_sha256": "2cb1e1df3b4d3fe2474d90548353060a485048280cbc525ea677957a2df0975a",
+    "original_decoder_roundtrip": true,
+    "unknown_and_retired_ID_rejections": 7,
+    "android_boot_verified": false
+  },
+  "legacy-candidate": {
+    "protocol_fixture_only": true,
+    "checks": 38,
+    "checkpoint_sha256": "2cb1e1df3b4d3fe2474d90548353060a485048280cbc525ea677957a2df0975a",
+    "original_decoder_roundtrip": true,
+    "unknown_and_retired_ID_rejections": 7,
+    "android_boot_verified": false
+  },
+  "legacy_whole_RVG_and_report_bytes_identical": true,
+  "native_binaries": {
+    "epoch": "10e085bbfbc655fd8dab36c9838b2874bb5ed1d823b00e84a878b37d51f32099",
+    "epoch-control": "4996423a3e0061ccb25d39f33fe4474938055663652694afc9f070e2a59734b5",
+    "frame": "35687f9ff49d0c1ce4882499ed22cf411ca0ef7e26e68bc29a4a4ac21202f8d7"
+  },
+  "expanded_profile_dynamic_trace_fixture": {
+    "trace_events": 39,
+    "expected_invalid_resource_events": 7,
+    "whole_legacy_RVG_and_report_identical": true,
+    "table_transition_anomalies": []
+  }
+}

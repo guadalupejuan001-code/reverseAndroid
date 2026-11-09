@@ -1,0 +1,679 @@
+{
+  "schema": "reverseandroid-verified-actual-GPU-allocation-repair-v1",
+  "historical_diagnostic_reference_only": true,
+  "source_checkpoint_sha256": "bfd5feee5264a2e43f21684a25b7ceb7b27222c94264f188983b9cff1f8ac801",
+  "source_instructions": 47000000000,
+  "budget_per_run": 1000000000,
+  "source_unchanged": true,
+  "primary_checkpoint_or_execution_modified": false,
+  "new_UART_input_bytes": 0,
+  "both_original_epoch_admission_gates_passed": true,
+  "RAM_disk_seed_cadence_IRQ_security_and_outer_compact_codecs_preserved": true,
+  "old_native_cannot_decode_new_GPU_PCI_subformat_2": true,
+  "actual_failed_create_resource_ids": [
+    7,
+    8
+  ],
+  "allocation_failure_reproduced_and_repaired": true,
+  "first_failed_create_and_repair_at_same_original_instruction": true,
+  "control_matches_historical_C79_stage18_full_RVG": true,
+  "native_GPU_renderer_or_QSSD_speedup_claimed": false,
+  "run_id": 42287095161,
+  "run_conclusion": "success",
+  "execution_commit": "ab01b7fc5d4cba099133b250d5cca36e130ad0de",
+  "standard_PR_validation_run_id": 42287104894,
+  "standard_PR_validation_conclusion": "success",
+  "evidence_archive": {
+    "id": 13539162577,
+    "name": "reverseandroid-gpu-capacity-evidence",
+    "sha256": "caf1e347f79ca7381afc40fde532e2e4edd04b8efcb5cfe74d5edb83330d3e49",
+    "size_in_bytes": 161231
+  },
+  "evidence_archives_SHA256_and_CRC_independently_verified": true,
+  "complete_metadata_bindings_independently_verified": true,
+  "complete_native_logs_independently_verified": true,
+  "fresh_complete_RVG_download_or_independent_local_native_replay_claimed": false,
+  "native_files_SHA256": {
+    "gpu-capacity/epoch": "be901f3ab60feb0786f7d5baa95efb2d55cfecb1ae29967be2d9f690628aacd7",
+    "gpu-capacity/epoch-control": "ff59a21b8022402c501f9810d1b1837b27ce882c9c6ca6d3d781f84cdb44d570",
+    "gpu-capacity/frame": "9eca00b74ff447100033059c57fcbb4d049ad2c9baed557817db405f2cb6e52a",
+    "gpu-capacity-src/extension-manifest.json": "66248dc9399314d13b24b04ca6843673c8885400a1dcb8edcdd8efd6b2eec3b5",
+    "gpu-capacity-src/gpu-capacity-manifest.json": "8bc921d5d768ee400048bf10c2eea1cd2a1124a0d05c1a34b50a01af5495368d",
+    "gpu-capacity-src/gpu-trace-manifest.json": "5519a6479c21d33c37609492df11c12f0681ed182bcb18cd0ab21ffe2ad88641",
+    "gpu-capacity-control-src/extension-manifest.json": "66248dc9399314d13b24b04ca6843673c8885400a1dcb8edcdd8efd6b2eec3b5",
+    "gpu-capacity-control-src/gpu-trace-manifest.json": "a19dd8cc1e43f5deddb326892d7a6c060a033f91eccde9f10632336081c9b400"
+  },
+  "both_frames_identical_and_visually_reviewed": "800x600 uniformly black; no usable Android UI",
+  "frame_sha256": "c3b3d73f6bbb08ab3fa3dfa65d01f89916ba25d37a4f5fbd8cd2202edaa58077",
+  "actual_Android_TRANSFER_or_FLUSH_for_resources7_or8_in_this_window": false,
+  "actual_Android_create_and_attach_for_resources7_and8_verified": true,
+  "complete_transfer_scanout_flush_for_resource8_verified_in_native_protocol_fixture_only": true,
+  "control": {
+    "output_contract": {
+      "schema": "reverseandroid-epoch-source-v1",
+      "checkpoint_sha256": "fbe8a42ad41cd98cf20d3e595e10389d626ef21ea0aa74da49049b1635c6d60e",
+      "report_file": "current.json",
+      "report_sha256": "c9ed1cd334f52b2b850ba991984164de510065cd510f3ac569ebe5562dd7b2e8",
+      "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+      "instructions": 48000000000,
+      "epoch_original_init_verified": true,
+      "initialized_hardware_root": false,
+      "result_sha256": "3965b3451dd9a923610676eed3ec453abdf4cc85a1da8303631bffc34423fe75",
+      "process_sha256": "78ddbb1dc115b303bfe368e875882fb8d9c56e9f4d257f17db6ef14f7f635a42",
+      "source_commit": "ab01b7fc5d4cba099133b250d5cca36e130ad0de"
+    },
+    "boot_gate": {
+      "schema": "reverse-c46-android-continuation-v1",
+      "checkpoint_sha256": "fbe8a42ad41cd98cf20d3e595e10389d626ef21ea0aa74da49049b1635c6d60e",
+      "instructions": 48000000000,
+      "source_boundary_verified": true,
+      "system_server_alive_verified": false,
+      "android_boot_completed_verified": false,
+      "scanout_exported": true,
+      "ready_for_visual_review": false,
+      "android_display_content_verified": false,
+      "unresolved": [
+        "live_process_missing:system_server",
+        "live_sys_boot_completed_unverified"
+      ]
+    },
+    "GPU_PCI_subformat": 1,
+    "resource_ids": [
+      2,
+      4,
+      5,
+      6
+    ],
+    "scanout": {
+      "resource": 2,
+      "x": 0,
+      "y": 0,
+      "width": 800,
+      "height": 600,
+      "cursor": 0,
+      "cursor_x": 0,
+      "cursor_y": 0,
+      "hot_x": 0,
+      "hot_y": 0
+    },
+    "response_counts": [
+      {
+        "command": 257,
+        "response": 4352,
+        "count": 1
+      },
+      {
+        "command": 257,
+        "response": 4609,
+        "count": 2
+      },
+      {
+        "command": 262,
+        "response": 4352,
+        "count": 1
+      },
+      {
+        "command": 262,
+        "response": 4611,
+        "count": 2
+      }
+    ],
+    "create_events": [
+      {
+        "event": "response",
+        "candidate": true,
+        "sequence": 2,
+        "instructions": 47892361289,
+        "queue": 0,
+        "command": 257,
+        "resource_id_present": true,
+        "resource_id": 6,
+        "response": 4352,
+        "scanout": 2,
+        "flushes": 4,
+        "resource_ids": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "resource_extents": [
+          [
+            800,
+            600
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ]
+        ]
+      },
+      {
+        "event": "response",
+        "candidate": true,
+        "sequence": 6,
+        "instructions": 47903491866,
+        "queue": 0,
+        "command": 257,
+        "resource_id_present": true,
+        "resource_id": 7,
+        "response": 4609,
+        "scanout": 2,
+        "flushes": 4,
+        "resource_ids": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "resource_extents": [
+          [
+            800,
+            600
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ]
+        ]
+      },
+      {
+        "event": "response",
+        "candidate": true,
+        "sequence": 10,
+        "instructions": 47913641017,
+        "queue": 0,
+        "command": 257,
+        "resource_id_present": true,
+        "resource_id": 8,
+        "response": 4609,
+        "scanout": 2,
+        "flushes": 4,
+        "resource_ids": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "resource_extents": [
+          [
+            800,
+            600
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ]
+        ]
+      }
+    ],
+    "native_host_elapsed_ms": 382567,
+    "stop_reason": "instruction_budget",
+    "complete_checkpoint_transport_parts": [
+      {
+        "id": 13538779589,
+        "name": "reverseandroid-gpu-capacity-control-000",
+        "sha256": "bf262f047f641eecca77427c89d0a83aac347434579dcaa716cf642294ab1ff5",
+        "size_in_bytes": 209715352
+      },
+      {
+        "id": 13540335687,
+        "name": "reverseandroid-gpu-capacity-control-001",
+        "sha256": "dfd7547315fe0fcf97388c12e8da9fa3e1f5ae0aad1e66c5a922d1844ca2ecea",
+        "size_in_bytes": 209715352
+      },
+      {
+        "id": 13540176112,
+        "name": "reverseandroid-gpu-capacity-control-002",
+        "sha256": "e40b033aa8021aec395776b98bc05fa6363d9ea988872cf3a6439bca4e00dd32",
+        "size_in_bytes": 184073009
+      }
+    ],
+    "metadata_archive": {
+      "id": 13540335705,
+      "name": "reverseandroid-gpu-capacity-control-metadata",
+      "sha256": "861682ba6b1332f7f35f73213ba5579c33d00c4e324725b2edeb2e0e0e8e6503",
+      "size_in_bytes": 66423
+    },
+    "recovery_lock": "state/experiments/gpu-capacity-control-artifacts.json",
+    "SELinux_enforcing": true
+  },
+  "candidate": {
+    "output_contract": {
+      "schema": "reverseandroid-epoch-source-v1",
+      "checkpoint_sha256": "9a99c05af3e951f0319f9656478c82ee3b62fe2022cc21e259948243d59b85ff",
+      "report_file": "current.json",
+      "report_sha256": "bbd8d3de8f2278499bc0718a200f9b746e3daab43625132e6794f25a5dcca2d7",
+      "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+      "instructions": 48000000000,
+      "epoch_original_init_verified": true,
+      "initialized_hardware_root": false,
+      "result_sha256": "a41e2ed82c99ae9294fe0e2587a80427e6bf80d64437500af95cd0fb14442c18",
+      "process_sha256": "1bdab2ae2b6a388f6ce62aead54363e263e28e9672851a6b101c61f5cb7735ec",
+      "source_commit": "ab01b7fc5d4cba099133b250d5cca36e130ad0de"
+    },
+    "boot_gate": {
+      "schema": "reverse-c46-android-continuation-v1",
+      "checkpoint_sha256": "9a99c05af3e951f0319f9656478c82ee3b62fe2022cc21e259948243d59b85ff",
+      "instructions": 48000000000,
+      "source_boundary_verified": true,
+      "system_server_alive_verified": false,
+      "android_boot_completed_verified": false,
+      "scanout_exported": true,
+      "ready_for_visual_review": false,
+      "android_display_content_verified": false,
+      "unresolved": [
+        "live_process_missing:system_server",
+        "live_sys_boot_completed_unverified"
+      ]
+    },
+    "GPU_PCI_subformat": 2,
+    "resource_ids": [
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scanout": {
+      "resource": 2,
+      "x": 0,
+      "y": 0,
+      "width": 800,
+      "height": 600,
+      "cursor": 0,
+      "cursor_x": 0,
+      "cursor_y": 0,
+      "hot_x": 0,
+      "hot_y": 0
+    },
+    "response_counts": [
+      {
+        "command": 257,
+        "response": 4352,
+        "count": 3
+      },
+      {
+        "command": 262,
+        "response": 4352,
+        "count": 3
+      }
+    ],
+    "create_events": [
+      {
+        "event": "response",
+        "candidate": true,
+        "sequence": 2,
+        "instructions": 47892361289,
+        "queue": 0,
+        "command": 257,
+        "resource_id_present": true,
+        "resource_id": 6,
+        "response": 4352,
+        "scanout": 2,
+        "flushes": 4,
+        "resource_ids": [
+          2,
+          4,
+          5,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "resource_extents": [
+          [
+            800,
+            600
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "event": "response",
+        "candidate": true,
+        "sequence": 6,
+        "instructions": 47903491866,
+        "queue": 0,
+        "command": 257,
+        "resource_id_present": true,
+        "resource_id": 7,
+        "response": 4352,
+        "scanout": 2,
+        "flushes": 4,
+        "resource_ids": [
+          2,
+          4,
+          5,
+          6,
+          7,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "resource_extents": [
+          [
+            800,
+            600
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "event": "response",
+        "candidate": true,
+        "sequence": 10,
+        "instructions": 47913709790,
+        "queue": 0,
+        "command": 257,
+        "resource_id_present": true,
+        "resource_id": 8,
+        "response": 4352,
+        "scanout": 2,
+        "flushes": 4,
+        "resource_ids": [
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "resource_extents": [
+          [
+            800,
+            600
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            832,
+            640
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      }
+    ],
+    "native_host_elapsed_ms": 380664,
+    "stop_reason": "instruction_budget",
+    "complete_checkpoint_transport_parts": [
+      {
+        "id": 13540490220,
+        "name": "reverseandroid-gpu-capacity-candidate-000",
+        "sha256": "1bd73366238dcc2a4bb655bfa91f03999c5147311492f3cbae8c8a18c62c3de8",
+        "size_in_bytes": 209715352
+      },
+      {
+        "id": 13538844794,
+        "name": "reverseandroid-gpu-capacity-candidate-001",
+        "sha256": "f17119a1cb015900c709210cfabe9afce50dacfe2e5f8123f9c6feab53d79362",
+        "size_in_bytes": 209715352
+      },
+      {
+        "id": 13539022801,
+        "name": "reverseandroid-gpu-capacity-candidate-002",
+        "sha256": "ca4dcbc88f20fab945ea7f9efab858f6f6e0efb98cf976c5eccb81d81d88ad50",
+        "size_in_bytes": 184116043
+      }
+    ],
+    "metadata_archive": {
+      "id": 13540440241,
+      "name": "reverseandroid-gpu-capacity-candidate-metadata",
+      "sha256": "bebfe9451df995f1cb875a191de1c8dee42eae4a1ed920d23df57b04002ee16e",
+      "size_in_bytes": 68367
+    },
+    "recovery_lock": "state/experiments/gpu-capacity-candidate-artifacts.json",
+    "SELinux_enforcing": true
+  },
+  "primary_read_only_context": {
+    "run_id": 42274580377,
+    "stage": 10,
+    "checkpoint_sha256": "f59660b6756e501c414009fc59e35b69f463c5f03764b439d6ca3fa3decf81e8",
+    "instructions": 133147727998,
+    "system_server_alive_verified": true,
+    "actual_system_server_pid": 7354,
+    "system_server_task_state": 0,
+    "system_server_exit_state": 0,
+    "system_server_has_user_mm": true,
+    "system_server_on_rq": 1,
+    "sys_boot_completed_1_verified": false,
+    "usable_UI_verified": false,
+    "metadata_artifact_id": 13539856227,
+    "metadata_archive_sha256": "1d818cbd944381feb4c190fdafcca7bc09d1ad1839643a550252d9e821347fa2",
+    "metadata_download_SHA256_CRC_and_live_kernel_task_independently_checked": true,
+    "independent_of_this_GPU_candidate": true
+  }
+}

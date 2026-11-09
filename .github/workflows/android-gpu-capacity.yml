@@ -1,0 +1,120 @@
+name: Android historical GPU allocation repair and QSSD bridge
+
+'on':
+  push:
+    branches: [fix/virtio-gpu-resource-trace]
+    paths:
+      - .github/workflows/android-gpu-capacity.yml
+      - scripts/prepare-gpu-capacity-extension.py
+      - scripts/build-gpu-capacity-extension.sh
+      - scripts/run-gpu-capacity-comparison.py
+      - tools/android_gpu_capacity_evidence.mjs
+      - extensions/gpu-state-bridge.hpp
+      - tests/reverseandroid_gpu_capacity_test.cpp
+      - tests/reverseandroid_gpu_state_bridge_test.cpp
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: reverseandroid-isolated-gpu-capacity
+  cancel-in-progress: false
+
+jobs:
+  gpu-allocation-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/mundo-X
+          ref: e2778d962af22f6f1a0794058dd4685fc2573966
+          path: deps/mundo-x
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: guadalupejuan001-code/Virtual-qSSD-
+          ref: c9dc0ebf3370a4468e14df92fcebb2a90954c448
+          path: deps/qssd
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify original admission, complete resource lifecycle and QSSD versions
+        run: |
+          bash scripts/build-reverseandroid.sh
+          bash scripts/build-gpu-capacity-extension.sh
+      - name: Recover the complete historical checkpoint before allocation failure
+        run: |
+          mkdir -p evidence build
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/gpu-capacity-source state/experiments/c79-stage-17-artifacts.json
+          for part in media-manifest media-aa media-ab media-ac; do
+            python3 scripts/fetch-reverseandroid-artifact.py "$part" build/media-input state/experiments/c79-stage-17-artifacts.json
+          done
+          python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+          python3 - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path('build/gpu-capacity-source')
+          c=json.loads((root/'output-contract.json').read_text())
+          assert c['instructions']==47000000000
+          assert c['checkpoint_sha256']=='bfd5feee5264a2e43f21684a25b7ceb7b27222c94264f188983b9cff1f8ac801'
+          with (root/'current.rvg').open('rb') as f:
+              assert hashlib.file_digest(f,'sha256').hexdigest()==c['checkpoint_sha256']
+          PY
+      - name: Compare both GPU profiles across actual Android allocation requests
+        run: |
+          python3 scripts/run-gpu-capacity-comparison.py \
+            --source build/gpu-capacity-source \
+            --output evidence/gpu-capacity \
+            --commit "$GITHUB_SHA"
+          python3 scripts/verify-reverseandroid-import.py
+      - name: Preserve the complete admitted original control
+        if: always() && hashFiles('evidence/gpu-capacity/control/c46-progress.json') != ''
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/gpu-capacity/control
+          transport_path: build/gpu-capacity-control-transport
+          artifact_prefix: reverseandroid-gpu-capacity-control
+      - name: Preserve the complete admitted expanded-device candidate
+        if: always() && hashFiles('evidence/gpu-capacity/candidate/c46-progress.json') != ''
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/gpu-capacity/candidate
+          transport_path: build/gpu-capacity-candidate-transport
+          artifact_prefix: reverseandroid-gpu-capacity-candidate
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && hashFiles('build/gpu-capacity/epoch') != ''
+        with:
+          name: reverseandroid-gpu-capacity-native
+          path: |
+            build/gpu-capacity/epoch
+            build/gpu-capacity/epoch-control
+            build/gpu-capacity/frame
+            build/gpu-capacity-src/*manifest.json
+            build/gpu-capacity-control-src/*manifest.json
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-gpu-capacity-evidence
+          path: |
+            evidence/gpu-capacity/*.json
+            evidence/gpu-capacity/*/*.json
+            evidence/gpu-capacity/*/*.txt
+            evidence/gpu-capacity/*/*.log
+            evidence/gpu-capacity/*/*.ppm
+            build/gpu-capacity/*.json
+            build/gpu-capacity-src/*manifest.json
+            build/gpu-capacity-control-src/*manifest.json
+          if-no-files-found: error
+          retention-days: 90

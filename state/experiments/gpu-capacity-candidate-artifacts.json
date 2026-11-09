@@ -1,0 +1,58 @@
+{
+  "schema": "reverseandroid-bootstrap-artifacts-v1",
+  "repository": "guadalupejuan001-code/reverseAndroid",
+  "diagnostic_only": true,
+  "primary_promotion_authority": false,
+  "execution_run_id": 42287095161,
+  "explicit_GPU_capacity": 16,
+  "expected_GPU_PCI_subformat": 2,
+  "epoch_native_filename": "gpu-capacity/epoch",
+  "frame_native_filename": "gpu-capacity/frame",
+  "artifacts": {
+    "seed": {
+      "transport_manifest": "state/experiments/gpu-capacity-candidate-transport.json",
+      "pieces": [
+        {
+          "id": 13540490220,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "1bd73366238dcc2a4bb655bfa91f03999c5147311492f3cbae8c8a18c62c3de8"
+        },
+        {
+          "id": 13538844794,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "f17119a1cb015900c709210cfabe9afce50dacfe2e5f8123f9c6feab53d79362"
+        },
+        {
+          "id": 13539022801,
+          "repository": "guadalupejuan001-code/reverseAndroid",
+          "sha256": "ca4dcbc88f20fab945ea7f9efab858f6f6e0efb98cf976c5eccb81d81d88ad50"
+        }
+      ]
+    },
+    "gpu-capacity-native": {
+      "id": 13540380424,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "cdc524c58db105faca50a7d5d8ee5c866731be3acdaddffe2bf147b94069018b"
+    },
+    "media-manifest": {
+      "id": 13427116817,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "d9cb8cb0448199a76840f02676ccde8cceb02934b4e340a9a218103757689c91"
+    },
+    "media-aa": {
+      "id": 13427701335,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "df9735902d27bad91cec9d93a1ac13980113bbd6fcaa33303366bf420bb79ac0"
+    },
+    "media-ab": {
+      "id": 13427181837,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "7aa01e7a17ed14bf23c83425bfc26da7848f253641079427f1a4b6f44ecefff8"
+    },
+    "media-ac": {
+      "id": 13426962020,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "ecf54e700e4a1c10a3c101a8fcd8e20aa7a63df7f5cd2456cb662c7117dee789"
+    }
+  }
+}
