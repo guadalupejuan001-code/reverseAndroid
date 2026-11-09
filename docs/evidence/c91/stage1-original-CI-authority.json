@@ -1,0 +1,537 @@
+{
+  "schema": "reverseandroid-c91-original-CI-admission-and-preservation-v1",
+  "observed_UTC": "2026-11-09T10:05:29.015580+00:00",
+  "execution_repository": "guadalupejuan001-code/reverseAndroid",
+  "run_id": 42596365209,
+  "job_id": 129089872344,
+  "execution_commit": "a035f386b468c71ad11c32aee88252dbab0b91db",
+  "run_url": "https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42596365209",
+  "checkpoint_cycle": "C91",
+  "checkpoint_stage": 1,
+  "checkpoint_sha256": "7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b",
+  "instructions": 166447727998,
+  "parent": {
+    "cycle": "C90R",
+    "stage": 5,
+    "instructions": 165447727998,
+    "checkpoint_sha256": "7c00c86bb9af645fe7a6f416f63c0145351234ec20d749c2bf5b3dd30f5dd802",
+    "native_SHA256": "a31e3fd923f63071ebadeb6a78ee5aadf77111c88186e428927220f199710318",
+    "source_artifact_lock": "state/experiments/c90r-stage-5-artifacts.json",
+    "proof_SHA256": "c46a51a9787a26b39afeac6dfbc5cec15bf7b236c4c3ffc0946944c9c55f3654"
+  },
+  "source_bound_to_previous_fully_admitted_checkpoint": true,
+  "process_completed_with_exit_zero": true,
+  "original_native_roundtrip_and_C46_admission_verified": true,
+  "first_checkpoint_RVG_hash_reproduces_prior_failed_tail": true,
+  "prior_failed_tail": {
+    "diagnostic_only": true,
+    "used_as_source": false,
+    "run_id": 42587296800,
+    "execution_commit": "ceb722e62ebc720fa33133761a188199e91a59a5",
+    "cycle": "C90R",
+    "stage": 6,
+    "checkpoint_sha256": "7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b",
+    "instructions": 166447727998
+  },
+  "prior_failed_tail_report_or_process_byte_equality_claimed": false,
+  "native_SHA256": "a31e3fd923f63071ebadeb6a78ee5aadf77111c88186e428927220f199710318",
+  "frame_native_SHA256": "540440a1f76baec7a955deab2eeee6431a2b656c56bcca90246c6a3a77f1cd7e",
+  "host_snapshot_capacity_bytes": 4026531840,
+  "logical_RAM_bytes": 2147483648,
+  "selected_host_observer_manifest": "docs/evidence/c91/selected-host-observer-manifest.json",
+  "selected_host_observer_manifest_SHA256": "0580564f9cff84a7aa7edd155cc08f203fd897de0a62b0481f9ce0f201d5d647",
+  "selected_host_observer_reader_SHA256": "9235a0743c701e909acc159b8cf3aff1a8ff765268ed644f55bddbf1804939b8",
+  "baseline_host_transport_manifest_SHA256": "483513a8c1074142593075ed2c57d4fe66a0eede4a5f9291c9f7c24bae0ff294",
+  "host_observer_profile_schema": "reverseandroid-explicit-host-memory-line-reader-v1",
+  "memory_line_record_bound_bytes": 16384,
+  "metadata_artifact": {
+    "id": 13664407159,
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "sha256": "81e3270695aa4aebbbe0fa4366d032fd14433f4cc6dfa16b4c711a0f2c7aa4ab"
+  },
+  "metadata_ZIP_SHA256_and_CRC_verified_locally": true,
+  "transport_manifest": "state/experiments/c91-stage-1-transport.json",
+  "transport_manifest_SHA256": "0acee0be387516cf84f5fead871abae42cf6a3d15c8c61677b1bea3adc64e7ab",
+  "source_artifact_lock": "state/experiments/c91-stage-1-artifacts.json",
+  "complete_transport_piece_count": 4,
+  "complete_transport_piece_archives_pinned": [
+    {
+      "id": 13664636297,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "db0f0d859fd8ca9343b92df8f54bbbd7279cd58e2cdade94a42c7da98aa9a1cd"
+    },
+    {
+      "id": 13663124950,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "8a7e4b733f4cc6c868da2c9a54879453ef6ab21b469465ab1d3e61bb834d2dd0"
+    },
+    {
+      "id": 13664680981,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "6820121e2e79ac1798a659760b2bf702682b64f20d38dc787e1dca5e24af06b1"
+    },
+    {
+      "id": 13664770634,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "2ecd586420fc9b94afcbe7661b8a4c20a938c0e3064cc4d32bdfc12768a3f754"
+    }
+  ],
+  "complete_preservation_step_passed": true,
+  "stage_run_step": {
+    "name": "C91 stage 1: reproduce the failed-tail RVG hash with fresh complete admission",
+    "status": "completed",
+    "conclusion": "success",
+    "number": 7,
+    "started_at": "2026-11-09T09:53:16Z",
+    "completed_at": "2026-11-09T10:04:07Z"
+  },
+  "stage_preservation_step": {
+    "name": "C91 stage 1: preserve every admitted checkpoint piece before advancing",
+    "status": "completed",
+    "conclusion": "success",
+    "number": 8,
+    "started_at": "2026-11-09T10:04:07Z",
+    "completed_at": "2026-11-09T10:04:39Z"
+  },
+  "source_recovery_and_observation_reproduction_step": {
+    "name": "Recover admitted C90R stage 5 and reproduce complete original observations",
+    "status": "completed",
+    "conclusion": "success",
+    "number": 6,
+    "started_at": "2026-11-09T09:51:27Z",
+    "completed_at": "2026-11-09T09:53:16Z"
+  },
+  "full_RVG_fresh_local_download_or_native_replay_claimed": false,
+  "original_proof_SHA256": "f01ef3b0c76602a7d879686b1bcb8c275de1f7b5836c84488e2893009209e433",
+  "authenticated_entire_console": {
+    "file": "state/experiments/c91-stage-1-source-console.gz.b64",
+    "base64_SHA256": "d72a85c826256a7e1d65849648587e2ac0206ae2509064926407fabb7007c2a4",
+    "gzip_SHA256": "806394d82b092ce8303b9c7c09a5950677574316f0d46b86a5b94c24dfb6ce00",
+    "bytes": 3966416,
+    "SHA256": "bba29d6bec26f78e0b13ea126866147a68530d5990c386bd8ac316c1b64366b7",
+    "reconstructed_from_authenticated_C90R_stage5_and_actual_C91_stage1_delta": true,
+    "previous_cycle": "C90R",
+    "previous_stage": 5,
+    "previous_console_recipe": "state/experiments/c90r-stage-5-source-console.gz.b64",
+    "prior_console_bytes": 3964476,
+    "prior_console_SHA256": "b8c349e53225314394929f337d71c1d18b9c8de32d52ea6bc3cab73880784f5e",
+    "new_console_bytes": 1940,
+    "new_console_SHA256": "41c9fd250bb4f23ec12c2eb19419a431fdb0afbd7893d352558224d24e99897f",
+    "gzip_compression_level": 9,
+    "gzip_mtime": 0
+  },
+  "metadata_file_SHA256": {
+    "baseline-host-transport-manifest.json": "483513a8c1074142593075ed2c57d4fe66a0eede4a5f9291c9f7c24bae0ff294",
+    "boot-profile.json": "4ec6b0e5b7ffbadc2413b98ed56946a4f3bb92b17c3e239b34a7e58fef05a8d9",
+    "boundary-summary.json": "06c68c3a090c18900c8dd0b417ecda6dfb1820c238c4cb33f888561f7117c3b6",
+    "c42-progress.json": "4635335abb8b6bde96915f64a064666af6df4db3cf85379e29d8f9c8725ff811",
+    "c46-progress.json": "fd826be42caeb019d0a861ef51bb12a0d3ad82d6feb549ad71843680973c07b7",
+    "checkpoint-frame.json": "df76ef9ac5ba8375460c8e06e9f9e7e7c8cdf08dbc8f33515f94b3d2057a1c73",
+    "checkpoint-frame.json.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checkpoint-frame.ppm": "13923ee20ec64fe6f9c75b28e6f90674be0d2951afdaa4a8d4dd33b69a87719e",
+    "console-new.txt": "41c9fd250bb4f23ec12c2eb19419a431fdb0afbd7893d352558224d24e99897f",
+    "console-observation.json": "ea2487c00301a4a3d203811ac2e39d9887fa42d605d6ec6f34314447c0ac2499",
+    "current.json": "5b075cfde7ad6de16008d09d5cff988cd438942f01bc24b381184ed3b0a96b2a",
+    "epoch.json": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+    "host-observer-manifest.json": "0580564f9cff84a7aa7edd155cc08f203fd897de0a62b0481f9ce0f201d5d647",
+    "host-policy.json": "722444f835e4d5b9c7f2c8868a6d7420d556803e4ef70d8c856021d1a0b3848a",
+    "input-contract.json": "465a6c9818b66352c44697d2040d6a22f8397c9dd35715bb50f7dcc76caea4ce",
+    "kernel-observation.json": "2151303b4f2edcbd78164c97eecd44d6a0b16bcb775b049ae9bd8395079853ec",
+    "kernel-observation.json.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-stdout.log": "f1fbba2dddd3492b4a697989eb2cb90e7ed56541ab8bead1623147172c04b7c6",
+    "output-contract.json": "94f6dd217cb50fd8495a2467729eb73e651810a9970afd357f2da3d2f69ab790",
+    "peripherals-live-required.json": "7b3c4c5673f7f6c617425d36bdd0eb5ee400f96e9c8b39ee881a82c42546186e",
+    "process-outcome.json": "c415e43d33320d132795d60a19168e920617ca8bc2aa7c600b775024797914b0",
+    "progress.log": "9b432fc613c8d2055f2c0635c5d6f7c6ea2a24b0c45cb58471b36bbbacbac7d4",
+    "result.json": "046f066ac3dc97df8a62c77ca60359f46ece966d7a5bc60e5fc26dc63766922a",
+    "runtime-evidence.json": "da5468a5186e002ec2c828b8437b0a0e6ba8abef0c05db3a2f2c996cbcc56333",
+    "source-commit.txt": "a7e90699c1eb5d7ff391ff8a850c7616364e8c2ab93abd23d444e2ec3660d481",
+    "zero-input-proof.json": "f01ef3b0c76602a7d879686b1bcb8c275de1f7b5836c84488e2893009209e433"
+  },
+  "artifacts_observation_SHA256": "d647b49002a951012c13159a515804fa4ae335abd3c4364b697a95fb231248cf",
+  "jobs_observation_SHA256": "3a02b404c6437b538107e34bf914f645ea6af366978552021969ef613a471c7d",
+  "original_SystemServer": {
+    "pid": 7354,
+    "name": "system_server",
+    "task": "0xffffff80224b6540",
+    "state": 0,
+    "running_on_cpu": false,
+    "context_pc": "0xffffffc0812a70fc",
+    "context_sp": "0xffffffc08682b890",
+    "context_kind": "saved_kernel_context",
+    "saved_context_may_be_stale": false,
+    "live_user_pc": null,
+    "stack": [
+      {
+        "fp": "0xffffffc08682b890",
+        "lr": "0xffffffc0812a57c8",
+        "symbol": "__schedule+0x1004"
+      },
+      {
+        "fp": "0xffffffc08682b950",
+        "lr": "0xffffffc0812a6e34",
+        "symbol": "preempt_schedule_irq+0x4c"
+      },
+      {
+        "fp": "0xffffffc08682b9b0",
+        "lr": "0xffffffc0812a9478",
+        "symbol": "arm64_preempt_schedule_irq+0x30"
+      },
+      {
+        "fp": "0xffffffc08682b9d0",
+        "lr": "0xffffffc08129e770",
+        "symbol": "el1_interrupt+0x48"
+      },
+      {
+        "fp": "0xffffffc08682b9e0",
+        "lr": "0xffffffc08129e71c",
+        "symbol": "el1h_64_irq_handler+0x18"
+      },
+      {
+        "fp": "0xffffffc08682ba00",
+        "lr": "0xffffffc080011b90",
+        "symbol": "el1h_64_irq+0x7c",
+        "interrupted_pc": "0xffffffc080100d80",
+        "interrupted_symbol": "is_vmalloc_addr+0x1c",
+        "interrupted_registers": [
+          "0x0",
+          "0xfe0",
+          "0x0",
+          "0x4",
+          "0x0",
+          "0x40",
+          "0x3f",
+          "0x0",
+          "0xffffffbf893d9020",
+          "0x3e3f800000",
+          "0xffffffc08682c000",
+          "0xffffffbffd582000",
+          "0x983d0980ffffff",
+          "0x0",
+          "0xffffffffffffffff",
+          "0x0",
+          "0x77bf192d",
+          "0x77bf192d",
+          "0xffffffc08567d048",
+          "0xfe0",
+          "0x0",
+          "0xffffff80093d9020",
+          "0xffffff80224b6540",
+          "0xffffff9c",
+          "0x1",
+          "0x0",
+          "0x0",
+          "0x0",
+          "0xffffff80224b6540",
+          "0xffffffc08682bb80",
+          "0xffffffc080100e00"
+        ]
+      },
+      {
+        "fp": "0xffffffc08682bb40",
+        "lr": "0xffffffc080100d80",
+        "symbol": "is_vmalloc_addr+0x1c"
+      },
+      {
+        "fp": "0xffffffc08682bb80",
+        "lr": "0xffffffc080100b9c",
+        "symbol": "strncpy_from_user+0x3c"
+      },
+      {
+        "fp": "0xffffffc08682bbc0",
+        "lr": "0xffffffc080100a38",
+        "symbol": "getname_flags+0x60"
+      },
+      {
+        "fp": "0xffffffc08682bc00",
+        "lr": "0xffffffc0800d8c18",
+        "symbol": "vfs_fstatat+0x58"
+      },
+      {
+        "fp": "0xffffffc08682bc60",
+        "lr": "0xffffffc080224d34",
+        "symbol": "__arm64_sys_newfstatat+0x58"
+      },
+      {
+        "fp": "0xffffffc08682bde0",
+        "lr": "0xffffffc0800bb2fc",
+        "symbol": "invoke_syscall+0x58"
+      },
+      {
+        "fp": "0xffffffc08682be20",
+        "lr": "0xffffffc0800bb250",
+        "symbol": "do_el0_svc+0x8c"
+      },
+      {
+        "fp": "0xffffffc08682be40",
+        "lr": "0xffffffc08129ea70",
+        "symbol": "el0_svc+0x48"
+      },
+      {
+        "fp": "0xffffffc08682be80",
+        "lr": "0xffffffc08129e9bc",
+        "symbol": "el0t_64_sync_handler+0x88"
+      },
+      {
+        "fp": "0xffffffc08682bea0",
+        "lr": "0xffffffc080011e50",
+        "symbol": "el0t_64_sync+0x1bc"
+      },
+      {
+        "fp": "0xffffffc08682bfe0",
+        "lr": "0x0",
+        "symbol": null
+      }
+    ],
+    "exit_state": 0,
+    "has_user_mm": true,
+    "zygote_startup": {
+      "read_only": true,
+      "pid": 7354,
+      "comm": "system_server",
+      "exe_path": "/system/bin/app_process64",
+      "parent_pid": 5629,
+      "argv": [
+        "system_server"
+      ],
+      "argv_verified": true,
+      "launch_signature_verified": false
+    },
+    "on_rq": 1,
+    "on_cpu": 0,
+    "accounting": {
+      "nvcsw": "695",
+      "nivcsw": "5870",
+      "utime": "11834482000",
+      "stime": "7657042000",
+      "sum_exec_runtime": "14941244000",
+      "vruntime": "62545143797",
+      "exec_start": "2587116316000"
+    }
+  },
+  "actual_SystemServer_UID_fresh_read": false,
+  "original_PID1_live_boot_property": {
+    "schema": "reverse-live-pid1-property-v1",
+    "read_only": true,
+    "live_property_mapping_verified": false,
+    "boot_completed_property_live": false,
+    "observations": [],
+    "boot_chain_property_observations": [
+      {
+        "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+        "vma": "0x7cfdb60000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "odsign.key.done",
+        "value": "1",
+        "serial": 16777218,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:odsign_prop:s0",
+        "vma": "0x7cfdb60000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "odsign.verification.done",
+        "value": "1",
+        "serial": 16777216,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_svc_debug_prop:s0",
+        "vma": "0x7cfe0e0000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc_debug_pid.zygote",
+        "value": "5629",
+        "serial": 67108866,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_prop:s0",
+        "vma": "0x7cfe120000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.zygote",
+        "value": "running",
+        "serial": 117440516,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+        "vma": "0x7cfe140000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.odsign",
+        "value": "stopped",
+        "serial": 117440516,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:init_service_status_private_prop:s0",
+        "vma": "0x7cfe140000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "init.svc.keystore2",
+        "value": "running",
+        "serial": 117440512,
+        "boot_completed_property_in_ram": false
+      },
+      {
+        "file": "/dev/__properties__/u:object_r:apexd_prop:s0",
+        "vma": "0x7f91525000",
+        "vma_shared": true,
+        "live_pid1_mapping_verified": true,
+        "status": "property_observed",
+        "name": "apexd.status",
+        "value": "ready",
+        "serial": 83886086,
+        "boot_completed_property_in_ram": false
+      }
+    ],
+    "boot_chain_property_status_counts": {
+      "odsign.key.done": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "odsign.verification.done": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.odsign": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.keystore2": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.android.hardware.security.keymint-service": {
+        "property_not_found": 393
+      },
+      "init.svc.zygote": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc_debug_pid.zygote": {
+        "property_not_found": 392,
+        "property_observed": 1
+      },
+      "init.svc.zygote_secondary": {
+        "property_not_found": 393
+      },
+      "apexd.status": {
+        "property_not_found": 392,
+        "property_observed": 1
+      }
+    },
+    "android_framework_verified": false,
+    "android_display_verified": false,
+    "pid": 1,
+    "task": "0xffffff8002d19440",
+    "mm": "0xffffff80042b5900",
+    "vma_count": 1114,
+    "property_mappings": 393,
+    "status_counts": {
+      "property_not_found": 393
+    },
+    "ambiguous_property_values": false
+  },
+  "original_live_security": {
+    "read_only": true,
+    "btf_layout_verified": true,
+    "selinux_initialized": true,
+    "selinux_enforcing": true,
+    "policy_present": true,
+    "address": "0xffffffc082877898"
+  },
+  "original_runtime": {
+    "schema": "reverse-android-runtime-evidence-v1",
+    "checkpoint_sha256": "7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b",
+    "instructions": 166447727998,
+    "framework_runtime_verified": false,
+    "sys_boot_completed_live": false,
+    "selinux_enforcing_live": true,
+    "processes": [
+      {
+        "name": "init",
+        "verified": true,
+        "pid": 1
+      },
+      {
+        "name": "zygote64",
+        "verified": true,
+        "pid": 5629,
+        "observed_comm": "main",
+        "identity_basis": "live_argv_executable_parent_and_pid1_service_pid"
+      },
+      {
+        "name": "system_server",
+        "verified": true,
+        "pid": 7354
+      },
+      {
+        "name": "surfaceflinger",
+        "verified": true,
+        "pid": 669
+      }
+    ],
+    "reasons": [
+      "live_sys_boot_completed_unverified"
+    ],
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "original_snapshot_unchanged": true
+  },
+  "original_C46_gate": {
+    "schema": "reverse-c46-android-continuation-v1",
+    "checkpoint_sha256": "7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b",
+    "instructions": 166447727998,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "scanout_exported": true,
+    "ready_for_visual_review": false,
+    "android_display_content_verified": false,
+    "unresolved": [
+      "live_sys_boot_completed_unverified"
+    ]
+  },
+  "original_frame_export": {
+    "schema": "reverse-snapshot-scanout-v1",
+    "status": "scanout_exported",
+    "source_checkpoint_sha256": "7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b",
+    "instructions": 166447727998,
+    "pc": "0x7f456e9f68",
+    "frame_counter": 502,
+    "width": 800,
+    "height": 600,
+    "rgb_sha256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb",
+    "ppm_sha256": "13923ee20ec64fe6f9c75b28e6f90674be0d2951afdaa4a8d4dd33b69a87719e",
+    "cpu_instructions_executed": 0,
+    "original_snapshot_unchanged": true,
+    "android_boot_verified": false,
+    "android_display_verified": false
+  },
+  "fresh_live_peripherals_verified": true,
+  "all_eight_previous_UART_events_preserved": true,
+  "new_UART_bytes": 0,
+  "original_870_files_unchanged": true,
+  "guest_snapshot_patching": false,
+  "guest_property_injection": false,
+  "new_hardware_power_cycle": false,
+  "original_BOOT_completed": false,
+  "usable_UI_or_response_claimed": false,
+  "observed_job_status": "in_progress",
+  "observed_job_conclusion": null,
+  "preserved_stage_recorded_here": 1,
+  "immutable_initial_recipe": "state/experiments/c91-plan.json",
+  "future_restart_from_this_checkpoint_requires_a_new_source_bound_recipe": true
+}

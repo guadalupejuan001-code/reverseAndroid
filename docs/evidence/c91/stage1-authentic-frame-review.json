@@ -1,0 +1,21 @@
+{
+  "schema": "reverseandroid-authentic-frame-review-v1",
+  "cycle": "C91",
+  "stage": 1,
+  "checkpoint_sha256": "7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b",
+  "instructions": 166447727998,
+  "metadata_artifact_id": 13664407159,
+  "metadata_ZIP_SHA256": "81e3270695aa4aebbbe0fa4366d032fd14433f4cc6dfa16b4c711a0f2c7aa4ab",
+  "original_PPM_SHA256": "13923ee20ec64fe6f9c75b28e6f90674be0d2951afdaa4a8d4dd33b69a87719e",
+  "original_RGB_SHA256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb",
+  "width": 800,
+  "height": 600,
+  "frame_counter": 502,
+  "original_PPM_hash_verified": true,
+  "entire_PPM_byte_identical_to_visually_inspected_C90R_stage5": true,
+  "prior_visual_inspection": "docs/evidence/c90r/stage5-authentic-frame-review.json",
+  "observed": "Same authenticated pixels: Android wordmark in white on black; no interactive launcher or controls.",
+  "usable_UI_verified": false,
+  "gesture_response_verified": false,
+  "guest_state_modified": false
+}

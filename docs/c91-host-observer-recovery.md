@@ -106,3 +106,36 @@ The authenticated [stage 5 frame review](evidence/c90r/stage5-authentic-frame-re
 still shows the Android wordmark at 800×600. `sys.boot_completed=1`, usable UI and
 a meaningful response to a real gesture remain unverified. The host reader fix
 does not alter any of those acceptance conditions.
+
+## Actual C91 validation and preserved continuation
+
+[C91 run 42596365209](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42596365209),
+at commit `a035f386b468c71ad11c32aee88252dbab0b91db`, passed source recovery,
+both preflights and the exact original source kernel/peripheral observation
+comparisons. Stage 1 then completed with native exit code zero, reproduced the
+full expected RVG SHA-256 `7e0135bad3a7c61f12e48d6f97b4c60a89c1848b9e03c464895a5b861bbd612b`,
+and reached **166447727998 instructions**. The original kernel observation and
+full C46 admission now pass. Fresh live peripherals and enforcing SELinux also
+pass, and the native console delta equals the earlier diagnostic execution's
+delta byte for byte.
+
+All four checkpoint pieces and the metadata were preserved successfully before
+stage 2 began. The [stage 1 authority](evidence/c91/stage1-original-CI-authority.json)
+records the real producer, artifact IDs and ZIP hashes, process/report bindings,
+proof and authenticated cumulative console. The metadata ZIP was checked locally
+by full SHA-256 and CRC. No fresh complete local RVG download or local native
+replay is claimed. Canonical authority comes from this fully admitted and
+preserved C91 execution; the old failed tail remains diagnostic evidence.
+
+The [original-engine validation for the same commit](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42596365265)
+also completed successfully. SystemServer remains alive at PID 7354. The
+[authenticated stage 1 frame](evidence/c91/stage1-authentic-frame-review.json)
+is byte identical to the visually inspected C90R stage 5 frame: Android wordmark,
+800×600. Genuine Android boot, usable UI and gesture response remain pending.
+
+The new [stage 1 recovery lock](../state/experiments/c91-stage-1-artifacts.json)
+selects its own pieces, exact proof, complete console and adopted observer
+profile. The initial C91 recipe remains fixed to C90R stage 5; its live source
+lease will reject an obsolete rerun after promotion. A subsequent campaign must
+bind the newest fully admitted source and its console instead of replaying the
+initial recipe.
