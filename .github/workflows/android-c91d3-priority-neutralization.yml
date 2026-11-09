@@ -1,7 +1,7 @@
-name: C91D3 stage7 neutralize cppreopts CPU boost
+name: C91D3 stage8 neutralize cppreopts CPU boost
 'on':
   push:
-    branches: [c91d3-stage7-neutralize-boost]
+    branches: [c91d3-stage8-neutralize-boost]
     paths:
       - .github/workflows/android-c91d3-priority-neutralization.yml
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: reverseandroid-c91d3-stage7
+  group: reverseandroid-c91d3-stage8
   cancel-in-progress: false
 jobs:
   c91d3:
@@ -75,7 +75,7 @@ jobs:
             python3 scripts/fetch-reverseandroid-artifact.py "$name" build/media-input state/experiments/c91d-artifacts.json
           done
           python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
-          for name in meta2 meta3 meta4 meta5 meta6 meta7; do
+          for name in meta2 meta3 meta4 meta5 meta6 meta7 meta8; do
             python3 scripts/fetch-reverseandroid-artifact.py "$name" "build/$name" state/experiments/c91d-artifacts.json
           done
           chmod +x build/host-native/epoch-clz-ic-host build/host-native/frame
@@ -103,7 +103,7 @@ jobs:
           assert pathlib.Path('build/meta4/evidence/c91-4/console-new.txt').read_bytes()==b''
           delta=pathlib.Path('build/meta5/evidence/c91-5/console-new.txt').read_bytes()
           assert hashlib.sha256(delta).hexdigest()==P0['stage5_delta_SHA256']; raw+=delta
-          for stage,alias,key in [(6,'meta6','stage6_delta_SHA256'),(7,'meta7','stage7_delta_SHA256')]:
+          for stage,alias,key in [(6,'meta6','stage6_delta_SHA256'),(7,'meta7','stage7_delta_SHA256'),(8,'meta8','stage8_delta_SHA256')]:
               delta=pathlib.Path(f'build/{alias}/evidence/c91-{stage}/console-new.txt').read_bytes()
               assert hashlib.sha256(delta).hexdigest()==P[key]; raw+=delta
           assert len(raw)==P['source_console_bytes'] and hashlib.sha256(raw).hexdigest()==P['source_console_SHA256']
@@ -121,8 +121,9 @@ jobs:
 
       - name: C91D3-0 baseline scheduler, properties and starvation metrics
         run: |
-          node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             build/source-c91d3/current.rvg 771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe 4026531840             --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/baseline-kernel.json
-          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             build/source-c91d3/current.rvg 771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe             evidence/c91d3-reports/baseline-properties.json
+          SRC_SHA="$(python3 -c 'import json;print(json.load(open("state/experiments/c91d3-plan.json"))["source_checkpoint_sha256"])')"
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             build/source-c91d3/current.rvg $SRC_SHA 4026531840             --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/baseline-kernel.json
+          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             build/source-c91d3/current.rvg $SRC_SHA             evidence/c91d3-reports/baseline-properties.json
           python3 - <<'PY'
           import collections,json,pathlib
           P=json.load(open('state/experiments/c91d3-plan.json'))
@@ -132,7 +133,7 @@ jobs:
           c=collections.Counter(t['name'] for t in K['tasks'] if t.get('exit_state')==0)
           assert ss['name']=='system_server' and ss['state']==0 and ss['on_rq']==1
           assert ss['accounting']['sum_exec_runtime']==P['baseline']['system_server_sum_exec_runtime']
-          assert c['cppreopts.sh']==111 and c['fsync']==104
+          assert c['cppreopts.sh']==P['baseline']['copy_fanout']['cppreopts_sh'] and c['fsync']==P['baseline']['copy_fanout']['fsync']
           result={'schema':'reverseandroid-c91d3-baseline-v1','system_server':ss,'control_shell':sh,
             'copy_counts':{n:c[n] for n in ['cppreopts.sh','cp','mv','fsync','log']},
             'current_scheduler':K['scheduler_probe']['current'],
@@ -283,6 +284,6 @@ jobs:
             evidence/c91d3-2/*.ppm
             state/experiments/c91d3-plan.json
             state/experiments/c91d3-neutralize-cppreopts-boost.txt
-            state/experiments/c91-stage-7-transport.json
+            state/experiments/c91-stage-8-transport.json
           retention-days: 90
           if-no-files-found: warn
