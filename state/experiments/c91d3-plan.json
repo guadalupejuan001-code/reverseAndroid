@@ -2,13 +2,13 @@
   "schema": "reverseandroid-c91d3-cppreopts-priority-test-v1",
   "cycle": "C91D3",
   "source_cycle": "C91",
-  "source_stage": 7,
+  "source_stage": 8,
   "source_run_id": 42596365209,
-  "source_checkpoint_sha256": "771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe",
-  "source_instructions": 172447727998,
+  "source_checkpoint_sha256": "c3a0d7482a25fb9bcf47112cf6d26eda3f7bf69950184343956d367165decf66",
+  "source_instructions": 173447727998,
   "source_execution_commit": "a035f386b468c71ad11c32aee88252dbab0b91db",
-  "source_console_bytes": 3978560,
-  "source_console_SHA256": "13e06f032048f0dbc42c5faa63a76ead6a664d48abd5f218e5aa4f1c73c327b8",
+  "source_console_bytes": 3978918,
+  "source_console_SHA256": "81248bc8147cc1a46f9a839652f4ff29b9b5da6fdd02de4d1c12598b594242da",
   "stage6_delta_SHA256": "3f2e045b905c0d51cf523ecb51126e501033863c66bdc53b971bf83cd50b3474",
   "stage7_delta_SHA256": "02a05042ddbe0bc3b24843d357cab7a98572ab5df647bd5adc9fbe3c17312974",
   "input_file": "state/experiments/c91d3-neutralize-cppreopts-boost.txt",
@@ -23,17 +23,18 @@
   "max_diagnostic_stages": 3,
   "baseline": {
     "system_server_pid": 7354,
-    "system_server_sum_exec_runtime": "14949179000",
+    "system_server_sum_exec_runtime": "14952022000",
     "shell_pid": 379,
     "copy_fanout": {
-      "cppreopts_sh": 111,
+      "cppreopts_sh": 112,
       "cp": 2,
       "mv": 0,
       "fsync": 104,
-      "log": 4
+      "log": 5
     },
     "activity_service_missing": true,
-    "binder_getService2_latency_ms": 14391,
+    "binder_getService2_latency_ms": 20367,
     "frame_rgb_SHA256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb"
-  }
+  },
+  "stage8_delta_SHA256": "19d726d48e4d31a86f7dbf396f05b30090aa12a9a9b4946c3a6a4d402181c893"
 }
