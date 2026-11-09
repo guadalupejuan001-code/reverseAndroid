@@ -1,0 +1,96 @@
+{
+  "schema": "reverseandroid-c91f1-final-summary-v1",
+  "source_selection": {
+    "schema": "reverseandroid-latest-fully-preserved-c91-selection-v1",
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "run_id": 42596365209,
+    "stage": 9,
+    "checkpoint_sha256": "1b237bc819d2aff0db609207922538d0c4a38540e3438875082ed10bbdefb2d3",
+    "instructions": 174447727998,
+    "source_commit": "a035f386b468c71ad11c32aee88252dbab0b91db",
+    "android_boot_completed_verified": false,
+    "metadata_artifact": {
+      "id": 13669144193,
+      "sha256": "0b85fa3ec022f97a78b2f4e7f71c13c2c014f3c87dd95b687b470c5279992e2c",
+      "name": "reverseandroid-c91-9-metadata"
+    },
+    "piece_artifacts": [
+      {
+        "id": 13669323514,
+        "sha256": "1a01a62d5d1c822002ed0132ddc16d8cfe035edf17301198b889ef27bc918eee",
+        "name": "reverseandroid-c91-9-000"
+      },
+      {
+        "id": 13668699153,
+        "sha256": "dc21e79c3f291e94cc7687902cb65c6385027b1982ddeba32d8016ef0728f67d",
+        "name": "reverseandroid-c91-9-001"
+      },
+      {
+        "id": 13668979350,
+        "sha256": "59bfa612431ef7cbfe38e5d846dc9472cdd416b6dc96bff3ea23a482493cc8b0",
+        "name": "reverseandroid-c91-9-002"
+      },
+      {
+        "id": 13669154088,
+        "sha256": "6ea4c9067e364ae41f0e50e525933e84a879b34c627bab7f1950c67028fe4e71",
+        "name": "reverseandroid-c91-9-003"
+      }
+    ],
+    "manifest_SHA256": "cb6bb1045f3878fe43637cc24b9eafa4ecb3d961506fba7337bf393357a0a924",
+    "rejected_higher_or_partial_stages": [],
+    "selection_is_promotion_authority": false,
+    "guest_executed": false,
+    "guest_mutated": false,
+    "runtime_lock": "state/experiments/runtime-c91-selection/c91-selected-artifacts.json",
+    "runtime_transport": "state/experiments/runtime-c91-selection/c91-selected-transport.json"
+  },
+  "need_correction": true,
+  "actual_new_events": 0,
+  "current_stage": 0,
+  "checkpoint_sha256": "1b237bc819d2aff0db609207922538d0c4a38540e3438875082ed10bbdefb2d3",
+  "instructions": 174447727998,
+  "reply": null,
+  "source_stats": {
+    "target_process_count": 228,
+    "target_thread_count": 228,
+    "target_process_names": {
+      "cppreopts.sh": 117,
+      "fsync": 109,
+      "cp": 2
+    },
+    "target_static_prio": {
+      "100": 228
+    },
+    "nice_minus20": 228,
+    "nice0": 0,
+    "target_runnable": 9,
+    "system_server": {
+      "pid": 7354,
+      "static_prio": 118,
+      "prio": 118,
+      "normal_prio": 118,
+      "policy": 0,
+      "on_rq": 1,
+      "on_cpu": 0,
+      "sum_exec_runtime": 14955887000,
+      "vruntime": 62554542514,
+      "thread_count": 55,
+      "runnable_threads": 2,
+      "running_threads": 0
+    }
+  },
+  "last_stats": null,
+  "SystemServer_runtime_delta_from_source": 0,
+  "causal_progress": false,
+  "android_boot_completed": false,
+  "live_boot_property": false,
+  "SELinux_enforcing": true,
+  "SystemServer_alive": true,
+  "failed": false,
+  "failure_reason": null,
+  "achieved_level": 2,
+  "promotion_authority": false,
+  "failed_C91F0_tail_used_as_source": false,
+  "GPU_QSSD_RAM_disk_ISA_HAL_changed": false,
+  "next": "If level 3+, choose the highest fully preserved corrected boundary before canonical continuation; otherwise investigate the measured failed gate."
+}
