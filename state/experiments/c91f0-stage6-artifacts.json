@@ -1,0 +1,17 @@
+{
+  "schema":"reverseandroid-c91f0-source-artifacts-v1",
+  "repository":"guadalupejuan001-code/reverseAndroid",
+  "artifacts":{
+    "seed":{
+      "transport_manifest":"state/experiments/c91f0-stage6-transport.json",
+      "pieces":[
+        {"id":13666998697,"repository":"guadalupejuan001-code/reverseAndroid","sha256":"f0648a7c66a04ffdd49a599bf3138e57f295b24608c4a82d883f322ccb955e03"},
+        {"id":13667638003,"repository":"guadalupejuan001-code/reverseAndroid","sha256":"d08b932eb297e83647c6ba45e71cdd6d848543a2bf864d905f8d4eed12db9924"},
+        {"id":13667466811,"repository":"guadalupejuan001-code/reverseAndroid","sha256":"2cd2b21982620482b73ae197d53f53ecbefb75407b9b70cae6d757d776aef827"},
+        {"id":13667272725,"repository":"guadalupejuan001-code/reverseAndroid","sha256":"289fdc6ba96c5608a5de90309aad80a03e29917251f9b78609ccc2fe8abd5450"}
+      ],
+      "producer_run_id":42596365209,
+      "producer_execution_commit":"a035f386b468c71ad11c32aee88252dbab0b91db"
+    }
+  }
+}
