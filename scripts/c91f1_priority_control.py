@@ -44,7 +44,7 @@ def validate_plan(p):
     assert p["source_must_be_latest_fully_preserved"] is True
     assert p["failed_C91F0_tail_must_not_be_source"] is True
     assert p["failed_C91F0_checkpoint_sha256"]=="d2157027999e28930b7cacadacfbd61cd50305207af6bcb64f1012620cc0153b"
-    assert p["input_bytes"]==456 and re.fullmatch(r"[0-9a-f]{64}",p["input_sha256"])
+    assert p["input_bytes"]==255 and re.fullmatch(r"[0-9a-f]{64}",p["input_sha256"])
     assert p["inherited_event_count"]==p["new_event_phase"]==8
     assert p["stage1_instruction_budget"]==p["stage2_instruction_budget"]==1000000000
     assert p["host_wall_ms"]==900000 and p["host_snapshot_capacity_bytes"]==4026531840
@@ -58,13 +58,33 @@ def validate_plan(p):
 def parse_reply(raw):
     clean=re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]",b"",raw).replace(b"\r",b"")
     result=[int(x) for x in re.findall(rb"^REVERSE_C91F1_RESULT RC_([0-9]+)$",clean,re.M)]
-    done=re.findall(rb"^REVERSE_C91F1_DONE N_([0-9]+) BAD_([0-9]+)$",clean,re.M)
+    done=re.findall(rb"^REVERSE_C91F1_DONE N_([0-9]+) RC_([0-9]+)$",clean,re.M)
     assert len(result)<=1 and len(done)<=1
-    n=bad=None
-    if done:n,bad=map(int,done[0])
+    n=inner=None
+    if done:n,inner=map(int,done[0])
     return {"reply_seen":bool(result),"return_code":result[0] if result else None,
-            "done_seen":bool(done),"changed":n,"bad":bad,
-            "guard_succeeded":result==[0] and bool(done) and bad==0}
+            "done_seen":bool(done),"changed":n,"inner_return_code":inner,
+            "guard_succeeded":result==[0] and bool(done) and inner==0}
+
+
+def validate_target_identities(data):
+    selected=[g for g in data["groups"] if g.get("name") in TARGET]
+    assert selected, "No read-only target identity groups were selected"
+    rows=[]
+    for group in selected:
+        leader=next((t for t in group.get("threads",[]) if t.get("pid")==group.get("pid")),None)
+        assert leader is not None, ("Missing target leader",group.get("pid"),group.get("name"))
+        scheduling=leader.get("scheduling")
+        assert isinstance(scheduling,dict) and scheduling.get("read_only") is True
+        cred=scheduling.get("credentials")
+        assert isinstance(cred,dict), ("Missing credentials",group.get("pid"),group.get("name"))
+        row={"pid":group["pid"],"name":group["name"],"static_prio":leader.get("priority"),
+             "uid":cred.get("uid"),"euid":cred.get("euid"),
+             "scheduler_groups":[x.get("path") for x in scheduling.get("groups",[])]}
+        rows.append(row)
+    assert all(x["uid"]=="0" and x["euid"]=="0" for x in rows), "Non-root process matches correction names"
+    assert all(x["static_prio"]==100 for x in rows), "A correction-name process is not nice -20 at source"
+    return rows
 
 
 def scheduling_stats(data):
@@ -134,8 +154,10 @@ def validate_source(p):
     assert proof["phase"]==8 and proof["actual_campaign_new_events"]==0
     assert proof["system_server_alive"] is True and proof["SELinux_enforcing"] is True
     sched=read(SOURCE_SCHED);assert sched["checkpoint_sha256"]==sel["checkpoint_sha256"] and sched["input_unchanged"] is True
+    identities=validate_target_identities(sched)
     stats=scheduling_stats(sched)
-    return sel,gate,kernel,proof,stats
+    assert len(identities)==stats["target_process_count"]
+    return sel,gate,kernel,proof,stats,identities
 
 
 def prepare(p):
@@ -144,7 +166,7 @@ def prepare(p):
     assert body.stat().st_size==p["input_bytes"] and digest(body)==p["input_sha256"]
     subprocess.run(["sh","-n",str(body)],check=True)
     assert digest(NATIVE)==p["expected_native_SHA256"]
-    sel,gate,kernel,proof,stats=validate_source(p)
+    sel,gate,kernel,proof,stats,identities=validate_source(p)
     need=(not gate["android_boot_completed_verified"]
           and stats["nice_minus20"]>=p["source_gates"]["minimum_nice_minus20_target_threads"]
           and stats["system_server"]["on_rq"]==1 and stats["system_server"]["on_cpu"]==0)
@@ -155,6 +177,7 @@ def prepare(p):
       "source_checkpoint_sha256":sel["checkpoint_sha256"],
       "source_instructions":sel["instructions"],
       "source_stats":stats,
+      "source_target_identities":identities,
       "source_SystemServer_runtime":stats["system_server"]["sum_exec_runtime"],
       "events":proof["events"],
       "actual_new_events":0,
@@ -167,7 +190,7 @@ def prepare(p):
       "promotion_authority":False,
     }
     REPORTS.mkdir(parents=True,exist_ok=True);save(REPORTS/"control-state.json",state)
-    save(REPORTS/"source-summary.json",{"selection":sel,"stats":stats,
+    save(REPORTS/"source-summary.json",{"selection":sel,"stats":stats,"target_identities":identities,
       "boot_completed":gate["android_boot_completed_verified"],
       "SELinux_enforcing":kernel["live_kernel_security"]["selinux_enforcing"],
       "correction_required":need})
@@ -209,7 +232,7 @@ def run_stage(p,stage):
         "input_bytes":p["input_bytes"],"input_sha256":p["input_sha256"],
         "source_checkpoint_sha256":st["source_checkpoint_sha256"],
         "source_instructions":st["source_instructions"],
-        "scope":"Normalize only current cppreopts-family processes observed at nice -20; no property, service, RAM, disk, ISA, HAL, GPU or QSSD edit."})
+        "scope":"One multi-PID Toybox renice over names whose complete source set was read-only verified UID/EUID 0 and static_prio 100; postflight re-measures every scheduling gate. No property, service, RAM, disk, ISA, HAL, GPU or QSSD edit."})
     else:
       assert st["new_event_sent"] and st["actual_new_events"]==1 and st["causal_progress"]
       source=ROOT/"evidence/c91f1-1";budget=p["stage2_instruction_budget"];input_plan=None
@@ -235,17 +258,19 @@ def run_stage(p,stage):
     if stage==1:
       source_n20=st["source_stats"]["nice_minus20"]
       drop=source_n20-stats["nice_minus20"]
+      drop_fraction=(drop/source_n20) if source_n20 else 0.0
       gates=p["stage1_success_gates"]
       causal=(reply["guard_succeeded"]
         and (reply["changed"] or 0)>=gates["minimum_acknowledged_changed_processes"]
-        and (reply["bad"] or 0)==gates["acknowledged_bad_processes"]
-        and drop>=gates["minimum_drop_in_nice_minus20_target_threads"]
+        and drop_fraction>=gates["minimum_nice_minus20_drop_fraction"]
+        and stats["nice_minus20"]<=gates["maximum_nice_minus20_target_threads_after"]
         and stats["nice0"]>=gates["minimum_nice0_target_threads_after"]
         and ss_delta>=gates["minimum_SystemServer_runtime_delta"]
         and gate["system_server_alive_verified"] is True
         and kernel["live_kernel_security"]["selinux_enforcing"] is True)
       st["causal_progress"]=causal
       st["priority_drop_nice_minus20"]=drop
+      st["priority_drop_fraction"]=drop_fraction
       if not causal:
         st["failed"]=True
         st["failure_reason"]="C91F1 stage1 did not satisfy every guarded scheduling/SystemServer causal gate."
@@ -266,6 +291,7 @@ def run_stage(p,stage):
     if journal.exists():shutil.rmtree(journal)
     summary={"stage":stage,"checkpoint_sha256":sha,"instructions":gate["instructions"],
       "reply":reply,"source_nice_minus20":st["source_stats"]["nice_minus20"],
+      "source_target_identity_count":len(st["source_target_identities"]),
       "current_nice_minus20":stats["nice_minus20"],"current_nice0":stats["nice0"],
       "SystemServer_runtime_delta_from_source":ss_delta,"causal_progress":causal,
       "boot_completed":gate["android_boot_completed_verified"],"failed":st["failed"]}
