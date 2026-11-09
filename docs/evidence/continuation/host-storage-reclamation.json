@@ -1,0 +1,12 @@
+{
+  "schema": "reverseandroid-verified-incomplete-prefix-reclamation-v1",
+  "retained_complete_snapshot_SHA256": "0cd65179f94caccf93278d99293c2dcf33bbff85cb83ecd65d6787ae06338c6c",
+  "retained_complete_snapshot_bytes": 1766330655,
+  "original_admitted_checkpoint_retained": true,
+  "all_removed_bytes_proven_identical_prefixes_of_retained_complete_snapshot": true,
+  "incomplete_transfer_copies_removed": 276,
+  "unique_complete_checkpoints_deleted": 0,
+  "skipped_open_or_changed_files": 0,
+  "allocated_bytes_reclaimed": 10765991936,
+  "guest_disk_RAM_code_or_inputs_changed": false
+}

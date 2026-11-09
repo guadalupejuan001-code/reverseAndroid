@@ -1,0 +1,148 @@
+{
+  "schema": "reverseandroid-bound-progress-audit-v1",
+  "read_only": true,
+  "original_admission_replaced": false,
+  "guest_execution_performed": false,
+  "boundaries": [
+    {
+      "checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
+      "instructions": 111147727998,
+      "parent_checkpoint_sha256": "36b6b347d537b0d7aca6a6fc08b03ab8c865d30219908482aacfff35a43e4168",
+      "whole_snapshot_sha256_verified_locally": false,
+      "whole_snapshot_file_present": false,
+      "whole_snapshot_bytes": null,
+      "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+      "native_sha256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+      "original_source_boundary_verified": true,
+      "new_UART_bytes": 0,
+      "inherited_events": 7,
+      "zygote": {
+        "pid": 5629,
+        "task": "0xffffff802db95100",
+        "exe_path": "/system/bin/app_process64",
+        "argv": [
+          "zygote64"
+        ],
+        "parent_pid": 1,
+        "state": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "accounting": {
+          "utime": 8606714000,
+          "stime": 3607109000,
+          "sum_exec_runtime": 11323359000,
+          "nvcsw": 5,
+          "nivcsw": 3690
+        }
+      },
+      "system_server_candidates": [],
+      "original_system_server_verified": false,
+      "original_boot_completed_verified": false,
+      "live_peripherals_verified": true,
+      "usable_UI_verified_by_this_tool": false,
+      "host_elapsed_ms": 474144
+    },
+    {
+      "checkpoint_sha256": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
+      "instructions": 112147727998,
+      "parent_checkpoint_sha256": "d306d3720947b38f39dee7ba1b9cd199801fc236843ac1330bda4117060a1734",
+      "whole_snapshot_sha256_verified_locally": false,
+      "whole_snapshot_file_present": true,
+      "whole_snapshot_bytes": 1996623188,
+      "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+      "native_sha256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+      "original_source_boundary_verified": true,
+      "new_UART_bytes": 0,
+      "inherited_events": 7,
+      "zygote": {
+        "pid": 5629,
+        "task": "0xffffff802db95100",
+        "exe_path": "/system/bin/app_process64",
+        "argv": [
+          "zygote64"
+        ],
+        "parent_pid": 1,
+        "state": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "accounting": {
+          "utime": 10176673000,
+          "stime": 3784329000,
+          "sum_exec_runtime": 12924691000,
+          "nvcsw": 9,
+          "nivcsw": 4208
+        }
+      },
+      "system_server_candidates": [],
+      "original_system_server_verified": false,
+      "original_boot_completed_verified": false,
+      "live_peripherals_verified": true,
+      "usable_UI_verified_by_this_tool": false,
+      "host_elapsed_ms": 462004
+    },
+    {
+      "checkpoint_sha256": "bb07089e157a6ad116fa8a0dc3a269293346857af3d15ddabc54f9200e664af2",
+      "instructions": 113147727998,
+      "parent_checkpoint_sha256": "91608dfa0ea118d6abe25878aef3a16fcfd210ef8e9e2fee162f3bb7000984fb",
+      "whole_snapshot_sha256_verified_locally": false,
+      "whole_snapshot_file_present": false,
+      "whole_snapshot_bytes": null,
+      "epoch_sha256": "bc5e6f91cc5befb13ba8f8e96ffb74cad22edda25586324a0f469e1b26fd5e75",
+      "native_sha256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+      "original_source_boundary_verified": true,
+      "new_UART_bytes": 0,
+      "inherited_events": 7,
+      "zygote": {
+        "pid": 5629,
+        "task": "0xffffff802db95100",
+        "exe_path": "/system/bin/app_process64",
+        "argv": [
+          "zygote64"
+        ],
+        "parent_pid": 1,
+        "state": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "accounting": {
+          "utime": 12045804000,
+          "stime": 3933471000,
+          "sum_exec_runtime": 14780163000,
+          "nvcsw": 13,
+          "nivcsw": 4829
+        }
+      },
+      "system_server_candidates": [],
+      "original_system_server_verified": false,
+      "original_boot_completed_verified": false,
+      "live_peripherals_verified": true,
+      "usable_UI_verified_by_this_tool": false,
+      "host_elapsed_ms": 420771
+    }
+  ],
+  "transitions": [
+    {
+      "from_instructions": 111147727998,
+      "to_instructions": 112147727998,
+      "kind": "zygote_cpu_progress",
+      "zygote_pid": 5629,
+      "delta_ns": {
+        "utime": 1569959000,
+        "stime": 177220000,
+        "sum_exec_runtime": 1601332000
+      },
+      "permanent_deadlock_proven": false
+    },
+    {
+      "from_instructions": 112147727998,
+      "to_instructions": 113147727998,
+      "kind": "zygote_cpu_progress",
+      "zygote_pid": 5629,
+      "delta_ns": {
+        "utime": 1869131000,
+        "stime": 149142000,
+        "sum_exec_runtime": 1855472000
+      },
+      "permanent_deadlock_proven": false
+    }
+  ]
+}
