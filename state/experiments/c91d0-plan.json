@@ -1,0 +1,35 @@
+{
+  "schema":"reverseandroid-c91d0-readonly-boot-blocker-v1",
+  "cycle":"C91D0",
+  "source_cycle":"C91",
+  "source_stage":5,
+  "source_checkpoint_sha256":"62ebfa1c5dfc9a8ed081d8028ef3f73d07e1854ad085f6c6461e239ed692f210",
+  "source_instructions":170447727998,
+  "source_run_id":42596365209,
+  "source_execution_commit":"a035f386b468c71ad11c32aee88252dbab0b91db",
+  "source_artifact_lock":"state/experiments/c91d0-stage5-artifacts.json",
+  "source_transport_manifest":"state/experiments/c91d0-stage5-transport.json",
+  "source_metadata_artifact_id":13666558162,
+  "host_snapshot_capacity_bytes":4026531840,
+  "no_guest_execution":true,
+  "no_guest_writes":true,
+  "no_new_uart":true,
+  "observer_flags":["--live-properties","--binder-probe","--scheduler-probe","--zygote-probe"],
+  "active_parent_run_id":42596365209,
+  "stale_if_artifact_prefix":"reverseandroid-c91-6-",
+  "hypothesis":{
+    "id":"H1",
+    "statement":"SystemServer is runnable but effectively starved while CPU0 workqueues are locked during Binder/RCU/vmap work and cppreopts-related file activity consumes the guest scheduling window.",
+    "confirm_if":[
+      "SystemServer runtime remains nearly unchanged from C91 stage 1 while on_rq=1",
+      "workqueue lockup is present in the authentic C91 stage 5 console",
+      "Binder or scheduler probe shows pending/stalled work consistent with the lockup",
+      "bootanimation remains alive and sys.boot_completed remains absent"
+    ],
+    "refute_if":[
+      "SystemServer accumulated substantial CPU time after C91 stage 1",
+      "no workqueue lockup exists in the authentic source",
+      "the deep Binder/scheduler observation identifies a different blocking dependency"
+    ]
+  }
+}
