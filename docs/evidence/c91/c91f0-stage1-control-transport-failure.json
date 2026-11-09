@@ -1,0 +1,60 @@
+{
+  "schema": "reverseandroid-c91f0-stage1-failure-classification-v1",
+  "run_id": 42606181182,
+  "execution_commit": "c556bc91dcc91e20e62e22f8652972952bef71e4",
+  "source": {
+    "cycle": "C91",
+    "stage": 6,
+    "checkpoint_sha256": "3259407725a7b8e2be5a6d874f9b59306610bc8d1cf38a81d1e6f6ae726616ea",
+    "instructions": 171447727998
+  },
+  "attempted_event": {
+    "bytes": 1584,
+    "sha256": "0e8df23fb7fa255f487ddc937e85ad45a2c6d526eaca098bcb6878a46eacb83a",
+    "injected": true
+  },
+  "preserved_failure_boundary": {
+    "checkpoint_sha256": "d2157027999e28930b7cacadacfbd61cd50305207af6bcb64f1012620cc0153b",
+    "instructions": 171947727998,
+    "advanced_instructions": 500000000,
+    "source_boundary_verified": true,
+    "system_server_alive_verified": true,
+    "android_boot_completed_verified": false,
+    "transport_piece_count": 4,
+    "metadata_artifact": {
+      "id": 13668936397,
+      "sha256": "be7095537789a1c93054949cb82c52a718489f0211c3f56ae57bf890452dba13"
+    },
+    "evidence_artifact": {
+      "id": 13669265691,
+      "sha256": "26038e01d4bcaabe951b2df933230647e6c1794843418cc1038ec2457f13c876"
+    }
+  },
+  "actual_console_tail": [
+    "su 0 sh -c '",
+    "> anc(){ q=$1; i=0;"
+  ],
+  "correction_ack_seen": false,
+  "correction_executed": false,
+  "renice_verified": false,
+  "SystemServer": {
+    "pid": 7354,
+    "source_sum_exec_runtime": 14949179000,
+    "failed_boundary_sum_exec_runtime": 14949179000,
+    "delta": 0,
+    "on_rq": 1,
+    "on_cpu": 0
+  },
+  "classification": {
+    "hypothesis_refuted": false,
+    "failure_type": "control_transport_not_completed_before_instruction_budget",
+    "cause": "The authenticated UART event was injected, but the guest shell had consumed only the beginning of the multiline command when the 500M instruction budget ended. No correction command reached completion.",
+    "checkpoint_is_diagnostic_only": true,
+    "checkpoint_must_not_be_used_as_canonical_continuation": true
+  },
+  "next_test": {
+    "source_rule": "Use the highest fully preserved C91 checkpoint selected at execution time, never the failed C91F0 tail.",
+    "input_strategy": "Replace the 1584-byte multiline program with a 456-byte single-line guarded command.",
+    "verification": "Post-read static_prio with the read-only 4GiB thread probe and require SystemServer runtime progress."
+  }
+}
