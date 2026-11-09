@@ -1,0 +1,70 @@
+{
+  "schema": "reverseandroid-c91-stage7-starvation-confirmation-v1",
+  "source": {
+    "cycle": "C91",
+    "stage": 7,
+    "checkpoint_sha256": "771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe",
+    "instructions": 172447727998,
+    "metadata_artifact": {
+      "id": 13667863981,
+      "sha256": "5cc1456f58d0be3ac46b0f15f5b66fe0ba14cc6c4a98ba8317933bc8ef22a12e"
+    },
+    "fully_preserved": true
+  },
+  "boot": {
+    "sys_boot_completed_verified": false,
+    "boot_completed_property_live": false,
+    "activity_service_registered": false,
+    "activity_evidence": "servicemanager reports 'activity' could not be found and may still be starting",
+    "framebuffer_android_display_verified": false,
+    "bootanimation_process_alive": true
+  },
+  "system_server": {
+    "pid": 7354,
+    "state": 0,
+    "on_rq": 1,
+    "on_cpu": 0,
+    "stage6_sum_exec_runtime": 14949179000,
+    "stage7_sum_exec_runtime": 14949179000,
+    "delta_sum_exec_runtime_stage6_to_stage7": 0,
+    "interpretation": "SystemServer remained runnable but received no process runtime during the full additional 1,000,000,000-instruction stage."
+  },
+  "cppreopts": {
+    "stage7_process_counts": {
+      "cppreopts.sh": 111,
+      "fsync": 104,
+      "cp": 2,
+      "mv": 0,
+      "preopt2cachenam": 1
+    },
+    "current_process": {
+      "pid": 9383,
+      "name": "fsync"
+    },
+    "strongest_persistent_fsync_sample": {
+      "pid": 9335,
+      "delta_sum_exec_runtime": 544568000,
+      "delta_vruntime": 6282383,
+      "delta_vruntime_over_delta_exec": 0.011536452747866199
+    },
+    "nice_minus_20_expected_CFS_ratio": 0.011536598280776467,
+    "relative_error_ppm": 12.61578686816326,
+    "conclusion": "At least one dominant persistent cppreopts fsync remains scheduled at the CFS weight corresponding to nice -20 while SystemServer receives no runtime."
+  },
+  "hypothesis_update": {
+    "id": "H-cppreopts-starvation",
+    "status": "strengthened",
+    "minimal_correction_still_valid": true,
+    "correction": "Normalize only verified root-owned cppreopts descendants from nice -20 to nice 0; measure SystemServer runtime and activity service publication.",
+    "no_change": [
+      "RAM",
+      "disk image before resume",
+      "ISA",
+      "HAL",
+      "GPU",
+      "QSSD",
+      "boot properties",
+      "snapshot bytes"
+    ]
+  }
+}
