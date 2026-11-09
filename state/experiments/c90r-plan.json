@@ -1,0 +1,135 @@
+{
+  "schema": "reverseandroid-validated-host-zero-input-continuation-plan-v1",
+  "cycle": "c90r",
+  "source_cycle": "C90",
+  "source_stage": 6,
+  "source_checkpoint_sha256": "c8a2aa15bca412139973343813570a07d8f11d9fb7318a884cd64d45025f5714",
+  "source_instructions": 161147727998,
+  "source_execution_commit": "bea171f38356e681ac08d31669b5c81c6cbcd2cc",
+  "source_run_id": 42317967033,
+  "source_proof_file": "zero-input-proof.json",
+  "source_proof_SHA256": "3751c589aa84129202905ee3a0f2584da802ab5d5106d00361b6450bafab66d2",
+  "source_artifact_lock": "state/experiments/c90r-artifacts.json",
+  "source_original_artifact_lock": "state/experiments/c90-stage-6-artifacts.json",
+  "inherited_source_events": [
+    {
+      "phase": 0,
+      "input_plan": "evidence/c82-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 83000000000,
+        "counter_subtick": 28,
+        "bytes": 923,
+        "sha256": "2e43c40a9bc6a19144f679eefeb257c1e08d0515378abb7130a2051f6ab66ec6"
+      }
+    },
+    {
+      "phase": 1,
+      "input_plan": "evidence/c82-reports/stage-2-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 84000000000,
+        "counter_subtick": 28,
+        "bytes": 3001,
+        "sha256": "72abe12bdd60192ca23d03ec15d6a9ef8f6a7d93f467ab4e755dede88be266c0"
+      }
+    },
+    {
+      "phase": 2,
+      "input_plan": "evidence/c83-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 87047727998,
+        "counter_subtick": 26,
+        "bytes": 2837,
+        "sha256": "1bb889959393e76f126fa38f6fe33bb87d5435727b75f495438d64492d11c0e1"
+      }
+    },
+    {
+      "phase": 3,
+      "input_plan": "evidence/c83-reports/stage-6-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 89547727998,
+        "counter_subtick": 26,
+        "bytes": 2103,
+        "sha256": "b0d5c3ec2ab21122066e4fdca6d0224b9d7501b8440862a145f1b9103d0d2a17"
+      }
+    },
+    {
+      "phase": 4,
+      "input_plan": "evidence/c84-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 92547727998,
+        "counter_subtick": 26,
+        "bytes": 2097,
+        "sha256": "20876d94ca61177821ec6d87d25f5d6af1cfc966edc2faacf382cbb522164ef7"
+      }
+    },
+    {
+      "phase": 5,
+      "input_plan": "evidence/c86-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 101647727998,
+        "counter_subtick": 26,
+        "bytes": 1000,
+        "sha256": "b02a83e28be761660cd8fbd77cb1d7fcd5df76e036f2a600d0f1b4b52d840096"
+      }
+    },
+    {
+      "phase": 6,
+      "input_plan": "evidence/c86-reports/stage-4-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 104147727998,
+        "counter_subtick": 26,
+        "bytes": 932,
+        "sha256": "8d47dc63c80f12d0eab0e866355225e82bc6a842aeef9a8086d1e5b6da1d86e3"
+      }
+    },
+    {
+      "phase": 7,
+      "input_plan": "evidence/c88-reports/stage-1-input-plan.json",
+      "actual_native_event": {
+        "schema": "reverse-modeled-uart-input-v1",
+        "instructions": 123147727998,
+        "counter_subtick": 26,
+        "bytes": 596,
+        "sha256": "70523e6019776b099cb44df08db7042b9cb46fcd154b7b6ac7af4c342369a1e5"
+      }
+    }
+  ],
+  "new_UART_bytes": 0,
+  "initial_instruction_budget": 300000000,
+  "continuation_instruction_budget": 1000000000,
+  "host_wall_ms": 900000,
+  "max_stages": 16,
+  "source_console_file": "state/experiments/host-transport-source-console.gz.b64",
+  "source_console_base64_SHA256": "7a565241e7cfac363a7523d3f5962ff41c4d638daeb8210520752472625ac523",
+  "source_console_gzip_SHA256": "23fd0799dd6f133555a11574766ff53f98ae5e6398ca8f70c66588e79770282c",
+  "source_console_bytes": 3946004,
+  "source_console_SHA256": "6301a7fffaf13604a77baeb2b2f70b7060c7748da4c2033a9d17bd351a131c36",
+  "ELF_SHA256": "548714c27bfb7efe8b6300b99b2dcd77054b30d58b31c3c44a529e056a0bf42b",
+  "guest_ELF_path": "/data/local/tmp/reverseandroid-peer-abi3.elf",
+  "fresh_hardware_power_cycle": false,
+  "guest_snapshot_patching": false,
+  "guest_property_injection": false,
+  "original_CPU_codecs_RAM_disk_seed_clock_cadence_IRQ_preserved": true,
+  "original_BOOT_and_UI_not_yet_claimed": true,
+  "selection_UTC": "2026-11-09T08:33:58.059206+00:00",
+  "source_native_SHA256": "957f22e2c8c8d3591029529855c733a05fc5c468e9a6e881ff5238bea6ff102f",
+  "host_snapshot_capacity_bytes": 4026531840,
+  "expected_native_SHA256": "a31e3fd923f63071ebadeb6a78ee5aadf77111c88186e428927220f199710318",
+  "expected_frame_SHA256": "540440a1f76baec7a955deab2eeee6431a2b656c56bcca90246c6a3a77f1cd7e",
+  "host_validation": {
+    "run_id": 42584322702,
+    "execution_commit": "104fa30f6d0aa59a05b9c346b8d339e7696f828f",
+    "report_SHA256": "0cb1782952fca2534bd8b98c11b8c26de37625ffa4cf2b4efac871a4d38855e2",
+    "manifest_SHA256": "483513a8c1074142593075ed2c57d4fe66a0eede4a5f9291c9f7c24bae0ff294",
+    "large_checkpoint_sha256": "17b34e1843e9acab0613687780a42a881b427bbf037a8b7f406740c520809148",
+    "large_transport_manifest": "state/experiments/host-transport-validated-large-transport.json",
+    "large_transport_alias": "validated-large"
+  }
+}

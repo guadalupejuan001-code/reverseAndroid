@@ -1,0 +1,323 @@
+name: C90R resume original stage 6 with validated host transport
+'on':
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/android-c90r-host-recovery.yml
+      - scripts/host_transport_continuation.py
+      - tests/host_transport_continuation_test.py
+      - state/experiments/c90r-plan.json
+      - state/experiments/c90r-artifacts.json
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c90r-validated-host-continuation
+  cancel-in-progress: false
+jobs:
+  c90r-boot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify the original import and derive only the validated host tool profile
+        run: |
+          mkdir -p build evidence/c90r-reports
+          cat /proc/meminfo > evidence/c90r-reports/host-meminfo.txt
+          df -h > evidence/c90r-reports/host-disk.txt
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          python3 scripts/verify-reverseandroid-import.py
+          python3 tests/host_transport_continuation_test.py
+          python3 tests/c85_peripheral_completion_test.py
+          python3 tests/c88_jit_priority_control_test.py
+          python3 scripts/prepare-host-transport.py build/host-transport-runtime
+      - name: Authenticate the actual validated binaries, full controls and preserved larger-trial evidence
+        run: |
+          python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/c90r-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/c90r-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py host-native build/host-native state/experiments/c90r-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py host-validation build/host-validation state/experiments/c90r-artifacts.json
+          chmod +x build/ic-native/epoch-clz-ic build/reverseandroid/frame build/host-native/epoch-clz-ic-host build/host-native/frame
+          python3 scripts/host_transport_continuation.py profile
+      - name: Recover original C90 stage 6 and require both original and explicit-host admissions
+        run: |
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c90r state/experiments/c90r-artifacts.json
+          for name in media-manifest media-aa media-ab media-ac; do
+            python3 scripts/fetch-reverseandroid-artifact.py "$name" build/media-input state/experiments/c90r-artifacts.json
+          done
+          python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+          node --expose-gc --max-old-space-size=5000 tools/reverseandroid-epoch.mjs preflight build/source-c90r > evidence/c90r-reports/source-original-admission.json
+          node --expose-gc --max-old-space-size=5000 build/host-transport-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c90r > evidence/c90r-reports/source-host-profile-admission.json
+          python3 scripts/host_transport_continuation.py prepare
+      - name: 'C90R stage 1: reproduce the validated 300M checkpoint with zero new UART'
+        id: r1
+        if: success()
+        run: python3 scripts/host_transport_continuation.py run --stage 1
+      - name: 'C90R stage 1: preserve every admitted checkpoint piece before advancing'
+        id: p1
+        if: always() && steps.r1.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-1
+          transport_path: build/c90r-transport-1
+          artifact_prefix: reverseandroid-c90r-1
+      - name: 'C90R stage 1: release only the previously preserved host duplicate'
+        if: success() && steps.r1.outcome == 'success' && steps.p1.outcome == 'success'
+        run: rm -rf build/source-c90r build/reverseandroid-seed-pieces
+      - name: 'C90R stage 2: zero new UART and full original admission'
+        id: r2
+        if: success() && steps.r1.outcome == 'success' && steps.p1.outcome == 'success' && steps.r1.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 2
+      - name: 'C90R stage 2: preserve every admitted checkpoint piece before advancing'
+        id: p2
+        if: always() && steps.r2.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-2
+          transport_path: build/c90r-transport-2
+          artifact_prefix: reverseandroid-c90r-2
+      - name: 'C90R stage 2: release only the previously preserved host duplicate'
+        if: success() && steps.r2.outcome == 'success' && steps.p2.outcome == 'success'
+        run: rm -rf evidence/c90r-1 build/c90r-transport-1
+      - name: 'C90R stage 3: zero new UART and full original admission'
+        id: r3
+        if: success() && steps.r2.outcome == 'success' && steps.p2.outcome == 'success' && steps.r2.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 3
+      - name: 'C90R stage 3: preserve every admitted checkpoint piece before advancing'
+        id: p3
+        if: always() && steps.r3.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-3
+          transport_path: build/c90r-transport-3
+          artifact_prefix: reverseandroid-c90r-3
+      - name: 'C90R stage 3: release only the previously preserved host duplicate'
+        if: success() && steps.r3.outcome == 'success' && steps.p3.outcome == 'success'
+        run: rm -rf evidence/c90r-2 build/c90r-transport-2
+      - name: 'C90R stage 4: zero new UART and full original admission'
+        id: r4
+        if: success() && steps.r3.outcome == 'success' && steps.p3.outcome == 'success' && steps.r3.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 4
+      - name: 'C90R stage 4: preserve every admitted checkpoint piece before advancing'
+        id: p4
+        if: always() && steps.r4.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-4
+          transport_path: build/c90r-transport-4
+          artifact_prefix: reverseandroid-c90r-4
+      - name: 'C90R stage 4: release only the previously preserved host duplicate'
+        if: success() && steps.r4.outcome == 'success' && steps.p4.outcome == 'success'
+        run: rm -rf evidence/c90r-3 build/c90r-transport-3
+      - name: 'C90R stage 5: zero new UART and full original admission'
+        id: r5
+        if: success() && steps.r4.outcome == 'success' && steps.p4.outcome == 'success' && steps.r4.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 5
+      - name: 'C90R stage 5: preserve every admitted checkpoint piece before advancing'
+        id: p5
+        if: always() && steps.r5.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-5
+          transport_path: build/c90r-transport-5
+          artifact_prefix: reverseandroid-c90r-5
+      - name: 'C90R stage 5: release only the previously preserved host duplicate'
+        if: success() && steps.r5.outcome == 'success' && steps.p5.outcome == 'success'
+        run: rm -rf evidence/c90r-4 build/c90r-transport-4
+      - name: 'C90R stage 6: zero new UART and full original admission'
+        id: r6
+        if: success() && steps.r5.outcome == 'success' && steps.p5.outcome == 'success' && steps.r5.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 6
+      - name: 'C90R stage 6: preserve every admitted checkpoint piece before advancing'
+        id: p6
+        if: always() && steps.r6.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-6
+          transport_path: build/c90r-transport-6
+          artifact_prefix: reverseandroid-c90r-6
+      - name: 'C90R stage 6: release only the previously preserved host duplicate'
+        if: success() && steps.r6.outcome == 'success' && steps.p6.outcome == 'success'
+        run: rm -rf evidence/c90r-5 build/c90r-transport-5
+      - name: 'C90R stage 7: zero new UART and full original admission'
+        id: r7
+        if: success() && steps.r6.outcome == 'success' && steps.p6.outcome == 'success' && steps.r6.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 7
+      - name: 'C90R stage 7: preserve every admitted checkpoint piece before advancing'
+        id: p7
+        if: always() && steps.r7.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-7
+          transport_path: build/c90r-transport-7
+          artifact_prefix: reverseandroid-c90r-7
+      - name: 'C90R stage 7: release only the previously preserved host duplicate'
+        if: success() && steps.r7.outcome == 'success' && steps.p7.outcome == 'success'
+        run: rm -rf evidence/c90r-6 build/c90r-transport-6
+      - name: 'C90R stage 8: zero new UART and full original admission'
+        id: r8
+        if: success() && steps.r7.outcome == 'success' && steps.p7.outcome == 'success' && steps.r7.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 8
+      - name: 'C90R stage 8: preserve every admitted checkpoint piece before advancing'
+        id: p8
+        if: always() && steps.r8.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-8
+          transport_path: build/c90r-transport-8
+          artifact_prefix: reverseandroid-c90r-8
+      - name: 'C90R stage 8: release only the previously preserved host duplicate'
+        if: success() && steps.r8.outcome == 'success' && steps.p8.outcome == 'success'
+        run: rm -rf evidence/c90r-7 build/c90r-transport-7
+      - name: 'C90R stage 9: zero new UART and full original admission'
+        id: r9
+        if: success() && steps.r8.outcome == 'success' && steps.p8.outcome == 'success' && steps.r8.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 9
+      - name: 'C90R stage 9: preserve every admitted checkpoint piece before advancing'
+        id: p9
+        if: always() && steps.r9.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-9
+          transport_path: build/c90r-transport-9
+          artifact_prefix: reverseandroid-c90r-9
+      - name: 'C90R stage 9: release only the previously preserved host duplicate'
+        if: success() && steps.r9.outcome == 'success' && steps.p9.outcome == 'success'
+        run: rm -rf evidence/c90r-8 build/c90r-transport-8
+      - name: 'C90R stage 10: zero new UART and full original admission'
+        id: r10
+        if: success() && steps.r9.outcome == 'success' && steps.p9.outcome == 'success' && steps.r9.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 10
+      - name: 'C90R stage 10: preserve every admitted checkpoint piece before advancing'
+        id: p10
+        if: always() && steps.r10.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-10
+          transport_path: build/c90r-transport-10
+          artifact_prefix: reverseandroid-c90r-10
+      - name: 'C90R stage 10: release only the previously preserved host duplicate'
+        if: success() && steps.r10.outcome == 'success' && steps.p10.outcome == 'success'
+        run: rm -rf evidence/c90r-9 build/c90r-transport-9
+      - name: 'C90R stage 11: zero new UART and full original admission'
+        id: r11
+        if: success() && steps.r10.outcome == 'success' && steps.p10.outcome == 'success' && steps.r10.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 11
+      - name: 'C90R stage 11: preserve every admitted checkpoint piece before advancing'
+        id: p11
+        if: always() && steps.r11.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-11
+          transport_path: build/c90r-transport-11
+          artifact_prefix: reverseandroid-c90r-11
+      - name: 'C90R stage 11: release only the previously preserved host duplicate'
+        if: success() && steps.r11.outcome == 'success' && steps.p11.outcome == 'success'
+        run: rm -rf evidence/c90r-10 build/c90r-transport-10
+      - name: 'C90R stage 12: zero new UART and full original admission'
+        id: r12
+        if: success() && steps.r11.outcome == 'success' && steps.p11.outcome == 'success' && steps.r11.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 12
+      - name: 'C90R stage 12: preserve every admitted checkpoint piece before advancing'
+        id: p12
+        if: always() && steps.r12.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-12
+          transport_path: build/c90r-transport-12
+          artifact_prefix: reverseandroid-c90r-12
+      - name: 'C90R stage 12: release only the previously preserved host duplicate'
+        if: success() && steps.r12.outcome == 'success' && steps.p12.outcome == 'success'
+        run: rm -rf evidence/c90r-11 build/c90r-transport-11
+      - name: 'C90R stage 13: zero new UART and full original admission'
+        id: r13
+        if: success() && steps.r12.outcome == 'success' && steps.p12.outcome == 'success' && steps.r12.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 13
+      - name: 'C90R stage 13: preserve every admitted checkpoint piece before advancing'
+        id: p13
+        if: always() && steps.r13.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-13
+          transport_path: build/c90r-transport-13
+          artifact_prefix: reverseandroid-c90r-13
+      - name: 'C90R stage 13: release only the previously preserved host duplicate'
+        if: success() && steps.r13.outcome == 'success' && steps.p13.outcome == 'success'
+        run: rm -rf evidence/c90r-12 build/c90r-transport-12
+      - name: 'C90R stage 14: zero new UART and full original admission'
+        id: r14
+        if: success() && steps.r13.outcome == 'success' && steps.p13.outcome == 'success' && steps.r13.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 14
+      - name: 'C90R stage 14: preserve every admitted checkpoint piece before advancing'
+        id: p14
+        if: always() && steps.r14.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-14
+          transport_path: build/c90r-transport-14
+          artifact_prefix: reverseandroid-c90r-14
+      - name: 'C90R stage 14: release only the previously preserved host duplicate'
+        if: success() && steps.r14.outcome == 'success' && steps.p14.outcome == 'success'
+        run: rm -rf evidence/c90r-13 build/c90r-transport-13
+      - name: 'C90R stage 15: zero new UART and full original admission'
+        id: r15
+        if: success() && steps.r14.outcome == 'success' && steps.p14.outcome == 'success' && steps.r14.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 15
+      - name: 'C90R stage 15: preserve every admitted checkpoint piece before advancing'
+        id: p15
+        if: always() && steps.r15.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-15
+          transport_path: build/c90r-transport-15
+          artifact_prefix: reverseandroid-c90r-15
+      - name: 'C90R stage 15: release only the previously preserved host duplicate'
+        if: success() && steps.r15.outcome == 'success' && steps.p15.outcome == 'success'
+        run: rm -rf evidence/c90r-14 build/c90r-transport-14
+      - name: 'C90R stage 16: zero new UART and full original admission'
+        id: r16
+        if: success() && steps.r15.outcome == 'success' && steps.p15.outcome == 'success' && steps.r15.outputs.complete != 'true'
+        run: python3 scripts/host_transport_continuation.py run --stage 16
+      - name: 'C90R stage 16: preserve every admitted checkpoint piece before advancing'
+        id: p16
+        if: always() && steps.r16.outcome == 'success'
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c90r-16
+          transport_path: build/c90r-transport-16
+          artifact_prefix: reverseandroid-c90r-16
+      - name: 'C90R stage 16: release only the previously preserved host duplicate'
+        if: success() && steps.r16.outcome == 'success' && steps.p16.outcome == 'success'
+        run: rm -rf evidence/c90r-15 build/c90r-transport-15
+      - name: Require genuine original BOOT1, live SystemServer, enforcing policy and fresh peripherals
+        if: success()
+        run: |
+          python3 scripts/verify-reverseandroid-import.py
+          python3 scripts/host_transport_continuation.py finish
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-c90r-evidence
+          path: |
+            evidence/c90r-reports
+            evidence/c90r-*/*.json
+            evidence/c90r-*/*.log
+            evidence/c90r-*/*.txt
+            state/experiments/c90r-plan.json
+            state/experiments/c90r-artifacts.json
+            build/host-native/*.json
+            build/host-native/*.txt
+            build/host-transport-runtime/host-transport-manifest.json
+            build/host-validation/**/validated-host-transport.json
+          retention-days: 90
+          if-no-files-found: error

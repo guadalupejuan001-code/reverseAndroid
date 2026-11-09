@@ -1,0 +1,33 @@
+{
+  "schema": "reverseandroid-c90r-selected-validated-host-profile-v1",
+  "validation_run_id": 42584322702,
+  "validation_commit": "104fa30f6d0aa59a05b9c346b8d339e7696f828f",
+  "validation_workflow_conclusion": "success",
+  "source_cycle": "C90",
+  "source_stage": 6,
+  "source_SHA256": "c8a2aa15bca412139973343813570a07d8f11d9fb7318a884cd64d45025f5714",
+  "validated_trial_instructions": 161447727998,
+  "validated_trial_RVG_bytes": 2148197611,
+  "validated_trial_SHA256": "17b34e1843e9acab0613687780a42a881b427bbf037a8b7f406740c520809148",
+  "metadata_archive": {
+    "id": 13658658728,
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "sha256": "a56c68eed658437066aa4c9718404fa41c3b78df2057df2d9a684a9070bd15ed"
+  },
+  "native_archive": {
+    "id": 13658469513,
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "sha256": "803ca19f6f5765a97563177093e59fac53b4d95c006f2e16498bb09eba88f608"
+  },
+  "report_archive": {
+    "id": 13659940223,
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "sha256": "af823ccadcbca43aedd3fb5eccfed220ceebd6d7bfb499ef700d0b938243c425"
+  },
+  "all_three_archives_downloaded_SHA256_and_CRC_verified": true,
+  "all_four_trial_transport_archives_available_and_pinned_by_GitHub_SHA256": true,
+  "trial_transport_fresh_local_download_or_native_replay_claimed": false,
+  "continuation_starts_from_original_stage6": true,
+  "first_continuation_must_reproduce_whole_validated_trial": true,
+  "new_UART_bytes": 0
+}

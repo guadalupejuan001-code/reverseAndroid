@@ -30,7 +30,7 @@
   "canonical_local_source": null,
   "independent_reproduction_run_id": 42247589579,
   "independent_reproduction_status": "Stages1 through4 independently reproduce every original RVG byte and the entire console. The current original CI boundary has full original admission and all transport pieces pinned; it has not been freshly recovered or independently run locally.",
-  "active_continuation": "C90 completed six fully admitted checkpoints. Stage7 failed at the explicit2GiB host snapshot bound, with no new ISA fault. Source6 remains canonical. A bounded larger host transport candidate awaits independent byte-equality and actual larger-checkpoint validation; BOOT and usable UI remain pending.",
+  "active_continuation": "Host recovery and the real >2 GiB trial passed. C90R is selected from original C90 stage 6 with the validated host profile; canonical state remains C90 stage 6 until C90R admission and complete preservation.",
   "isolated_console_test": "docs/evidence/c76/actual-console-response-control.json",
   "isolated_console_control_is_promotion_authority": false,
   "lights_live_listener_evidence": "docs/evidence/c76/stage16-lights-vsock-readonly.json",
@@ -229,8 +229,8 @@
   "current_source_restoration_required_before_local_use": true,
   "original_CI_full_admission_current_boundary_verified": true,
   "current_full_original_RVG_downloaded_locally": false,
-  "next_explicit_campaign": "C88",
-  "next_plan": "state/experiments/c88-plan.json",
+  "next_explicit_campaign": "C90R",
+  "next_plan": "state/experiments/c90r-plan.json",
   "C87_after_source14_is_reference_after_explicit_C88_input_selection": true,
   "actual_JIT5922_priority_guard_succeeded": true,
   "actual_C88_new_events": 1,
@@ -250,14 +250,28 @@
   },
   "next_zero_input_continuation_plan": "state/experiments/c90-plan.json",
   "next_selected_continuation": "C90",
-  "current_host_transport_blocker": {
+  "next_host_validation_plan": "state/experiments/host-transport-plan.json",
+  "historical_C90_host_transport_blocker": {
     "failed_stage": 7,
     "actual_error": "Guest snapshot exceeds configured host transport capacity",
     "old_host_RVG_bound_bytes": 2147483648,
     "evidence": "docs/evidence/c90/stage7-host-transport-capacity-failure.json",
     "validation_plan": "state/experiments/host-transport-plan.json",
     "candidate_host_RVG_bound_bytes": 4026531840,
-    "candidate_not_yet_adopted": true
+    "candidate_not_yet_adopted": true,
+    "resolved_by_validation_run": 42584322702
   },
-  "next_host_validation_plan": "state/experiments/host-transport-plan.json"
+  "host_transport_validation": {
+    "run_id": 42584322702,
+    "execution_commit": "104fa30f6d0aa59a05b9c346b8d339e7696f828f",
+    "report": "docs/evidence/c90r/validated-host-transport.json",
+    "report_SHA256": "0cb1782952fca2534bd8b98c11b8c26de37625ffa4cf2b4efac871a4d38855e2",
+    "native_SHA256": "a31e3fd923f63071ebadeb6a78ee5aadf77111c88186e428927220f199710318",
+    "host_snapshot_capacity_bytes": 4026531840,
+    "validated": true,
+    "selected_for_next_campaign": "C90R",
+    "trial_checkpoint_is_canonical": false
+  },
+  "next_workflow": ".github/workflows/android-c90r-host-recovery.yml",
+  "pending_C90R_first_admission": true
 }

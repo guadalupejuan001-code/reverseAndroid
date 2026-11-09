@@ -1,0 +1,728 @@
+{
+  "schema": "reverseandroid-explicit-host-transport-extension-v1",
+  "host_RVG_file_capacity_bytes": 4026531840,
+  "unchanged_total_unpacked_transport_bound_bytes": 4294967296,
+  "reserved_metadata_headroom_bytes": 268435456,
+  "original_870_files_unchanged": true,
+  "retained_IC_CLZ_extension": {
+    "schema": "reverseandroid-explicit-IC-IVAU-correction-v1",
+    "original_source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+    "all_870_imported_files_unchanged": true,
+    "original_engine_binary_unchanged_claimed": false,
+    "retained_CLZ_extension": {
+      "schema": "reverseandroid-explicit-ISA-extension-v1",
+      "original_source_commit": "37f5b4610c5c31981e359fcf8fd0b303c14f01fd",
+      "all_870_imported_files_unchanged": true,
+      "original_engine_binary_unchanged_claimed": false,
+      "extension": "AArch64 AdvSIMD CLZ (vector), all six allocated forms",
+      "observed_blocking_opcode": "0x6ea04800",
+      "baseline_decoder_SHA256": "7fd5378bacd59543d03b453467e6abc44c4a5bc6389fde827f9bf0aa6f377790",
+      "extended_decoder_SHA256": "1a1a0a3adc386b0be7f76292ec4531a5b144cea758cdeffd1db7aea91de897d5",
+      "extension_SHA256": "1fd924cfab3278faf6550bc8ed54793c426ea3662d97499c0d0e07f6682ea1a4",
+      "changed_original_build_copy_files": [
+        "minimal_guest_simd.inc"
+      ],
+      "snapshot_codecs_RAM_disk_clock_seed_and_cadence_unchanged": true
+    },
+    "extension": "Exact IC IVAU, Xt at EL0 with SCTLR_EL1.UCI control",
+    "observed_SIGILL_opcode": "0xd50b7529",
+    "observed_fault_address": "0x7544ce7e64",
+    "baseline_decoder_SHA256": "c98fd56d9dbe1f4d9d3ad9ae8fe06aee2933cbcbe8174afe7749b420e0532581",
+    "extended_decoder_SHA256": "36324216f1b908daf163a7ef906ba407b2d5c2aafbeeeb1b3c3518e7d5fdeb74",
+    "extension_SHA256": "147947b8fe7da59fc2334bb031ed28fecd86f073025ef9a4f6945377550de19d",
+    "changed_original_build_copy_files": [
+      "minimal_guest.hpp",
+      "minimal_guest_simd.inc"
+    ],
+    "snapshot_codecs_RAM_disk_clock_seed_cadence_IRQ_and_security_gates_unchanged": true
+  },
+  "CPU_instruction_decoder_RAM_disk_clock_seed_cadence_IRQ_RVG_RVI_MXIM_and_original_milestones_unchanged": true,
+  "native_epoch_original_source_SHA256": "13982c4d3cadc0d443ad84cd1adb271c90d13965a33ce95c24858ee7bbc9d883",
+  "exact_capacity_replacements": [
+    {
+      "file": "src/minimal_guest.hpp",
+      "before_SHA256": "36324216f1b908daf163a7ef906ba407b2d5c2aafbeeeb1b3c3518e7d5fdeb74",
+      "after_SHA256": "0dc0788ae01fe4f6b7322c7201662103f7c34d3a7a1bb4a130817e3fd3fe3cbe",
+      "old": "max_view_snapshot=2ull*1024*1024*1024;",
+      "new": "max_view_snapshot=3840ull*1024*1024;"
+    },
+    {
+      "file": "src/guest_reverseandroid_epoch_host.cpp",
+      "before_SHA256": "13982c4d3cadc0d443ad84cd1adb271c90d13965a33ce95c24858ee7bbc9d883",
+      "after_SHA256": "76eb6e5997cbb35906617653eb498133a1eb90a84fa9d3b30ec91ca28813d3c6",
+      "old": "host_snapshot_transport_bytes\\\":2147483648",
+      "new": "host_snapshot_transport_bytes\\\":4026531840"
+    },
+    {
+      "file": "tools/audit_gki_rvg.mjs",
+      "before_SHA256": "b5a599f71bf90236a4fd28ab59ed397668cf63a6dd359792a0d5328d61b33064",
+      "after_SHA256": "e3d841230612c4d299f03169f836caaeda1e711b953476ae238935f06d90f78f",
+      "old": "maxSnapshotBytes<=2*1024*1024*1024",
+      "new": "maxSnapshotBytes<=4026531840"
+    },
+    {
+      "file": "tools/reverseandroid-epoch.mjs",
+      "before_SHA256": "2be41fcd27bbc48498e90ae9786f2753e204cb6e4a0e46b19682ce39d3292570",
+      "after_SHA256": "1c83505b8263b5bdb8bb87a1615144ed380f92e5c0032d7b7196af5c7208301a",
+      "old": "const CAP=2147483648;",
+      "new": "const CAP=4026531840;"
+    },
+    {
+      "file": "tools/reverseandroid-epoch.mjs",
+      "before_SHA256": "1c83505b8263b5bdb8bb87a1615144ed380f92e5c0032d7b7196af5c7208301a",
+      "after_SHA256": "db80446f0050865c1fbd56bd248ce0ca0ee716ca031d1b3d650818a69e7631b5",
+      "old": "new URL('./android_kernel_observer.mjs',import.meta.url).pathname",
+      "new": "new URL('./reverseandroid-host-kernel-observer.mjs',import.meta.url).pathname"
+    },
+    {
+      "file": "tools/reverseandroid-peripheral-probe.mjs",
+      "before_SHA256": "2fa7000acd7f143a1614bc0b298da07972b357e4123509d2cbe29dd5b43b4200",
+      "after_SHA256": "fd31d3f8c30300ce96ac96ea18eeedc4591f0dfe8b32a289871ddc82e439833f",
+      "old": "statSync(path).size<=2147483648",
+      "new": "statSync(path).size<=4026531840"
+    },
+    {
+      "file": "tools/reverseandroid-peripheral-probe.mjs",
+      "before_SHA256": "fd31d3f8c30300ce96ac96ea18eeedc4591f0dfe8b32a289871ddc82e439833f",
+      "after_SHA256": "99494125022ec1f728f3770d3f69cf1fba2de2a879bd99c05d78d8d7341ac679",
+      "old": "maxSnapshotBytes:2147483648",
+      "new": "maxSnapshotBytes:4026531840"
+    },
+    {
+      "file": "tools/reverseandroid-thread-probe.mjs",
+      "before_SHA256": "0a429797e41fa5a237eb81ceeef9fb96c73c55c1806a3221ca6858e6219c2ed1",
+      "after_SHA256": "35c2d948fb4eff1c50aa9c95ee511a65f65adcb0871b15ad96ffcd631feaaa67",
+      "old": "statSync(path).size<=2147483648",
+      "new": "statSync(path).size<=4026531840"
+    },
+    {
+      "file": "tools/reverseandroid-thread-probe.mjs",
+      "before_SHA256": "35c2d948fb4eff1c50aa9c95ee511a65f65adcb0871b15ad96ffcd631feaaa67",
+      "after_SHA256": "2c7fa34fb868e60fec9518648fab5138444a1eadf34cdee6c1c1803c97cb4cab",
+      "old": "maxSnapshotBytes:2147483648",
+      "new": "maxSnapshotBytes:4026531840"
+    },
+    {
+      "file": "tools/reverseandroid-lights-probe.mjs",
+      "before_SHA256": "f87ae4c7d9280701b000c421abfbbd61cfcc5b333085d9a78837448119913aed",
+      "after_SHA256": "6a4c3bc9bea309fe338bad0b8fa09ee71b470d468fdde64d58021b818df79903",
+      "old": "statSync(path).size<=2147483648",
+      "new": "statSync(path).size<=4026531840"
+    },
+    {
+      "file": "tools/reverseandroid-lights-probe.mjs",
+      "before_SHA256": "6a4c3bc9bea309fe338bad0b8fa09ee71b470d468fdde64d58021b818df79903",
+      "after_SHA256": "3dcd2cc63bfa633e3e6ba477415011c5ff44e3244d69b816bb2ac2f139cc6473",
+      "old": "maxSnapshotBytes:2147483648",
+      "new": "maxSnapshotBytes:4026531840"
+    },
+    {
+      "file": "tools/reverseandroid-mmap-lock-probe.mjs",
+      "before_SHA256": "3a1d7ee6092c67275bfa6f45bae9a5ee34f98d2a71c46f320ed47aa4206f3bf9",
+      "after_SHA256": "d0d00fde958397134ba93ae53bb98f3a51671425c14e372bcd645eb0bcf00c52",
+      "old": "maxSnapshotBytes:2147483648",
+      "new": "maxSnapshotBytes:4026531840"
+    },
+    {
+      "file": "tools/android_gpu_backing_evidence.mjs",
+      "before_SHA256": "91b72114d3ca6a39980444e26e7d1154633f4194caa6921551026a988a1177cb",
+      "after_SHA256": "13e696c4d1d61dcd54018627708b31ac0ce178d351e0d0a23b397808055dca16",
+      "old": "n<=2147483648n",
+      "new": "n<=4026531840n"
+    }
+  ],
+  "derived_tool_files": {
+    "android_c28_result.mjs": {
+      "source_SHA256": "05cddb32b9d2e6e997da9d866f591ffb3463388abd58e9ad43df5bc4f6d557a3",
+      "build_SHA256": "05cddb32b9d2e6e997da9d866f591ffb3463388abd58e9ad43df5bc4f6d557a3"
+    },
+    "android_c11_supervised.mjs": {
+      "source_SHA256": "5a2ff392177d519e6710422880508b43bdbe27115e5fc8e124203326717a0027",
+      "build_SHA256": "5a2ff392177d519e6710422880508b43bdbe27115e5fc8e124203326717a0027"
+    },
+    "guest_c26_resume.cpp": {
+      "source_SHA256": "c216fe10051dfe0cf91d1547e63f4bd2484af9e7534acb503bda69226514ea0d",
+      "build_SHA256": "c216fe10051dfe0cf91d1547e63f4bd2484af9e7534acb503bda69226514ea0d"
+    },
+    "guest_c16_resume.cpp": {
+      "source_SHA256": "82058432d86f433e67cab29e695c3b0934621474e5d158e64f287f173ad48fd5",
+      "build_SHA256": "82058432d86f433e67cab29e695c3b0934621474e5d158e64f287f173ad48fd5"
+    },
+    "android_guest_outcome.mjs": {
+      "source_SHA256": "98d74240a4b2a878bd0fa58b42752c427593c53113db54fa906c102d4d322583",
+      "build_SHA256": "98d74240a4b2a878bd0fa58b42752c427593c53113db54fa906c102d4d322583"
+    },
+    "android_c27_wait_complete.mjs": {
+      "source_SHA256": "60625dba693af5a33765241a2725e1679fed875c0396ca81283bcd1937f3c461",
+      "build_SHA256": "60625dba693af5a33765241a2725e1679fed875c0396ca81283bcd1937f3c461"
+    },
+    "android_c13_avb.mjs": {
+      "source_SHA256": "3a842599bbe5734ebbfe696663d73f8cd241341694692fab62db4e17f26f7778",
+      "build_SHA256": "3a842599bbe5734ebbfe696663d73f8cd241341694692fab62db4e17f26f7778"
+    },
+    "guest_c10_resume.cpp": {
+      "source_SHA256": "4e085634a3f3eae5e39258af4658724765a33f1a00b9331e444932b06cf8a2a0",
+      "build_SHA256": "4e085634a3f3eae5e39258af4658724765a33f1a00b9331e444932b06cf8a2a0"
+    },
+    "android_c11_audit.mjs": {
+      "source_SHA256": "95f95180a38c4a8bcb2d8e75097c6240f7ab477cea24466d28086c2653742841",
+      "build_SHA256": "95f95180a38c4a8bcb2d8e75097c6240f7ab477cea24466d28086c2653742841"
+    },
+    "android_c10_audit.mjs": {
+      "source_SHA256": "f1c75d917864759916141c1996b54401ee7047ca8b6fae444a603651ed7cecd8",
+      "build_SHA256": "f1c75d917864759916141c1996b54401ee7047ca8b6fae444a603651ed7cecd8"
+    },
+    "guest_c13_boot.cpp": {
+      "source_SHA256": "9804db279793c2b1a017b1681dba339122662b2da1bc863eab4bd1c78a78663f",
+      "build_SHA256": "9804db279793c2b1a017b1681dba339122662b2da1bc863eab4bd1c78a78663f"
+    },
+    "reverseandroid-verify-frame.mjs": {
+      "source_SHA256": "c94316179b298c72228b2033aadd6cda5e6437c9ad63f15d253c7801cd1aa75f",
+      "build_SHA256": "c94316179b298c72228b2033aadd6cda5e6437c9ad63f15d253c7801cd1aa75f"
+    },
+    "android_c46_continue.mjs": {
+      "source_SHA256": "e2e13c624d581ff5c1ed5dd64d884dabb6775db5772b786ec244b06b26a973a2",
+      "build_SHA256": "e2e13c624d581ff5c1ed5dd64d884dabb6775db5772b786ec244b06b26a973a2"
+    },
+    "guest_c23_resume.cpp": {
+      "source_SHA256": "185970a20dec305238e057e98dec4fd429622156a6c9cf5c1c90d84de0083857",
+      "build_SHA256": "185970a20dec305238e057e98dec4fd429622156a6c9cf5c1c90d84de0083857"
+    },
+    "android_c40_recovery_evidence.mjs": {
+      "source_SHA256": "bd4e231b13c8028f454d7c4537b4879249de5dcc5266e2d8e8787beb89d7fa64",
+      "build_SHA256": "bd4e231b13c8028f454d7c4537b4879249de5dcc5266e2d8e8787beb89d7fa64"
+    },
+    "android_verified_init_source.mjs": {
+      "source_SHA256": "879222bfbad4f633f2f3230974e080db919e65173dccec08d5bc4bdefa075f27",
+      "build_SHA256": "879222bfbad4f633f2f3230974e080db919e65173dccec08d5bc4bdefa075f27"
+    },
+    "reverseandroid-thread-probe.mjs": {
+      "source_SHA256": "9ecf853fb3917173456b818a3174f990c109776febbf32b83966f973faa3d6f1",
+      "build_SHA256": "2c7fa34fb868e60fec9518648fab5138444a1eadf34cdee6c1c1803c97cb4cab"
+    },
+    "android_c42_zygote_progress.mjs": {
+      "source_SHA256": "cac480a2c2242043414c94cb2e1142d0dad9599c7dde504d07836d1ac604b045",
+      "build_SHA256": "cac480a2c2242043414c94cb2e1142d0dad9599c7dde504d07836d1ac604b045"
+    },
+    "reverseandroid-host-rvg-reader.mjs": {
+      "source_SHA256": "1bdbfc9af4d4e57c5e9f250224cfc696b75f320d1635fb7a66ef08fab1637e14",
+      "build_SHA256": "1bdbfc9af4d4e57c5e9f250224cfc696b75f320d1635fb7a66ef08fab1637e14"
+    },
+    "android_c28_state.mjs": {
+      "source_SHA256": "8eb08c471a94580316cedcac34945e91225b47c4aa050e82713a91c0846dd44f",
+      "build_SHA256": "8eb08c471a94580316cedcac34945e91225b47c4aa050e82713a91c0846dd44f"
+    },
+    "reverseandroid-lights-profile.mjs": {
+      "source_SHA256": "e9e19cadb2d913a486493ed4d829b5ba4a0dbdf4eb775c47cc63d1f63a702408",
+      "build_SHA256": "e9e19cadb2d913a486493ed4d829b5ba4a0dbdf4eb775c47cc63d1f63a702408"
+    },
+    "android_c29_contract.json": {
+      "source_SHA256": "e9fae6dd0df8f4178424ff0653075e8fb54fbb5f5eeba0df1a66a9dbf9209c86",
+      "build_SHA256": "e9fae6dd0df8f4178424ff0653075e8fb54fbb5f5eeba0df1a66a9dbf9209c86"
+    },
+    "android_c19_result.mjs": {
+      "source_SHA256": "f76f055d787cf2486f8a89f0bf952d5dbc038c61a4acabe5f446dbdabf7f39a0",
+      "build_SHA256": "f76f055d787cf2486f8a89f0bf952d5dbc038c61a4acabe5f446dbdabf7f39a0"
+    },
+    "android_c27_profile_resume.mjs": {
+      "source_SHA256": "07ce987d7ecb5b33169b28404eca92638248e157e39594669a743616564d355b",
+      "build_SHA256": "07ce987d7ecb5b33169b28404eca92638248e157e39594669a743616564d355b"
+    },
+    "guest_disk_hash_benchmark.cpp": {
+      "source_SHA256": "b974ab2e0d042775318df5b6fddf09ace4eeb39754a1efd1ae7f68a24bd4a373",
+      "build_SHA256": "b974ab2e0d042775318df5b6fddf09ace4eeb39754a1efd1ae7f68a24bd4a373"
+    },
+    "android_c25_result.mjs": {
+      "source_SHA256": "26c6e9fd40396420ee20dfddc02713826120a749eb615d77e4f91e62b4470945",
+      "build_SHA256": "26c6e9fd40396420ee20dfddc02713826120a749eb615d77e4f91e62b4470945"
+    },
+    "reverseandroid-elf-symbols.mjs": {
+      "source_SHA256": "913fd88a69684a29319e6a77e3fe9de35761f540d4ea18a3ab6d2c70249f1001",
+      "build_SHA256": "913fd88a69684a29319e6a77e3fe9de35761f540d4ea18a3ab6d2c70249f1001"
+    },
+    "reverseandroid-host-kernel-observer.mjs": {
+      "source_SHA256": "869ddd33343125738b439aa929ce7e3b9e232e613706b72faa99318f80f65dbf",
+      "build_SHA256": "869ddd33343125738b439aa929ce7e3b9e232e613706b72faa99318f80f65dbf"
+    },
+    "reverseandroid_power_cycle.hpp": {
+      "source_SHA256": "f87c8be0b4d699f50d4961429b5cab5892c9c9ebb05d23748423e393012933f8",
+      "build_SHA256": "f87c8be0b4d699f50d4961429b5cab5892c9c9ebb05d23748423e393012933f8"
+    },
+    "reverseandroid-seed.mjs": {
+      "source_SHA256": "caf6222affc636b09261e1dec636a30025b8b91ca497d38962d1e47c4129d612",
+      "build_SHA256": "caf6222affc636b09261e1dec636a30025b8b91ca497d38962d1e47c4129d612"
+    },
+    "guest_checkpoint_stream_benchmark.cpp": {
+      "source_SHA256": "30e1e2494df0a56674b1fc7b40d1fcd79a5345ccfa0c9482645029dd42f49aaf",
+      "build_SHA256": "30e1e2494df0a56674b1fc7b40d1fcd79a5345ccfa0c9482645029dd42f49aaf"
+    },
+    "android_partition_readiness.mjs": {
+      "source_SHA256": "029583392eb8bf2cdd26153df7ca38214b3f4de6549c3a00ee376a8001fa7d33",
+      "build_SHA256": "029583392eb8bf2cdd26153df7ca38214b3f4de6549c3a00ee376a8001fa7d33"
+    },
+    "android_c28_pin.mjs": {
+      "source_SHA256": "9599e5415ae6b16c19ab8eb44baf70303add0373e636a04e595803a3ac0a431f",
+      "build_SHA256": "9599e5415ae6b16c19ab8eb44baf70303add0373e636a04e595803a3ac0a431f"
+    },
+    "audit_gki_rvg.mjs": {
+      "source_SHA256": "b5a599f71bf90236a4fd28ab59ed397668cf63a6dd359792a0d5328d61b33064",
+      "build_SHA256": "e3d841230612c4d299f03169f836caaeda1e711b953476ae238935f06d90f78f"
+    },
+    "guest_c17_resume.cpp": {
+      "source_SHA256": "9e6a8adbd492c0105d09f33f877deed8f4aad587efcc7f8d144de242a2b1f90e",
+      "build_SHA256": "9e6a8adbd492c0105d09f33f877deed8f4aad587efcc7f8d144de242a2b1f90e"
+    },
+    "android_c12_supervised.mjs": {
+      "source_SHA256": "b18df6b2653845fffe351fd9cf3fb0622db72136fe3efcb9c6002c6251f75e8c",
+      "build_SHA256": "b18df6b2653845fffe351fd9cf3fb0622db72136fe3efcb9c6002c6251f75e8c"
+    },
+    "guest_pci_cycle.cpp": {
+      "source_SHA256": "083407ddcc75bc467781e2a4016b0de36231b63e1138ef4c1d069f9156df397d",
+      "build_SHA256": "083407ddcc75bc467781e2a4016b0de36231b63e1138ef4c1d069f9156df397d"
+    },
+    "reverseandroid-prepare-epoch.mjs": {
+      "source_SHA256": "10d92dff101c185212665ac256d57bc9dc7a991c3fdf37c96d7178c28d6c0906",
+      "build_SHA256": "10d92dff101c185212665ac256d57bc9dc7a991c3fdf37c96d7178c28d6c0906"
+    },
+    "guest_c20_fresh.cpp": {
+      "source_SHA256": "3628e2aa5b3ce7be7c200f23a28ebfb48623743e634a62e4df8169cc3f415e73",
+      "build_SHA256": "3628e2aa5b3ce7be7c200f23a28ebfb48623743e634a62e4df8169cc3f415e73"
+    },
+    "guest_checkpoint_frame.cpp": {
+      "source_SHA256": "2fe2def625674f0075daa29ab8dc76ee19605d95f8aebf9ed6b6642a96ff36af",
+      "build_SHA256": "2fe2def625674f0075daa29ab8dc76ee19605d95f8aebf9ed6b6642a96ff36af"
+    },
+    "android_guest_progress.mjs": {
+      "source_SHA256": "50eb6b037e035e68a2018f8106d9a10a48ba3f88e1ca99f8b499ea6db4696ede",
+      "build_SHA256": "50eb6b037e035e68a2018f8106d9a10a48ba3f88e1ca99f8b499ea6db4696ede"
+    },
+    "guest_c24_resume.cpp": {
+      "source_SHA256": "bfcc25f846719c9c74850fc0671a723f6b55157f9bc209a5ac27c29a4d8e2528",
+      "build_SHA256": "bfcc25f846719c9c74850fc0671a723f6b55157f9bc209a5ac27c29a4d8e2528"
+    },
+    "android_profile_resume.mjs": {
+      "source_SHA256": "251ae01051b17061fdb060f8a928bad8be1d0406c404bcb05148a0e79128b2f9",
+      "build_SHA256": "251ae01051b17061fdb060f8a928bad8be1d0406c404bcb05148a0e79128b2f9"
+    },
+    "android_c35_source_gate.mjs": {
+      "source_SHA256": "fe5fb97d2df2d9b01ca922f6e7942f330a361a10605be1351d7a901e52e000aa",
+      "build_SHA256": "fe5fb97d2df2d9b01ca922f6e7942f330a361a10605be1351d7a901e52e000aa"
+    },
+    "reverseandroid-campaign-stage.mjs": {
+      "source_SHA256": "e21e6f3b5cd6586b8b8f3a4ac8bb4ee151f340e8d92ff5aaa36fa8453123ff68",
+      "build_SHA256": "e21e6f3b5cd6586b8b8f3a4ac8bb4ee151f340e8d92ff5aaa36fa8453123ff68"
+    },
+    "guest_linux_probe.cpp": {
+      "source_SHA256": "6ccdebb95764a5bcfe65eff4a2784959de9cb80ab29702e2b78114ca4e580541",
+      "build_SHA256": "6ccdebb95764a5bcfe65eff4a2784959de9cb80ab29702e2b78114ca4e580541"
+    },
+    "guest_c18_resume.cpp": {
+      "source_SHA256": "deea4e4321ac597222a6a2583228f67202c7c1515954b254f69ed3b257908d97",
+      "build_SHA256": "deea4e4321ac597222a6a2583228f67202c7c1515954b254f69ed3b257908d97"
+    },
+    "android_c20_result.mjs": {
+      "source_SHA256": "9e7f9eb16d8ff8b5b5b87167a2ded358c2c5acda11ff5d44b9e116395240fa95",
+      "build_SHA256": "9e7f9eb16d8ff8b5b5b87167a2ded358c2c5acda11ff5d44b9e116395240fa95"
+    },
+    "rvg_checksum_wasm.mjs": {
+      "source_SHA256": "be7d741ff9e19445ea0c894566ea56b837cfcff0af10403ae241c56417fe45ee",
+      "build_SHA256": "be7d741ff9e19445ea0c894566ea56b837cfcff0af10403ae241c56417fe45ee"
+    },
+    "guest_c07_resume.cpp": {
+      "source_SHA256": "292015f6c99ac4765cfd62af09e08142f74930ded6a15c1a40dd3f90fe3d431c",
+      "build_SHA256": "292015f6c99ac4765cfd62af09e08142f74930ded6a15c1a40dd3f90fe3d431c"
+    },
+    "android_c35_stage.mjs": {
+      "source_SHA256": "04bee56adaa5f666c4e754d46f86ed845353ac038d7f606398db189b04042a59",
+      "build_SHA256": "04bee56adaa5f666c4e754d46f86ed845353ac038d7f606398db189b04042a59"
+    },
+    "android_c21_profile.mjs": {
+      "source_SHA256": "d27e651c788e19e870f0297a1805bc7cdbc740f85983291e967b69c159269ecc",
+      "build_SHA256": "d27e651c788e19e870f0297a1805bc7cdbc740f85983291e967b69c159269ecc"
+    },
+    "android_c40_zygote_stage.mjs": {
+      "source_SHA256": "aaa3f8d912b502c2ac60fe1fb61e50344a3b2b426eeae35353a13750ffeab2ae",
+      "build_SHA256": "aaa3f8d912b502c2ac60fe1fb61e50344a3b2b426eeae35353a13750ffeab2ae"
+    },
+    "reverseandroid-host-pgo-eval.mjs": {
+      "source_SHA256": "2d09307e76ec0e3b55ae2dfb4f72e6324521e89d6e216812f7fb6cd9338facb9",
+      "build_SHA256": "2d09307e76ec0e3b55ae2dfb4f72e6324521e89d6e216812f7fb6cd9338facb9"
+    },
+    "reverseandroid-priority-proof.mjs": {
+      "source_SHA256": "82d7a644b01599d8e41e7624304766e937f871e99132f71c36791f64a7711ba2",
+      "build_SHA256": "82d7a644b01599d8e41e7624304766e937f871e99132f71c36791f64a7711ba2"
+    },
+    "android_partition_acquire.mjs": {
+      "source_SHA256": "4acb3f5f13b84cb363a8f2da2477be138fef59f8a735bb7968986c936103de31",
+      "build_SHA256": "4acb3f5f13b84cb363a8f2da2477be138fef59f8a735bb7968986c936103de31"
+    },
+    "guest_c19_resume.cpp": {
+      "source_SHA256": "2ae01c4785161d011173a1878a3eb7631b81b7a221d583ede55707b16f1a74de",
+      "build_SHA256": "2ae01c4785161d011173a1878a3eb7631b81b7a221d583ede55707b16f1a74de"
+    },
+    "android_c26_result.mjs": {
+      "source_SHA256": "9fba92344f8dd0a3b1b24c52ee2a2583dc577342cbd698adc5b9db820aa7735d",
+      "build_SHA256": "9fba92344f8dd0a3b1b24c52ee2a2583dc577342cbd698adc5b9db820aa7735d"
+    },
+    "android_partition_disk.mjs": {
+      "source_SHA256": "1b36bad7a99a62255090d87cb2b635b5e1293a54e2e20e11c56bcb8353bae980",
+      "build_SHA256": "1b36bad7a99a62255090d87cb2b635b5e1293a54e2e20e11c56bcb8353bae980"
+    },
+    "guest_pci_boot.cpp": {
+      "source_SHA256": "ffd0372572d9bf4a2f4374347b2edd911b722a00c3e24ff106368e42c25d4ca6",
+      "build_SHA256": "ffd0372572d9bf4a2f4374347b2edd911b722a00c3e24ff106368e42c25d4ca6"
+    },
+    "reverseandroid-epoch-input.mjs": {
+      "source_SHA256": "96102f4bb1497364d6b7d5538f06ac9ba2e02f59485787a8076a7f96883e8646",
+      "build_SHA256": "96102f4bb1497364d6b7d5538f06ac9ba2e02f59485787a8076a7f96883e8646"
+    },
+    "reverseandroid-lights-probe.mjs": {
+      "source_SHA256": "c5e51e9f5736ed196ea811383d78da5d144b36978b9f6ab863e0a892f4930a80",
+      "build_SHA256": "3dcd2cc63bfa633e3e6ba477415011c5ff44e3244d69b816bb2ac2f139cc6473"
+    },
+    "android_c15_result.mjs": {
+      "source_SHA256": "678c54f64010ed797e530632173d4a3819a4ecc15e96b0d80823f119f25cc5ea",
+      "build_SHA256": "678c54f64010ed797e530632173d4a3819a4ecc15e96b0d80823f119f25cc5ea"
+    },
+    "reverseandroid-gpu-queue.mjs": {
+      "source_SHA256": "2702077a8d975b04ff69e3436907370c65bf2225a7363d1a71eb3071f279c3d7",
+      "build_SHA256": "2702077a8d975b04ff69e3436907370c65bf2225a7363d1a71eb3071f279c3d7"
+    },
+    "android_live_property.mjs": {
+      "source_SHA256": "e10d69e1a81445b988512398957cb12947cac8653de807d3638f5cc8c0eb0a30",
+      "build_SHA256": "e10d69e1a81445b988512398957cb12947cac8653de807d3638f5cc8c0eb0a30"
+    },
+    "android_c22_result.mjs": {
+      "source_SHA256": "25e3ddc15cd81de3b2fffcd9503e302817d034f4ac7da27db0756ee0c259e4c2",
+      "build_SHA256": "25e3ddc15cd81de3b2fffcd9503e302817d034f4ac7da27db0756ee0c259e4c2"
+    },
+    "guest_c22_resume.cpp": {
+      "source_SHA256": "3300bb811e1ce0439dd21689db4bc84e14cd27498617ca0f20a18ff5eee5c3ee",
+      "build_SHA256": "3300bb811e1ce0439dd21689db4bc84e14cd27498617ca0f20a18ff5eee5c3ee"
+    },
+    "reverseandroid-syscall-io.mjs": {
+      "source_SHA256": "784ece25edd523812e58275a37695e1dfdab2ecf1087b95c428ede9bbf59d580",
+      "build_SHA256": "784ece25edd523812e58275a37695e1dfdab2ecf1087b95c428ede9bbf59d580"
+    },
+    "reverseandroid-continue.mjs": {
+      "source_SHA256": "3b9249a78f44952ecae28326cd2eef7a7ea831acd086eb738bfe5eb0144b432e",
+      "build_SHA256": "3b9249a78f44952ecae28326cd2eef7a7ea831acd086eb738bfe5eb0144b432e"
+    },
+    "android_normal_ramdisk.mjs": {
+      "source_SHA256": "17d3e576b9dd63d63da9cfa0acb86307c5fb58fb35fd210a617c0cc193fe8a63",
+      "build_SHA256": "17d3e576b9dd63d63da9cfa0acb86307c5fb58fb35fd210a617c0cc193fe8a63"
+    },
+    "android_c19_source.sha256": {
+      "source_SHA256": "ef1129c623e4e025d8be86e2634347511deef087f4cd21baa91267689009eebe",
+      "build_SHA256": "ef1129c623e4e025d8be86e2634347511deef087f4cd21baa91267689009eebe"
+    },
+    "reverseandroid-epoch.mjs": {
+      "source_SHA256": "2be41fcd27bbc48498e90ae9786f2753e204cb6e4a0e46b19682ce39d3292570",
+      "build_SHA256": "75efe96d02e9fc6cf9adbe06d1b5b5e541726008e6160ce8fcc1704f661bcf80"
+    },
+    "guest_c11_resume.cpp": {
+      "source_SHA256": "10561c4024db59198a79d606386dd67069e589966cbe9a1552fa6b40530ece32",
+      "build_SHA256": "10561c4024db59198a79d606386dd67069e589966cbe9a1552fa6b40530ece32"
+    },
+    "android_boot_property.mjs": {
+      "source_SHA256": "c08a9db97dbaf5259a048148c42d80e6ae16b472370dae521c250f6ddf7a2110",
+      "build_SHA256": "c08a9db97dbaf5259a048148c42d80e6ae16b472370dae521c250f6ddf7a2110"
+    },
+    "aosp_ramdisk_preflight.mjs": {
+      "source_SHA256": "ced278d3e21a35a07f15115d013c1e1dac9cc18afac945c22ff362ce3b2d01d0",
+      "build_SHA256": "ced278d3e21a35a07f15115d013c1e1dac9cc18afac945c22ff362ce3b2d01d0"
+    },
+    "android_c18_result.mjs": {
+      "source_SHA256": "0360ff7bdf5f205db8650718f290ad88541676cf78f9acc4219a099291a93808",
+      "build_SHA256": "0360ff7bdf5f205db8650718f290ad88541676cf78f9acc4219a099291a93808"
+    },
+    "android_c27_result.mjs": {
+      "source_SHA256": "c1765302541357fe4b3a2dccbae36416a839851cabc11fbc7071d4e3a5bdfa32",
+      "build_SHA256": "c1765302541357fe4b3a2dccbae36416a839851cabc11fbc7071d4e3a5bdfa32"
+    },
+    "android_pin_checkpoint.mjs": {
+      "source_SHA256": "51ebc891cc5ddb0f9f0202967f7975358ea80fc3431e5a3dc7f915d10666954b",
+      "build_SHA256": "51ebc891cc5ddb0f9f0202967f7975358ea80fc3431e5a3dc7f915d10666954b"
+    },
+    "aosp_cuttlefish_zip_probe.mjs": {
+      "source_SHA256": "f169f84c66dfcff5b9d936d89dcb384fe1cdf227470a85def174b9dc59df0f3b",
+      "build_SHA256": "f169f84c66dfcff5b9d936d89dcb384fe1cdf227470a85def174b9dc59df0f3b"
+    },
+    "android_c15_source.sha256": {
+      "source_SHA256": "3a12fae4970c2bdb976adbafb6700fe88c86e24090d5c8db8f9f10d30a74f4d5",
+      "build_SHA256": "3a12fae4970c2bdb976adbafb6700fe88c86e24090d5c8db8f9f10d30a74f4d5"
+    },
+    "guest_reverseandroid_epoch.cpp": {
+      "source_SHA256": "13982c4d3cadc0d443ad84cd1adb271c90d13965a33ce95c24858ee7bbc9d883",
+      "build_SHA256": "13982c4d3cadc0d443ad84cd1adb271c90d13965a33ce95c24858ee7bbc9d883"
+    },
+    "guest_console_input.hpp": {
+      "source_SHA256": "e7ac1e47ce0190bf1033860c9f54c1aa372ae4dbc88848f744278d35e98d9d4f",
+      "build_SHA256": "e7ac1e47ce0190bf1033860c9f54c1aa372ae4dbc88848f744278d35e98d9d4f"
+    },
+    "android_c25_local_contract.json": {
+      "source_SHA256": "3e000d785cc88a27effd8f8af744c1ef979966a66aa14366f9b703d624fe6164",
+      "build_SHA256": "3e000d785cc88a27effd8f8af744c1ef979966a66aa14366f9b703d624fe6164"
+    },
+    "android_c17_result.mjs": {
+      "source_SHA256": "6490115cdf90d1a9fc13057c6a58524a7c55689e5294e79bf258cb8a31314bcf",
+      "build_SHA256": "6490115cdf90d1a9fc13057c6a58524a7c55689e5294e79bf258cb8a31314bcf"
+    },
+    "reverseandroid-task-signals.mjs": {
+      "source_SHA256": "8dad21dcf99296c50aec03dcff5ef431a3586d063143b619f56e286e5487ba74",
+      "build_SHA256": "8dad21dcf99296c50aec03dcff5ef431a3586d063143b619f56e286e5487ba74"
+    },
+    "guest_c21_fresh.cpp": {
+      "source_SHA256": "9b54545e174d9cda0331d2ba7887d0264d8712522ef1cf3c2a66400ad5618db0",
+      "build_SHA256": "9b54545e174d9cda0331d2ba7887d0264d8712522ef1cf3c2a66400ad5618db0"
+    },
+    "rvg_memory_lines.mjs": {
+      "source_SHA256": "b6f014b339a69b0cb769eae32cdff666d9ef5ccebf8f16d08107552534ab8c23",
+      "build_SHA256": "b6f014b339a69b0cb769eae32cdff666d9ef5ccebf8f16d08107552534ab8c23"
+    },
+    "reverseandroid-mmap-lock-probe.mjs": {
+      "source_SHA256": "67e994a16eacf3ad88adef07f5df3fb9e818c2a6a1fe3a12d6421ea2507d927c",
+      "build_SHA256": "d0d00fde958397134ba93ae53bb98f3a51671425c14e372bcd645eb0bcf00c52"
+    },
+    "android_c16_result.mjs": {
+      "source_SHA256": "6bb2f16cbe4e3d5a38cab86dc15409c342c6ddd35aec3c89e5756ef2859e6e2e",
+      "build_SHA256": "6bb2f16cbe4e3d5a38cab86dc15409c342c6ddd35aec3c89e5756ef2859e6e2e"
+    },
+    "android_c27_media.mjs": {
+      "source_SHA256": "f240af51f1451afe0db0d956d85fa58540549a3696c580b396d21d060892ab9e",
+      "build_SHA256": "f240af51f1451afe0db0d956d85fa58540549a3696c580b396d21d060892ab9e"
+    },
+    "guest_c27_fresh.cpp": {
+      "source_SHA256": "a0d07eb782bcfa5a945eb1578b68d976847be5eee21ceee8fcfc5bd3dfc0cb36",
+      "build_SHA256": "a0d07eb782bcfa5a945eb1578b68d976847be5eee21ceee8fcfc5bd3dfc0cb36"
+    },
+    "android_c33_stage.mjs": {
+      "source_SHA256": "b7c384272fc61f12a1c97ef373fe7f85839832072cea3b67eae0fad63c8d9bbe",
+      "build_SHA256": "b7c384272fc61f12a1c97ef373fe7f85839832072cea3b67eae0fad63c8d9bbe"
+    },
+    "reverseandroid-peripheral-probe.mjs": {
+      "source_SHA256": "676d7c94583c634150aac824af5b8a419f611135ff9cb8f95ddb7b01e032daeb",
+      "build_SHA256": "99494125022ec1f728f3770d3f69cf1fba2de2a879bd99c05d78d8d7341ac679"
+    },
+    "guest_c28_resume.cpp": {
+      "source_SHA256": "5e37ed27c4ff56c9d58136c524a8320743d7724bf678631c92a9f24e88edc868",
+      "build_SHA256": "5e37ed27c4ff56c9d58136c524a8320743d7724bf678631c92a9f24e88edc868"
+    },
+    "guest_profile_resume.cpp": {
+      "source_SHA256": "ec09c9838e64359db3b76cf57c316c3b477fb24f8bb5dc6e5f38f8579f662ed7",
+      "build_SHA256": "ec09c9838e64359db3b76cf57c316c3b477fb24f8bb5dc6e5f38f8579f662ed7"
+    },
+    "android_profile_state.mjs": {
+      "source_SHA256": "f4d0037af8e435081e3fd0aa19430d4b932dd822a8771d301cb714b855654314",
+      "build_SHA256": "f4d0037af8e435081e3fd0aa19430d4b932dd822a8771d301cb714b855654314"
+    },
+    "aosp_boot_preflight.mjs": {
+      "source_SHA256": "908db9b844442b6884ac72b04ee197c6faa255d930b564d57b0d9189e7148058",
+      "build_SHA256": "908db9b844442b6884ac72b04ee197c6faa255d930b564d57b0d9189e7148058"
+    },
+    "android_c27_sequence.mjs": {
+      "source_SHA256": "07137afdd74e04f35eb1d5b4fb1d48e1cfa0ec42df6091f316b7cedc37bfd52a",
+      "build_SHA256": "07137afdd74e04f35eb1d5b4fb1d48e1cfa0ec42df6091f316b7cedc37bfd52a"
+    },
+    "reverseandroid-scheduler-group.mjs": {
+      "source_SHA256": "1bea0802baf8453c3b43f9ec84851f2dc2306f81ba878ba921f55a053a819862",
+      "build_SHA256": "1bea0802baf8453c3b43f9ec84851f2dc2306f81ba878ba921f55a053a819862"
+    },
+    "reverseandroid-console-proof.mjs": {
+      "source_SHA256": "9cad75232a5b35da5a360eb9c08064480312dc1249eb10bcb652c4fd7c7270f9",
+      "build_SHA256": "9cad75232a5b35da5a360eb9c08064480312dc1249eb10bcb652c4fd7c7270f9"
+    },
+    "android_supervised_cycle.mjs": {
+      "source_SHA256": "1232328a5a1c133d0b1f55f651f0708c2f292a6020c2c37150582528b001ecb4",
+      "build_SHA256": "1232328a5a1c133d0b1f55f651f0708c2f292a6020c2c37150582528b001ecb4"
+    },
+    "android_c27_state.mjs": {
+      "source_SHA256": "bcbedff1173e59a8f85fafa04c7c367f4b10eaa369dbfc6e2b41ec114988e468",
+      "build_SHA256": "bcbedff1173e59a8f85fafa04c7c367f4b10eaa369dbfc6e2b41ec114988e468"
+    },
+    "android_c09_audit.mjs": {
+      "source_SHA256": "e9169950a41dfeb878ee0614e84736351488806bdf5244c71de8baf39fc7fc07",
+      "build_SHA256": "e9169950a41dfeb878ee0614e84736351488806bdf5244c71de8baf39fc7fc07"
+    },
+    "android_c23_result.mjs": {
+      "source_SHA256": "34bda62da069d172af7382e00a704c0daa95e73a7d98eeca28f725f161273c6e",
+      "build_SHA256": "34bda62da069d172af7382e00a704c0daa95e73a7d98eeca28f725f161273c6e"
+    },
+    "reverseandroid-debuggerd-context.mjs": {
+      "source_SHA256": "5d4edd7dcd4f394b2f9ba84c4a697a05b621d072ad3b34ee3ba16afb171469cd",
+      "build_SHA256": "5d4edd7dcd4f394b2f9ba84c4a697a05b621d072ad3b34ee3ba16afb171469cd"
+    },
+    "guest_c08_resume.cpp": {
+      "source_SHA256": "19ec5c88361e36ebba54c7949ee884f82cd8686d621a8f9b5bcf56219d78106a",
+      "build_SHA256": "19ec5c88361e36ebba54c7949ee884f82cd8686d621a8f9b5bcf56219d78106a"
+    },
+    "guest_resident_benchmark.cpp": {
+      "source_SHA256": "dcd58981964328ad1d947af3038bfad132f6d735b28a8f2d480d7f8134b67f18",
+      "build_SHA256": "dcd58981964328ad1d947af3038bfad132f6d735b28a8f2d480d7f8134b67f18"
+    },
+    "reverseandroid-mmap-lock.mjs": {
+      "source_SHA256": "6aaa5ace7d9f0f72bd3dc96865eb9d618d805d8034e73a3bc596edb4228c6563",
+      "build_SHA256": "6aaa5ace7d9f0f72bd3dc96865eb9d618d805d8034e73a3bc596edb4228c6563"
+    },
+    "android_c34_stage.mjs": {
+      "source_SHA256": "e58f0bde75479dc0e61fa6fb1119ef63ccbfe6aa19967422eeb0704aed058b12",
+      "build_SHA256": "e58f0bde75479dc0e61fa6fb1119ef63ccbfe6aa19967422eeb0704aed058b12"
+    },
+    "android_c27_run.mjs": {
+      "source_SHA256": "e07f95f9e7ad1c94371a0d94d8b30c0bb63369ba2829eea5259715c5de610c96",
+      "build_SHA256": "e07f95f9e7ad1c94371a0d94d8b30c0bb63369ba2829eea5259715c5de610c96"
+    },
+    "android_c26_contract.json": {
+      "source_SHA256": "0b8127da3c2e58cd4ceb37f8e2563e6bd2e29a2bd09592573bc2638ae3172b68",
+      "build_SHA256": "0b8127da3c2e58cd4ceb37f8e2563e6bd2e29a2bd09592573bc2638ae3172b68"
+    },
+    "android_c08_result.mjs": {
+      "source_SHA256": "a53c46de24d04a8684b4bc4abf7e73f0bad55db669fbcc22925b1320eb420ee0",
+      "build_SHA256": "a53c46de24d04a8684b4bc4abf7e73f0bad55db669fbcc22925b1320eb420ee0"
+    },
+    "android_verified_c07_source.mjs": {
+      "source_SHA256": "8bc3897ee048a253b322e3dd319c3823fc9bb7bc01b6f7d4a86e090ab970e48f",
+      "build_SHA256": "8bc3897ee048a253b322e3dd319c3823fc9bb7bc01b6f7d4a86e090ab970e48f"
+    },
+    "guest_incremental_benchmark.cpp": {
+      "source_SHA256": "e97dbf19f8cf8895ed32bfc5d75fd818a2833f055562b12a06f5986c87e77ff2",
+      "build_SHA256": "e97dbf19f8cf8895ed32bfc5d75fd818a2833f055562b12a06f5986c87e77ff2"
+    },
+    "android_binder_snapshot_probe.mjs": {
+      "source_SHA256": "4b7091d5e4e9fc5f9edc67887c2a316a7b8c32322722f5ce59e4b40871f434df",
+      "build_SHA256": "4b7091d5e4e9fc5f9edc67887c2a316a7b8c32322722f5ce59e4b40871f434df"
+    },
+    "guest_c15_resume.cpp": {
+      "source_SHA256": "f7c0cf8d8c5bd0b4489c0b9af3c8b0e1e1a239468b0e85d364f91ed090b3a9b3",
+      "build_SHA256": "f7c0cf8d8c5bd0b4489c0b9af3c8b0e1e1a239468b0e85d364f91ed090b3a9b3"
+    },
+    "android_c30_checkpoint.mjs": {
+      "source_SHA256": "53ca8a8914b93d82dd813339f9cf2f4428495f4e5d516512d53d93c890c9df2d",
+      "build_SHA256": "53ca8a8914b93d82dd813339f9cf2f4428495f4e5d516512d53d93c890c9df2d"
+    },
+    "android_kernel_observer.mjs": {
+      "source_SHA256": "f950a7b1faa23f629eac204e29d0792f4afaac5fbc09b9bf719ca3d977cf0934",
+      "build_SHA256": "f950a7b1faa23f629eac204e29d0792f4afaac5fbc09b9bf719ca3d977cf0934"
+    },
+    "android_c28_run.mjs": {
+      "source_SHA256": "d8cd5cee946d631792a5cddb8892eb908aa1a95f9dbb863384bd4d7fd4543d79",
+      "build_SHA256": "d8cd5cee946d631792a5cddb8892eb908aa1a95f9dbb863384bd4d7fd4543d79"
+    },
+    "android_c12_audit.mjs": {
+      "source_SHA256": "854a44168a25279fcc4b8ab2fe6cc583d30bb2dbd92b4f3762f3e7efb5a9bdc8",
+      "build_SHA256": "854a44168a25279fcc4b8ab2fe6cc583d30bb2dbd92b4f3762f3e7efb5a9bdc8"
+    },
+    "reverseandroid-diagnostic-console.mjs": {
+      "source_SHA256": "a056395dbe2d353d52ab356c61127220765a535502260a03681ea2162a6c7d30",
+      "build_SHA256": "a056395dbe2d353d52ab356c61127220765a535502260a03681ea2162a6c7d30"
+    },
+    "android_c13_result.mjs": {
+      "source_SHA256": "cc79011e80f21e211a98d1462d9cecfaed91960827b11fff74ce106b3baf7281",
+      "build_SHA256": "cc79011e80f21e211a98d1462d9cecfaed91960827b11fff74ce106b3baf7281"
+    },
+    "android_c10_supervised.mjs": {
+      "source_SHA256": "3dc28fe42e6c69f31a1b327369065da1a4bfb411f2d0e117baec60457d055169",
+      "build_SHA256": "3dc28fe42e6c69f31a1b327369065da1a4bfb411f2d0e117baec60457d055169"
+    },
+    "guest_reverseandroid_power_cycle.cpp": {
+      "source_SHA256": "938faa98e024b90a2ba2432cb0fa0b8113042335075829b3c80f9452ff5624c1",
+      "build_SHA256": "938faa98e024b90a2ba2432cb0fa0b8113042335075829b3c80f9452ff5624c1"
+    },
+    "android_c08_audit.mjs": {
+      "source_SHA256": "83f313f919136f45940845009c81e8b84607221cd0baf55b9e438332fe8e92c0",
+      "build_SHA256": "83f313f919136f45940845009c81e8b84607221cd0baf55b9e438332fe8e92c0"
+    },
+    "android_c32_stage.mjs": {
+      "source_SHA256": "a6434d298a32207a47c00d793093e1d60ec0efdfb06c6585bf49ba0ff89cfa93",
+      "build_SHA256": "a6434d298a32207a47c00d793093e1d60ec0efdfb06c6585bf49ba0ff89cfa93"
+    },
+    "guest_c14_resume.cpp": {
+      "source_SHA256": "f57660b1b1a78c2cba57669d6567e39a137ce53876c1aba1643499a35eb2dcfc",
+      "build_SHA256": "f57660b1b1a78c2cba57669d6567e39a137ce53876c1aba1643499a35eb2dcfc"
+    },
+    "reverseandroid-campaign-input.mjs": {
+      "source_SHA256": "879e094c3ee3e6e6fde2693eab80abca6c4db8362d11a953b7870b9101f66512",
+      "build_SHA256": "879e094c3ee3e6e6fde2693eab80abca6c4db8362d11a953b7870b9101f66512"
+    },
+    "guest_c25_resume.cpp": {
+      "source_SHA256": "8f83f512dd16df2f822597f87801cc5e5c5191ae533ebb41ba4590ba3459c52a",
+      "build_SHA256": "8f83f512dd16df2f822597f87801cc5e5c5191ae533ebb41ba4590ba3459c52a"
+    },
+    "android_c26_run.mjs": {
+      "source_SHA256": "acdc86c7ed074dec4324d0ce7ed42b1443cd74cbf38a8da25c554807a8e64ea1",
+      "build_SHA256": "acdc86c7ed074dec4324d0ce7ed42b1443cd74cbf38a8da25c554807a8e64ea1"
+    },
+    "guest_c27_profile_resume.cpp": {
+      "source_SHA256": "d1407ddf338140137b821418615d8a59dbda33c42e780389e25a7e1a83c69c1f",
+      "build_SHA256": "d1407ddf338140137b821418615d8a59dbda33c42e780389e25a7e1a83c69c1f"
+    },
+    "guest_budget_cycles.hpp": {
+      "source_SHA256": "1ebb37d90b918aef3ccb4720bb8b771e5af234d63650505f02411d8e0fcb3950",
+      "build_SHA256": "1ebb37d90b918aef3ccb4720bb8b771e5af234d63650505f02411d8e0fcb3950"
+    },
+    "aosp_cuttlefish_stage.mjs": {
+      "source_SHA256": "dd700b58ad47aeab9e1012f4d9dc8a6b97b411c6ad861aa1037ce7f949be906b",
+      "build_SHA256": "dd700b58ad47aeab9e1012f4d9dc8a6b97b411c6ad861aa1037ce7f949be906b"
+    },
+    "rvg_checksum.mjs": {
+      "source_SHA256": "e9ed172478fe1daa62168a8ce859e6e7b2a5f6d12845816ec3f4956530bf7728",
+      "build_SHA256": "e9ed172478fe1daa62168a8ce859e6e7b2a5f6d12845816ec3f4956530bf7728"
+    },
+    "android_c28_contract.json": {
+      "source_SHA256": "d66a4020caec383923e20bf5592166c70f68c1f6d5f202995f17880c85958079",
+      "build_SHA256": "d66a4020caec383923e20bf5592166c70f68c1f6d5f202995f17880c85958079"
+    },
+    "android_c27_wait_observation.mjs": {
+      "source_SHA256": "8fda51d87548937399782a4eed539dd2dd6eb8e2e99dba25c272a0ddd960cd49",
+      "build_SHA256": "8fda51d87548937399782a4eed539dd2dd6eb8e2e99dba25c272a0ddd960cd49"
+    },
+    "reverseandroid-host-transport-preload.mjs": {
+      "source_SHA256": "4025ad6a09771f5744fb44c3ab3487e660e00f32862c9b606e1ee085cf44f11b",
+      "build_SHA256": "4025ad6a09771f5744fb44c3ab3487e660e00f32862c9b606e1ee085cf44f11b"
+    },
+    "guest_instruction_benchmark.cpp": {
+      "source_SHA256": "ffe11afcf7b6da09443d90eec1c8f6161ed7aa143ff937ac6975878db713d375",
+      "build_SHA256": "ffe11afcf7b6da09443d90eec1c8f6161ed7aa143ff937ac6975878db713d375"
+    },
+    "android_framework_evidence.mjs": {
+      "source_SHA256": "bab6448252e2cd9391d58147ef341235a288d9cda31a5d61f69f0453cc5dec65",
+      "build_SHA256": "bab6448252e2cd9391d58147ef341235a288d9cda31a5d61f69f0453cc5dec65"
+    },
+    "guest_checkpoint_view_benchmark.cpp": {
+      "source_SHA256": "0558b4a5a95d194c3f13d0efbcaf125b63fb135da8c07e29dc69d3f45b20f711",
+      "build_SHA256": "0558b4a5a95d194c3f13d0efbcaf125b63fb135da8c07e29dc69d3f45b20f711"
+    },
+    "android_gpu_backing_evidence.mjs": {
+      "source_SHA256": "91b72114d3ca6a39980444e26e7d1154633f4194caa6921551026a988a1177cb",
+      "build_SHA256": "13e696c4d1d61dcd54018627708b31ac0ce178d351e0d0a23b397808055dca16"
+    },
+    "android_c24_result.mjs": {
+      "source_SHA256": "38c04f7b3c6ac84024cbd53f020e2abff21d5e1df28b9c8dccba720b00970fe1",
+      "build_SHA256": "38c04f7b3c6ac84024cbd53f020e2abff21d5e1df28b9c8dccba720b00970fe1"
+    },
+    "android_c21_result.mjs": {
+      "source_SHA256": "280fec109af6b3f11dbbfb09ac4231a0c2aec11112f78365f184e33557ae80ee",
+      "build_SHA256": "280fec109af6b3f11dbbfb09ac4231a0c2aec11112f78365f184e33557ae80ee"
+    },
+    "android_c17_source.sha256": {
+      "source_SHA256": "2154510582257850f27ab8a9e1ff0de348acddb7b7e75681c0e8a118fc8e3e07",
+      "build_SHA256": "2154510582257850f27ab8a9e1ff0de348acddb7b7e75681c0e8a118fc8e3e07"
+    },
+    "guest_native_benchmark.cpp": {
+      "source_SHA256": "677adb2a1d5c95c75ce24fa879e0a51cad4fd81ec3da703eddfafb6c96d05f08",
+      "build_SHA256": "677adb2a1d5c95c75ce24fa879e0a51cad4fd81ec3da703eddfafb6c96d05f08"
+    },
+    "android_c14_result.mjs": {
+      "source_SHA256": "057a5aa324b765f0cfaa843984ab7336c811f3df6d9f0ba5770c7a24eda0a0e4",
+      "build_SHA256": "057a5aa324b765f0cfaa843984ab7336c811f3df6d9f0ba5770c7a24eda0a0e4"
+    },
+    "android_c16_source.sha256": {
+      "source_SHA256": "a28dcc2c23980030b0d455cfb76209f65ea97aef1b4345ff511861f2486c28b7",
+      "build_SHA256": "a28dcc2c23980030b0d455cfb76209f65ea97aef1b4345ff511861f2486c28b7"
+    },
+    "guest_c09_resume.cpp": {
+      "source_SHA256": "ea15b97ce6554c8a99ee609edb597e5fad5719fb0ebc593398cd5b8761633fec",
+      "build_SHA256": "ea15b97ce6554c8a99ee609edb597e5fad5719fb0ebc593398cd5b8761633fec"
+    }
+  }
+}
