@@ -61,3 +61,56 @@ The validation above does not establish a completed Android boot or usable UI.
 The initial recipe is immutable evidence of this recovery. For a future restart,
 read `state/latest.json` and `state/continuation.json` and select the newest fully
 admitted checkpoint, preserving the validated host profile and full input history.
+
+## Actual resumed and preserved boundary
+
+[C90R run 42587296800](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42587296800),
+at commit `ceb722e62ebc720fa33133761a188199e91a59a5`, recovered the original source,
+passed both source admissions, and completed stage 1 with exit code zero. The
+first complete RVG has SHA-256
+`17b34e1843e9acab0613687780a42a881b427bbf037a8b7f406740c520809148`,
+**161447727998 instructions** and **2148197611 bytes**. The controller verified
+the full hash, size and instruction count against the independent validation
+trial. The entire original kernel-observation bytes and accumulated console
+also match that trial.
+
+All four stage 1 transport pieces and its metadata were uploaded successfully
+before stage 2 began. The canonical pointer now selects this C90R result. Its
+producer, proof and transport are distinct from the earlier experimental trial,
+which remains validation evidence. The
+[stage 1 authority](evidence/c90r/stage1-original-CI-authority.json) records the
+actual artifact IDs and ZIP hashes, authenticated report/process bindings,
+source lineage, SystemServer observation and original boot result. The metadata
+ZIP was downloaded and checked locally by full SHA-256 and CRC; no full local
+RVG download or local native replay is claimed.
+
+The original SystemServer is alive at PID 7354 with Zygote parent 5629. The fresh
+peripheral checks and enforcing SELinux pass. The live `sys.boot_completed=1`
+condition, usable UI and gesture response remain unverified. The independent
+[original-engine validation run 42587296844](https://github.com/guadalupejuan001-code/reverseAndroid/actions/runs/42587296844)
+also completed successfully.
+
+## Recovering the newly preserved source
+
+The [stage 1 artifact lock](../state/experiments/c90r-stage-1-artifacts.json)
+selects its own four transport pieces and metadata. The initial `c90r-plan.json`
+and `c90r-artifacts.json` remain unchanged: the current workflow deliberately
+starts from original C90 stage 6. Dispatching it again does not automatically
+resume the later canonical pointer. A subsequent campaign must explicitly bind
+the latest admitted source and its history in a new recipe.
+
+For stage 1, the full accumulated console was reconstructed from the authenticated
+original C90 stage 6 console and C90R stage 1's exact `console-new.txt` bytes. Its
+**3946878 bytes** have SHA-256
+`359b2eac45e66d532bb8a53317b45f1dae77cbf5a952e4ff172c6b3dd2c91486`,
+matching the actual `zero-input-proof.json`. The compressed console, all encoding
+hashes and the proof hash are preserved in the stage lock and current pointer.
+The eight historical UART events remain unchanged and must not be replayed.
+
+Recovery of a source above 2 GiB must authenticate the retained `host-native`
+and `host-validation` artifacts, regenerate the same derived tool profile, and
+verify every tool's bytes against the validated manifest. Use the derived
+`build/host-transport-runtime/tools/reverseandroid-epoch.mjs preflight` for that
+source together with the selected native and frame exporter. The historical
+preflight retains its original 2 GiB limit. The logical guest RAM remains 2 GiB;
+the 3840 MiB setting applies to host snapshot file capacity.
