@@ -1,0 +1,284 @@
+{
+  "schema": "reverseandroid-c91d2-readonly-scheduler-binder-summary-v1",
+  "source": {
+    "schema": "reverseandroid-latest-fully-preserved-c91-selection-v1",
+    "repository": "guadalupejuan001-code/reverseAndroid",
+    "run_id": 42596365209,
+    "stage": 8,
+    "checkpoint_sha256": "c3a0d7482a25fb9bcf47112cf6d26eda3f7bf69950184343956d367165decf66",
+    "instructions": 173447727998,
+    "source_commit": "a035f386b468c71ad11c32aee88252dbab0b91db",
+    "android_boot_completed_verified": false,
+    "metadata_artifact": {
+      "id": 13669545831,
+      "sha256": "9374661c05091748e9feddf5b14b0209efcb81bf532a1224189672f67b1a5eeb",
+      "name": "reverseandroid-c91-8-metadata"
+    },
+    "piece_artifacts": [
+      {
+        "id": 13669715238,
+        "sha256": "776a34bc45f53270b660542802dbb9a60092656632b1379751dce9beb2fd4a65",
+        "name": "reverseandroid-c91-8-000"
+      },
+      {
+        "id": 13669137133,
+        "sha256": "6223b0df5f65e53f1865dcb078ab1258e02b668a04661ca25218966ab56f57c1",
+        "name": "reverseandroid-c91-8-001"
+      },
+      {
+        "id": 13668463924,
+        "sha256": "746892ef2c5b55f1da08c727f309328260c2e8e78e056ee16a394d9bd504cf15",
+        "name": "reverseandroid-c91-8-002"
+      },
+      {
+        "id": 13669830061,
+        "sha256": "5a7df8d15da4cfb697e03d9c85b868e0796648a8102b291a951a978977c20b70",
+        "name": "reverseandroid-c91-8-003"
+      }
+    ],
+    "manifest_SHA256": "9b9f1381f6f10a1ddd42947e05180230af97e5c47f2c0d72ef0724e278f95a51",
+    "rejected_higher_or_partial_stages": [],
+    "selection_is_promotion_authority": false,
+    "guest_executed": false,
+    "guest_mutated": false,
+    "runtime_lock": "state/experiments/runtime-c91-selection/c91-selected-artifacts.json",
+    "runtime_transport": "state/experiments/runtime-c91-selection/c91-selected-transport.json"
+  },
+  "boot": {
+    "sys_boot_completed": false,
+    "live_boot_property": false,
+    "activity_missing_in_source_console": false,
+    "activity_evidence": null
+  },
+  "SystemServer": {
+    "pid": 7354,
+    "leader": {
+      "pid": 7354,
+      "tgid": 7354,
+      "name": "system_server",
+      "state": 0,
+      "on_rq": 1,
+      "on_cpu": 0,
+      "accounting": {
+        "sum_exec_runtime": "14952022000",
+        "vruntime": "62552047079"
+      },
+      "policy": 0,
+      "prio": 118,
+      "normal_prio": 118,
+      "static_prio": 118,
+      "rt_priority": 0,
+      "sched_class_symbol_from_original_observer": "fair_sched_class+0x0"
+    },
+    "thread_count": 55,
+    "runnable_threads": 4,
+    "running_threads": 0,
+    "static_prio_distribution": {
+      "118": 15,
+      "100": 2,
+      "129": 1,
+      "124": 4,
+      "120": 19,
+      "117": 1,
+      "116": 3,
+      "130": 9,
+      "110": 1
+    }
+  },
+  "cppreopts_family": {
+    "process_count": 219,
+    "thread_count": 219,
+    "process_name_counts": {
+      "cppreopts.sh": 112,
+      "fsync": 104,
+      "cp": 2,
+      "preopt2cachenam": 1
+    },
+    "static_prio_distribution": {
+      "100": 219
+    },
+    "nice_minus20_static_prio_100_threads": 219,
+    "nice0_static_prio_120_threads": 0,
+    "runnable_target_threads": 56,
+    "runnable_target_names": {
+      "fsync": 53,
+      "cp": 2,
+      "preopt2cachenam": 1
+    }
+  },
+  "scheduler_probe": {
+    "schema": "reverse-android-task-scheduler-readonly-v1",
+    "current_task_verified": true,
+    "source_machine_ticks": "2820634301",
+    "timer_frequency_hz": 1000000,
+    "virtual_timer": {
+      "control": 1,
+      "compare": "2820637269",
+      "pending": false
+    },
+    "virtual_irq": {
+      "daif": 0,
+      "cpu_interface": 1,
+      "distributor": 1,
+      "enabled_irq0": "0x80000ff",
+      "pending_irq0": "0x0",
+      "active_irq0": "0x0"
+    },
+    "current": {
+      "task": "0xffffff8063b96540",
+      "read_only": true,
+      "pid": 9365,
+      "tgid": 9365,
+      "policy": 0,
+      "prio": 100,
+      "static_prio": 100,
+      "normal_prio": 100,
+      "rt_priority": 0,
+      "on_rq": 1,
+      "on_cpu": 1,
+      "comm": "fsync",
+      "sched_class": "0xffffffc08199ccb8",
+      "sched_class_symbol": "fair_sched_class",
+      "group_leader": "0xffffff8063b96540",
+      "group_leader_pid": 9365,
+      "group_leader_comm": "fsync",
+      "exe_path": "/system/bin/toybox"
+    },
+    "observed_service_leaders": [
+      {
+        "task": "0xffffff8002d19440",
+        "read_only": true,
+        "pid": 1,
+        "tgid": 1,
+        "policy": 0,
+        "prio": 120,
+        "static_prio": 120,
+        "normal_prio": 120,
+        "rt_priority": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "comm": "init",
+        "sched_class": "0xffffffc08199ccb8",
+        "sched_class_symbol": "fair_sched_class",
+        "group_leader": "0xffffff8002d19440",
+        "group_leader_pid": 1,
+        "group_leader_comm": "init",
+        "exe_path": "/system/bin/init"
+      },
+      {
+        "task": "0xffffff8005256540",
+        "read_only": true,
+        "pid": 89,
+        "tgid": 89,
+        "policy": 0,
+        "prio": 120,
+        "static_prio": 120,
+        "normal_prio": 120,
+        "rt_priority": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "comm": "init",
+        "sched_class": "0xffffffc08199ccb8",
+        "sched_class_symbol": "fair_sched_class",
+        "group_leader": "0xffffff8005256540",
+        "group_leader_pid": 89,
+        "group_leader_comm": "init",
+        "exe_path": "/system/bin/init"
+      },
+      {
+        "task": "0xffffff80069a6540",
+        "read_only": true,
+        "pid": 377,
+        "tgid": 377,
+        "policy": 0,
+        "prio": 120,
+        "static_prio": 120,
+        "normal_prio": 120,
+        "rt_priority": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "comm": "servicemanager",
+        "sched_class": "0xffffffc08199ccb8",
+        "sched_class_symbol": "fair_sched_class",
+        "group_leader": "0xffffff80069a6540",
+        "group_leader_pid": 377,
+        "group_leader_comm": "servicemanager",
+        "exe_path": "/system/bin/servicemanager"
+      },
+      {
+        "task": "0xffffff8006b20000",
+        "read_only": true,
+        "pid": 396,
+        "tgid": 396,
+        "policy": 0,
+        "prio": 120,
+        "static_prio": 120,
+        "normal_prio": 120,
+        "rt_priority": 0,
+        "on_rq": 0,
+        "on_cpu": 0,
+        "comm": "keystore2",
+        "sched_class": "0xffffffc08199ccb8",
+        "sched_class_symbol": "fair_sched_class",
+        "group_leader": "0xffffff8006b20000",
+        "group_leader_pid": 396,
+        "group_leader_comm": "keystore2",
+        "exe_path": "/system/bin/keystore2"
+      },
+      {
+        "task": "0xffffff8049160000",
+        "read_only": true,
+        "pid": 9148,
+        "tgid": 9148,
+        "policy": 0,
+        "prio": 120,
+        "static_prio": 120,
+        "normal_prio": 120,
+        "rt_priority": 0,
+        "on_rq": 1,
+        "on_cpu": 0,
+        "comm": "init",
+        "sched_class": "0xffffffc08199ccb8",
+        "sched_class_symbol": "fair_sched_class",
+        "group_leader": "0xffffff8049160000",
+        "group_leader_pid": 9148,
+        "group_leader_comm": "init",
+        "exe_path": "/apex/com.android.hardware.threadnetwork/bin/hw/android.hardware.threadnetwork-service"
+      }
+    ],
+    "read_only": true,
+    "current_pc_mapping": {
+      "start": "0x76e229a000",
+      "end": "0x76e23e2000",
+      "pc": "0x76e2365cbc",
+      "file_page_offset": "128",
+      "offset_in_vma": "834748",
+      "is_file_backed": true,
+      "file": "/system/lib64/libcrypto.so",
+      "offset_in_file": "1359036"
+    }
+  },
+  "binder_live_queues": {
+    "schema": "reverse-binder-live-queues-v1",
+    "source": "authenticated_kernel_btf_and_binder_procs",
+    "read_only": true,
+    "global_address": "0xffffffc0828abac0",
+    "process_count": 0,
+    "focused_processes": [],
+    "other_pending": [],
+    "all_processes": []
+  },
+  "current_task": {
+    "pid": 9365,
+    "name": "fsync",
+    "task": "0xffffff8063b96540",
+    "verification": "process_list",
+    "live_exception_level": 0,
+    "live_pc": "0x76e2365cbc"
+  },
+  "SELinux_enforcing": true,
+  "diagnostic_read_only": true,
+  "guest_executed": false,
+  "guest_mutated": false,
+  "diagnosis": "Verified nice -20 cppreopts-family work coexists with runnable/non-running SystemServer; priority normalization remains directly targeted."
+}
