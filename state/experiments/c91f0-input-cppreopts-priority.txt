@@ -5,4 +5,5 @@ seen=0; changed=0; bad=0
 for d in /proc/[0-9]*; do p=${d#/proc/}; [ -r "$d/comm" ] || continue; IFS= read -r c < "$d/comm"; case "$c" in cppreopts.sh|mv|cp|fsync|preopt2cachenam) ;; *) continue;; esac; anc "$p" || continue; uid=; while read -r k v rest; do [ "$k" = Uid: ] && { uid=$v; break; }; done < "$d/status"; [ "$uid" = 0 ] || { bad=$((bad+1)); continue; }; n=$(niceof "$p") || continue; seen=$((seen+1)); if [ "$n" = -20 ]; then renice -n 20 -p "$p" >/dev/null || { bad=$((bad+1)); continue; }; n2=$(niceof "$p") || { bad=$((bad+1)); continue; }; [ "$n2" = 0 ] || { bad=$((bad+1)); continue; }; changed=$((changed+1)); elif [ "$n" != 0 ]; then bad=$((bad+1)); fi; done
 [ "$changed" -ge 20 ] && [ "$bad" -eq 0 ] || exit 61
 printf "\nREVERSE_C91F0_DONE CHANGED_%s SEEN_%s BAD_%s\n" "$changed" "$seen" "$bad"
+( i=0; while [ "$i" -lt 30 ]; do if service check activity >/dev/null 2>&1; then printf "\nREVERSE_C91F0_ACTIVITY_REGISTERED AFTER_%s\n" "$i"; break; fi; i=$((i+1)); sleep 1; done; b=$(getprop sys.boot_completed); printf "\nREVERSE_C91F0_BOOTPROP_%s\n" "${b:-absent}" ) &
 '; r=$?; printf '\nREVERSE_C91F0_RESULT RC_%s\n' "$r"
