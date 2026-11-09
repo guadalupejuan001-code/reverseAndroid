@@ -1,0 +1,79 @@
+{
+  "schema": "reverseandroid-c91f0-root-cause-evidence-v1",
+  "source_comparison": {
+    "stage5": {
+      "instructions": 170447727998,
+      "checkpoint_sha256": "62ebfa1c5dfc9a8ed081d8028ef3f73d07e1854ad085f6c6461e239ed692f210"
+    },
+    "stage6": {
+      "instructions": 171447727998,
+      "checkpoint_sha256": "3259407725a7b8e2be5a6d874f9b59306610bc8d1cf38a81d1e6f6ae726616ea"
+    }
+  },
+  "system_server": {
+    "pid": 7354,
+    "on_rq_stage5": 1,
+    "on_rq_stage6": 1,
+    "on_cpu_stage5": 0,
+    "on_cpu_stage6": 0,
+    "sum_exec_runtime_stage5": 14945254000,
+    "sum_exec_runtime_stage6": 14949179000,
+    "delta": 3925000,
+    "stage6_console_framework_signal": "servicemanager reports service 'activity' could not be found and may still be starting"
+  },
+  "cppreopts": {
+    "stage6_process_counts": {
+      "cppreopts.sh": 109,
+      "mv": 53,
+      "fsync": 50,
+      "cp": 4,
+      "preopt2cachenam": 1
+    },
+    "persistent_CFS_samples": {
+      "mv": 53,
+      "fsync": 42,
+      "cp": 2
+    },
+    "median_delta_vruntime_over_delta_exec": {
+      "mv": 0.011536470414510641,
+      "fsync": 0.011536462695911819,
+      "cp": 0.011536455125119183
+    },
+    "linux_CFS_expected_ratio_nice_minus_20": 0.011536598280776467,
+    "mv_relative_error_ppm": 11.083532832946903,
+    "conclusion": "The persistent cp/mv/fsync descendants are executing with the CFS weight corresponding to nice -20."
+  },
+  "kernel": {
+    "prior_stage5_repeated_workqueue_lockup": true,
+    "involved_work": [
+      "rust_binder Process WorkItem run",
+      "drain_vmap_area_work"
+    ],
+    "interpretation": "CPU0 workqueue pressure coexists with the nice -20 cppreopts fan-out and a runnable but almost unscheduled SystemServer."
+  },
+  "framework_boot_graph": {
+    "last_verified": [
+      "apexd.status=ready",
+      "init.svc.zygote=running",
+      "SystemServer PID 7354 alive",
+      "SurfaceFlinger PID 669 alive"
+    ],
+    "next_expected": "ActivityManagerService.setSystemProcess publishes Context.ACTIVITY_SERVICE as 'activity'",
+    "observed_block": "'activity' not registered in servicemanager at C91 stage 6",
+    "boot_completed": false
+  },
+  "correction_rule": {
+    "hypothesis": "cppreopts CPU priority starvation prevents SystemServer from reaching/publishing ActivityManagerService in reasonable guest time.",
+    "minimal_test": "Normalize only verified cppreopts descendants from nice -20 to nice 0, then measure SystemServer runtime and activity registration.",
+    "excluded_changes": [
+      "RAM",
+      "disk contents before resume",
+      "ISA",
+      "HAL",
+      "GPU",
+      "QSSD",
+      "boot properties",
+      "snapshot patching"
+    ]
+  }
+}
