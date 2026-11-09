@@ -1,0 +1,288 @@
+name: C91D3 stage7 neutralize cppreopts CPU boost
+'on':
+  push:
+    branches: [c91d3-stage7-neutralize-boost]
+    paths:
+      - .github/workflows/android-c91d3-priority-neutralization.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: reverseandroid-c91d3-stage7
+  cancel-in-progress: false
+jobs:
+  c91d3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+
+      - name: C91D3 lease only the latest fully preserved C91 stage7 source
+        run: |
+          mkdir -p evidence/c91d3-reports build
+          gh api repos/${GITHUB_REPOSITORY}/actions/runs/42596365209/jobs > evidence/c91d3-reports/source-active-run-jobs.json
+          gh api "repos/${GITHUB_REPOSITORY}/contents/state/latest.json?ref=main" > evidence/c91d3-reports/main-latest-api.json
+          python3 - <<'PY'
+          import base64,json,pathlib
+          P=json.load(open('state/experiments/c91d3-plan.json'))
+          jobs=json.load(open('evidence/c91d3-reports/source-active-run-jobs.json'))['jobs']
+          steps=[s for j in jobs for s in j.get('steps',[])]
+          later=[]
+          for stage in range(P['source_stage']+1,17):
+              needle=f'C91 stage {stage}: preserve every admitted checkpoint piece before advancing'
+              if any(s.get('name')==needle and s.get('conclusion')=='success' for s in steps):
+                  later.append(stage)
+          assert not later, f'C91D3 source is obsolete; later preserved C91 stages exist: {later}'
+          api=json.load(open('evidence/c91d3-reports/main-latest-api.json'))
+          latest=json.loads(base64.b64decode(api['content']))
+          if latest.get('instructions',0)>P['source_instructions']:
+              raise SystemExit(f"main points past leased source: {latest.get('instructions')}")
+          pathlib.Path('evidence/c91d3-reports/source-lease.json').write_text(json.dumps({
+            'schema':'reverseandroid-c91d3-source-lease-v1',
+            'source_cycle':'C91','source_stage':P['source_stage'],
+            'source_checkpoint_sha256':P['source_checkpoint_sha256'],
+            'source_instructions':P['source_instructions'],
+            'active_run_id':P['source_run_id'],
+            'no_later_fully_preserved_active_stage_at_lease':True,
+            'main_not_ahead_of_source':True,
+            'diagnostic_only':True,'promotion_authority':False
+          },indent=2)+'\n')
+          PY
+
+      - name: Recover and authenticate C91 stage7 and its cumulative console
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          python3 scripts/verify-reverseandroid-import.py
+          node --test tests/host_memory_lines.test.mjs
+          python3 tests/host_observer_continuation_test.py
+          python3 tests/host_transport_continuation_test.py
+          python3 scripts/fetch-reverseandroid-artifact.py native-cache build/reverseandroid state/experiments/c91d-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py ic-native build/ic-native state/experiments/c91d-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py host-native build/host-native state/experiments/c91d-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py host-validation build/host-validation state/experiments/c91d-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c91d3 state/experiments/c91d-artifacts.json
+          for name in media-manifest media-aa media-ab media-ac; do
+            python3 scripts/fetch-reverseandroid-artifact.py "$name" build/media-input state/experiments/c91d-artifacts.json
+          done
+          python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+          for name in meta2 meta3 meta4 meta5 meta6 meta7; do
+            python3 scripts/fetch-reverseandroid-artifact.py "$name" "build/$name" state/experiments/c91d-artifacts.json
+          done
+          chmod +x build/host-native/epoch-clz-ic-host build/host-native/frame
+          python3 scripts/prepare-host-transport.py build/host-transport-runtime
+          python3 scripts/prepare-host-observer.py build/host-observer-runtime --plan state/experiments/c91-plan.json
+          node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c91d3 > evidence/c91d3-reports/source-admission.json
+          python3 - <<'PY'
+          import base64,gzip,hashlib,json,pathlib
+          P=json.load(open('state/experiments/c91d3-plan.json'))
+          P0=json.load(open('state/experiments/c91d-plan.json'))
+          S=pathlib.Path('build/source-c91d3')
+          def dig(p): return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+          assert dig(S/'current.rvg')==P['source_checkpoint_sha256']
+          out=json.load(open(S/'output-contract.json')); gate=json.load(open(S/'c46-progress.json'))
+          assert out['checkpoint_sha256']==gate['checkpoint_sha256']==P['source_checkpoint_sha256']
+          assert out['instructions']==gate['instructions']==P['source_instructions']
+          assert gate['source_boundary_verified'] and gate['system_server_alive_verified'] and not gate['android_boot_completed_verified']
+          enc=pathlib.Path('state/experiments/c91-stage-1-source-console.gz.b64').read_bytes()
+          raw=gzip.decompress(base64.b64decode(enc.strip()))
+          assert len(raw)==P0['stage1_console_bytes'] and hashlib.sha256(raw).hexdigest()==P0['stage1_console_SHA256']
+          for stage,alias,key in [(2,'meta2','stage2_delta_SHA256'),(3,'meta3','stage3_delta_SHA256')]:
+              delta=pathlib.Path(f'build/{alias}/evidence/c91-{stage}/console-new.txt').read_bytes()
+              assert hashlib.sha256(delta).hexdigest()==P0[key]
+              raw+=delta
+          assert pathlib.Path('build/meta4/evidence/c91-4/console-new.txt').read_bytes()==b''
+          delta=pathlib.Path('build/meta5/evidence/c91-5/console-new.txt').read_bytes()
+          assert hashlib.sha256(delta).hexdigest()==P0['stage5_delta_SHA256']; raw+=delta
+          for stage,alias,key in [(6,'meta6','stage6_delta_SHA256'),(7,'meta7','stage7_delta_SHA256')]:
+              delta=pathlib.Path(f'build/{alias}/evidence/c91-{stage}/console-new.txt').read_bytes()
+              assert hashlib.sha256(delta).hexdigest()==P[key]; raw+=delta
+          assert len(raw)==P['source_console_bytes'] and hashlib.sha256(raw).hexdigest()==P['source_console_SHA256']
+          source_console=json.load(open(S/'console-observation.json'))
+          assert source_console['raw_console_bytes']==len(raw) and source_console['raw_console_SHA256']==P['source_console_SHA256']
+          pathlib.Path('evidence/c91d3-reports/source-console.bin').write_bytes(raw)
+          pathlib.Path('evidence/c91d3-reports/source-authentication.json').write_text(json.dumps({
+            'whole_RVG_SHA256_verified':True,'complete_transport_recovered':True,
+            'authenticated_entire_console_SHA256':P['source_console_SHA256'],
+            'authenticated_entire_console_bytes':len(raw),
+            'system_server_alive':True,'boot_completed':False,
+            'diagnostic_only':True,'promotion_authority':False
+          },indent=2)+'\n')
+          PY
+
+      - name: C91D3-0 baseline scheduler, properties and starvation metrics
+        run: |
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             build/source-c91d3/current.rvg 771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe 4026531840             --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/baseline-kernel.json
+          node --max-old-space-size=5000 tools/reverseandroid-host-property-probe.mjs             build/source-c91d3/current.rvg 771ce25ecaa82066cde4e3aae9de0990ed66d338292bcd918272361208ee0bfe             evidence/c91d3-reports/baseline-properties.json
+          python3 - <<'PY'
+          import collections,json,pathlib
+          P=json.load(open('state/experiments/c91d3-plan.json'))
+          K=json.load(open('evidence/c91d3-reports/baseline-kernel.json'))
+          ss=next(t for t in K['tasks'] if t['pid']==7354)
+          sh=next(t for t in K['tasks'] if t['pid']==379)
+          c=collections.Counter(t['name'] for t in K['tasks'] if t.get('exit_state')==0)
+          assert ss['name']=='system_server' and ss['state']==0 and ss['on_rq']==1
+          assert ss['accounting']['sum_exec_runtime']==P['baseline']['system_server_sum_exec_runtime']
+          assert c['cppreopts.sh']==111 and c['fsync']==104
+          result={'schema':'reverseandroid-c91d3-baseline-v1','system_server':ss,'control_shell':sh,
+            'copy_counts':{n:c[n] for n in ['cppreopts.sh','cp','mv','fsync','log']},
+            'current_scheduler':K['scheduler_probe']['current'],
+            'boot_completed':K['live_boot_property']['boot_completed_property_live'],
+            'selinux_enforcing':K['live_kernel_security']['selinux_enforcing']}
+          pathlib.Path('evidence/c91d3-reports/baseline-summary.json').write_text(json.dumps(result,indent=2)+'\n')
+          assert result['current_scheduler']['static_prio']==100
+          assert result['current_scheduler']['comm'] in ['fsync','cp','mv','log','cppreopts.sh']
+          assert not result['boot_completed'] and result['selinux_enforcing']
+          PY
+
+      - name: C91D3-1 inject only the priority-neutralization command and advance one bounded cycle
+        run: |
+          sh -n state/experiments/c91d3-neutralize-cppreopts-boost.txt
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          P=json.load(open('state/experiments/c91d3-plan.json'))
+          body=pathlib.Path(P['input_file'])
+          target=pathlib.Path('evidence/c91d3-reports/input-plan.json')
+          rel=os.path.relpath(body.resolve(),target.parent.resolve())
+          target.write_text(json.dumps({
+            'schema':'reverseandroid-authenticated-console-input-plan-v1',
+            'purpose':'diagnostic_console',
+            'input_file':rel,'input_bytes':body.stat().st_size,
+            'input_sha256':hashlib.sha256(body.read_bytes()).hexdigest(),
+            'source_checkpoint_sha256':P['source_checkpoint_sha256'],
+            'source_instructions':P['source_instructions'],
+            'scope':'Neutralize only the inherited CPU niceness boost of existing cppreopts.sh/cp/mv/fsync/log tasks from nice -20 toward nice 0. No property writes, no process kill, no disk/snapshot/RAM/ISA/peripheral/hardware change.'
+          },indent=2)+'\n')
+          PY
+          node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs run             build/source-c91d3 evidence/c91d3-1 build/host-native/epoch-clz-ic-host build/media/android-c27.raw build/host-native/frame             "$GITHUB_SHA" 1000000000 evidence/c91d3-reports/input-plan.json 900000             > evidence/c91d3-reports/stage1-run.json
+          SHA="$(python3 -c 'import json;print(json.load(open("evidence/c91d3-1/output-contract.json"))["checkpoint_sha256"])')"
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             evidence/c91d3-1/current.rvg "$SHA" 4026531840 --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/stage1-kernel.json
+          node --max-old-space-size=5000 tools/reverseandroid-host-property-probe.mjs             evidence/c91d3-1/current.rvg "$SHA" evidence/c91d3-reports/stage1-properties.json
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          source=pathlib.Path('evidence/c91d3-reports/source-console.bin').read_bytes()
+          delta=pathlib.Path('evidence/c91d3-1/console-new.txt').read_bytes()
+          raw=source+delta
+          pathlib.Path('evidence/c91d3-1/cumulative-console.bin').write_bytes(raw)
+          pathlib.Path('evidence/c91d3-1/cumulative-console-auth.json').write_text(json.dumps({
+            'schema':'reverseandroid-c91d3-cumulative-console-v1','bytes':len(raw),
+            'sha256':hashlib.sha256(raw).hexdigest(),'source_console_bytes':len(source),
+            'new_console_bytes':len(delta)
+          },indent=2)+'\n')
+          PY
+
+      - name: Preserve complete C91D3 stage1 diagnostic checkpoint before continuing
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c91d3-1
+          transport_path: build/c91d3-transport-1
+          artifact_prefix: reverseandroid-c91d3-1
+
+      - name: C91D3-2 continue the preserved diagnostic state with zero new UART
+        run: |
+          node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs run             evidence/c91d3-1 evidence/c91d3-2 build/host-native/epoch-clz-ic-host build/media/android-c27.raw build/host-native/frame             "$GITHUB_SHA" 1000000000 - 900000             > evidence/c91d3-reports/stage2-run.json
+          SHA="$(python3 -c 'import json;print(json.load(open("evidence/c91d3-2/output-contract.json"))["checkpoint_sha256"])')"
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             evidence/c91d3-2/current.rvg "$SHA" 4026531840 --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/stage2-kernel.json
+          node --max-old-space-size=5000 tools/reverseandroid-host-property-probe.mjs             evidence/c91d3-2/current.rvg "$SHA" evidence/c91d3-reports/stage2-properties.json
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          source=pathlib.Path('evidence/c91d3-1/cumulative-console.bin').read_bytes()
+          delta=pathlib.Path('evidence/c91d3-2/console-new.txt').read_bytes()
+          raw=source+delta
+          pathlib.Path('evidence/c91d3-2/cumulative-console.bin').write_bytes(raw)
+          pathlib.Path('evidence/c91d3-2/cumulative-console-auth.json').write_text(json.dumps({
+            'schema':'reverseandroid-c91d3-cumulative-console-v1','bytes':len(raw),
+            'sha256':hashlib.sha256(raw).hexdigest(),'source_console_bytes':len(source),
+            'new_console_bytes':len(delta)
+          },indent=2)+'\n')
+          PY
+
+      - name: Preserve complete C91D3 stage2 diagnostic checkpoint
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c91d3-2
+          transport_path: build/c91d3-transport-2
+          artifact_prefix: reverseandroid-c91d3-2
+
+      - name: C91D3-V0 decide the hypothesis from measured deltas
+        run: |
+          python3 - <<'PY'
+          import collections,json,pathlib,re
+          B=json.load(open('evidence/c91d3-reports/baseline-kernel.json'))
+          K1=json.load(open('evidence/c91d3-reports/stage1-kernel.json'))
+          K2=json.load(open('evidence/c91d3-reports/stage2-kernel.json'))
+          G1=json.load(open('evidence/c91d3-1/c46-progress.json'))
+          G2=json.load(open('evidence/c91d3-2/c46-progress.json'))
+          C1=json.load(open('evidence/c91d3-1/current.json'))
+          C2=json.load(open('evidence/c91d3-2/current.json'))
+          assert C1['provenance']['new_uart_input_bytes']>0
+          assert C2['provenance']['new_uart_input_bytes']==0
+          assert not C1['provenance']['live_android_properties_written'] and not C2['provenance']['live_android_properties_written']
+          assert not C1['provenance']['source_cpu_modified_before_resume'] and not C2['provenance']['source_cpu_modified_before_resume']
+          raw=pathlib.Path('evidence/c91d3-2/cumulative-console.bin').read_bytes().replace(b'\r',b'')
+          markers=re.findall(rb'REVERSE_C91D3_DONE_([0-9]+)_([0-9]+)',raw)
+          def task(K,pid): return next(t for t in K['tasks'] if t['pid']==pid)
+          bss=task(B,7354); s1=task(K1,7354); s2=task(K2,7354)
+          base=int(bss['accounting']['sum_exec_runtime']); r1=int(s1['accounting']['sum_exec_runtime']); r2=int(s2['accounting']['sum_exec_runtime'])
+          def counts(K):
+              c=collections.Counter(t['name'] for t in K['tasks'] if t.get('exit_state')==0)
+              return {n:c[n] for n in ['cppreopts.sh','cp','mv','fsync','log']}
+          cb,c1,c2=counts(B),counts(K1),counts(K2)
+          zero_input_reference_ns=3925000
+          delta2=r2-base
+          marker_ok=len(markers)==1 and markers[0][0]==b'0' and int(markers[0][1])>=50
+          material_runtime=delta2>=max(100_000_000,zero_input_reference_ns*10)
+          fanout_progress=sum(c2.values())<sum(cb.values())
+          boot_progress=bool(G1['android_boot_completed_verified'] or G2['android_boot_completed_verified'] or K2['live_boot_property']['boot_completed_property_live'])
+          result={
+            'schema':'reverseandroid-c91d3-hypothesis-result-v1',
+            'diagnostic_only':True,'promotion_authority':False,
+            'command_marker':markers[0][0].decode()+'_'+markers[0][1].decode() if markers else None,
+            'command_executed_successfully':marker_ok,
+            'system_server_sum_exec_runtime_before':base,
+            'system_server_sum_exec_runtime_stage1':r1,
+            'system_server_sum_exec_runtime_stage2':r2,
+            'system_server_runtime_delta_ns':delta2,
+            'zero_input_reference_delta_per_1B_ns':zero_input_reference_ns,
+            'material_system_server_progress':material_runtime,
+            'copy_counts_before':cb,'copy_counts_stage1':c1,'copy_counts_stage2':c2,
+            'copy_fanout_progress':fanout_progress,
+            'boot_completed_after':boot_progress,
+            'baseline_properties':json.load(open('evidence/c91d3-reports/baseline-properties.json'))['properties'],
+            'stage2_properties':json.load(open('evidence/c91d3-reports/stage2-properties.json'))['properties'],
+            'H1_confirmed':bool(marker_ok and material_runtime),
+            'H1_not_yet_confirmed':not bool(marker_ok and material_runtime),
+            'no_property_injection':True,'no_process_kill':True,'no_snapshot_patch':True,'no_hardware_change':True
+          }
+          pathlib.Path('evidence/c91d3-reports/hypothesis-result.json').write_text(json.dumps(result,indent=2)+'\n')
+          print(json.dumps(result,indent=2))
+          PY
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: reverseandroid-c91d3-evidence
+          path: |
+            evidence/c91d3-reports
+            evidence/c91d3-1/*.json
+            evidence/c91d3-1/*.txt
+            evidence/c91d3-1/*.log
+            evidence/c91d3-1/*.ppm
+            evidence/c91d3-2/*.json
+            evidence/c91d3-2/*.txt
+            evidence/c91d3-2/*.log
+            evidence/c91d3-2/*.ppm
+            state/experiments/c91d3-plan.json
+            state/experiments/c91d3-neutralize-cppreopts-boost.txt
+            state/experiments/c91-stage-7-transport.json
+          retention-days: 90
+          if-no-files-found: warn
