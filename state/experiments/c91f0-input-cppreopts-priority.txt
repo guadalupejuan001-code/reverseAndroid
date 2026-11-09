@@ -1,0 +1,8 @@
+su 0 sh -c '
+anc(){ q=$1; i=0; while [ "$q" -gt 1 ] && [ "$i" -lt 24 ]; do [ -r "/proc/$q/comm" ] || return 1; IFS= read -r c < "/proc/$q/comm"; [ "$c" = cppreopts.sh ] && return 0; pp=; while read -r k v rest; do [ "$k" = PPid: ] && { pp=$v; break; }; done < "/proc/$q/status"; [ -n "$pp" ] || return 1; q=$pp; i=$((i+1)); done; return 1; }
+niceof(){ IFS= read -r l < "/proc/$1/stat" || return 1; r=${l#*) }; set -- $r; printf "%s" "${17}"; }
+seen=0; changed=0; bad=0
+for d in /proc/[0-9]*; do p=${d#/proc/}; [ -r "$d/comm" ] || continue; IFS= read -r c < "$d/comm"; case "$c" in cppreopts.sh|mv|cp|fsync|preopt2cachenam) ;; *) continue;; esac; anc "$p" || continue; uid=; while read -r k v rest; do [ "$k" = Uid: ] && { uid=$v; break; }; done < "$d/status"; [ "$uid" = 0 ] || { bad=$((bad+1)); continue; }; n=$(niceof "$p") || continue; seen=$((seen+1)); if [ "$n" = -20 ]; then renice -n 20 -p "$p" >/dev/null || { bad=$((bad+1)); continue; }; n2=$(niceof "$p") || { bad=$((bad+1)); continue; }; [ "$n2" = 0 ] || { bad=$((bad+1)); continue; }; changed=$((changed+1)); elif [ "$n" != 0 ]; then bad=$((bad+1)); fi; done
+[ "$changed" -ge 20 ] && [ "$bad" -eq 0 ] || exit 61
+printf "\nREVERSE_C91F0_DONE CHANGED_%s SEEN_%s BAD_%s\n" "$changed" "$seen" "$bad"
+'; r=$?; printf '\nREVERSE_C91F0_RESULT RC_%s\n' "$r"
