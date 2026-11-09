@@ -199,6 +199,31 @@ def prepare(p):
     print(json.dumps({"selection":sel,"source_stats":stats,"need_correction":need}))
 
 
+def require_source_lease_before_stage1(st):
+    runtime_dir="state/experiments/runtime-c91-stage1-lease"
+    checked=subprocess.run(
+        ["python3","scripts/select_latest_preserved_c91.py","--runtime-dir",runtime_dir],
+        check=True,capture_output=True,text=True)
+    latest=json.loads(checked.stdout)
+    expected=st["source_selection"]
+    assert latest["checkpoint_sha256"]==expected["checkpoint_sha256"], (
+        "Selected source became stale before stage1: selected "
+        +expected["checkpoint_sha256"]+" but latest fully preserved C91 is "
+        +latest["checkpoint_sha256"])
+    assert latest["stage"]==expected["stage"] and latest["instructions"]==expected["instructions"]
+    save(REPORTS/"stage1-source-lease.json",{
+        "schema":"reverseandroid-c91f1-stage1-source-lease-v1",
+        "selected_stage":expected["stage"],
+        "selected_checkpoint_sha256":expected["checkpoint_sha256"],
+        "latest_stage":latest["stage"],
+        "latest_checkpoint_sha256":latest["checkpoint_sha256"],
+        "latest_instructions":latest["instructions"],
+        "lease_passed":True,
+        "guest_executed_during_lease":False,
+        "guest_mutated_during_lease":False})
+    return latest
+
+
 def execute_epoch(p,source,output,budget,input_plan):
     parent=read(source/"output-contract.json")
     command=["node","--expose-gc","--max-old-space-size=5000",
@@ -225,6 +250,7 @@ def run_stage(p,stage):
     st=read(REPORTS/"control-state.json")
     assert st["need_correction"] is True and st["failed"] is False and st["current_stage"]==stage-1
     if stage==1:
+      require_source_lease_before_stage1(st)
       source=SOURCE;budget=p["stage1_instruction_budget"]
       body=ROOT/p["input_file"];input_plan=REPORTS/"stage1-input-plan.json"
       save(input_plan,{"schema":"reverseandroid-authenticated-console-input-plan-v1",
