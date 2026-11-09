@@ -1,0 +1,115 @@
+name: C91F1-v3 final source-leased cppreopts correction
+'on':
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/android-c91f1-v3.yml
+      - scripts/c91f1_priority_control.py
+      - tests/c91f1_priority_control_test.py
+      - state/experiments/c91f1-plan.json
+      - state/experiments/c91f1-input-cppreopts-priority.txt
+      - scripts/select_latest_preserved_c91.py
+      - tests/select_latest_preserved_c91_test.py
+      - extensions/host-thread-probe/reverseandroid-thread-probe-4g.mjs
+      - tests/host_thread_probe_4g_test.py
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: reverseandroid-c91f1-final-v3
+  cancel-in-progress: true
+jobs:
+  c91f1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify compact correction controller and host-only extensions
+        run: |
+          mkdir -p evidence/c91f1 evidence/c91f1-reports
+          python3 -m unittest tests/c91f1_priority_control_test.py tests/select_latest_preserved_c91_test.py tests/host_thread_probe_4g_test.py
+          python3 scripts/verify-reverseandroid-import.py
+          node --test tests/host_memory_lines.test.mjs
+          python3 tests/host_transport_continuation_test.py
+      - name: Build validated 4GiB observer runtime and recover Android media
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          python3 scripts/prepare-host-transport.py build/host-transport-runtime
+          python3 scripts/fetch-reverseandroid-artifact.py host-native build/host-native state/experiments/c91-stage-1-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py host-validation build/host-validation state/experiments/c91-stage-1-artifacts.json
+          chmod +x build/host-native/epoch-clz-ic-host build/host-native/frame
+          python3 scripts/prepare-host-observer.py build/host-observer-runtime
+          cp extensions/host-thread-probe/reverseandroid-thread-probe-4g.mjs build/host-observer-runtime/tools/reverseandroid-thread-probe-4g.mjs
+          for name in media-manifest media-aa media-ab media-ac; do
+            python3 scripts/fetch-reverseandroid-artifact.py "$name" build/media-input state/experiments/c91-stage-1-artifacts.json
+          done
+          python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+      - name: Select highest fully preserved C91 source and measure source scheduling
+        id: prep
+        run: |
+          python3 scripts/select_latest_preserved_c91.py > evidence/c91f1/source-selection.json
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c91f1 state/experiments/runtime-c91-selection/c91-selected-artifacts.json
+          SHA=$(python3 -c 'import json;print(json.load(open("evidence/c91f1/source-selection.json"))["checkpoint_sha256"])')
+          node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c91f1 > evidence/c91f1/source-preflight.json
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-thread-probe-4g.mjs             build/source-c91f1/current.rvg "$SHA" evidence/c91f1/source-scheduling.json             --all-scheduling --diagnostic-processes --copy-processes
+          python3 scripts/c91f1_priority_control.py prepare
+      - name: C91F1 stage 1 apply one compact guarded correction
+        id: r1
+        if: steps.prep.outputs.need_correction == 'true'
+        run: python3 scripts/c91f1_priority_control.py run --stage 1
+      - name: Preserve C91F1 stage 1 before any continuation
+        id: p1
+        if: always() && hashFiles('evidence/c91f1-1/c46-progress.json') != ''
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c91f1-1
+          transport_path: build/c91f1-transport-1
+          artifact_prefix: reverseandroid-c91f1-1
+      - name: C91F1 stage 2 zero-input causal continuation
+        id: r2
+        if: steps.r1.outcome == 'success' && steps.p1.outcome == 'success' && steps.r1.outputs.continue == 'true'
+        run: python3 scripts/c91f1_priority_control.py run --stage 2
+      - name: Preserve C91F1 stage 2
+        id: p2
+        if: always() && hashFiles('evidence/c91f1-2/c46-progress.json') != ''
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c91f1-2
+          transport_path: build/c91f1-transport-2
+          artifact_prefix: reverseandroid-c91f1-2
+      - name: Produce robust C91F1 summary
+        if: always() && hashFiles('evidence/c91f1-reports/control-state.json') != ''
+        run: python3 scripts/c91f1_priority_control.py finish
+      - name: Upload C91F1 evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reverseandroid-c91f1-evidence
+          path: |
+            evidence/c91f1
+            evidence/c91f1-reports
+            evidence/c91f1-*/*.json
+            evidence/c91f1-*/*.txt
+            evidence/c91f1-*/*.log
+            evidence/c91f1-*/*.ppm
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Publish C91F1 measured result
+        if: always() && hashFiles('evidence/c91f1-reports/final-summary.json') != ''
+        run: |
+          mkdir -p docs/evidence/c91
+          cp evidence/c91f1-reports/final-summary.json docs/evidence/c91/c91f1-runtime-summary.json
+          git config user.name reverseAndroid-ci
+          git config user.email reverseandroid-ci@users.noreply.github.com
+          git add docs/evidence/c91/c91f1-runtime-summary.json
+          git commit -m "Record measured C91F1 compact priority result" || exit 0
+          git pull --rebase origin main
+          git push origin HEAD:main
