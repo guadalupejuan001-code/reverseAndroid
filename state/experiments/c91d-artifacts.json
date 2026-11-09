@@ -43,27 +43,27 @@
       "sha256": "af823ccadcbca43aedd3fb5eccfed220ceebd6d7bfb499ef700d0b938243c425"
     },
     "seed": {
-      "transport_manifest": "state/experiments/c91-stage-7-transport.json",
+      "transport_manifest": "state/experiments/c91-stage-8-transport.json",
       "pieces": [
         {
-          "id": 13667902809,
+          "id": 13669715238,
           "repository": "guadalupejuan001-code/reverseAndroid",
-          "sha256": "ce98c0419cc9d26b4b6ad7c6306f1f6665af8afdf7e808f1ddb8f37104cf9adb"
+          "sha256": "776a34bc45f53270b660542802dbb9a60092656632b1379751dce9beb2fd4a65"
         },
         {
-          "id": 13668291979,
+          "id": 13669137133,
           "repository": "guadalupejuan001-code/reverseAndroid",
-          "sha256": "d9f621e1f368c3855309c017cf65c74b62bffef2174c90f7da5b5d058dc208ba"
+          "sha256": "6223b0df5f65e53f1865dcb078ab1258e02b668a04661ca25218966ab56f57c1"
         },
         {
-          "id": 13668476399,
+          "id": 13668463924,
           "repository": "guadalupejuan001-code/reverseAndroid",
-          "sha256": "d1e8e8c0b83e52c37882314c86de82a540a6cbe17555af53063a34df262361d5"
+          "sha256": "746892ef2c5b55f1da08c727f309328260c2e8e78e056ee16a394d9bd504cf15"
         },
         {
-          "id": 13667828975,
+          "id": 13669830061,
           "repository": "guadalupejuan001-code/reverseAndroid",
-          "sha256": "26d9dea4b18a2a1d40ac4da648e91a3f7c6f07f758d377c0afcab7a3fd5353c4"
+          "sha256": "5a7df8d15da4cfb697e03d9c85b868e0796648a8102b291a951a978977c20b70"
         }
       ],
       "producer_run_id": 42596365209,
@@ -98,6 +98,11 @@
       "id": 13667863981,
       "repository": "guadalupejuan001-code/reverseAndroid",
       "sha256": "5cc1456f58d0be3ac46b0f15f5b66fe0ba14cc6c4a98ba8317933bc8ef22a12e"
+    },
+    "meta8": {
+      "id": 13669545831,
+      "repository": "guadalupejuan001-code/reverseAndroid",
+      "sha256": "9374661c05091748e9feddf5b14b0209efcb81bf532a1224189672f67b1a5eeb"
     }
   },
   "epoch_native_build_required": false,
