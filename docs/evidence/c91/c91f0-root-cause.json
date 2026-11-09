@@ -95,5 +95,24 @@
     },
     "binder_live_queue_process_count": 0,
     "conclusion": "Read-only scheduler evidence directly verifies that all 219 observed cppreopts-family processes are nice -20 while runnable SystemServer threads receive no CPU. No Binder pending-queue population was observed by the authenticated BTF probe."
+  },
+  "c91d2_target_identity_confirmation": {
+    "run_id": 42608749519,
+    "source_stage": 8,
+    "checkpoint_sha256": "c3a0d7482a25fb9bcf47112cf6d26eda3f7bf69950184343956d367165decf66",
+    "target_process_count": 219,
+    "target_names": {
+      "cppreopts.sh": 112,
+      "fsync": 104,
+      "cp": 2,
+      "preopt2cachenam": 1
+    },
+    "all_target_leaders_static_prio_100": true,
+    "all_target_leaders_UID_0": true,
+    "all_target_leaders_EUID_0": true,
+    "verified_target_leaders": 219,
+    "read_only_thread_probe": true,
+    "guest_mutated": false,
+    "conclusion": "The complete source set matched by the compact C91F1 pidof expression is root-owned and nice -20 at the preserved C91-8 boundary."
   }
 }
