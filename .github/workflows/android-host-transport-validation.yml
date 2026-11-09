@@ -8,6 +8,8 @@ name: Validate bounded larger host snapshots with unchanged guest state
       - scripts/prepare-host-transport.py
       - scripts/build-reverseandroid-host-transport.sh
       - scripts/validate-host-transport.py
+      - scripts/fetch-reverseandroid-artifact.py
+      - tests/reverseandroid_artifact_recovery_test.py
       - tools/reverseandroid-host-rvg-reader.mjs
       - tools/reverseandroid-host-transport-preload.mjs
       - tools/reverseandroid-host-kernel-observer.mjs
@@ -15,6 +17,9 @@ name: Validate bounded larger host snapshots with unchanged guest state
 permissions:
   contents: read
   actions: read
+concurrency:
+  group: reverseandroid-host-transport-validation
+  cancel-in-progress: false
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -43,6 +48,7 @@ jobs:
           df -h > evidence/host-transport-validation/host-disk.txt
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           python3 scripts/verify-reverseandroid-import.py
+          python3 tests/reverseandroid_artifact_recovery_test.py
           node --test tests/reverseandroid_host_rvg_reader.test.mjs
           bash scripts/build-reverseandroid-host-transport.sh
           echo "$GITHUB_SHA" > build/host-transport-native/execution-commit.txt

@@ -43,6 +43,9 @@ if 'transport_manifest' in pin:
     transport = json.loads((root / relative).read_text())
     assert len(pin['pieces']) == len(transport['parts'])
     pieces = target.parent / f'reverseandroid-{name}-pieces'
+    # Nested recovery roots may not exist yet. Keep the pieces directory
+    # exclusive so a prior or partial download can never be mixed in.
+    target.parent.mkdir(parents=True, exist_ok=True)
     pieces.mkdir()
     (pieces / 'manifest.json').write_text(json.dumps(transport, indent=2) + '\n')
     for i, item in enumerate(pin['pieces']):
