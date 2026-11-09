@@ -2,14 +2,14 @@
   "schema": "reverseandroid-c91d-cppreopts-diagnostic-v1",
   "cycle": "C91D",
   "source_cycle": "C91",
-  "source_stage": 4,
+  "source_stage": 5,
   "source_run_id": 42596365209,
-  "source_checkpoint_sha256": "5f5fb657063f951966cab65b4a921a5679ccf65bae6a311d7ca40a01f8475f2d",
-  "source_instructions": 169447727998,
+  "source_checkpoint_sha256": "62ebfa1c5dfc9a8ed081d8028ef3f73d07e1854ad085f6c6461e239ed692f210",
+  "source_instructions": 170447727998,
   "source_artifact_lock": "state/experiments/c91d-artifacts.json",
   "source_execution_commit": "a035f386b468c71ad11c32aee88252dbab0b91db",
-  "source_console_bytes": 3971932,
-  "source_console_SHA256": "aae197a6f385dbe9e01126377e284021ff311ca6fee4c5e35ca8a202c950e1ab",
+  "source_console_bytes": 3977166,
+  "source_console_SHA256": "ba25ad4068ea44b70431b7022adfac8b7b3e93c3ed93a6e9eb5d14be182467da",
   "stage1_console_bytes": 3966416,
   "stage1_console_SHA256": "bba29d6bec26f78e0b13ea126866147a68530d5990c386bd8ac316c1b64366b7",
   "stage2_delta_SHA256": "d4a540b7216d486b6cc52a35b0dda7bf18fdaeb73f93165f244eebed55178bc4",
@@ -34,5 +34,6 @@
     "nvcsw": "695",
     "nivcsw": "5872"
   },
-  "expected_source_frame_rgb_SHA256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb"
+  "expected_source_frame_rgb_SHA256": "1e4c2eaad92067cc6228d8193570702eb8dc525b17257114e90d19afdd3bd4bb",
+  "stage5_delta_SHA256": "cb99c5d36a8d536e5bff843e451892e485c340fb28a6d13b3b1899a8dc6a955a"
 }
