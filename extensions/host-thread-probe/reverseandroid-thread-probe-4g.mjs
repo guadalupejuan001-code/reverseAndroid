@@ -1,4 +1,5 @@
 // C91D2 host-only derived probe: only the two snapshot-capacity bounds are extended to the already validated 4GiB host profile.
+import './reverseandroid-host-transport-preload.mjs';
 // Supplemental read-only thread/stack evidence. The pinned observer and CPU remain untouched.
 import assert from 'node:assert/strict';
 import {readFileSync,statSync,writeFileSync} from 'node:fs';
