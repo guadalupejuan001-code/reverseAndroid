@@ -125,7 +125,55 @@ def cfs_delta_ratios(before, after):
     return rows, (statistics.median(ratios) if ratios else None)
 
 
+def github_api(path):
+    from urllib.request import Request, urlopen
+    token = os.environ["GH_TOKEN"]
+    req = Request(
+        "https://api.github.com/repos/guadalupejuan001-code/reverseAndroid/" + path,
+        headers={
+            "Authorization": "Bearer " + token,
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+    with urlopen(req, timeout=60) as response:
+        payload = response.read(8 * 1024 * 1024 + 1)
+    assert len(payload) <= 8 * 1024 * 1024
+    return json.loads(payload)
+
+
+def require_latest_preserved_source(p):
+    response = github_api(f"actions/runs/{p['source_run_id']}/artifacts?per_page=100")
+    artifacts = response.get("artifacts", [])
+    newer = sorted({
+        a["name"] for a in artifacts
+        if a.get("expired") is False and (
+            a["name"].startswith("reverseandroid-c91-7-")
+            or a["name"].startswith("reverseandroid-c91-8-")
+            or a["name"].startswith("reverseandroid-c91-9-")
+            or a["name"].startswith("reverseandroid-c91-10-")
+            or a["name"].startswith("reverseandroid-c91-11-")
+            or a["name"].startswith("reverseandroid-c91-12-")
+            or a["name"].startswith("reverseandroid-c91-13-")
+            or a["name"].startswith("reverseandroid-c91-14-")
+            or a["name"].startswith("reverseandroid-c91-15-")
+            or a["name"].startswith("reverseandroid-c91-16-")
+        )
+    })
+    assert not newer, (
+        "C91F0 source C91-6 is stale because a later fully preserved C91 artifact exists: "
+        + ", ".join(newer)
+    )
+    return {
+        "source_run_id": p["source_run_id"],
+        "source_stage": p["source_stage"],
+        "later_preserved_C91_artifacts": newer,
+        "source_is_latest_preserved_C91_boundary_at_preflight": True,
+    }
+
+
 def validate_source(p):
+    lease = require_latest_preserved_source(p)
     lock = read(ROOT / p["source_artifact_lock"])
     transport = read(ROOT / lock["artifacts"]["seed"]["transport_manifest"])
     assert transport["source_contract"]["checkpoint_sha256"] == SOURCE_SHA
@@ -160,7 +208,7 @@ def validate_source(p):
     assert counts["cppreopts.sh"] >= 100 and counts["mv"] >= 40 and counts["fsync"] >= 40
     assert "Since 'activity' could not be found" in current.get("console", "")
     assert frame["android_boot_verified"] is False and frame["android_display_verified"] is False
-    return proof, kernel, counts
+    return proof, kernel, counts, lease
 
 
 def prepare(p):
@@ -169,8 +217,9 @@ def prepare(p):
     assert body.stat().st_size == p["input_bytes"] and digest(body) == p["input_sha256"]
     subprocess.run(["sh", "-n", str(body)], check=True)
     assert digest(ROOT / "build/host-native/epoch-clz-ic-host") == NATIVE_SHA
-    proof, kernel, counts = validate_source(p)
+    proof, kernel, counts, lease = validate_source(p)
     REPORTS.mkdir(parents=True, exist_ok=True)
+    save(REPORTS / "source-lease.json", lease)
     state = {
         "schema": "reverseandroid-c91f0-control-state-v1",
         "source_checkpoint_sha256": SOURCE_SHA,
