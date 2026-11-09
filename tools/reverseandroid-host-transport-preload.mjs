@@ -1,2 +1,3 @@
-import {installLargeRvgReader} from './reverseandroid-host-rvg-reader.mjs';
+import {installLargeRvgReader,installLargeRvgHashing} from './reverseandroid-host-rvg-reader.mjs';
 installLargeRvgReader();
+installLargeRvgHashing();

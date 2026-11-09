@@ -10,6 +10,7 @@ name: Validate bounded larger host snapshots with unchanged guest state
       - scripts/validate-host-transport.py
       - scripts/fetch-reverseandroid-artifact.py
       - tests/reverseandroid_artifact_recovery_test.py
+      - tests/reverseandroid_host_rvg_reader.test.mjs
       - tools/reverseandroid-host-rvg-reader.mjs
       - tools/reverseandroid-host-transport-preload.mjs
       - tools/reverseandroid-host-kernel-observer.mjs

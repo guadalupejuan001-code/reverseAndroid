@@ -1,5 +1,24 @@
 # A larger bounded host snapshot, with the original guest unchanged
 
+## Recovery and large-input integrity repair
+
+Run `42581684152` at `38eee33995bf125f8e84197824cf6ae44deb0147`
+recovered the exact C90 stage 6 source and passed the complete old/new byte,
+console, C46 and kernel comparison. The native larger-state trial then completed
+300 million instructions, but Node 24 rejected its single SHA-256 update with
+`RangeError: data is too long`. This tail was not fully admitted and is not a
+continuation source; C90 stage 6 remains canonical.
+
+The explicit host preload now sends a large hash input through zero-copy blocks
+of at most 64 MiB. It preserves every byte and the original SHA algorithm;
+ordinary updates, encodings, chaining and native errors retain their original
+behavior. The regression uses actual inputs above 2 GiB, including an offset
+DataView, and compares against a separately constructed incremental hash.
+The original codec and observer files remain unchanged. The full real-Android
+validation must pass again before this profile can be selected for continuation.
+
+[Recorded failed admission](evidence/c90/recovery-host-hash-failure.json).
+
 C90stage7 stopped while saving a checkpoint: `Guest snapshot exceeds configured host transport capacity`. The last fully admitted canonical state remains C90stage6 at161147727998 instructions, SHA-256 `c8a2aa15bca412139973343813570a07d8f11d9fb7318a884cd64d45025f5714`. Its six complete original admissions and transports are preserved. The failed stage7 heartbeat and logs are diagnostic evidence, not a recoverable admitted boundary or an ISA failure.
 
 The candidate increases only the explicit host RVG file bound from2048MiB to3840MiB. The existing4GiB unpacked transport bound and200MiB pieces remain unchanged, leaving256MiB for metadata. Guest RAM remains2147483648 bytes. CPU instruction semantics, compact XI/Ether memory, zero background, RVG/RVI/MXIM codecs, authenticated disk, seed,64 instructions per tick, IRQs, enforcing policy and original boot/UI gates remain unchanged.

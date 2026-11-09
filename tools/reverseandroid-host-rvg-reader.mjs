@@ -1,6 +1,7 @@
-// Host file I/O only. RVG/RVI/MXIM bytes and all guest capacities are unchanged.
+// Host file I/O and integrity hashing only; guest bytes and capacities are unchanged.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {Hash} from 'node:crypto';
 import {syncBuiltinESMExports} from 'node:module';
 
 export const HOST_RVG_CAP=3840*1024*1024;
@@ -34,4 +35,25 @@ export function installLargeRvgReader(){
     return original.apply(this,arguments);
   };
   globalThis[key]=replacement;fs.readFileSync=replacement;syncBuiltinESMExports();
+}
+
+// Node 24 rejects an individual Hash.update() input above INT_MAX even when
+// the Buffer itself is valid. Feed exactly the same bytes through bounded,
+// zero-copy views. This changes host transport only, not the checksum or RVG
+// codecs; every ordinary update and its encoding/error semantics pass through.
+export function installLargeRvgHashing(){
+  const key=Symbol.for('reverseandroid.bounded-host-rvg-hash-update-64MiB');
+  if(globalThis[key]){assert.equal(Hash.prototype.update,globalThis[key]);return;}
+  const original=Hash.prototype.update;
+  const replacement=function(data,inputEncoding){
+    if(!ArrayBuffer.isView(data)||data.byteLength<=0x7fffffff){
+      return original.apply(this,arguments);
+    }
+    const {buffer,byteOffset,byteLength}=data;
+    for(let at=0;at<byteLength;at+=MAX_CHUNK){
+      original.call(this,Buffer.from(buffer,byteOffset+at,Math.min(MAX_CHUNK,byteLength-at)),inputEncoding);
+    }
+    return this;
+  };
+  globalThis[key]=replacement;Hash.prototype.update=replacement;
 }
