@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: 24.22.1
 
-      - name: C91D3 lease only the latest fully preserved C91 stage7 source
+      - name: C91D3 lease only the latest fully preserved C91 stage8 source
         run: |
           mkdir -p evidence/c91d3-reports build
           gh api repos/${GITHUB_REPOSITORY}/actions/runs/42596365209/jobs > evidence/c91d3-reports/source-active-run-jobs.json
@@ -59,7 +59,7 @@ jobs:
           },indent=2)+'\n')
           PY
 
-      - name: Recover and authenticate C91 stage7 and its cumulative console
+      - name: Recover and authenticate C91 stage8 and its cumulative console
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           python3 scripts/verify-reverseandroid-import.py
@@ -81,6 +81,7 @@ jobs:
           chmod +x build/host-native/epoch-clz-ic-host build/host-native/frame
           python3 scripts/prepare-host-transport.py build/host-transport-runtime
           python3 scripts/prepare-host-observer.py build/host-observer-runtime --plan state/experiments/c91-plan.json
+          cp build/host-observer-runtime/tools/c91d3-host-property-probe.mjs build/host-observer-runtime/tools/c91d3-host-property-probe.mjs
           node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c91d3 > evidence/c91d3-reports/source-admission.json
           python3 - <<'PY'
           import base64,gzip,hashlib,json,pathlib
@@ -123,7 +124,7 @@ jobs:
         run: |
           SRC_SHA="$(python3 -c 'import json;print(json.load(open("state/experiments/c91d3-plan.json"))["source_checkpoint_sha256"])')"
           node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             build/source-c91d3/current.rvg $SRC_SHA 4026531840             --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/baseline-kernel.json
-          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             build/source-c91d3/current.rvg $SRC_SHA             evidence/c91d3-reports/baseline-properties.json
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/c91d3-host-property-probe.mjs             build/source-c91d3/current.rvg $SRC_SHA             evidence/c91d3-reports/baseline-properties.json
           python3 - <<'PY'
           import collections,json,pathlib
           P=json.load(open('state/experiments/c91d3-plan.json'))
@@ -167,7 +168,7 @@ jobs:
           node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs run             build/source-c91d3 evidence/c91d3-1 build/host-native/epoch-clz-ic-host build/media/android-c27.raw build/host-native/frame             "$GITHUB_SHA" 1000000000 evidence/c91d3-reports/input-plan.json 900000             > evidence/c91d3-reports/stage1-run.json
           SHA="$(python3 -c 'import json;print(json.load(open("evidence/c91d3-1/output-contract.json"))["checkpoint_sha256"])')"
           node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             evidence/c91d3-1/current.rvg "$SHA" 4026531840 --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/stage1-kernel.json
-          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             evidence/c91d3-1/current.rvg "$SHA" evidence/c91d3-reports/stage1-properties.json
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/c91d3-host-property-probe.mjs             evidence/c91d3-1/current.rvg "$SHA" evidence/c91d3-reports/stage1-properties.json
           python3 - <<'PY'
           import hashlib,json,pathlib
           source=pathlib.Path('evidence/c91d3-reports/source-console.bin').read_bytes()
@@ -193,7 +194,7 @@ jobs:
           node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs run             evidence/c91d3-1 evidence/c91d3-2 build/host-native/epoch-clz-ic-host build/media/android-c27.raw build/host-native/frame             "$GITHUB_SHA" 1000000000 - 900000             > evidence/c91d3-reports/stage2-run.json
           SHA="$(python3 -c 'import json;print(json.load(open("evidence/c91d3-2/output-contract.json"))["checkpoint_sha256"])')"
           node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-host-kernel-observer.mjs             evidence/c91d3-2/current.rvg "$SHA" 4026531840 --live-properties --zygote-probe --scheduler-probe --binder-probe             > evidence/c91d3-reports/stage2-kernel.json
-          node --max-old-space-size=5000 scripts/c91d3-host-property-probe.mjs             evidence/c91d3-2/current.rvg "$SHA" evidence/c91d3-reports/stage2-properties.json
+          node --max-old-space-size=5000 build/host-observer-runtime/tools/c91d3-host-property-probe.mjs             evidence/c91d3-2/current.rvg "$SHA" evidence/c91d3-reports/stage2-properties.json
           python3 - <<'PY'
           import hashlib,json,pathlib
           source=pathlib.Path('evidence/c91d3-1/cumulative-console.bin').read_bytes()
