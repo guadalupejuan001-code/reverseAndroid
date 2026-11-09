@@ -9,7 +9,9 @@ name: C91F1 compact latest-source cppreopts correction
       - state/experiments/c91f1-plan.json
       - state/experiments/c91f1-input-cppreopts-priority.txt
       - scripts/select_latest_preserved_c91.py
+      - tests/select_latest_preserved_c91_test.py
       - extensions/host-thread-probe/reverseandroid-thread-probe-4g.mjs
+      - tests/host_thread_probe_4g_test.py
   workflow_dispatch:
 permissions:
   contents: write
