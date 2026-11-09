@@ -153,7 +153,7 @@ jobs:
           rel=os.path.relpath(body.resolve(),target.parent.resolve())
           target.write_text(json.dumps({
             'schema':'reverseandroid-authenticated-console-input-plan-v1',
-            'purpose':'diagnostic_scheduler_hypothesis',
+            'purpose':'diagnostic_console',
             'input_file':rel,
             'input_bytes':body.stat().st_size,
             'input_sha256':hashlib.sha256(body.read_bytes()).hexdigest(),
