@@ -1,0 +1,110 @@
+name: C91F0 isolated cppreopts priority correction
+'on':
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/android-c91f0-cppreopts-priority.yml
+      - scripts/c91f0_priority_control.py
+      - tests/c91f0_priority_control_test.py
+      - state/experiments/c91f0-plan.json
+      - state/experiments/c91f0-input-cppreopts-priority.txt
+      - state/experiments/c91f0-stage6-artifacts.json
+      - state/experiments/c91f0-stage6-transport.json
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: reverseandroid-c91f0-cppreopts-priority
+  cancel-in-progress: false
+jobs:
+  c91f0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REVERSE_PC_FAST_FNV: '1'
+      REVERSE_PC_FAST_OBSERVER: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.22.1
+      - name: Verify C91F0 control code and unchanged reverseAndroid import
+        run: |
+          mkdir -p build evidence/c91f0-reports
+          python3 -m unittest tests/c91f0_priority_control_test.py
+          python3 scripts/verify-reverseandroid-import.py
+          python3 tests/host_memory_lines.test.mjs 2>/dev/null || node --test tests/host_memory_lines.test.mjs
+          python3 tests/host_transport_continuation_test.py
+      - name: Authenticate validated large-snapshot runtime
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          python3 scripts/prepare-host-transport.py build/host-transport-runtime
+          python3 scripts/fetch-reverseandroid-artifact.py host-native build/host-native state/experiments/c91-stage-1-artifacts.json
+          python3 scripts/fetch-reverseandroid-artifact.py host-validation build/host-validation state/experiments/c91-stage-1-artifacts.json
+          chmod +x build/host-native/epoch-clz-ic-host build/host-native/frame
+          python3 scripts/prepare-host-observer.py build/host-observer-runtime
+      - name: Recover fully preserved C91 stage 6 and original Android media
+        run: |
+          python3 scripts/fetch-reverseandroid-artifact.py seed build/source-c91f0 state/experiments/c91f0-stage6-artifacts.json
+          for name in media-manifest media-aa media-ab media-ac; do
+            python3 scripts/fetch-reverseandroid-artifact.py "$name" build/media-input state/experiments/c91-stage-1-artifacts.json
+          done
+          python3 scripts/restore-reverseandroid-media.py build/media-input build/media/android-c27.raw
+          node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c91f0 > evidence/c91f0-reports/source-admission.json
+          python3 scripts/c91f0_priority_control.py prepare
+      - name: C91F0 stage 1 apply one guarded priority correction
+        id: r1
+        run: python3 scripts/c91f0_priority_control.py run --stage 1
+      - name: Preserve C91F0 stage 1 before any continuation
+        id: p1
+        if: always() && hashFiles('evidence/c91f0-1/c46-progress.json') != ''
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c91f0-1
+          transport_path: build/c91f0-transport-1
+          artifact_prefix: reverseandroid-c91f0-1
+      - name: C91F0 stage 2 zero-input causal validation
+        id: r2
+        if: steps.r1.outcome == 'success' && steps.p1.outcome == 'success' && steps.r1.outputs.continue == 'true'
+        run: python3 scripts/c91f0_priority_control.py run --stage 2
+      - name: Preserve C91F0 stage 2
+        id: p2
+        if: always() && hashFiles('evidence/c91f0-2/c46-progress.json') != ''
+        uses: ./.github/actions/preserve-android-checkpoint
+        with:
+          checkpoint_path: evidence/c91f0-2
+          transport_path: build/c91f0-transport-2
+          artifact_prefix: reverseandroid-c91f0-2
+      - name: Produce compact causal summary
+        if: always() && hashFiles('evidence/c91f0-reports/control-state.json') != ''
+        run: python3 scripts/c91f0_priority_control.py finish
+      - name: Upload complete C91F0 evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reverseandroid-c91f0-evidence
+          path: |
+            evidence/c91f0-reports
+            evidence/c91f0-*/c91f0-proof.json
+            evidence/c91f0-*/c46-progress.json
+            evidence/c91f0-*/kernel-observation.json
+            evidence/c91f0-*/kernel-deep.json
+            evidence/c91f0-*/current.json
+            evidence/c91f0-*/console-new.txt
+            evidence/c91f0-*/checkpoint-frame.json
+            evidence/c91f0-*/checkpoint-frame.ppm
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Publish compact C91F0 result to main
+        if: always() && hashFiles('evidence/c91f0-reports/final-summary.json') != ''
+        run: |
+          mkdir -p docs/evidence/c91
+          cp evidence/c91f0-reports/final-summary.json docs/evidence/c91/c91f0-runtime-summary.json
+          git config user.name reverseAndroid-ci
+          git config user.email reverseandroid-ci@users.noreply.github.com
+          git add docs/evidence/c91/c91f0-runtime-summary.json
+          git commit -m "Record measured C91F0 cppreopts priority result" || exit 0
+          git pull --rebase origin main
+          git push origin HEAD:main
