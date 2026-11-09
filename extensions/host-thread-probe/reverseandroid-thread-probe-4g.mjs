@@ -45,7 +45,7 @@ function inspectThreads(api,options={}) {
   const pt=members(type('pt_regs')),ptSize=type('pt_regs').type,mmFields=members(type('mm_struct'));
   const unsigned=(p,key,n=4)=>read(p+BigInt(task[key].offset),n);
   const selected=tasks.filter(t=>t.zygote_startup||/bootanim|surfaceflinger|^(sh|su|printf|id|cat|toybox|renice)$/.test(t.name)
-    ||options.copyProcesses&&(/^(cp|cppreopts\.sh)$/.test(t.name)||/^preopt2cache/.test(t.name))
+    ||options.copyProcesses&&(/^(cp|mv|fsync|cppreopts\.sh)$/.test(t.name)||/^preopt2cache/.test(t.name))
     ||options.diagnosticProcesses&&/^(init|main|crash_dump64|tombstoned|logd|logcat|debuggerd|idmap2)$/.test(t.name));
   const result={schema:'reverseandroid-thread-probe-v1',read_only:true,groups:[],kernel_layout_pinned:true};
   for(const leaderItem of selected) {
