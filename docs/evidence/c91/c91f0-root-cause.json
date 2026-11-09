@@ -75,5 +75,25 @@
       "boot properties",
       "snapshot patching"
     ]
+  },
+  "c91d2_readonly_confirmation": {
+    "run_id": 42608248692,
+    "source_stage": 8,
+    "source_checkpoint_sha256": "c3a0d7482a25fb9bcf47112cf6d26eda3f7bf69950184343956d367165decf66",
+    "instructions": 173447727998,
+    "cppreopts_family_processes": 219,
+    "cppreopts_static_prio_100": 219,
+    "cppreopts_runnable": 56,
+    "system_server_threads": 55,
+    "system_server_runnable_threads": 4,
+    "system_server_running_threads": 0,
+    "system_server_leader_static_prio": 118,
+    "current_cpu_task": {
+      "pid": 9365,
+      "name": "fsync",
+      "static_prio": 100
+    },
+    "binder_live_queue_process_count": 0,
+    "conclusion": "Read-only scheduler evidence directly verifies that all 219 observed cppreopts-family processes are nice -20 while runnable SystemServer threads receive no CPU. No Binder pending-queue population was observed by the authenticated BTF probe."
   }
 }
