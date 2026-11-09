@@ -7,8 +7,8 @@ m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 
 class C91F1Test(unittest.TestCase):
   def test_reply(self):
-    r=m.parse_reply(b"REVERSE_C91F1_DONE N_87 BAD_0\nREVERSE_C91F1_RESULT RC_0\n")
-    self.assertTrue(r["guard_succeeded"]);self.assertEqual(r["changed"],87);self.assertEqual(r["bad"],0)
+    r=m.parse_reply(b"REVERSE_C91F1_DONE N_87 RC_0\nREVERSE_C91F1_RESULT RC_0\n")
+    self.assertTrue(r["guard_succeeded"]);self.assertEqual(r["changed"],87);self.assertEqual(r["inner_return_code"],0)
     self.assertFalse(m.parse_reply(b"REVERSE_C91F1_RESULT RC_61\n")["guard_succeeded"])
   def test_scheduling_stats(self):
     data={"all_thread_scheduling":[
@@ -19,6 +19,6 @@ class C91F1Test(unittest.TestCase):
     self.assertEqual(s["system_server"]["sum_exec_runtime"],100)
   def test_plan(self):
     p=m.read(m.PLAN);m.validate_plan(p);self.assertFalse(p["promotion_authority"])
-    self.assertEqual(p["input_bytes"],456)
+    self.assertEqual(p["input_bytes"],255)
 
 if __name__=="__main__":unittest.main()
