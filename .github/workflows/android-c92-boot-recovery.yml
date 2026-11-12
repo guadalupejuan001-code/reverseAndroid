@@ -64,7 +64,7 @@ jobs:
           node --expose-gc --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-epoch.mjs preflight build/source-c91f1 > evidence/c91f1/source-preflight.json
           node --max-old-space-size=5000 build/host-observer-runtime/tools/reverseandroid-thread-probe-4g.mjs             build/source-c91f1/current.rvg "$SHA" evidence/c91f1/source-scheduling.json             --all-scheduling --diagnostic-processes --copy-processes
           python3 scripts/c91f1_priority_control.py prepare
-      - name: C92 stage 1: measure priority normalization after authenticated guest input
+      - name: 'C92 stage 1: measure priority normalization after authenticated guest input'
         id: r1
         if: steps.prep.outputs.need_correction == 'true'
         run: python3 scripts/c91f1_priority_control.py run --stage 1
@@ -76,7 +76,7 @@ jobs:
           checkpoint_path: evidence/c91f1-1
           transport_path: build/c91f1-transport-1
           artifact_prefix: reverseandroid-c91f1-1
-      - name: C92 stage 2: zero-input continuation after measured CPU recovery
+      - name: 'C92 stage 2: zero-input continuation after measured CPU recovery'
         id: r2
         if: steps.r1.outcome == 'success' && steps.p1.outcome == 'success' && steps.r1.outputs.continue == 'true'
         run: python3 scripts/c91f1_priority_control.py run --stage 2
