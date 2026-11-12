@@ -51,6 +51,8 @@ jobs:
           python3 scripts/prepare-host-observer.py build/host-observer-runtime
           cp extensions/host-thread-probe/reverseandroid-thread-probe-4g.mjs build/host-observer-runtime/tools/reverseandroid-thread-probe-4g.mjs
           python3 scripts/prepare-c92-observer.py build/host-observer-runtime
+          node --check build/host-observer-runtime/tools/android_kernel_observer.mjs
+          node --check build/host-observer-runtime/tools/reverseandroid-thread-probe-4g.mjs
           for name in media-manifest media-aa media-ab media-ac; do
             python3 scripts/fetch-reverseandroid-artifact.py "$name" build/media-input state/experiments/c91-stage-1-artifacts.json
           done
