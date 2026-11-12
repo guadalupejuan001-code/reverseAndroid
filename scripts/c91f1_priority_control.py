@@ -44,7 +44,7 @@ def validate_plan(p):
     assert p["source_must_be_latest_fully_preserved"] is True
     assert p["failed_C91F0_tail_must_not_be_source"] is True
     assert p["failed_C91F0_checkpoint_sha256"]=="d2157027999e28930b7cacadacfbd61cd50305207af6bcb64f1012620cc0153b"
-    assert p["input_bytes"]==255 and re.fullmatch(r"[0-9a-f]{64}",p["input_sha256"])
+    assert p["input_bytes"]==71 and re.fullmatch(r"[0-9a-f]{64}",p["input_sha256"])
     assert p["inherited_event_count"]==p["new_event_phase"]==8
     assert p["stage1_instruction_budget"]==p["stage2_instruction_budget"]==1000000000
     assert p["host_wall_ms"]==900000 and p["host_snapshot_capacity_bytes"]==4026531840
@@ -286,8 +286,10 @@ def run_stage(p,stage):
       drop=source_n20-stats["nice_minus20"]
       drop_fraction=(drop/source_n20) if source_n20 else 0.0
       gates=p["stage1_success_gates"]
-      causal=(reply["guard_succeeded"]
-        and (reply["changed"] or 0)>=gates["minimum_acknowledged_changed_processes"]
+      # UART injection alone never establishes success. This short command
+      # emits no ACK: measure the original kernel priorities and SystemServer
+      # CPU runtime from the unmodified guest snapshot instead.
+      causal=(drop>=gates["minimum_verified_changed_processes"]
         and drop_fraction>=gates["minimum_nice_minus20_drop_fraction"]
         and stats["nice_minus20"]<=gates["maximum_nice_minus20_target_threads_after"]
         and stats["nice0"]>=gates["minimum_nice0_target_threads_after"]
@@ -295,6 +297,8 @@ def run_stage(p,stage):
         and gate["system_server_alive_verified"] is True
         and kernel["live_kernel_security"]["selinux_enforcing"] is True)
       st["causal_progress"]=causal
+      st["correction_acknowledged"]=reply["guard_succeeded"]
+      st["correction_verified_by_kernel_only"]=causal
       st["priority_drop_nice_minus20"]=drop
       st["priority_drop_fraction"]=drop_fraction
       if not causal:

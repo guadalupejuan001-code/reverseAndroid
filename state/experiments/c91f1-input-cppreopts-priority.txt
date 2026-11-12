@@ -1,1 +1,1 @@
-su 0 sh -c 'p=$(pidof cppreopts.sh preopt2cachenam fsync cp mv);set -- $p;n=$#;[ "$n" -ge 20 ]||exit 62;renice -n 20 -p "$@" >/dev/null;r=$?;printf "\nREVERSE_C91F1_DONE N_%s RC_%s\n" "$n" "$r";exit "$r"';r=$?;printf '\nREVERSE_C91F1_RESULT RC_%s\n' "$r"
+su 0 renice -n 20 -p $(pidof cppreopts.sh fsync cp mv preopt2cachenam)

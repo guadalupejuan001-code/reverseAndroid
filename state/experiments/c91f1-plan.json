@@ -7,8 +7,8 @@
   "failed_C91F0_tail_must_not_be_source": true,
   "failed_C91F0_checkpoint_sha256": "d2157027999e28930b7cacadacfbd61cd50305207af6bcb64f1012620cc0153b",
   "input_file": "state/experiments/c91f1-input-cppreopts-priority.txt",
-  "input_bytes": 255,
-  "input_sha256": "6fec45de7cad493c8c68bfaaa720bb25792b9c6c2ba2a67d0eec8655346b3f6a",
+  "input_bytes": 71,
+  "input_sha256": "91cfb3d10948fe89894729d3811312dfa81bc11986f9a222178669f1621c38b6",
   "input_purpose": "diagnostic_console",
   "inherited_event_count": 8,
   "new_event_phase": 8,
@@ -35,15 +35,16 @@
     "all_target_processes_must_be_static_prio_100": true
   },
   "stage1_success_gates": {
-    "reply_RC": 0,
-    "minimum_acknowledged_changed_processes": 20,
     "minimum_SystemServer_runtime_delta": 25000000,
     "SystemServer_alive": true,
     "SELinux_enforcing": true,
     "minimum_nice_minus20_drop_fraction": 0.8,
     "maximum_nice_minus20_target_threads_after": 5,
-    "minimum_nice0_target_threads_after": 10
+    "minimum_nice0_target_threads_after": 10,
+    "minimum_verified_changed_processes": 20,
+    "reply_required": false
   },
   "stop_rule": "If stage1 does not meet every causal gate, preserve it as diagnostic and do not execute stage2.",
-  "input_scope": "One Toybox renice call over the runtime pidof set for cppreopts.sh/preopt2cachenam/fsync/cp/mv. Preflight must prove every currently matching source process is UID/EUID 0 and static_prio 100 (nice -20); postflight must prove scheduling normalization."
+  "input_scope": "One authenticated 71-byte guest command. Success only if original kernel scheduling records show nice-20 targets normalized and SystemServer executed; no console ACK assumed.",
+  "control_label": "C92 source-bound observer recovery test (C91F1 controller retained)"
 }

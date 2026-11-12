@@ -19,6 +19,6 @@ class C91F1Test(unittest.TestCase):
     self.assertEqual(s["system_server"]["sum_exec_runtime"],100)
   def test_plan(self):
     p=m.read(m.PLAN);m.validate_plan(p);self.assertFalse(p["promotion_authority"])
-    self.assertEqual(p["input_bytes"],255)
+    self.assertEqual(p["input_bytes"],71)
 
 if __name__=="__main__":unittest.main()
